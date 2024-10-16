@@ -34,7 +34,7 @@ import se.sundsvall.checklist.service.TaskService;
 class TaskResourceFailureTest {
 
 	private static final String BASE_PATH = "/checklists/{checklistId}/phases/{phaseId}/tasks";
-	private static final String randomId = UUID.randomUUID().toString();
+	private static final String RANDOM_ID = UUID.randomUUID().toString();
 
 	@Autowired
 	private WebTestClient webTestClient;
@@ -44,40 +44,40 @@ class TaskResourceFailureTest {
 
 	private static Stream<Arguments> fetchChecklistAndPhaseAndTaskArgumentProvider() {
 		return Stream.of(
-			Arguments.of("invalidId", randomId, randomId, "checklistId", "not a valid UUID"),
-			Arguments.of(randomId, "invalidId", randomId, "phaseId", "not a valid UUID"),
-			Arguments.of(randomId, randomId, "invalidId", "taskId", "not a valid UUID"));
+			Arguments.of("invalidId", RANDOM_ID, RANDOM_ID, "checklistId", "not a valid UUID"),
+			Arguments.of(RANDOM_ID, "invalidId", RANDOM_ID, "phaseId", "not a valid UUID"),
+			Arguments.of(RANDOM_ID, RANDOM_ID, "invalidId", "taskId", "not a valid UUID"));
 	}
 
 	private static Stream<Arguments> fetchChecklistAndPhaseArgumentProvider() {
 		return Stream.of(
-			Arguments.of("invalidId", randomId, "checklistId", "not a valid UUID"),
-			Arguments.of(randomId, "invalidId", "phaseId", "not a valid UUID"));
+			Arguments.of("invalidId", RANDOM_ID, "checklistId", "not a valid UUID"),
+			Arguments.of(RANDOM_ID, "invalidId", "phaseId", "not a valid UUID"));
 	}
 
 	private static Stream<Arguments> createChecklistPhaseTaskArgumentProvider() {
 		return Stream.of(
-			Arguments.of(createTaskCreateRequest(), randomId, "invalidId", "createChecklistPhaseTask.phaseId", "not a valid UUID"),
-			Arguments.of(createTaskCreateRequest(), "invalidId", randomId, "createChecklistPhaseTask.checklistId", "not a valid UUID"),
-			Arguments.of(createTaskCreateRequest(r -> r.setHeading(" ")), randomId, randomId, "heading", "must not be blank"),
-			Arguments.of(createTaskCreateRequest(r -> r.setPermission(null)), randomId, randomId, "permission", "must not be null"),
-			Arguments.of(createTaskCreateRequest(r -> r.setQuestionType(null)), randomId, randomId, "questionType", "must not be null"),
-			Arguments.of(createTaskCreateRequest(r -> r.setRoleType(null)), randomId, randomId, "roleType", "must not be null"),
-			Arguments.of(createTaskCreateRequest(r -> r.setSortOrder(null)), randomId, randomId, "sortOrder", "must not be null"));
+			Arguments.of(createTaskCreateRequest(), RANDOM_ID, "invalidId", "createChecklistPhaseTask.phaseId", "not a valid UUID"),
+			Arguments.of(createTaskCreateRequest(), "invalidId", RANDOM_ID, "createChecklistPhaseTask.checklistId", "not a valid UUID"),
+			Arguments.of(createTaskCreateRequest(r -> r.setHeading(" ")), RANDOM_ID, RANDOM_ID, "heading", "must not be blank"),
+			Arguments.of(createTaskCreateRequest(r -> r.setPermission(null)), RANDOM_ID, RANDOM_ID, "permission", "must not be null"),
+			Arguments.of(createTaskCreateRequest(r -> r.setQuestionType(null)), RANDOM_ID, RANDOM_ID, "questionType", "must not be null"),
+			Arguments.of(createTaskCreateRequest(r -> r.setRoleType(null)), RANDOM_ID, RANDOM_ID, "roleType", "must not be null"),
+			Arguments.of(createTaskCreateRequest(r -> r.setSortOrder(null)), RANDOM_ID, RANDOM_ID, "sortOrder", "must not be null"));
 	}
 
 	private static Stream<Arguments> updateChecklistPhaseTaskArgumentProvider() {
 		return Stream.of(
-			Arguments.of(createTaskUpdateRequest(), "invalidId", randomId, randomId, "updateChecklistPhaseTask.checklistId", "not a valid UUID"),
-			Arguments.of(createTaskUpdateRequest(), randomId, "invalidId", randomId, "updateChecklistPhaseTask.phaseId", "not a valid UUID"),
-			Arguments.of(createTaskUpdateRequest(), randomId, randomId, "invalidId", "updateChecklistPhaseTask.taskId", "not a valid UUID"));
+			Arguments.of(createTaskUpdateRequest(), "invalidId", RANDOM_ID, RANDOM_ID, "updateChecklistPhaseTask.checklistId", "not a valid UUID"),
+			Arguments.of(createTaskUpdateRequest(), RANDOM_ID, "invalidId", RANDOM_ID, "updateChecklistPhaseTask.phaseId", "not a valid UUID"),
+			Arguments.of(createTaskUpdateRequest(), RANDOM_ID, RANDOM_ID, "invalidId", "updateChecklistPhaseTask.taskId", "not a valid UUID"));
 	}
 
 	private static Stream<Arguments> deleteChecklistPhaseTaskArgumentProvider() {
 		return Stream.of(
-			Arguments.of("invalidId", randomId, randomId, "deleteChecklistPhaseTask.checklistId", "not a valid UUID"),
-			Arguments.of(randomId, "invalidId", randomId, "deleteChecklistPhaseTask.phaseId", "not a valid UUID"),
-			Arguments.of(randomId, randomId, "invalidId", "deleteChecklistPhaseTask.taskId", "not a valid UUID"));
+			Arguments.of("invalidId", RANDOM_ID, RANDOM_ID, "deleteChecklistPhaseTask.checklistId", "not a valid UUID"),
+			Arguments.of(RANDOM_ID, "invalidId", RANDOM_ID, "deleteChecklistPhaseTask.phaseId", "not a valid UUID"),
+			Arguments.of(RANDOM_ID, RANDOM_ID, "invalidId", "deleteChecklistPhaseTask.taskId", "not a valid UUID"));
 	}
 
 	@ParameterizedTest

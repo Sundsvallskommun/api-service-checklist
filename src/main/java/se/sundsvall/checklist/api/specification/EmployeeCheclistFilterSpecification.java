@@ -18,4 +18,4 @@ import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 	@Spec(path = "employee.manager.lastName", params = "searchString", spec = LikeIgnoreCase.class),
 	@Spec(path = "d.firstName", params = "searchString", spec = LikeIgnoreCase.class),
 	@Spec(path = "d.lastName", params = "searchString", spec = LikeIgnoreCase.class) })
-public interface filterSpecification extends Specification<EmployeeChecklistEntity> {}
+public interface EmployeeCheclistFilterSpecification extends Specification<EmployeeChecklistEntity> {}

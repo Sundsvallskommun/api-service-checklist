@@ -38,7 +38,7 @@ import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPaginatedResponse;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
-import se.sundsvall.checklist.api.specification.filterSpecification;
+import se.sundsvall.checklist.api.specification.EmployeeCheclistFilterSpecification;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
@@ -97,7 +97,7 @@ public class EmployeeChecklistIntegration {
 		this.customTaskRepository = customTaskRepository;
 	}
 
-	public EmployeeChecklistPaginatedResponse fetchPaginatedEmployeeChecklistsByString(final filterSpecification specification, final Pageable pageable) {
+	public EmployeeChecklistPaginatedResponse fetchPaginatedEmployeeChecklistsByString(final EmployeeCheclistFilterSpecification specification, final Pageable pageable) {
 		final var matches = employeeChecklistRepository.findAll(specification, pageable);
 		final var employeeChecklists = matches.getContent();
 

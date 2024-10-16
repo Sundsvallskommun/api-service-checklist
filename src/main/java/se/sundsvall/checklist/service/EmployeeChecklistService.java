@@ -47,7 +47,7 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistResponse;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse.Detail;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
-import se.sundsvall.checklist.api.specification.filterSpecification;
+import se.sundsvall.checklist.api.specification.EmployeeCheclistFilterSpecification;
 import se.sundsvall.checklist.integration.db.EmployeeChecklistIntegration;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
@@ -84,7 +84,7 @@ public class EmployeeChecklistService {
 		this.employeeInformationUpdateInterval = employeeInformationUpdateInterval;
 	}
 
-	public EmployeeChecklistPaginatedResponse findEmployeeChecklistsBySearchString(final filterSpecification specification, final Pageable pageable) {
+	public EmployeeChecklistPaginatedResponse findEmployeeChecklistsBySearchString(final EmployeeCheclistFilterSpecification specification, final Pageable pageable) {
 		return employeeChecklistIntegration.fetchPaginatedEmployeeChecklistsByString(specification, pageable);
 	}
 

@@ -40,7 +40,7 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
-import se.sundsvall.checklist.api.specification.filterSpecification;
+import se.sundsvall.checklist.api.specification.EmployeeCheclistFilterSpecification;
 import se.sundsvall.checklist.service.EmployeeChecklistService;
 import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
 
@@ -76,7 +76,7 @@ class EmployeeChecklistResource {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	})
 	@GetMapping(value = "/search", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
-	ResponseEntity<EmployeeChecklistPaginatedResponse> findemployeeChecklistsBySearchString(final filterSpecification specification, final Pageable pageable) {
+	ResponseEntity<EmployeeChecklistPaginatedResponse> findemployeeChecklistsBySearchString(final EmployeeCheclistFilterSpecification specification, final Pageable pageable) {
 		return ok(employeeChecklistService.findEmployeeChecklistsBySearchString(specification, pageable));
 	}
 

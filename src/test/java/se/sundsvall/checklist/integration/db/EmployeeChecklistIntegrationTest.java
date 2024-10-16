@@ -36,7 +36,7 @@ import generated.se.sundsvall.employee.Manager;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
-import se.sundsvall.checklist.api.specification.filterSpecification;
+import se.sundsvall.checklist.api.specification.EmployeeCheclistFilterSpecification;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
@@ -95,7 +95,7 @@ class EmployeeChecklistIntegrationTest {
 	void fetchPaginatedEmployeeChecklistsByString() {
 		final var entity = createEmployeeChecklistEntity();
 		final var dto = EmployeeChecklistMapper.toEmployeeChecklistDTO(entity);
-		final filterSpecification spec = (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("id"), entity.getId());
+		final EmployeeCheclistFilterSpecification spec = (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("id"), entity.getId());
 		final var pageable = PageRequest.of(0, 10);
 		final Page<EmployeeChecklistEntity> page = new PageImpl<>(List.of(entity), pageable, 1);
 
