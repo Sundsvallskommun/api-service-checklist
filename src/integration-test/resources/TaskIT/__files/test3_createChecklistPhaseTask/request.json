@@ -1,0 +1,8 @@
+{
+	"heading": "Name of the task",
+	"text": "Body text of the task",
+	"sortOrder": 1,
+	"permission": "SUPERADMIN",
+	"questionType": "YES_OR_NO",
+	"roleType": "EMPLOYEE"
+}

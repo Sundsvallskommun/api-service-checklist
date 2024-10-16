@@ -1,0 +1,147 @@
+[
+	{
+		"personId": "d9008859-bac0-470d-9fb0-5ecc8b161b95",
+		"personNumber": "1901021234",
+		"isClassified": false,
+		"givenname": "Pauletta",
+		"lastname": "Rodgers",
+		"loginname": "pau55rod",
+		"emailAddress": "pauletta.rodgers@noreply.com",
+		"isManager": true,
+		"employments": [
+			{
+				"companyId": 1,
+				"startDate": "2024-01-24T00:00:00",
+				"employmentType": 0,
+				"title": "Vanishing Tiramisu Expert",
+				"managerCode": "C_",
+				"orgId": 212,
+				"orgName": "Sub organization 212",
+				"topOrgId": 24,
+				"topOrgName": "Top organization name",
+				"benefitGroupId": 11,
+				"formOfEmploymentId": "1",
+				"isManual": false,
+				"paTeam": "ROBOT",
+				"isMainEmployment": true,
+				"manager": {
+					"personId": "95bd9ecb-4b42-402e-9767-48038f05927a",
+					"givenname": "Bossa",
+					"lastname": "Nova",
+					"loginname": "bos33nov",
+					"emailAddress": "bossa.nova@noreply.com",
+					"referenceNumber": "B16NOV"
+				},
+				"aid": "123456",
+				"eventType": "Joiner",
+				"eventInfo": "Corporate"
+			}
+		]
+	},
+	{
+		"personId": "7ad3ce90-4113-4ac6-93d9-cf574a4a21b0",
+		"personNumber": "1901024321",
+		"isClassified": false,
+		"givenname": "Henrietta",
+		"lastname": "Snuggles",
+		"loginname": "hen22snu",
+		"emailAddress": "henrietta.snuggles@noreply.com",
+		"isManager": false,
+		"employments": [
+			{
+				"companyId": 1,
+				"startDate": "2024-01-24T00:00:00",
+				"employmentType": 0,
+				"title": "Workoholic",
+				"orgId": 212,
+				"orgName": "Sub organization 212",
+				"topOrgId": 24,
+				"topOrgName": "Top organization name",
+				"benefitGroupId": 11,
+				"formOfEmploymentId": "1",
+				"isManual": false,
+				"paTeam": "ROBOT",
+				"isMainEmployment": true,
+				"manager": {
+					"personId": "95bd9ecb-4b42-402e-9767-48038f05927a",
+					"givenname": "Bossa",
+					"lastname": "Nova",
+					"loginname": "bos33nov",
+					"emailAddress": "bossa.nova@noreply.com",
+					"referenceNumber": "B16NOV"
+				},
+				"aid": "123456",
+				"eventType": "Joiner",
+				"eventInfo": "Corporate"
+			}
+		]
+	},
+	{
+		"personId": "ea32f3f4-c18c-48b9-98a0-9d73e7a2c5a6",
+		"personNumber": "1901031234",
+		"isClassified": false,
+		"givenname": "Chase",
+		"lastname": "Sparks",
+		"loginname": "cha66spa",
+		"emailAddress": "chase.sparks@noreply.com",
+		"isManager": false,
+		"employments": [
+			{
+				"companyId": 1,
+				"startDate": "2024-02-01T00:00:00",
+				"employmentType": 0,
+				"title": "Clueless Security Administrator",
+				"orgId": 7420,
+				"orgName": "Sub organization 7420",
+				"topOrgId": 23,
+				"topOrgName": "Top organization name",
+				"benefitGroupId": 11,
+				"formOfEmploymentId": "1",
+				"isManual": false,
+				"paTeam": "E7C534A",
+				"isMainEmployment": true,
+				"aid": "123456",
+				"eventType": "Joiner",
+				"eventInfo": "Corporate"
+			}
+		]
+	},
+	{
+		"personId": "1810c9c4-7281-44de-9930-426d9f065f4d",
+		"personNumber": "1901041234",
+		"isClassified": false,
+		"givenname": "A Emp",
+		"lastname": "Loyee",
+		"loginname": "aemp0loyee",
+		"emailAddress": "a.employee@5535.com",
+		"isManager": false,
+		"employments": [
+			{
+				"companyId": 1,
+				"startDate": "2024-01-01T00:00:00",
+				"employmentType": 0,
+				"title": "Cleaner",
+				"orgId": 5535,
+				"orgName": "Sub organization 5335",
+				"topOrgId": 28,
+				"topOrgName": "Top organization name",
+				"benefitGroupId": 11,
+				"formOfEmploymentId": "1",
+				"isManual": false,
+				"paTeam": "AB01",
+				"isMainEmployment": true,
+				"manager": {
+					"personId": "02817ff3-632a-4228-9c31-25ad8124568c",
+					"givenname": "A Man",
+					"lastname": "Ager",
+					"loginname": "aman0agr",
+					"emailAddress": "a.manager@5535.com",
+					"referenceNumber": "A00AGR"
+				},
+				"aid": "123456",
+				"eventType": "Joiner",
+				"eventInfo": "Corporate"
+			}
+		]
+	}
+]

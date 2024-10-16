@@ -1,0 +1,10 @@
+{
+	"id": "1b3bfe66-0e6c-4e92-a410-7c620a5461f4",
+	"heading": "Custom employee task",
+	"text": "Descriptive text for custom task",
+	"sortOrder": 0,
+	"roleType": "EMPLOYEE",
+	"questionType": "YES_OR_NO",
+	"created": "2024-01-03T12:00:00+01:00",
+	"updated": "2024-01-03T12:00:00+01:00"
+}

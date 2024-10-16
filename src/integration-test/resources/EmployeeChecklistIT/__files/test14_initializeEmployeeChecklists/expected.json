@@ -1,0 +1,21 @@
+{
+	"summary": "2 potential problems occurred when importing 4 employees",
+	"details": [
+		{
+			"status": 200,
+			"information": "Employee with loginname pau55rod processed successfully."
+		},
+		{
+			"status": 404,
+			"information": "Not Found: Employee with username hen22snu is missing information regarding organizational structure."
+		},
+		{
+			"status": 404,
+			"information": "Not Found: Creation of checklist not possible for employee with loginname cha66spa as the main employment for the employee lacks information about the manager."
+		},
+		{
+			"status": 200,
+			"information": "Employee with loginname aemp0loyee already has an employee checklist."
+		}
+	]
+}

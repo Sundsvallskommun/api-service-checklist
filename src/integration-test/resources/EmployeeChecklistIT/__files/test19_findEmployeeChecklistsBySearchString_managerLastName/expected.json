@@ -1,0 +1,42 @@
+{
+  "employeeChecklists": [
+    {
+      "id": "ada66ff0-d554-4501-a16d-1b0b6e1825c3",
+      "employeeName": "André Svensson",
+      "employeeUsername": "eemp5loyee",
+      "organizationName": "Sub organization 5335",
+      "managerName": "Chef Pellesson",
+      "delegatedTo": [
+        "John Doe"
+      ],
+      "employeeStartDate": "2020-01-01"
+    },
+    {
+      "id": "bda66ff0-d554-4501-a16d-1b0b6e1825c3",
+      "employeeName": "Andreas Persson",
+      "employeeUsername": "eemp5loyee",
+      "organizationName": "Sub organization 5335",
+      "managerName": "Chef Pellesson",
+      "delegatedTo": [
+        "John Doe"
+      ],
+      "employeeStartDate": "2021-01-01"
+    },
+    {
+      "id": "cda66ff0-d554-4501-a16d-1b0b6e1825c3",
+      "employeeName": "Andrea Andersson",
+      "employeeUsername": "eemp5loyee",
+      "organizationName": "Sub organization 5335",
+      "managerName": "Chef Pellesson",
+      "delegatedTo": [],
+      "employeeStartDate": "2022-01-01"
+    }
+  ],
+  "_meta": {
+    "page": 1,
+    "limit": 20,
+    "count": 3,
+    "totalRecords": 3,
+    "totalPages": 1
+  }
+}

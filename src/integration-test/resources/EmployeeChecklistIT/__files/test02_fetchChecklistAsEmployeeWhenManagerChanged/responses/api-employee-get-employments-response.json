@@ -1,0 +1,38 @@
+[
+	{
+		"personId": "702323a9-f542-4081-a780-a1396068c8c9",
+		"personNumber": "1901011234",
+		"isClassified": false,
+		"givenname": "C Emp",
+		"lastname": "Loyee",
+		"loginname": "cemp3loyee",
+		"emailAddress": "c.employee@55351.com",
+		"isManager": false,
+		"employments": [
+			{
+				"companyId": 1,
+				"startDate": "2024-01-01T00:00:00",
+				"employmentType": 0,
+				"title": "Growler",
+				"orgId": 55351,
+				"orgName": "Sub organization 55351",
+				"topOrgId": 28,
+				"topOrgName": "Top organization name",
+				"benefitGroupId": 11,
+				"formOfEmploymentId": "1",
+				"isManual": false,
+				"paTeam": "AB01",
+				"isMainEmployment": true,
+				"manager": {
+					"personId": "ae93a63e-d975-4cd9-8e28-4cc9ea8b4d96",
+					"givenname": "C Newman",
+					"lastname": "Ager",
+					"loginname": "cman1agr",
+					"emailAddress": "c.manager@55351.com",
+					"referenceNumber": "CNEW01AGR"
+				},
+				"aid": "123456"
+			}
+		]
+	}
+]

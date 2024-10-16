@@ -1,0 +1,5 @@
+{
+  "title": "Conflict",
+  "status": 409,
+  "detail": "Employee checklist with id 1fb37edc-eb16-4ac3-a436-02971f020b28 is already delegated to test@test5.com"
+}

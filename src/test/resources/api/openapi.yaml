@@ -1,0 +1,3059 @@
+openapi: 3.0.1
+info:
+  title: api-checklist
+  contact: {}
+  license:
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
+  version: "1.0"
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+tags:
+- name: Checklist resources
+  description: Resources for managing checklists
+- name: Porting resources
+  description: Resources for managing import and export of checklists
+- name: Communication resources
+  description: Resources for managing communication
+- name: Task resources
+  description: Resources for managing tasks in a phase
+- name: Organization resources
+  description: Resources for managing organizational units
+- name: Delegation resources
+  description: Resources for managing delegations of employee checklists
+- name: Phase resources
+  description: Resources for managing phases in a checklist
+- name: Employee checklist resources
+  description: Resources for managing employee checklists
+paths:
+  /organizations:
+    get:
+      tags:
+      - Organization resources
+      summary: Fetch all organizations
+      description: Fetch all organizations
+      operationId: fetchOrganizations
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Organization"
+            application/problem+json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Organization"
+    post:
+      tags:
+      - Organization resources
+      summary: Create an organization
+      description: Create a new organizational unit
+      operationId: createOrganization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrganizationCreateRequest"
+        required: true
+      responses:
+        "201":
+          description: Successful Operation
+          headers:
+            Location:
+              style: simple
+              schema:
+                type: string
+        "409":
+          description: Conflict
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /import/replace/{organizationNumber}/{organizationName}:
+    post:
+      tags:
+      - Porting resources
+      summary: "Import checklist structure for a organization, replacing currently\
+        \ CREATED or ACTIVE version"
+      description: |
+        <h3>Only use this resource if you are aware of the impact the result of the operation has on active and completed employee checklists</h3>
+        <i>This method is <b>not safe to use</b> in regard to that existing checklists with lifecycle status <b>ACTIVE</b> or <b>CREATED</b> will be replaced. I.e. employee checklists (ongoing and completed) and checklist drafts <u>will be affected</u>.</i>
+        The following rules are applied:
+        - If no checklist exists for the organizational unit, a new version based on provided structure will be created with lifecycle status <b>CREATED</b> (to activate, use intended endpoint).
+        - If an existing version with lifecycle status <b>CREATED</b> is present, it will be replaced with the provided structure (to activate, use intended endpoint). If a version with lifecycle status <b>ACTIVE</b> exists, it will remain intact and no ongoing employee checklists will be affected. Only the currently created version draft will be replaced.
+        - If an existing version with lifecycle status <b>ACTIVE</b> is present and no version with status <b>CREATED</b> is present, the active version will be replaced with the provided structure. <b>Observe that all employee checklists (ongoing and completed) using the currently active version will be affected (resetted). Use with uttermost care!</b>.
+      operationId: importAndOverwriteExistingChecklist
+      parameters:
+      - name: organizationNumber
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: organizationName
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        "201":
+          description: Successful Operation
+          headers:
+            Location:
+              style: simple
+              schema:
+                type: string
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /import/add/{organizationNumber}/{organizationName}:
+    post:
+      tags:
+      - Porting resources
+      summary: Import checklist structure for a organization as a new version with
+        lifecycle status CREATED
+      description: |
+        <i>This method is safe to use in regard to that no existing checklist(s) with lifecycle status <b>ACTIVE</b> or <b>CREATED</b> will be modified. I.e. employees with active or completed checklists will not be affected.</i>
+        <br><br>
+        The following rules are applied:
+        - If no checklist exists for the organizational unit, a new version based on provided structure will be created with lifecycle status <b>CREATED</b> (to activate, use intended endpoint).
+        - If an existing version with lifecycle status <b>CREATED</b> is present, an exception will be thrown as there can only be one checklist with created lifecycle status. Remove current version with created status or use the replace endpoint instead.
+        - If an existing version with lifecycle status <b>ACTIVE</b> is present, a new version based on provided structure will be created with lifecycle status <b>CREATED</b> (to activate, use intended endpoint). The currently active version will remain intact and employees with active or completed checklists will not be affected.
+      operationId: importChecklistAsNewVersion
+      parameters:
+      - name: organizationNumber
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: organizationName
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        "201":
+          description: Successful Operation
+          headers:
+            Location:
+              style: simple
+              schema:
+                type: string
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /employee-checklists/{employeeChecklistId}/phases/{phaseId}/customtasks:
+    post:
+      tags:
+      - Employee checklist resources
+      summary: Create a custom task
+      description: Create a custom task connected to a specific employee checklist
+      operationId: createCustomTask
+      parameters:
+      - name: employeeChecklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: phaseId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomTaskCreateRequest"
+        required: true
+      responses:
+        "201":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomTask"
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/CustomTask"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /employee-checklists/{employeeChecklistId}/email:
+    post:
+      tags:
+      - Communication resources
+      summary: Send email notification
+      description: Send an email notification to the manager for the employee checklist
+        that matches provided id
+      operationId: sendEmail
+      parameters:
+      - name: employeeChecklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "201":
+          description: Successful Operation
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /employee-checklists/{employeeChecklistId}/delegate-to/{email}:
+    post:
+      tags:
+      - Delegation resources
+      summary: Delegate an employee checklist
+      description: Delegate an employee checklist to a user by email and checklist
+        id
+      operationId: delegateEmployeeChecklist
+      parameters:
+      - name: employeeChecklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: email
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "201":
+          description: Successful Operation
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "409":
+          description: Conflict
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /employee-checklists/initialize:
+    post:
+      tags:
+      - Employee checklist resources
+      summary: Inititalize checklists for new employees
+      description: Trigger creation of checklists for all known new employees
+      operationId: initiateEmployeeChecklists
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployeeChecklistResponse"
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/EmployeeChecklistResponse"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /employee-checklists/initialize/{personId}:
+    post:
+      tags:
+      - Employee checklist resources
+      summary: Inititalize checklists for a specific employee
+      description: Trigger creation of checklist for employee matching sent in person
+        id
+      operationId: initiateSpecificEmployeeChecklist
+      parameters:
+      - name: personId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployeeChecklistResponse"
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/EmployeeChecklistResponse"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /checklists:
+    get:
+      tags:
+      - Checklist resources
+      summary: Get all checklists
+      operationId: fetchAllChecklists
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Checklist"
+            application/problem+json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Checklist"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+    post:
+      tags:
+      - Checklist resources
+      summary: Create a new checklist
+      operationId: createChecklist
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChecklistCreateRequest"
+        required: true
+      responses:
+        "201":
+          description: Successful Operation
+          headers:
+            Location:
+              style: simple
+              schema:
+                type: string
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /checklists/{checklistId}/version:
+    post:
+      tags:
+      - Checklist resources
+      summary: Create new version of checklist
+      operationId: createNewVersion
+      parameters:
+      - name: checklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "201":
+          description: Successful Operation
+          headers:
+            Location:
+              style: simple
+              schema:
+                type: string
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /checklists/{checklistId}/phases:
+    get:
+      tags:
+      - Phase resources
+      summary: Fetch all phases in a checklist
+      operationId: fetchChecklistPhases
+      parameters:
+      - name: checklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Phase"
+            application/problem+json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Phase"
+    post:
+      tags:
+      - Phase resources
+      summary: Create phase in a checklist
+      operationId: createChecklistPhase
+      parameters:
+      - name: checklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PhaseCreateRequest"
+        required: true
+      responses:
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "201":
+          description: Successful Operation
+          headers:
+            Location:
+              style: simple
+              schema:
+                type: string
+  /checklists/{checklistId}/phases/{phaseId}/tasks:
+    get:
+      tags:
+      - Task resources
+      summary: Fetch all tasks in a checklist phase
+      operationId: fetchChecklistPhaseTasks
+      parameters:
+      - name: checklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: phaseId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+            application/problem+json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+    post:
+      tags:
+      - Task resources
+      summary: Create task in checklist phase
+      operationId: createChecklistPhaseTask
+      parameters:
+      - name: checklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: phaseId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskCreateRequest"
+        required: true
+      responses:
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "201":
+          description: Successful Operation
+          headers:
+            Location:
+              style: simple
+              schema:
+                type: string
+  /organizations/{organizationId}:
+    get:
+      tags:
+      - Organization resources
+      summary: Fetch organization by id
+      description: Fetch organization that matches provided id
+      operationId: fetchOrganizationById
+      parameters:
+      - name: organizationId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Organization"
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Organization"
+    delete:
+      tags:
+      - Organization resources
+      summary: Delete organization
+      description: Delete an existing organizational unit
+      operationId: deleteOrganization
+      parameters:
+      - name: organizationId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Successful Operation
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "409":
+          description: Conflict
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+    patch:
+      tags:
+      - Organization resources
+      summary: Update an organization
+      description: Update an existing organizational unit
+      operationId: updateOrganization
+      parameters:
+      - name: organizationId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrganizationUpdateRequest"
+        required: true
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Organization"
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Organization"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /employee-checklists/{employeeChecklistId}/tasks/{taskId}:
+    patch:
+      tags:
+      - Employee checklist resources
+      summary: Update fulfilment of a task
+      operationId: updateTaskFulfilment
+      parameters:
+      - name: employeeChecklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: taskId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmployeeChecklistTaskUpdateRequest"
+        required: true
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployeeChecklistTask"
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/EmployeeChecklistTask"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /employee-checklists/{employeeChecklistId}/phases/{phaseId}:
+    patch:
+      tags:
+      - Employee checklist resources
+      summary: Update of all tasks in a phase
+      description: Bulk update of sent in attributes for all tasks in phase
+      operationId: updateAllTasksInPhase
+      parameters:
+      - name: employeeChecklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: phaseId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmployeeChecklistPhaseUpdateRequest"
+        required: true
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployeeChecklistPhase"
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/EmployeeChecklistPhase"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /employee-checklists/{employeeChecklistId}/customtasks/{taskId}:
+    get:
+      tags:
+      - Employee checklist resources
+      summary: Read a custom task
+      description: Read a custom task connected to a specific employee checklist
+      operationId: readCustomTask
+      parameters:
+      - name: employeeChecklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: taskId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomTask"
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/CustomTask"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+    delete:
+      tags:
+      - Employee checklist resources
+      summary: Delete a custom task
+      description: Delete a custom task from an employee checklist
+      operationId: deleteCustomTask
+      parameters:
+      - name: employeeChecklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: taskId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Successful Operation
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+    patch:
+      tags:
+      - Employee checklist resources
+      summary: Update a custom task
+      description: Update a custom task connected to a specific employee checklist
+      operationId: updateCustomTask
+      parameters:
+      - name: employeeChecklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: taskId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomTaskUpdateRequest"
+        required: true
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomTask"
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/CustomTask"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /checklists/{checklistId}:
+    get:
+      tags:
+      - Checklist resources
+      summary: Fetch checklist by id
+      operationId: fetchChecklistById
+      parameters:
+      - name: checklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Checklist"
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Checklist"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+    delete:
+      tags:
+      - Checklist resources
+      summary: Delete a checklist
+      operationId: deleteChecklist
+      parameters:
+      - name: checklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+    patch:
+      tags:
+      - Checklist resources
+      summary: Update a checklist
+      operationId: updateChecklist
+      parameters:
+      - name: checklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChecklistUpdateRequest"
+        required: true
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Checklist"
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Checklist"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /checklists/{checklistId}/phases/{phaseId}:
+    get:
+      tags:
+      - Phase resources
+      summary: Fetch phase in a checklist
+      operationId: fetchChecklistPhase
+      parameters:
+      - name: checklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: phaseId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Phase"
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Phase"
+    delete:
+      tags:
+      - Phase resources
+      summary: Delete phase in a checklist
+      operationId: deleteChecklistPhase
+      parameters:
+      - name: checklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: phaseId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "204":
+          description: Successful Operation
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+    patch:
+      tags:
+      - Phase resources
+      summary: Update phase in a checklist
+      operationId: updateChecklistPhase
+      parameters:
+      - name: checklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: phaseId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PhaseUpdateRequest"
+        required: true
+      responses:
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Phase"
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Phase"
+  /checklists/{checklistId}/phases/{phaseId}/tasks/{taskId}:
+    get:
+      tags:
+      - Task resources
+      summary: Fetch task in a checklist phase
+      operationId: fetchChecklistPhaseTask
+      parameters:
+      - name: checklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: phaseId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: taskId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Task"
+    delete:
+      tags:
+      - Task resources
+      summary: Delete task in checklist phase
+      operationId: deleteChecklistPhaseTask
+      parameters:
+      - name: checklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: phaseId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: taskId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "204":
+          description: No Content
+    patch:
+      tags:
+      - Task resources
+      summary: Update task in checklist phase
+      operationId: updateChecklistPhaseTask
+      parameters:
+      - name: checklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: phaseId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: taskId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskUpdateRequest"
+        required: true
+      responses:
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Task"
+  /checklists/{checklistId}/activate:
+    patch:
+      tags:
+      - Checklist resources
+      summary: Activate checklist
+      operationId: activateChecklist
+      parameters:
+      - name: checklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Checklist"
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Checklist"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /export/{organizationNumber}/{roleType}:
+    get:
+      tags:
+      - Porting resources
+      summary: Export checklist structure
+      description: "Returns complete structure for the checklist matching provided\
+        \ organizationNumber and roletype. If version if prodvided it will be matched,\
+        \ otherwise the latest version will be returned"
+      operationId: exportChecklist
+      parameters:
+      - name: organizationNumber
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: roleType
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/RoleType"
+      - name: version
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: string
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /employee-checklists/{employeeChecklistId}/correspondence:
+    get:
+      tags:
+      - Communication resources
+      summary: Fetch correspondence
+      description: Fetch the correspondence that has occured for an employee checklist
+      operationId: fetchCorrespondence
+      parameters:
+      - name: employeeChecklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Correspondence"
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Correspondence"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /employee-checklists/search:
+    get:
+      tags:
+      - Employee checklist resources
+      summary: |
+        Fetches employee checklists based on search string, the string is matched against the following
+        attributes using 'LikeIgnoreCase':
+        - Employee's first name
+        - Employee's last name
+        - Employee's username
+        - Employee's company name
+        - Employee's manager first name
+        - Employee's manager last name
+        - Delegate's first name
+        - Delegate's last name
+      operationId: findemployeeChecklistsBySearchString
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      - name: searchString
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployeeChecklistPaginatedResponse"
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/EmployeeChecklistPaginatedResponse"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /employee-checklists/manager/{userId}:
+    get:
+      tags:
+      - Employee checklist resources
+      summary: Fetch checklists where user acts as manager
+      description: Fetch a users checklists where the user has the role of manager
+      operationId: fetchChecklistsForManager
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EmployeeChecklist"
+            application/problem+json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EmployeeChecklist"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /employee-checklists/employee/{userId}:
+    get:
+      tags:
+      - Employee checklist resources
+      summary: Fetch checklist where user acts as employee
+      description: Fetch a users checklist where the user has the role of employee
+      operationId: fetchChecklistForEmployee
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployeeChecklist"
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/EmployeeChecklist"
+        "204":
+          description: No employee checklist found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployeeChecklist"
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/EmployeeChecklist"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /employee-checklists/delegated-to/{userName}:
+    get:
+      tags:
+      - Delegation resources
+      summary: Fetch all employee checklists delegated to a user
+      description: Fetch all delegated employee checklists for the user that matches
+        sent in userid
+      operationId: fetchDelegatedEmployeeChecklists
+      parameters:
+      - name: userName
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DelegatedEmployeeChecklistResponse"
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/DelegatedEmployeeChecklistResponse"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /api-docs:
+    get:
+      tags:
+      - API
+      summary: OpenAPI
+      operationId: getApiDocs
+      responses:
+        "200":
+          description: OK
+          content:
+            application/yaml:
+              schema:
+                type: string
+      x-auth-type: None
+      x-throttling-tier: Unlimited
+      x-wso2-mutual-ssl: Optional
+  /employee-checklists/{employeeChecklistId}:
+    delete:
+      tags:
+      - Employee checklist resources
+      summary: Delete an employee checklist
+      description: Delete an employee checklist completely
+      operationId: deleteEmployeeChecklist
+      parameters:
+      - name: employeeChecklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Successful Operation
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /employee-checklists/{employeeChecklistId}/delegated-to/{email}:
+    delete:
+      tags:
+      - Delegation resources
+      summary: Remove delegation of employee checklist
+      description: Remove the delegation of an employee checklist matching sent in
+        email and checklist id
+      operationId: deleteEmployeeChecklistDelegation
+      parameters:
+      - name: employeeChecklistId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: email
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Successful Operation
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+components:
+  schemas:
+    Problem:
+      type: object
+      properties:
+        instance:
+          type: string
+          format: uri
+        type:
+          type: string
+          format: uri
+        parameters:
+          type: object
+          additionalProperties:
+            type: object
+        status:
+          $ref: "#/components/schemas/StatusType"
+        title:
+          type: string
+        detail:
+          type: string
+    StatusType:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int32
+        reasonPhrase:
+          type: string
+    CommunicationChannel:
+      type: string
+      description: Valid channels to use when communicating with the organization
+      writeOnly: true
+      enum:
+      - EMAIL
+      - NO_COMMUNICATION
+    OrganizationCreateRequest:
+      required:
+      - communicationChannels
+      - organizationName
+      - organizationNumber
+      type: object
+      properties:
+        organizationName:
+          type: string
+          description: The name of the unit
+          writeOnly: true
+          example: Sundsvall Energi
+        organizationNumber:
+          type: integer
+          description: The organization number of the unit
+          format: int32
+          writeOnly: true
+          example: 5345
+        communicationChannels:
+          uniqueItems: true
+          type: array
+          writeOnly: true
+          items:
+            $ref: "#/components/schemas/CommunicationChannel"
+      description: Model for organizational unit create request
+    ConstraintViolationProblem:
+      type: object
+      properties:
+        cause:
+          $ref: "#/components/schemas/ThrowableProblem"
+        stackTrace:
+          type: array
+          items:
+            type: object
+            properties:
+              classLoaderName:
+                type: string
+              moduleName:
+                type: string
+              moduleVersion:
+                type: string
+              methodName:
+                type: string
+              fileName:
+                type: string
+              lineNumber:
+                type: integer
+                format: int32
+              className:
+                type: string
+              nativeMethod:
+                type: boolean
+        type:
+          type: string
+          format: uri
+        status:
+          $ref: "#/components/schemas/StatusType"
+        violations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Violation"
+        title:
+          type: string
+        message:
+          type: string
+        instance:
+          type: string
+          format: uri
+        parameters:
+          type: object
+          additionalProperties:
+            type: object
+        detail:
+          type: string
+        suppressed:
+          type: array
+          items:
+            type: object
+            properties:
+              stackTrace:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    classLoaderName:
+                      type: string
+                    moduleName:
+                      type: string
+                    moduleVersion:
+                      type: string
+                    methodName:
+                      type: string
+                    fileName:
+                      type: string
+                    lineNumber:
+                      type: integer
+                      format: int32
+                    className:
+                      type: string
+                    nativeMethod:
+                      type: boolean
+              message:
+                type: string
+              localizedMessage:
+                type: string
+        localizedMessage:
+          type: string
+    ThrowableProblem:
+      type: object
+      properties:
+        cause:
+          $ref: "#/components/schemas/ThrowableProblem"
+        stackTrace:
+          type: array
+          items:
+            type: object
+            properties:
+              classLoaderName:
+                type: string
+              moduleName:
+                type: string
+              moduleVersion:
+                type: string
+              methodName:
+                type: string
+              fileName:
+                type: string
+              lineNumber:
+                type: integer
+                format: int32
+              className:
+                type: string
+              nativeMethod:
+                type: boolean
+        message:
+          type: string
+        instance:
+          type: string
+          format: uri
+        type:
+          type: string
+          format: uri
+        parameters:
+          type: object
+          additionalProperties:
+            type: object
+        status:
+          $ref: "#/components/schemas/StatusType"
+        title:
+          type: string
+        detail:
+          type: string
+        suppressed:
+          type: array
+          items:
+            type: object
+            properties:
+              stackTrace:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    classLoaderName:
+                      type: string
+                    moduleName:
+                      type: string
+                    moduleVersion:
+                      type: string
+                    methodName:
+                      type: string
+                    fileName:
+                      type: string
+                    lineNumber:
+                      type: integer
+                      format: int32
+                    className:
+                      type: string
+                    nativeMethod:
+                      type: boolean
+              message:
+                type: string
+              localizedMessage:
+                type: string
+        localizedMessage:
+          type: string
+    Violation:
+      type: object
+      properties:
+        field:
+          type: string
+        message:
+          type: string
+    CustomTaskCreateRequest:
+      required:
+      - heading
+      - questionType
+      - sortOrder
+      type: object
+      properties:
+        heading:
+          type: string
+          description: The heading of the task
+          writeOnly: true
+          example: Bjud på fika
+        text:
+          type: string
+          description: The body text of the task
+          writeOnly: true
+          example: Detta är en beskrivning av ett uppdrag
+        questionType:
+          $ref: "#/components/schemas/QuestionType"
+        sortOrder:
+          type: integer
+          description: The sort order for the task
+          format: int32
+          writeOnly: true
+      description: Model for custom task create request
+    QuestionType:
+      type: string
+      description: The question type of the task
+      writeOnly: true
+      enum:
+      - YES_OR_NO
+      - YES_OR_NO_WITH_TEXT
+      - COMPLETED_OR_NOT_RELEVANT
+      - COMPLETED_OR_NOT_RELEVANT_WITH_TEXT
+    CustomTask:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The id of the task
+          readOnly: true
+          example: 5a6c3e4e-c320-4006-b448-1fd4121df828
+        heading:
+          type: string
+          description: The heading of the task
+          readOnly: true
+          example: Bjud på fika
+        text:
+          type: string
+          description: The body text of the task
+          readOnly: true
+          example: Detta är en beskrivning av ett uppdrag
+        sortOrder:
+          type: integer
+          description: The sort order for the task
+          format: int32
+          readOnly: true
+        roleType:
+          $ref: "#/components/schemas/RoleType"
+        questionType:
+          $ref: "#/components/schemas/QuestionType"
+        created:
+          type: string
+          description: The date and time the task was created
+          format: date-time
+          readOnly: true
+          example: 2023-11-22T15:30:00+03:00
+        updated:
+          type: string
+          description: The date and time the task was last updated
+          format: date-time
+          readOnly: true
+          example: 2023-11-22T15:30:00+03:00
+      description: Model for custom task
+    RoleType:
+      type: string
+      description: The role type of the task
+      readOnly: true
+      enum:
+      - EMPLOYEE
+      - MANAGER
+    Detail:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/StatusType"
+        information:
+          type: string
+          description: Descriptive text for of the creation outcome
+          readOnly: true
+          example: Employee with loginname abc123 processed successfully.
+      description: Model for employee checklist triggering detailed status
+    EmployeeChecklistResponse:
+      type: object
+      properties:
+        summary:
+          type: string
+          description: Summary for execution
+          readOnly: true
+          example: Successful execution
+        details:
+          type: array
+          description: Details for each user specific creation
+          readOnly: true
+          items:
+            $ref: "#/components/schemas/Detail"
+      description: Model for employee checklist triggering response
+    ChecklistCreateRequest:
+      required:
+      - displayName
+      - name
+      - organizationNumber
+      - roleType
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the checklist
+          example: Checklist_A
+        displayName:
+          type: string
+          description: The display name of the checklist
+          example: Display name
+        organizationNumber:
+          type: integer
+          description: The organization that the checklist is created for
+          format: int32
+          example: 11
+        roleType:
+          $ref: "#/components/schemas/RoleType"
+      description: Model for checklist create request
+    Permission:
+      type: string
+      description: The permission needed to administrate the phase
+      writeOnly: true
+      enum:
+      - SUPERADMIN
+      - ADMIN
+    PhaseCreateRequest:
+      required:
+      - name
+      - permission
+      - roleType
+      - sortOrder
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the phase
+          writeOnly: true
+          example: Första veckan
+        bodyText:
+          type: string
+          description: The body text of the phase
+          writeOnly: true
+          example: Detta är en beskrivning av vad som ska göras under första veckan
+        timeToComplete:
+          type: string
+          description: The time to complete the phase
+          writeOnly: true
+          example: P1M
+        roleType:
+          $ref: "#/components/schemas/RoleType"
+        permission:
+          $ref: "#/components/schemas/Permission"
+        sortOrder:
+          type: integer
+          description: The sort order of the phase
+          format: int32
+          writeOnly: true
+          example: 1
+      description: Model for phase create request
+    TaskCreateRequest:
+      required:
+      - heading
+      - permission
+      - questionType
+      - roleType
+      - sortOrder
+      type: object
+      properties:
+        heading:
+          type: string
+          description: The name of the task
+          writeOnly: true
+          example: Name of the task
+        text:
+          type: string
+          description: The body text of the task
+          writeOnly: true
+          example: Body text of the task
+        sortOrder:
+          type: integer
+          description: The sort order of the task
+          format: int32
+          writeOnly: true
+          example: 1
+        roleType:
+          $ref: "#/components/schemas/RoleType"
+        permission:
+          $ref: "#/components/schemas/Permission"
+        questionType:
+          $ref: "#/components/schemas/QuestionType"
+      description: Model for task create request
+    OrganizationUpdateRequest:
+      type: object
+      properties:
+        organizationName:
+          type: string
+          description: The name of the unit
+          nullable: true
+          writeOnly: true
+          example: Sundsvall Energi
+        communicationChannels:
+          uniqueItems: true
+          type: array
+          writeOnly: true
+          items:
+            $ref: "#/components/schemas/CommunicationChannel"
+      description: Model for organizational unit update request
+    Checklist:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The id of the checklist
+          readOnly: true
+          example: 5a6c3e4e-c320-4006-b448-1fd4121df828
+        roleType:
+          $ref: "#/components/schemas/RoleType"
+        name:
+          type: string
+          description: The name of the checklist
+          readOnly: true
+          example: Checklist_A
+        displayName:
+          type: string
+          description: The display name of the checklist
+          readOnly: true
+          example: Display name
+        version:
+          type: integer
+          description: The version of the checklist
+          format: int32
+          readOnly: true
+          example: 1
+        lifeCycle:
+          $ref: "#/components/schemas/LifeCycle"
+        created:
+          type: string
+          description: The created date and time of the checklist
+          format: date-time
+          readOnly: true
+          example: 2023-11-22T15:30:00+03:00
+        updated:
+          type: string
+          description: The last update date and time of the checklist
+          format: date-time
+          readOnly: true
+          example: 2023-11-22T15:30:00+03:00
+        phases:
+          type: array
+          description: Phases in the checklist
+          readOnly: true
+          items:
+            $ref: "#/components/schemas/Phase"
+      description: Model for checklist
+      readOnly: true
+    LifeCycle:
+      type: string
+      description: The lifecycle of the checklist
+      readOnly: true
+      enum:
+      - CREATED
+      - ACTIVE
+      - DEPRECATED
+      - RETIRED
+    Organization:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The id of the unit
+          readOnly: true
+          example: 5a6c3e4e-c320-4006-b448-1fd4121df828
+        organizationName:
+          type: string
+          description: The name of the unit
+          readOnly: true
+          example: Sundsvall Energi
+        organizationNumber:
+          type: integer
+          description: The organization number of the unit
+          format: int32
+          readOnly: true
+          example: 5345
+        checklists:
+          type: array
+          readOnly: true
+          items:
+            $ref: "#/components/schemas/Checklist"
+        communicationChannels:
+          uniqueItems: true
+          type: array
+          readOnly: true
+          items:
+            $ref: "#/components/schemas/CommunicationChannel"
+        created:
+          type: string
+          description: The date and time the unit was created
+          format: date-time
+          readOnly: true
+          example: 2023-11-22T15:30:00+02:00
+        updated:
+          type: string
+          description: The date and time the unit was updated
+          format: date-time
+          readOnly: true
+          example: 2023-11-22T15:30:00+02:00
+      description: Model for an organizational unit
+    Phase:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The id of the phase
+          readOnly: true
+          example: 5a6c3e4e-c320-4006-b448-1fd4121df828
+        name:
+          type: string
+          description: The name of the phase
+          readOnly: true
+          example: Första veckan
+        bodyText:
+          type: string
+          description: The body text of the phase
+          readOnly: true
+          example: Detta är en beskrivning av vad som ska göras under första veckan
+        timeToComplete:
+          type: string
+          description: The time to complete the phase
+          readOnly: true
+          example: P1M
+        roleType:
+          $ref: "#/components/schemas/RoleType"
+        permission:
+          $ref: "#/components/schemas/Permission"
+        sortOrder:
+          type: integer
+          description: The sort order of the phase
+          format: int32
+          readOnly: true
+          example: 1
+        tasks:
+          type: array
+          description: Tasks in the phase
+          readOnly: true
+          items:
+            $ref: "#/components/schemas/Task"
+        created:
+          type: string
+          description: The created date and time of the phase
+          format: date-time
+          readOnly: true
+          example: 2023-11-22T15:30:00+03:00
+        updated:
+          type: string
+          description: The last update date and time of the phase
+          format: date-time
+          readOnly: true
+          example: 2023-11-22T15:30:00+03:00
+      description: Model for a phase
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The id of the task
+          readOnly: true
+          example: 5a6c3e4e-c320-4006-b448-1fd4121df828
+        heading:
+          type: string
+          description: The heading of the task
+          readOnly: true
+          example: Bjud på fika
+        text:
+          type: string
+          description: The body text of the task
+          readOnly: true
+          example: Detta är en beskrivning av ett uppdrag
+        sortOrder:
+          type: integer
+          description: The sort order of the task
+          format: int32
+          readOnly: true
+          example: 1
+        roleType:
+          $ref: "#/components/schemas/RoleType"
+        questionType:
+          $ref: "#/components/schemas/QuestionType"
+        permission:
+          $ref: "#/components/schemas/Permission"
+        created:
+          type: string
+          description: The date and time the task was created
+          format: date-time
+          readOnly: true
+          example: 2023-11-22T15:30:00+03:00
+        updated:
+          type: string
+          description: The date and time the task was last updated
+          format: date-time
+          readOnly: true
+          example: 2023-11-22T15:30:00+03:00
+      description: Task model
+    EmployeeChecklistTaskUpdateRequest:
+      type: object
+      properties:
+        fulfilmentStatus:
+          $ref: "#/components/schemas/FulfilmentStatus"
+        responseText:
+          type: string
+          description: The response text for the task fulfilment
+          nullable: true
+          writeOnly: true
+          example: Har bjudit på fika
+      description: Model for update request of fulfilment for a task
+    FulfilmentStatus:
+      type: string
+      description: The status of the task fulfilment
+      nullable: true
+      writeOnly: true
+      enum:
+      - EMPTY
+      - "TRUE"
+      - "FALSE"
+    EmployeeChecklistTask:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The id of the task
+          readOnly: true
+          example: 5a6c3e4e-c320-4006-b448-1fd4121df828
+        heading:
+          type: string
+          description: The heading of the task
+          readOnly: true
+          example: Bjud på fika
+        text:
+          type: string
+          description: The body text of the task
+          readOnly: true
+          example: Detta är en beskrivning av ett uppdrag
+        sortOrder:
+          type: integer
+          description: The sort order for the task
+          format: int32
+          readOnly: true
+        roleType:
+          $ref: "#/components/schemas/RoleType"
+        questionType:
+          $ref: "#/components/schemas/QuestionType"
+        customTask:
+          type: boolean
+          description: Tells if the task is only applies to the current checklist
+            or not
+          readOnly: true
+        responseText:
+          type: string
+          description: The task response text
+          readOnly: true
+          example: Jag har bjudit på fika
+        fulfilmentStatus:
+          $ref: "#/components/schemas/FulfilmentStatus"
+        updated:
+          type: string
+          description: The date and time the task was last updated
+          format: date-time
+          readOnly: true
+          example: 2023-11-22T15:30:00+03:00
+      description: Model for a employee checklist task
+    EmployeeChecklistPhaseUpdateRequest:
+      type: object
+      properties:
+        tasksFulfilmentStatus:
+          $ref: "#/components/schemas/FulfilmentStatus"
+      description: Model for update request on an employee checklist phase
+    EmployeeChecklistPhase:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The id of the phase
+          readOnly: true
+          example: 5a6c3e4e-c320-4006-b448-1fd4121df828
+        name:
+          type: string
+          description: The name of the phase
+          readOnly: true
+          example: Första veckan
+        bodyText:
+          type: string
+          description: The body text of the phase
+          readOnly: true
+          example: Detta är en beskrivning av vad som ska göras under första veckan
+        timeToComplete:
+          type: string
+          description: The time to complete the phase
+          readOnly: true
+          example: P1M
+        roleType:
+          $ref: "#/components/schemas/RoleType"
+        sortOrder:
+          type: integer
+          description: The sort order for the phase
+          format: int32
+          readOnly: true
+          example: 1
+        tasks:
+          type: array
+          description: Tasks in the phase
+          readOnly: true
+          items:
+            $ref: "#/components/schemas/EmployeeChecklistTask"
+      description: Model for a employee checklist phase
+    CustomTaskUpdateRequest:
+      type: object
+      properties:
+        heading:
+          type: string
+          description: The heading of the task
+          example: Bjud på fika
+        text:
+          type: string
+          description: The body text of the task
+          example: Detta är en beskrivning av ett uppdrag
+        questionType:
+          $ref: "#/components/schemas/QuestionType"
+        sortOrder:
+          type: integer
+          description: The sort order for the task
+          format: int32
+          writeOnly: true
+      description: Model for custom task update request
+    ChecklistUpdateRequest:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: The name of the checklist
+          example: New display name
+        roleType:
+          $ref: "#/components/schemas/RoleType"
+      description: Model for checklist update request
+    PhaseUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the phase
+          writeOnly: true
+          example: Första veckan
+        bodyText:
+          type: string
+          description: The body text of the phase
+          writeOnly: true
+          example: Detta är en beskrivning av vad som ska göras under första veckan
+        timeToComplete:
+          type: string
+          description: The time to complete the phase
+          writeOnly: true
+          example: P1M
+        roleType:
+          $ref: "#/components/schemas/RoleType"
+        permission:
+          $ref: "#/components/schemas/Permission"
+        sortOrder:
+          type: integer
+          description: The sort order of the phase
+          format: int32
+          writeOnly: true
+          example: 1
+      description: Model for phase update request
+    TaskUpdateRequest:
+      type: object
+      properties:
+        heading:
+          type: string
+          description: The name of the task
+          writeOnly: true
+        text:
+          type: string
+          description: The body text of the task
+          writeOnly: true
+        sortOrder:
+          type: integer
+          description: The sort order of the task
+          format: int32
+          writeOnly: true
+          example: 1
+        roleType:
+          $ref: "#/components/schemas/RoleType"
+        permission:
+          $ref: "#/components/schemas/Permission"
+        questionType:
+          $ref: "#/components/schemas/QuestionType"
+      description: Model for task update request
+    Correspondence:
+      type: object
+      properties:
+        messageId:
+          type: string
+          description: Id for message
+          readOnly: true
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        recipient:
+          type: string
+          description: Message recipient
+          readOnly: true
+          example: email.address@noreply.com
+        attempts:
+          type: integer
+          description: Attempt count
+          format: int32
+          readOnly: true
+          example: 1
+        correspondenceStatus:
+          $ref: "#/components/schemas/CorrespondenceStatus"
+        communicationChannel:
+          $ref: "#/components/schemas/CommunicationChannel"
+        sent:
+          type: string
+          description: Timestamp when message was sent
+          format: date-time
+          readOnly: true
+          example: 2023-11-22T15:30:00+02:00
+      description: Model for correspondence
+    CorrespondenceStatus:
+      type: string
+      description: Status for correspondence
+      readOnly: true
+      enum:
+      - SENT
+      - NOT_SENT
+      - ERROR
+      - WILL_NOT_SEND
+    Pageable:
+      type: object
+      properties:
+        page:
+          minimum: 0
+          type: integer
+          format: int32
+        size:
+          minimum: 1
+          type: integer
+          format: int32
+        sort:
+          type: array
+          items:
+            type: string
+    Direction:
+      type: string
+      description: The sort order direction
+      example: ASC
+      enum:
+      - ASC
+      - DESC
+    EmployeeChecklistInformation:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The id of the employee checklist
+          readOnly: true
+          example: e2cb57a7-7a9d-4b9b-993d-022c75fc5cd8
+        employeeName:
+          type: string
+          description: The name of the employee
+          readOnly: true
+          example: John Doe
+        employeeUsername:
+          type: string
+          description: The username of the employee
+          readOnly: true
+          example: johndoe
+        organizationName:
+          type: string
+          description: The organization name
+          readOnly: true
+          example: Fictional Municipality
+        managerName:
+          type: string
+          description: The name of the manager
+          readOnly: true
+          example: Maria Smith
+        delegatedTo:
+          type: array
+          description: The delegated managers name
+          readOnly: true
+          example: Luke Hamilton
+          items:
+            type: string
+            description: The delegated managers name
+            readOnly: true
+            example: Luke Hamilton
+        employeeStartDate:
+          type: string
+          description: The start date for the employee
+          format: date
+          readOnly: true
+          example: 2021-01-01
+      description: Basic information about an employee checklist
+      readOnly: true
+    EmployeeChecklistPaginatedResponse:
+      type: object
+      properties:
+        employeeChecklists:
+          type: array
+          readOnly: true
+          items:
+            $ref: "#/components/schemas/EmployeeChecklistInformation"
+        _meta:
+          $ref: "#/components/schemas/PagingAndSortingMetaData"
+      description: Paginated response with employee checklists
+    PagingAndSortingMetaData:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: Current page
+          format: int32
+          readOnly: true
+          example: 5
+        limit:
+          type: integer
+          description: Displayed objects per page
+          format: int32
+          readOnly: true
+          example: 20
+        count:
+          type: integer
+          description: Displayed objects on current page
+          format: int32
+          readOnly: true
+          example: 13
+        totalRecords:
+          type: integer
+          description: Total amount of hits based on provided search parameters
+          format: int64
+          readOnly: true
+          example: 98
+        totalPages:
+          type: integer
+          description: Total amount of pages based on provided search parameters
+          format: int32
+          readOnly: true
+          example: 23
+        sortBy:
+          type: array
+          readOnly: true
+          items:
+            type: string
+            description: The properties to sort by
+            readOnly: true
+            example: property
+        sortDirection:
+          $ref: "#/components/schemas/Direction"
+      description: PagingAndSortingMetaData model
+      readOnly: true
+    EmployeeChecklist:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The id of the employee checklist
+          readOnly: true
+          example: 5a6c3e4e-c320-4006-b448-1fd4121df828
+        employee:
+          $ref: "#/components/schemas/Stakeholder"
+        manager:
+          $ref: "#/components/schemas/Stakeholder"
+        completed:
+          type: boolean
+          description: Signal if all tasks in the checklist has been completed or
+            not
+          readOnly: true
+        locked:
+          type: boolean
+          description: Signal if the checklist is locked or not
+          readOnly: true
+        delegatedTo:
+          type: array
+          description: Contains the email to the delegate(s) if the checklist is delegated
+          readOnly: true
+          items:
+            type: string
+            description: Contains the email to the delegate(s) if the checklist is
+              delegated
+            readOnly: true
+        phases:
+          type: array
+          description: Phases in the checklist
+          readOnly: true
+          items:
+            $ref: "#/components/schemas/EmployeeChecklistPhase"
+        created:
+          type: string
+          description: The created date and time of the checklist
+          format: date-time
+          readOnly: true
+          example: 2023-11-22T15:30:00+03:00
+        updated:
+          type: string
+          description: The last update date and time of the checklist
+          format: date-time
+          readOnly: true
+          example: 2023-11-22T15:30:00+03:00
+        startDate:
+          type: string
+          description: The date when the fulfilment of the checklist was started
+          format: date
+          readOnly: true
+          example: 2023-11-22
+        endDate:
+          type: string
+          description: The date when the fulfilment of the checklist was finished
+          format: date
+          readOnly: true
+          example: 2023-11-22
+        expirationDate:
+          type: string
+          description: The expiration date of the checklist
+          format: date
+          readOnly: true
+          example: 2023-11-22
+      description: Model for a employee specific checklist
+    Stakeholder:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The person id for the stakeholder
+          readOnly: true
+          example: 5a6c3e4e-c320-4006-b448-1fd4121df828
+        firstName:
+          type: string
+          description: The first name for the stakeholder
+          readOnly: true
+          example: John
+        lastName:
+          type: string
+          description: The last name for the stakeholder
+          readOnly: true
+          example: Doe
+        email:
+          type: string
+          description: The email address for the stakeholder
+          readOnly: true
+          example: email.address@noreply.com
+        userName:
+          type: string
+          description: The user name for the stakeholder
+          readOnly: true
+          example: abc12def
+      description: Model for a stakeholder (employee or manager) to an employee checklist
+      readOnly: true
+    DelegatedEmployeeChecklistResponse:
+      type: object
+      properties:
+        employeeChecklists:
+          type: array
+          description: Delegated employee checklists
+          readOnly: true
+          items:
+            $ref: "#/components/schemas/EmployeeChecklist"
+      description: Model for delegated employee checklist response
+  securitySchemes: {}

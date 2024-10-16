@@ -1,13 +1,98 @@
-#========================================
-# General settings
-#========================================
-logging:
-  level:
-    root: INFO
 openapi:
-  name: ${spring.application.name}
-  title: ${spring.application.name}
+  name: api-checklist
+  title: api-checklist
   version: '@project.version@'
 spring:
   application:
-    name: template
+    name: api-checklist
+  datasource:
+    url: ${config.datasource.url}
+    username: ${config.datasource.username}
+    password: ${config.datasource.password}
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: ${config.jpa.hibernate.ddl-auto}
+    defer-datasource-initialization: ${config.jpa.defer-datasource-initialization}
+  sql:
+    init:
+      mode: ${config.sql.init.mode}
+  flyway:
+    enabled: ${config.flyway.enabled}
+    baseline-on-migrate: true
+  security:
+    oauth2:
+      client:
+        provider:
+          employee:
+            token-uri: ${config.integration.employee.token-url}
+          messaging:
+            token-uri: ${config.integration.messaging.token-url}
+          templating:
+            token-uri: ${config.integration.templating.token-url}
+        registration:
+          employee:
+            authorization-grant-type: client_credentials
+            provider: employee
+            client-id: ${config.integration.employee.client-id}
+            client-secret: ${config.integration.employee.client-secret}
+          messaging:
+            authorization-grant-type: client_credentials
+            provider: messaging
+            client-id: ${config.integration.messaging.client-id}
+            client-secret: ${config.integration.messaging.client-secret}
+          templating:
+            authorization-grant-type: client_credentials
+            provider: templating
+            client-id: ${config.integration.templating.client-id}
+            client-secret: ${config.integration.templating.client-secret}
+integration:
+  employee:
+    url: ${config.integration.employee.url}
+    connect-timeout: 5
+    read-timeout: 60
+  templating:
+    url: ${config.integration.templating.url}
+    connect-timeout: 5
+    read-timeout: 60
+  messaging:
+    url: ${config.integration.messaging.url}
+    connect-timeout: 5
+    read-timeout: 60
+    manager-email:
+      subject: ${config.manager-email.subject}
+      sender:
+        address: ${config.manager-email.sender.address}
+        name: ${config.manager-email.sender.name}
+        reply-to: ${config.manager-email.sender.reply-to}
+cache:
+  employee:
+    enabled: true
+    expire-after-write: PT1H
+logbook:
+  body-filters:
+    jsonPath:
+      - key: '$.htmlMessage'
+        value: '[base64]'
+      - key: '$.output'
+        value: '[templateContent]'
+
+#===========================
+# Config of schedulers etc
+#===========================
+checklist:
+  new-employees:
+    cron: ${config.schedulers.new-employees.cron}
+    fetch-on-startup: ${config.schedulers.new-employees.fetch-on-startup:true}
+    delay-on-startup: ${config.schedulers.new-employees.delay-on-startup}
+    shedlock-lock-at-most-for: PT2M
+  manager-email:
+    cron: ${config.schedulers.manager-email.cron}
+    email-template: ${config.manager-email.template}
+    shedlock-lock-at-most-for: PT2M
+  lock-employee-checklists:
+    enabled: ${config.schedulers.lock-employee-checklists.enabled:true}
+    # How often to check for expired checklists and inactivate them
+    periodical-invocation: P1D
+    shedlock-lock-at-most-for: PT2M
+  employee-update-interval: P1D

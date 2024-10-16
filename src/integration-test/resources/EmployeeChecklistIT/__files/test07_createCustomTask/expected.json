@@ -1,0 +1,10 @@
+{
+	"id": "${json-unit.regex}^[0-9a-fA-F]{8}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{12}$",
+	"heading": "Second custom employee task",
+	"text": "Descriptive text for second custom task",
+	"sortOrder": 5,
+	"roleType": "EMPLOYEE",
+	"questionType": "YES_OR_NO_WITH_TEXT",
+	"created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,10}(Z|[+-]\\d{2}:\\d{2})?$",
+	"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,10}(Z|[+-]\\d{2}:\\d{2})?$"
+}

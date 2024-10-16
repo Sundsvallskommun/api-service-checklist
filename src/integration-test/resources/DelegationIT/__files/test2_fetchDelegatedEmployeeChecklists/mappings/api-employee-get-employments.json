@@ -1,0 +1,24 @@
+{
+	"name": "api-employee-get-employments",
+	"request": {
+		"method": "GET",
+		"urlPath": "/api-employee/employments",
+		"headers": {
+			"Authorization": {
+				"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI4"
+			}
+        },
+        "queryParameters": {
+            "filter": {
+                "equalTo": "{\"ShowOnlyNewEmployees\":false,\"PersonId\":\"1f183588-48ef-4287-9725-4963997c817d\",\"EventInfo\":[\"Mover\",\"Corporate\",\"Company\",\"Rehire,Corporate\"]}"
+            }
+        }
+	},
+	"response": {
+		"headers": {
+			"Content-Type": "application/json"
+		},
+		"status": 200,
+		"bodyFileName": "test2_fetchDelegatedEmployeeChecklists/responses/api-employee-get-employments-response.json"
+	}
+}
