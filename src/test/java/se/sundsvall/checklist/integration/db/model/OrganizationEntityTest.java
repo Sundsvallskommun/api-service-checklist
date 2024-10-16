@@ -33,7 +33,7 @@ class OrganizationEntityTest {
 
 	@Test
 	void preUpdateTest() {
-		var organization = OrganizationEntity.builder().build();
+		final var organization = OrganizationEntity.builder().build();
 
 		organization.preUpdate();
 
@@ -43,11 +43,11 @@ class OrganizationEntityTest {
 
 	@Test
 	void prePersistTest() {
-		var organization = OrganizationEntity.builder().build();
+		final var organization = OrganizationEntity.builder().build();
 
 		organization.prePersist();
 
 		assertThat(organization.getCreated()).isNotNull().isCloseTo(now(systemDefault()), within(2, SECONDS));
-		assertThat(organization.getUpdated()).isNotNull().isCloseTo(now(systemDefault()), within(2, SECONDS));
+		assertThat(organization.getUpdated()).isNull();
 	}
 }

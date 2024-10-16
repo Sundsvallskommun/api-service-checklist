@@ -22,7 +22,7 @@ import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 
-public class ChecklistMapper {
+public final class ChecklistMapper {
 	private ChecklistMapper() {}
 
 	// -----------------------------

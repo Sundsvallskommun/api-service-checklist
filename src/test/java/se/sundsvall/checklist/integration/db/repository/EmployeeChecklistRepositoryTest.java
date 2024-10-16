@@ -47,6 +47,17 @@ class EmployeeChecklistRepositoryTest {
 		assertThat(result).isNotNull();
 		assertThat(UUID.fromString(result.getId())).isNotNull();
 		assertThat(result.getCreated()).isCloseTo(now(), within(2, SECONDS));
+		assertThat(result.getUpdated()).isNull();
+	}
+
+	@Test
+	void update() {
+		// Act
+		var result = repository.save(EmployeeChecklistEntity.builder().build());
+		result.setLocked(true);
+		result = repository.saveAndFlush(result);
+
+		// Assert
 		assertThat(result.getUpdated()).isCloseTo(now(), within(2, SECONDS));
 	}
 

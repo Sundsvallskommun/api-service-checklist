@@ -78,7 +78,7 @@ class ChecklistResource {
 	@PostMapping(produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE }, consumes = { APPLICATION_JSON_VALUE })
 	ResponseEntity<Void> createChecklist(
 		@RequestBody @Valid final ChecklistCreateRequest request) {
-		var checklist = checklistService.createChecklist(request);
+		final var checklist = checklistService.createChecklist(request);
 		return created(UriComponentsBuilder.fromPath("/checklists" + "/{checklistId}")
 			.buildAndExpand(checklist.getId())
 			.toUri()).header(CONTENT_TYPE, ALL_VALUE).build();
@@ -89,7 +89,7 @@ class ChecklistResource {
 	})
 	@PostMapping(value = "/{checklistId}/version", produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
 	ResponseEntity<Void> createNewVersion(@PathVariable @ValidUuid final String checklistId) {
-		var checklist = checklistService.createNewVersion(checklistId);
+		final var checklist = checklistService.createNewVersion(checklistId);
 		return created(UriComponentsBuilder.fromPath("/checklists" + "/{checklistId}")
 			.buildAndExpand(checklist.getId()).toUri()).header(CONTENT_TYPE, ALL_VALUE).build();
 	}
@@ -122,7 +122,7 @@ class ChecklistResource {
 	ResponseEntity<Void> deleteChecklist(
 		@PathVariable @ValidUuid final String checklistId) {
 		checklistService.deleteChecklist(checklistId);
-		return noContent().build();
+		return noContent().header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 
 }

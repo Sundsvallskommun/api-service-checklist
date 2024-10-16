@@ -14,7 +14,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.transaction.annotation.Transactional;
 
 import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 
@@ -24,7 +23,6 @@ import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
  * @see /src/test/resources/db/testdata-junit.sql for data setup.
  */
 @DataJpaTest
-@Transactional
 @AutoConfigureTestDatabase(replace = NONE)
 @ActiveProfiles("junit")
 @Sql(scripts = {
@@ -56,6 +54,25 @@ class OrganizationRepositoryTest {
 		assertThat(result.getOrganizationNumber()).isEqualTo(organizationNumber);
 		assertThat(result.getOrganizationName()).isEqualTo(organizationName);
 		assertThat(result.getCreated()).isCloseTo(now(), within(2, SECONDS));
+		assertThat(result.getUpdated()).isNull();
+	}
+
+	@Test
+	void update() {
+		// Act
+		final var organizationNumber = 123;
+		final var organizationName = "OrganizationName";
+
+		final var entity = OrganizationEntity.builder()
+			.withOrganizationName(organizationName)
+			.withOrganizationNumber(organizationNumber)
+			.build();
+
+		var result = repository.save(entity);
+		result.setOrganizationName("modified");
+		result = repository.saveAndFlush(result);
+
+		// Assert
 		assertThat(result.getUpdated()).isCloseTo(now(), within(2, SECONDS));
 	}
 

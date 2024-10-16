@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
@@ -36,7 +35,6 @@ public class ManagerEmailScheduler {
 
 	@Scheduled(cron = "${checklist.manager-email.cron}")
 	@SchedulerLock(name = "sendEmail", lockAtMostFor = "${checklist.manager-email.shedlock-lock-at-most-for}")
-	@Transactional
 	public void execute() {
 		LOGGER.info(LOG_SEND_MANAGER_EMAIL_STARTED);
 

@@ -20,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import se.sundsvall.checklist.api.model.Checklist;
 import se.sundsvall.checklist.api.model.ChecklistCreateRequest;
@@ -44,13 +42,14 @@ public class ChecklistService {
 	private final ChecklistRepository checklistRepository;
 	private final ObjectMapper objectMapper;
 
-	public ChecklistService(final OrganizationRepository organizationRepository,
-		final ChecklistRepository checklistRepository) {
+	public ChecklistService(
+		OrganizationRepository organizationRepository,
+		ChecklistRepository checklistRepository,
+		ObjectMapper objectMapper) {
+
 		this.organizationRepository = organizationRepository;
 		this.checklistRepository = checklistRepository;
-		this.objectMapper = JsonMapper.builder()
-			.addModule(new JavaTimeModule())
-			.build();
+		this.objectMapper = objectMapper;
 	}
 
 	public List<Checklist> getAllChecklists() {
@@ -124,7 +123,7 @@ public class ChecklistService {
 	}
 
 	public Checklist updateChecklist(final String id, final ChecklistUpdateRequest request) {
-		var entity = checklistRepository.findById(id)
+		final var entity = checklistRepository.findById(id)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND));
 
 		return toChecklist(checklistRepository.save(updateChecklistEntity(entity, request)));
@@ -133,7 +132,7 @@ public class ChecklistService {
 	ChecklistEntity createDeepCopy(final ChecklistEntity entity) {
 		try {
 			return objectMapper.readValue(objectMapper.writeValueAsString(entity), ChecklistEntity.class);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			LOG.error(DEEP_COPY_ERROR, e);
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, DEEP_COPY_ERROR);
 		}

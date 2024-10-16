@@ -33,7 +33,7 @@ class ManagerEntityTest {
 
 	@Test
 	void preUpdateTest() {
-		var manager = ManagerEntity.builder().build();
+		final var manager = ManagerEntity.builder().build();
 
 		manager.preUpdate();
 
@@ -43,11 +43,11 @@ class ManagerEntityTest {
 
 	@Test
 	void prePersistTest() {
-		var manager = ManagerEntity.builder().build();
+		final var manager = ManagerEntity.builder().build();
 
 		manager.prePersist();
 
 		assertThat(manager.getCreated()).isNotNull().isCloseTo(now(systemDefault()), within(2, SECONDS));
-		assertThat(manager.getUpdated()).isNotNull().isCloseTo(now(systemDefault()), within(2, SECONDS));
+		assertThat(manager.getUpdated()).isNull();
 	}
 }

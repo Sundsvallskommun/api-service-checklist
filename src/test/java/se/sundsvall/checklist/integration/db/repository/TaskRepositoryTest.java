@@ -12,45 +12,50 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.transaction.annotation.Transactional;
 
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 
 @DataJpaTest
-@Transactional
 @AutoConfigureTestDatabase(replace = NONE)
 @ActiveProfiles("junit")
+@Sql(scripts = {
+	"/db/scripts/truncate.sql",
+	"/db/scripts/testdata-junit.sql"
+})
 class TaskRepositoryTest {
 
 	@Autowired
-	private TaskRepository taskRepository;
+	private TaskRepository repository;
 
-	@Sql(scripts = {
-		"/db/scripts/truncate.sql",
-		"/db/scripts/testdata-junit.sql"
-	})
 	@Test
 	void saveTest() {
-		final var result = taskRepository.save(TaskEntity.builder()
-			.build());
+		final var result = repository.save(TaskEntity.builder().build());
 		assertThat(result).isNotNull();
 		assertThat(result.getId()).hasSize(36);
 		assertThat(result.getCreated()).isCloseTo(now(), within(2, SECONDS));
+		assertThat(result.getUpdated()).isNull();
+	}
+
+	@Test
+	void updateTest() {
+		// Act
+		var result = repository.save(TaskEntity.builder().build());
+		result.setText("modified");
+		result = repository.saveAndFlush(result);
+
+		// Assert
 		assertThat(result.getUpdated()).isCloseTo(now(), within(2, SECONDS));
 	}
 
-	@Sql(scripts = {
-		"/db/scripts/truncate.sql",
-		"/db/scripts/testdata-junit.sql"
-	})
 	@Test
 	void deleteTest() {
-		final var entity = taskRepository.findById("aba82aca-f841-4257-baec-d745e3ab78bf");
+		final var entityId = "aba82aca-f841-4257-baec-d745e3ab78bf";
+		final var entity = repository.findById(entityId);
+
 		assertThat(entity).isNotEmpty();
 
-		taskRepository.delete(entity.get());
+		repository.delete(entity.get());
 
-		final var deletedEntity = taskRepository.findById("aba82aca-f841-4257-baec-d745e3ab78bf");
-		assertThat(deletedEntity).isEmpty();
+		assertThat(repository.findById(entityId)).isEmpty();
 	}
 }

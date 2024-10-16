@@ -10,10 +10,10 @@ import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider;
 
 @Configuration
-public class ShedLockConfiguration {
+class ShedLockConfiguration {
 
 	@Bean
-	public LockProvider lockProvider(DataSource dataSource) {
+	LockProvider lockProvider(DataSource dataSource) {
 		return new JdbcTemplateLockProvider(
 			JdbcTemplateLockProvider.Configuration.builder()
 				.usingDbTime()

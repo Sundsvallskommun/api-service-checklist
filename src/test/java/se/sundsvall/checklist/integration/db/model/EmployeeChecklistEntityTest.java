@@ -35,7 +35,7 @@ class EmployeeChecklistEntityTest {
 
 	@Test
 	void preUpdateTest() {
-		var entity = EmployeeChecklistEntity.builder().build();
+		final var entity = EmployeeChecklistEntity.builder().build();
 
 		entity.preUpdate();
 
@@ -45,11 +45,11 @@ class EmployeeChecklistEntityTest {
 
 	@Test
 	void prePersistTest() {
-		var entity = EmployeeChecklistEntity.builder().build();
+		final var entity = EmployeeChecklistEntity.builder().build();
 
 		entity.prePersist();
 
 		assertThat(entity.getCreated()).isNotNull().isCloseTo(now(systemDefault()), within(2, SECONDS));
-		assertThat(entity.getUpdated()).isNotNull().isCloseTo(now(systemDefault()), within(2, SECONDS));
+		assertThat(entity.getUpdated()).isNull();
 	}
 }

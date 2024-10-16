@@ -35,7 +35,7 @@ class EmployeeEntityTest {
 
 	@Test
 	void preUpdateTest() {
-		var employee = EmployeeEntity.builder().build();
+		final var employee = EmployeeEntity.builder().build();
 
 		employee.preUpdate();
 
@@ -45,11 +45,11 @@ class EmployeeEntityTest {
 
 	@Test
 	void prePersistTest() {
-		var employee = EmployeeEntity.builder().build();
+		final var employee = EmployeeEntity.builder().build();
 
 		employee.prePersist();
 
 		assertThat(employee.getCreated()).isNotNull().isCloseTo(now(systemDefault()), within(2, SECONDS));
-		assertThat(employee.getUpdated()).isNotNull().isCloseTo(now(systemDefault()), within(2, SECONDS));
+		assertThat(employee.getUpdated()).isNull();
 	}
 }

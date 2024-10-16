@@ -33,7 +33,7 @@ class TaskEntityTest {
 
 	@Test
 	void preUpdateTest() {
-		var task = TaskEntity.builder().build();
+		final var task = TaskEntity.builder().build();
 
 		task.preUpdate();
 
@@ -43,11 +43,11 @@ class TaskEntityTest {
 
 	@Test
 	void prePersistTest() {
-		var task = TaskEntity.builder().build();
+		final var task = TaskEntity.builder().build();
 
 		task.prePersist();
 
 		assertThat(task.getCreated()).isNotNull().isCloseTo(now(systemDefault()), within(2, SECONDS));
-		assertThat(task.getUpdated()).isNotNull().isCloseTo(now(systemDefault()), within(2, SECONDS));
+		assertThat(task.getUpdated()).isNull();
 	}
 }

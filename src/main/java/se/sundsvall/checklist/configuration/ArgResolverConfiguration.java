@@ -19,7 +19,7 @@ class ArgResolverConfiguration implements WebMvcConfigurer {
 	}
 
 	@Bean
-	public SpecificationArgResolverSpringdocOperationCustomizer specificationArgResolverSpringdocOperationCustomizer() {
+	SpecificationArgResolverSpringdocOperationCustomizer specificationArgResolverSpringdocOperationCustomizer() {
 		return new SpecificationArgResolverSpringdocOperationCustomizer();
 	}
 }

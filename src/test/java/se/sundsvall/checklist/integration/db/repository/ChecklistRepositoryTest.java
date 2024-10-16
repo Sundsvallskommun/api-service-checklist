@@ -14,43 +14,49 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.transaction.annotation.Transactional;
 
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 
 @DataJpaTest
-@Transactional
 @AutoConfigureTestDatabase(replace = NONE)
 @ActiveProfiles("junit")
+@Sql(scripts = {
+	"/db/scripts/truncate.sql",
+	"/db/scripts/testdata-junit.sql"
+})
 class ChecklistRepositoryTest {
 
 	@Autowired
 	private ChecklistRepository checklistRepository;
 
-	@Sql(scripts = {
-		"/db/scripts/truncate.sql",
-		"/db/scripts/testdata-junit.sql"
-	})
 	@Test
 	void saveTest() {
-		final var result = checklistRepository.save(ChecklistEntity.builder()
-			.build());
+		final var result = checklistRepository.save(ChecklistEntity.builder().build());
+
 		assertThat(result).isNotNull();
 		assertThat(result.getId()).hasSize(36);
 		assertThat(result.getCreated()).isCloseTo(now(), within(2, SECONDS));
-		assertThat(result.getUpdated()).isCloseTo(now(), within(2, SECONDS));
+		assertThat(result.getUpdated()).isNull();
 
 		final var persistedEntity = checklistRepository.findById(result.getId());
 		assertThat(persistedEntity).contains(result);
 	}
 
-	@Sql(scripts = {
-		"/db/scripts/truncate.sql",
-		"/db/scripts/testdata-junit.sql"
-	})
+	@Test
+	void updateTest() {
+		final var result = checklistRepository.save(ChecklistEntity.builder().build());
+		result.setName("updated");
+		checklistRepository.saveAndFlush(result);
+
+		assertThat(checklistRepository.findById(result.getId())).isPresent().hasValueSatisfying(updatedBean -> {
+			assertThat(updatedBean).usingRecursiveAssertion().isEqualTo(result);
+			assertThat(updatedBean.getUpdated()).isCloseTo(now(), within(2, SECONDS));
+		});
+	}
+
 	@Test
 	void deleteByIdTest() {
-		final var id = "15764278-50c8-4a19-af00-077bfc314fd2";
+		final var id = "35764278-50c8-4a19-af00-077bfc314fd2";
 		final var before = checklistRepository.findById(id);
 		assertThat(before).isNotEmpty();
 
@@ -60,10 +66,6 @@ class ChecklistRepositoryTest {
 		assertThat(result).isEmpty();
 	}
 
-	@Sql(scripts = {
-		"/db/scripts/truncate.sql",
-		"/db/scripts/testdata-junit.sql"
-	})
 	@Test
 	void findByIdTest() {
 		final var result = checklistRepository.findById("15764278-50c8-4a19-af00-077bfc314fd2");
@@ -76,21 +78,17 @@ class ChecklistRepositoryTest {
 		});
 	}
 
+	@Test
 	@Sql(scripts = {
 		"/db/scripts/truncate.sql",
 		"/db/scripts/testdata-junit.sql"
 	})
-	@Test
 	void findAllTest() {
 		final var result = checklistRepository.findAll();
 
 		assertThat(result).isNotEmpty().hasSize(3);
 	}
 
-	@Sql(scripts = {
-		"/db/scripts/truncate.sql",
-		"/db/scripts/testdata-junit.sql"
-	})
 	@Test
 	void existsByNameTest() {
 		final var result = checklistRepository.existsByName("Checklista Elnät");
@@ -98,10 +96,6 @@ class ChecklistRepositoryTest {
 		assertThat(result).isTrue();
 	}
 
-	@Sql(scripts = {
-		"/db/scripts/truncate.sql",
-		"/db/scripts/testdata-junit.sql"
-	})
 	@Test
 	void existsByNameAndLifeCycleTest() {
 		final var result = checklistRepository.existsByNameAndLifeCycle("Checklista för Vård och omsorg", ACTIVE);
@@ -109,10 +103,6 @@ class ChecklistRepositoryTest {
 		assertThat(result).isTrue();
 	}
 
-	@Sql(scripts = {
-		"/db/scripts/truncate.sql",
-		"/db/scripts/testdata-junit.sql"
-	})
 	@Test
 	void findByNameAndLifeCycleTest() {
 		final var result = checklistRepository.findByNameAndLifeCycle("Checklista för Vård och omsorg", ACTIVE);

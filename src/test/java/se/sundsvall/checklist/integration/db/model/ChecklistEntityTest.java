@@ -33,7 +33,7 @@ class ChecklistEntityTest {
 
 	@Test
 	void preUpdateTest() {
-		var entity = ChecklistEntity.builder().build();
+		final var entity = ChecklistEntity.builder().build();
 
 		entity.preUpdate();
 
@@ -43,11 +43,11 @@ class ChecklistEntityTest {
 
 	@Test
 	void prePersistTest() {
-		var entity = ChecklistEntity.builder().build();
+		final var entity = ChecklistEntity.builder().build();
 
 		entity.prePersist();
 
 		assertThat(entity.getCreated()).isNotNull().isCloseTo(now(systemDefault()), within(2, SECONDS));
-		assertThat(entity.getUpdated()).isNotNull().isCloseTo(now(systemDefault()), within(2, SECONDS));
+		assertThat(entity.getUpdated()).isNull();
 	}
 }

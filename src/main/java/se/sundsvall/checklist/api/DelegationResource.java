@@ -1,5 +1,6 @@
 package se.sundsvall.checklist.api;
 
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -57,7 +58,7 @@ class DelegationResource {
 		@PathVariable @Email final String email) {
 
 		delegationService.delegateEmployeeChecklist(employeeChecklistId, email);
-		return status(CREATED).build();
+		return status(CREATED).header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 
 	@Operation(summary = "Fetch all employee checklists delegated to a user", description = "Fetch all delegated employee checklists for the user that matches sent in userid", responses = {
@@ -78,7 +79,7 @@ class DelegationResource {
 		@PathVariable @Email final String email) {
 
 		delegationService.removeEmployeeChecklistDelegation(employeeChecklistId, email);
-		return noContent().build();
+		return noContent().header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 
 }

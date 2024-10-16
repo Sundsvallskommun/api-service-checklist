@@ -101,6 +101,6 @@ class OrganizationResource {
 	@DeleteMapping(value = "/{organizationId}", produces = APPLICATION_PROBLEM_JSON_VALUE)
 	ResponseEntity<Void> deleteOrganization(@PathVariable @ValidUuid final String organizationId) {
 		organizationService.deleteOrganization(organizationId);
-		return noContent().build();
+		return noContent().header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 }

@@ -61,7 +61,7 @@ class PhaseResource {
 	@GetMapping(produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
 	ResponseEntity<List<Phase>> fetchChecklistPhases(
 		@PathVariable @ValidUuid final String checklistId) {
-		var phases = phaseService.getChecklistPhases(checklistId);
+		final var phases = phaseService.getChecklistPhases(checklistId);
 		return ok(phases);
 	}
 
@@ -80,7 +80,7 @@ class PhaseResource {
 	ResponseEntity<Void> createChecklistPhase(
 		@PathVariable @ValidUuid final String checklistId,
 		@RequestBody @Valid final PhaseCreateRequest request) {
-		var phase = phaseService.createChecklistPhase(checklistId, request);
+		final var phase = phaseService.createChecklistPhase(checklistId, request);
 		return created(UriComponentsBuilder.fromPath("/checklists/{checklistId}/phases/{phaseId}")
 			.buildAndExpand(checklistId, phase.getId())
 			.toUri()).header(CONTENT_TYPE, ALL_VALUE).build();
@@ -103,7 +103,7 @@ class PhaseResource {
 		@PathVariable @ValidUuid final String checklistId,
 		@PathVariable @ValidUuid final String phaseId) {
 		phaseService.deleteChecklistPhase(checklistId, phaseId);
-		return noContent().build();
+		return noContent().header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 
 }

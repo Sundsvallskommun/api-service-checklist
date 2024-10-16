@@ -1,5 +1,7 @@
 package se.sundsvall.checklist.api;
 
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
 import static org.springframework.http.ResponseEntity.created;
@@ -105,7 +107,7 @@ class EmployeeChecklistResource {
 	@DeleteMapping(value = "/{employeeChecklistId}", produces = APPLICATION_PROBLEM_JSON_VALUE)
 	ResponseEntity<Void> deleteEmployeeChecklist(@PathVariable @ValidUuid final String employeeChecklistId) {
 		employeeChecklistService.deleteEmployeChecklist(employeeChecklistId);
-		return noContent().build();
+		return noContent().header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 
 	@Operation(summary = "Create a custom task", description = "Create a custom task connected to a specific employee checklist", responses = {
@@ -158,7 +160,7 @@ class EmployeeChecklistResource {
 		@PathVariable @ValidUuid final String taskId) {
 
 		employeeChecklistService.deleteCustomTask(employeeChecklistId, taskId);
-		return noContent().build();
+		return noContent().header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 
 	@Operation(summary = "Update of all tasks in a phase", description = "Bulk update of sent in attributes for all tasks in phase", responses = {

@@ -80,7 +80,6 @@ public class ChecklistEntity {
 	@PrePersist
 	void prePersist() {
 		this.created = OffsetDateTime.now();
-		this.updated = OffsetDateTime.now();
 	}
 
 	@PreUpdate

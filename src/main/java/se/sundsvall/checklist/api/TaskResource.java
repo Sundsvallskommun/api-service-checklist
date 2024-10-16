@@ -82,7 +82,7 @@ class TaskResource {
 		@PathVariable @ValidUuid final String checklistId,
 		@PathVariable @ValidUuid final String phaseId,
 		@RequestBody @Valid final TaskCreateRequest request) {
-		var task = taskService.createTask(checklistId, phaseId, request);
+		final var task = taskService.createTask(checklistId, phaseId, request);
 		return created(UriComponentsBuilder.fromPath("/checklists/{checklistId}/phases/{phaseId}/tasks/{taskId}")
 			.buildAndExpand(checklistId, phaseId, task.getId())
 			.toUri()).header(CONTENT_TYPE, ALL_VALUE).build();
@@ -107,7 +107,7 @@ class TaskResource {
 		@PathVariable @ValidUuid final String phaseId,
 		@PathVariable @ValidUuid final String taskId) {
 		taskService.deleteTask(checklistId, phaseId, taskId);
-		return noContent().build();
+		return noContent().header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 
 }

@@ -1,6 +1,6 @@
 package se.sundsvall.checklist.integration.employee;
 
-import static se.sundsvall.checklist.configuration.CacheConfig.EMPLOYEE_CACHE;
+import static se.sundsvall.checklist.configuration.CacheConfiguration.EMPLOYEE_CACHE;
 import static se.sundsvall.checklist.integration.employee.configuration.EmployeeConfiguration.CLIENT_ID;
 
 import java.util.List;

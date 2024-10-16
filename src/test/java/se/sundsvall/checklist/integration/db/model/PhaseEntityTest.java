@@ -35,7 +35,7 @@ class PhaseEntityTest {
 
 	@Test
 	void preUpdateTest() {
-		var phase = PhaseEntity.builder().build();
+		final var phase = PhaseEntity.builder().build();
 
 		phase.preUpdate();
 
@@ -45,11 +45,11 @@ class PhaseEntityTest {
 
 	@Test
 	void prePersistTest() {
-		var phase = PhaseEntity.builder().build();
+		final var phase = PhaseEntity.builder().build();
 
 		phase.prePersist();
 
 		assertThat(phase.getCreated()).isNotNull().isCloseTo(now(systemDefault()), within(2, SECONDS));
-		assertThat(phase.getUpdated()).isNotNull().isCloseTo(now(systemDefault()), within(2, SECONDS));
+		assertThat(phase.getUpdated()).isNull();
 	}
 }

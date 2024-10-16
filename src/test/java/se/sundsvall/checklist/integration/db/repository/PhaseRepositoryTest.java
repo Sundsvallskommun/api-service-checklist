@@ -11,28 +11,37 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 
 @DataJpaTest
-@Transactional
 @AutoConfigureTestDatabase(replace = NONE)
 @ActiveProfiles("junit")
 class PhaseRepositoryTest {
 
 	@Autowired
-	private PhaseRepository phaseRepository;
+	private PhaseRepository repository;
 
 	@Test
 	void saveTest() {
-		final var result = phaseRepository.save(PhaseEntity.builder()
-			.build());
+		// Act
+		final var result = repository.save(PhaseEntity.builder().build());
 
+		// Assert
 		assertThat(result).isNotNull();
 		assertThat(result.getId()).hasSize(36);
 		assertThat(result.getCreated()).isCloseTo(now(), within(2, SECONDS));
-		assertThat(result.getUpdated()).isCloseTo(now(), within(2, SECONDS));
+		assertThat(result.getUpdated()).isNull();
 	}
 
+	@Test
+	void updateTest() {
+		// Act
+		var result = repository.save(PhaseEntity.builder().build());
+		result.setName("modified");
+		result = repository.saveAndFlush(result);
+
+		// Assert
+		assertThat(result.getUpdated()).isCloseTo(now(), within(2, SECONDS));
+	}
 }

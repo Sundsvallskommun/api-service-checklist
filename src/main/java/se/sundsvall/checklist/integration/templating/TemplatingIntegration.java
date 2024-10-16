@@ -12,7 +12,7 @@ import generated.se.sundsvall.templating.RenderResponse;
 @Component
 public class TemplatingIntegration {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TemplatingIntegration.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(TemplatingIntegration.class);
 	private final TemplatingClient templatingClient;
 
 	public TemplatingIntegration(final TemplatingClient templatingClient) {

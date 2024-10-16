@@ -1,6 +1,8 @@
 package se.sundsvall.checklist.api;
 
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
 import static org.springframework.http.ResponseEntity.ok;
@@ -49,7 +51,7 @@ class CommunicationResource {
 	@PostMapping(value = "/{employeeChecklistId}/email")
 	ResponseEntity<Void> sendEmail(@PathVariable @ValidUuid final String employeeChecklistId) {
 		communicationService.sendEmail(employeeChecklistId);
-		return status(CREATED).build();
+		return status(CREATED).header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 
 	@Operation(summary = "Fetch correspondence", description = "Fetch the correspondence that has occured for an employee checklist", responses = {

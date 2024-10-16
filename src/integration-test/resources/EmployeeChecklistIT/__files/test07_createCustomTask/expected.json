@@ -5,6 +5,5 @@
 	"sortOrder": 5,
 	"roleType": "EMPLOYEE",
 	"questionType": "YES_OR_NO_WITH_TEXT",
-	"created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,10}(Z|[+-]\\d{2}:\\d{2})?$",
-	"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,10}(Z|[+-]\\d{2}:\\d{2})?$"
+	"created": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,10}(Z|[+-]\\d{2}:\\d{2})?$"
 }

@@ -78,7 +78,6 @@ public class OrganizationEntity {
 
 	@PrePersist
 	void prePersist() {
-		this.updated = OffsetDateTime.now();
 		this.created = OffsetDateTime.now();
 	}
 

@@ -33,24 +33,21 @@ class CustomTaskEntityTest {
 
 	@Test
 	void preUpdateTest() {
-		var task = CustomTaskEntity.builder().build();
+		final var task = CustomTaskEntity.builder().build();
 
 		task.preUpdate();
 
 		assertThat(task.getCreated()).isNull();
-		assertThat(task.getUpdated()).isNotNull()
-			.isCloseTo(now(systemDefault()), within(2, SECONDS));
+		assertThat(task.getUpdated()).isNotNull().isCloseTo(now(systemDefault()), within(2, SECONDS));
 	}
 
 	@Test
 	void prePersistTest() {
-		var task = CustomTaskEntity.builder().build();
+		final var task = CustomTaskEntity.builder().build();
 
 		task.prePersist();
 
-		assertThat(task.getCreated()).isNotNull()
-			.isCloseTo(now(systemDefault()), within(2, SECONDS));
-		assertThat(task.getUpdated()).isNotNull()
-			.isCloseTo(now(systemDefault()), within(2, SECONDS));
+		assertThat(task.getCreated()).isNotNull().isCloseTo(now(systemDefault()), within(2, SECONDS));
+		assertThat(task.getUpdated()).isNull();
 	}
 }

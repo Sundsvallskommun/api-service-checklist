@@ -12,7 +12,7 @@ import se.sundsvall.checklist.integration.messaging.configuration.MessagingPrope
 @Component
 public class MessagingIntegration {
 
-	private final Logger log = LoggerFactory.getLogger(MessagingIntegration.class.getName());
+	private final Logger log = LoggerFactory.getLogger(MessagingIntegration.class);
 
 	private final MessagingProperties messagingProperties;
 

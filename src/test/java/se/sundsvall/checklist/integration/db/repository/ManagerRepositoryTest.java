@@ -14,7 +14,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.transaction.annotation.Transactional;
 
 import se.sundsvall.checklist.integration.db.model.ManagerEntity;
 
@@ -24,7 +23,6 @@ import se.sundsvall.checklist.integration.db.model.ManagerEntity;
  * @see /src/test/resources/db/testdata-junit.sql for data setup.
  */
 @DataJpaTest
-@Transactional
 @AutoConfigureTestDatabase(replace = NONE)
 @ActiveProfiles("junit")
 @Sql(scripts = {
@@ -50,7 +48,19 @@ class ManagerRepositoryTest {
 		assertThat(result).isNotNull();
 		assertThat(UUID.fromString(result.getPersonId())).isEqualTo(id);
 		assertThat(result.getCreated()).isCloseTo(now(), within(2, SECONDS));
-		assertThat(result.getUpdated()).isCloseTo(now(), within(2, SECONDS));
+		assertThat(result.getUpdated()).isNull();
 	}
 
+	@Test
+	void update() {
+		// Act
+		final var id = UUID.randomUUID();
+
+		var result = repository.save(ManagerEntity.builder().withPersonId(id.toString()).build());
+		result.setEmail("updated");
+		result = repository.saveAndFlush(result);
+
+		// Assert
+		assertThat(result.getUpdated()).isCloseTo(now(), within(2, SECONDS));
+	}
 }

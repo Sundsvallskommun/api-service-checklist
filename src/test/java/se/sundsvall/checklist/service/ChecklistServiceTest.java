@@ -27,6 +27,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.zalando.problem.Problem;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
@@ -40,6 +42,9 @@ class ChecklistServiceTest {
 	@Mock
 	private OrganizationRepository mockOrganizationRepository;
 
+	@Mock
+	private ObjectMapper objectMapperMock;
+
 	@InjectMocks
 	private ChecklistService checklistService;
 
@@ -47,7 +52,7 @@ class ChecklistServiceTest {
 	void getAllChecklistsTest() {
 		when(mockChecklistRepository.findAll()).thenReturn(List.of(createChecklistEntity(), createChecklistEntity()));
 
-		var result = checklistService.getAllChecklists();
+		final var result = checklistService.getAllChecklists();
 
 		assertThat(result).isNotNull().hasSize(2);
 		verify(mockChecklistRepository).findAll();
@@ -58,7 +63,7 @@ class ChecklistServiceTest {
 	void getChecklistById_WhenFoundTest() {
 		when(mockChecklistRepository.findById(any())).thenReturn(Optional.of(createChecklistEntity()));
 
-		var result = checklistService.getChecklistById(any());
+		final var result = checklistService.getChecklistById(any());
 
 		assertThat(result).isNotNull();
 		verify(mockChecklistRepository).findById(any());
@@ -79,13 +84,13 @@ class ChecklistServiceTest {
 
 	@Test
 	void createChecklistTest() {
-		var requestBody = createChecklistCreateRequest();
+		final var requestBody = createChecklistCreateRequest();
 
 		when(mockChecklistRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 		when(mockOrganizationRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 		when(mockOrganizationRepository.findByOrganizationNumber(anyInt())).thenReturn(Optional.of(createOrganizationEntity()));
 
-		var result = checklistService.createChecklist(requestBody);
+		final var result = checklistService.createChecklist(requestBody);
 
 		assertThat(result).isNotNull().satisfies(checklist -> {
 			assertThat(checklist.getName()).isEqualTo(requestBody.getName());
@@ -99,7 +104,7 @@ class ChecklistServiceTest {
 
 	@Test
 	void createChecklistAlreadyExistsTest() {
-		var requestBody = createChecklistCreateRequest();
+		final var requestBody = createChecklistCreateRequest();
 		when(mockChecklistRepository.existsByName(requestBody.getName())).thenReturn(true);
 
 		assertThatThrownBy(() -> checklistService.createChecklist(requestBody))
@@ -112,7 +117,7 @@ class ChecklistServiceTest {
 
 	@Test
 	void deleteUnattachedChecklistTest() {
-		var entity = createChecklistEntity();
+		final var entity = createChecklistEntity();
 		when(mockChecklistRepository.findById(entity.getId())).thenReturn(Optional.of(entity));
 
 		checklistService.deleteChecklist(entity.getId());
@@ -156,7 +161,7 @@ class ChecklistServiceTest {
 
 	@Test
 	void deleteChecklistWrongLifecycleTest() {
-		var entity = createChecklistEntity();
+		final var entity = createChecklistEntity();
 		entity.setLifeCycle(ACTIVE);
 		when(mockChecklistRepository.findById(entity.getId())).thenReturn(Optional.of(entity));
 
@@ -169,28 +174,28 @@ class ChecklistServiceTest {
 	}
 
 	@Test
-	void createDeepCopyTest() {
-		var entity = createChecklistEntity();
+	void createDeepCopyTest() throws Exception {
+		final var entity = createChecklistEntity();
+		final var json = "{}";
 
-		var result = checklistService.createDeepCopy(entity);
+		when(objectMapperMock.writeValueAsString(any())).thenReturn(json);
+		when(objectMapperMock.readValue(json, ChecklistEntity.class)).thenReturn(entity);
 
-		assertThat(result).isNotEqualTo(entity).satisfies(checklistEntity -> {
-			assertThat(checklistEntity.getName()).isEqualTo(entity.getName());
-			assertThat(checklistEntity.getVersion()).isEqualTo(entity.getVersion());
-			assertThat(checklistEntity.getRoleType()).isEqualTo(entity.getRoleType());
-			assertThat(checklistEntity.getLifeCycle()).isEqualTo(entity.getLifeCycle());
-		});
+		checklistService.createDeepCopy(entity);
+
+		verify(objectMapperMock).writeValueAsString(entity);
+		verify(objectMapperMock).readValue(json, ChecklistEntity.class);
 	}
 
 	@Test
 	void updateChecklistTest() {
-		var entity = createChecklistEntity();
+		final var entity = createChecklistEntity();
 		entity.setLifeCycle(ACTIVE);
-		var checklist = createChecklistUpdateRequest();
+		final var checklist = createChecklistUpdateRequest();
 		when(mockChecklistRepository.findById(entity.getId())).thenReturn(Optional.of(entity));
 		when(mockChecklistRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-		var result = checklistService.updateChecklist(entity.getId(), checklist);
+		final var result = checklistService.updateChecklist(entity.getId(), checklist);
 
 		assertThat(result).isNotNull().satisfies(checklistEntity -> {
 			assertThat(checklistEntity.getLifeCycle()).isEqualTo(ACTIVE);
@@ -202,19 +207,27 @@ class ChecklistServiceTest {
 	}
 
 	@Test
-	void createNewVersionTest() {
-		when(mockChecklistRepository.findById(any())).thenReturn(Optional.of(createChecklistEntity()));
+	void createNewVersionTest() throws Exception {
+		final var entity = createChecklistEntity();
+		final var json = "{}";
+
+		when(mockChecklistRepository.findById(any())).thenReturn(Optional.of(entity));
 		when(mockChecklistRepository.existsByNameAndLifeCycle(any(), any())).thenReturn(false);
+		when(objectMapperMock.writeValueAsString(any())).thenReturn(json);
+		when(objectMapperMock.readValue(json, ChecklistEntity.class)).thenReturn(entity);
 		when(mockChecklistRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-		var result = checklistService.createNewVersion(any());
+		final var result = checklistService.createNewVersion(any());
 
 		assertThat(result).isNotNull().satisfies(checklistEntity -> {
 			assertThat(checklistEntity.getLifeCycle()).isEqualTo(CREATED);
 			assertThat(checklistEntity.getVersion()).isEqualTo(2);
 		});
+
 		verify(mockChecklistRepository).findById(any());
 		verify(mockChecklistRepository).existsByNameAndLifeCycle(any(), any());
+		verify(objectMapperMock).writeValueAsString(entity);
+		verify(objectMapperMock).readValue(json, ChecklistEntity.class);
 		verify(mockChecklistRepository).save(any(ChecklistEntity.class));
 	}
 
@@ -246,13 +259,13 @@ class ChecklistServiceTest {
 
 	@Test
 	void activateChecklistTest() {
-		var entity = createChecklistEntity();
-		var oldVersion = createChecklistEntity();
+		final var entity = createChecklistEntity();
+		final var oldVersion = createChecklistEntity();
 		when(mockChecklistRepository.findById(any())).thenReturn(Optional.of(entity));
 		when(mockChecklistRepository.findByNameAndLifeCycle(entity.getName(), ACTIVE)).thenReturn(Optional.of(oldVersion));
 		when(mockChecklistRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-		var result = checklistService.activateChecklist(any());
+		final var result = checklistService.activateChecklist(any());
 
 		assertThat(result).isNotNull().satisfies(checklistEntity -> {
 			assertThat(checklistEntity.getLifeCycle()).isEqualTo(ACTIVE);
