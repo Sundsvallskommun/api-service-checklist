@@ -9,9 +9,13 @@ import static org.zalando.problem.Status.BAD_REQUEST;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -223,33 +227,6 @@ class EmployeeChecklistResourceFailureTest {
 	}
 
 	@Test
-	void updateCustomTaskNullRequest() {
-		// Arrange
-		final var id = UUID.randomUUID().toString();
-		final var path = "/{employeeChecklistId}/customtasks/{taskId}";
-
-		// Act
-		final var response = webTestClient.patch()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(Map.of("employeeChecklistId", id, "taskId", id)))
-			.contentType(APPLICATION_JSON)
-			.exchange()
-			.expectStatus().isBadRequest()
-			.expectBody(Problem.class)
-			.returnResult()
-			.getResponseBody();
-
-		// Assert and verify
-		assertThat(response).isNotNull().satisfies(r -> {
-			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getTitle()).isEqualTo("Bad Request");
-			assertThat(r.getDetail()).isEqualTo("""
-				Required request body is missing: org.springframework.http.ResponseEntity<se.sundsvall.checklist.api.model.CustomTask> \
-				se.sundsvall.checklist.api.EmployeeChecklistResource.updateCustomTask(java.lang.String,java.lang.String,se.sundsvall.checklist.api.model.CustomTaskUpdateRequest)\
-				""");
-		});
-	}
-
-	@Test
 	void deleteCustomTaskInvalidUuids() {
 		// Arrange
 		final var id = "invalid";
@@ -309,15 +286,12 @@ class EmployeeChecklistResourceFailureTest {
 		});
 	}
 
-	@Test
-	void updateAllTasksFulfilmentInPhaseNullBody() {
-		// Arrange
-		final var id = UUID.randomUUID().toString();
-		final var path = "/{employeeChecklistId}/phases/{phaseId}";
-
+	@ParameterizedTest
+	@MethodSource("updateWithNullParamProvider")
+	void updateWithNullRequest(String path, Map<String, String> pathParameters, String expectedDetail) {
 		// Act
 		final var response = webTestClient.patch()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(Map.of("employeeChecklistId", id, "phaseId", id)))
+			.uri(builder -> builder.path(PATH_PREFIX + path).build(pathParameters))
 			.contentType(APPLICATION_JSON)
 			.exchange()
 			.expectStatus().isBadRequest()
@@ -329,11 +303,26 @@ class EmployeeChecklistResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getTitle()).isEqualTo("Bad Request");
-			assertThat(r.getDetail()).isEqualTo("""
+			assertThat(r.getDetail()).isEqualTo(expectedDetail);
+		});
+	}
+
+	private static Stream<Arguments> updateWithNullParamProvider() {
+		final var id = UUID.randomUUID().toString();
+
+		return Stream.of(
+			Arguments.of("/{employeeChecklistId}/customtasks/{taskId}", Map.of("employeeChecklistId", id, "taskId", id), """
+				Required request body is missing: org.springframework.http.ResponseEntity<se.sundsvall.checklist.api.model.CustomTask> \
+				se.sundsvall.checklist.api.EmployeeChecklistResource.updateCustomTask(java.lang.String,java.lang.String,se.sundsvall.checklist.api.model.CustomTaskUpdateRequest)\
+				"""),
+			Arguments.of("/{employeeChecklistId}/phases/{phaseId}", Map.of("employeeChecklistId", id, "phaseId", id), """
 				Required request body is missing: org.springframework.http.ResponseEntity<se.sundsvall.checklist.api.model.EmployeeChecklistPhase> \
 				se.sundsvall.checklist.api.EmployeeChecklistResource.updateAllTasksInPhase(java.lang.String,java.lang.String,se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest)\
-				""");
-		});
+				"""),
+			Arguments.of("/{employeeChecklistId}/tasks/{taskId}", Map.of("employeeChecklistId", id, "taskId", id), """
+				Required request body is missing: org.springframework.http.ResponseEntity<se.sundsvall.checklist.api.model.EmployeeChecklistTask> \
+				se.sundsvall.checklist.api.EmployeeChecklistResource.updateTaskFulfilment(java.lang.String,java.lang.String,se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest)\
+				"""));
 	}
 
 	@Test
@@ -365,33 +354,6 @@ class EmployeeChecklistResourceFailureTest {
 				.containsExactlyInAnyOrder(
 					tuple("updateTaskFulfilment.employeeChecklistId", "not a valid UUID"),
 					tuple("updateTaskFulfilment.taskId", "not a valid UUID"));
-		});
-	}
-
-	@Test
-	void updateTaskFulfilmentNullBody() {
-		// Arrange
-		final var id = UUID.randomUUID().toString();
-		final var path = "/{employeeChecklistId}/tasks/{taskId}";
-
-		// Act
-		final var response = webTestClient.patch()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(Map.of("employeeChecklistId", id, "taskId", id)))
-			.contentType(APPLICATION_JSON)
-			.exchange()
-			.expectStatus().isBadRequest()
-			.expectBody(Problem.class)
-			.returnResult()
-			.getResponseBody();
-
-		// Assert and verify
-		assertThat(response).isNotNull().satisfies(r -> {
-			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getTitle()).isEqualTo("Bad Request");
-			assertThat(r.getDetail()).isEqualTo("""
-				Required request body is missing: org.springframework.http.ResponseEntity<se.sundsvall.checklist.api.model.EmployeeChecklistTask> \
-				se.sundsvall.checklist.api.EmployeeChecklistResource.updateTaskFulfilment(java.lang.String,java.lang.String,se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest)\
-				""");
 		});
 	}
 
