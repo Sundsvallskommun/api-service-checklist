@@ -9,7 +9,7 @@ import java.util.List;
 public final class StringUtils {
 	private StringUtils() {}
 
-	private static final String REGEXP_LAST_COMMA = "^(.*)(, )(.*)$";
+	private static final String REGEXP_LAST_COMMA = "\\,(?=[^,]*$)";
 
 	public static String toReadableString(List<String> values) {
 		return ofNullable(values)
@@ -17,6 +17,6 @@ public final class StringUtils {
 			.stream()
 			.map(String::toLowerCase)
 			.collect(joining(", "))
-			.replaceAll(REGEXP_LAST_COMMA, "$1 and $3");
+			.replaceAll(REGEXP_LAST_COMMA, " and");
 	}
 }
