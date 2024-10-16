@@ -80,7 +80,7 @@ public class PortingService {
 
 	/**
 	 * Import a checklist to the provided company id on root level
-	 * 
+	 *
 	 * @param organizationNumber The organization number for the organizational unit where the checklist will be
 	 *                           imported to.
 	 * @param organizationName   The name of the company where the checklist will be imported to.
@@ -91,7 +91,7 @@ public class PortingService {
 	@Transactional
 	public String importChecklist(int organizationNumber, String organizationName, String jsonStructure, boolean replaceVersion) {
 		try {
-			LOGGER.info("Starting to import checklist to organization {} with organizationNumber {}", organizationName, organizationNumber);
+			LOGGER.info("Starting to import checklist");
 
 			// Deserialize json string into checklist entity (and sub ordinates)
 			final var checklist = objectMapper.readValue(jsonStructure, ChecklistEntity.class);
@@ -113,9 +113,9 @@ public class PortingService {
 			LOGGER.info("Successfully imported checklist");
 			return createdId;
 
-		} catch (ThrowableProblem e) {
+		} catch (final ThrowableProblem e) {
 			throw e; // Rethrow exception
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			LOGGER.error("Exception when importing checklist", e);
 			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Exception when importing checklist.");
 		}
@@ -124,7 +124,8 @@ public class PortingService {
 	private String replaceVersion(OrganizationEntity organization, ChecklistEntity checklist, boolean hasActiveVersion, boolean hasCreatedVersion) {
 		if (hasCreatedVersion) {
 			return replaceVersion(organization, checklist, CREATED);
-		} else if (hasActiveVersion) {
+		}
+		if (hasActiveVersion) {
 			return replaceVersion(organization, checklist, ACTIVE);
 		}
 
