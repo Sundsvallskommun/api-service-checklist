@@ -1,6 +1,6 @@
-# TemplateSpringBoot
+# Checklist
 
-_A concise description of what this Spring Boot microservice does._
+_The service provides administration of the checklists that new employees and their corresponding manager shall undergo when a person is employed. The service also keeps track of the checklist progress of each individual._
 
 ## Getting Started
 
@@ -8,17 +8,17 @@ _A concise description of what this Spring Boot microservice does._
 
 - **Java 21 or higher**
 - **Maven**
-- **MariaDB**(if applicable)
+- **MariaDB**
 - **Git**
-- **[Dependent Microservices](#dependencies)** (if applicable)
+- **[Dependent Microservices](#dependencies)**
 
 ### Installation
 
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/Sundsvallskommun/YOUR-PROJECT-ID.git
-   cd YOUR-PROJECT-ID
+   git clone https://github.com/Sundsvallskommun/api-service-checklist.git
+   cd api-service-checklist
    ```
 
 2. **Configure the application:**
@@ -50,11 +50,21 @@ _A concise description of what this Spring Boot microservice does._
 
 This microservice depends on the following services:
 
-- **Service Name**
+- **Employee**
 
-  - **Purpose:** Brief description of what the dependent service does.
-  - **Repository:** [Link to the repository](https://github.com/Sundsvallskommun/service_name)
-  - **Setup Instructions:** Refer to its documentation for installation and configuration steps.
+  - **Purpose:** Used for reading employee information.
+
+- **Messaging**
+
+  - **Purpose:** Used for sending emails to employees and managers.
+  - **Repository:** [https://github.com/Sundsvallskommun/api-service-messaging](https://github.com/Sundsvallskommun/api-service-messaging)
+  - **Setup Instructions:** See documentation in repository above for installation and configuration steps.
+
+- **Templating**
+
+  - **Purpose:** Provides html templates when sending emails.
+  - **Repository:** [https://github.com/Sundsvallskommun/api-service-templating](https://github.com/Sundsvallskommun/api-service-templating)
+  - **Setup Instructions:** See documentation in repository above for installation and configuration steps.
 
 Ensure that these services are running and properly configured before starting this microservice.
 
@@ -63,8 +73,6 @@ Ensure that these services are running and properly configured before starting t
 Access the API documentation via Swagger UI:
 
 - **Swagger UI:** [http://localhost:8080/api-docs](http://localhost:8080/api-docs)
-
-Alternatively, refer to the `openapi.yml` file located in the project's root directory for the OpenAPI specification.
 
 ## Usage
 
@@ -148,12 +156,12 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Code status
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Sundsvallskommun_YOUR-PROJECT-ID&metric=alert_status)](https://sonarcloud.io/summary/overall?id=Sundsvallskommun_YOUR-PROJECT-ID)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Sundsvallskommun_YOUR-PROJECT-ID&metric=reliability_rating)](https://sonarcloud.io/summary/overall?id=Sundsvallskommun_YOUR-PROJECT-ID)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Sundsvallskommun_YOUR-PROJECT-ID&metric=security_rating)](https://sonarcloud.io/summary/overall?id=Sundsvallskommun_YOUR-PROJECT-ID)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Sundsvallskommun_YOUR-PROJECT-ID&metric=sqale_rating)](https://sonarcloud.io/summary/overall?id=Sundsvallskommun_YOUR-PROJECT-ID)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Sundsvallskommun_YOUR-PROJECT-ID&metric=vulnerabilities)](https://sonarcloud.io/summary/overall?id=Sundsvallskommun_YOUR-PROJECT-ID)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Sundsvallskommun_YOUR-PROJECT-ID&metric=bugs)](https://sonarcloud.io/summary/overall?id=Sundsvallskommun_YOUR-PROJECT-ID)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Sundsvallskommun_api-service-checklist&metric=alert_status)](https://sonarcloud.io/summary/overall?id=Sundsvallskommun_api-service-checklist)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Sundsvallskommun_api-service-checklist&metric=reliability_rating)](https://sonarcloud.io/summary/overall?id=Sundsvallskommun_api-service-checklist)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Sundsvallskommun_api-service-checklist&metric=security_rating)](https://sonarcloud.io/summary/overall?id=Sundsvallskommun_api-service-checklist)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Sundsvallskommun_api-service-checklist&metric=sqale_rating)](https://sonarcloud.io/summary/overall?id=Sundsvallskommun_api-service-checklist)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Sundsvallskommun_api-service-checklist&metric=vulnerabilities)](https://sonarcloud.io/summary/overall?id=Sundsvallskommun_api-service-checklist)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Sundsvallskommun_api-service-checklist&metric=bugs)](https://sonarcloud.io/summary/overall?id=Sundsvallskommun_api-service-checklist)
 
 ---
 

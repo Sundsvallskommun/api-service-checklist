@@ -1,0 +1,21 @@
+{
+  "personid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "givenname": "string",
+  "lastname": "string",
+  "fullname": "string",
+  "address": "string",
+  "postalCode": "string",
+  "city": "string",
+  "workPhone": "string",
+  "mobilePhone": "string",
+  "extraMobilePhone": "string",
+  "aboutMe": "string",
+  "email": "string",
+  "mailNickname": "string",
+  "company": "string",
+  "companyId": 0,
+  "orgTree": "string",
+  "referenceNumber": "string",
+  "isManager": true,
+  "loginName": "string\\string"
+}

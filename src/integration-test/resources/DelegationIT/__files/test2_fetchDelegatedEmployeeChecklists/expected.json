@@ -1,0 +1,32 @@
+{
+  "employeeChecklists": [
+    {
+      "id": "1fb37edc-eb16-4ac3-a436-02971f020b28",
+      "employee": {
+        "id": "1f183588-48ef-4287-9725-4963997c817d",
+        "firstName": "John",
+        "lastName": "Dear",
+        "email": "john.doe@email.com",
+        "userName": "johndoe"
+      },
+      "manager": {
+        "id": "1273fadb-0455-455e-a5e6-0eebda329867",
+        "firstName": "Kalle",
+        "lastName": "Anka",
+        "email": "kalleanka@email.com",
+        "userName": "kalleanka"
+      },
+      "completed": true,
+      "locked": false,
+      "delegatedTo": [
+        "test@test5.com"
+      ],
+      "phases": [],
+      "created": "2019-01-01T00:00:00+01:00",
+      "updated": "2024-01-01T00:00:00+01:00",
+      "startDate": "2024-02-01",
+      "endDate": "2025-01-01",
+      "expirationDate": "2024-10-01"
+    }
+  ]
+}

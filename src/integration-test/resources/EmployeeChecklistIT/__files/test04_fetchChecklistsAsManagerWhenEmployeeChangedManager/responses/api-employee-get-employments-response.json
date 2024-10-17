@@ -1,0 +1,38 @@
+[
+	{
+		"personId": "fe34e2a9-5723-4734-91dc-42a664c5432f",
+		"personNumber": "1901012345",
+		"isClassified": false,
+		"givenname": "D Emp",
+		"lastname": "Loyee",
+		"loginname": "demp4loyee",
+		"emailAddress": "d.employee@55352.com",
+		"isManager": false,
+		"employments": [
+			{
+				"companyId": 1,
+				"startDate": "2024-01-01T00:00:00",
+				"employmentType": 0,
+				"title": "Muggler",
+				"orgId": 55352,
+				"orgName": "Sub organization 55352",
+				"topOrgId": 28,
+				"topOrgName": "Top organization name",
+				"benefitGroupId": 11,
+				"formOfEmploymentId": "1",
+				"isManual": false,
+				"paTeam": "AB02",
+				"isMainEmployment": true,
+				"manager": {
+					"personId": "ae93a63e-d975-4cd9-8e28-4cc9ea8b4d96",
+					"givenname": "F Newman",
+					"lastname": "Ager",
+					"loginname": "fman4agr",
+					"emailAddress": "f.manager@55352.com",
+					"referenceNumber": "FNEW02AGR"
+				},
+				"aid": "654321"
+			}
+		]
+	}
+]

@@ -1,0 +1,19 @@
+{
+	"name": "api-employee-get-portal-persondata",
+	"request": {
+		"method": "GET",
+		"urlPath": "/api-employee/portalpersondata/jargon.jedi%40noreply.com",
+		"headers": {
+			"Authorization": {
+				"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI4"
+			}
+        }
+	},
+	"response": {
+		"headers": {
+			"Content-Type": "application/json"
+		},
+		"status": 200,
+		"bodyFileName": "test15_initializeChecklistForSpecificEmployee/responses/api-employee-portal-persondata-response.json"
+	}
+}

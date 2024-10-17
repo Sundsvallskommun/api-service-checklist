@@ -1,0 +1,55 @@
+[
+	{
+		"id": "15764278-50c8-4a19-af00-077bfc314fd2",
+		"organizationName": "Test Organization",
+		"organizationNumber": 1,
+		"checklists": [],
+		"communicationChannels": [
+			"EMAIL"
+		],
+		"created": "2019-01-01T00:00:00+01:00",
+		"updated": "2019-01-01T00:00:00+01:00"
+	},
+	{
+		"id": "25764278-50c8-4a19-af00-077bfc314fd2",
+		"organizationName": "Test Organization 2",
+		"organizationNumber": 2,
+		"checklists": [],
+		"communicationChannels": [
+			"EMAIL"
+		],
+		"created": "2019-01-01T00:00:00+01:00",
+		"updated": "2019-01-01T00:00:00+01:00"
+	},
+	{
+		"id": "35764278-50c8-4a19-af00-077bfc314fd2",
+		"organizationName": "Test Organization 3",
+		"organizationNumber": 3,
+		"checklists": [],
+		"communicationChannels": [
+			"EMAIL"
+		],
+		"created": "2019-01-01T00:00:00+01:00",
+		"updated": "2019-01-01T00:00:00+01:00"
+	},
+	{
+		"id": "45764278-50c8-4a19-af00-077bfc314fd2",
+		"organizationName": "Will be deleted in test",
+		"organizationNumber": 4,
+		"checklists": [
+			{
+				"id": "4bc85739-cf6d-4223-b9dc-09218f044db7",
+				"roleType": "EMPLOYEE",
+				"name": "CHECKLIST_SHOULD_BE_DELETED",
+				"version": 1,
+				"lifeCycle": "RETIRED",
+				"created": "2019-01-01T00:00:00+01:00",
+				"updated": "2019-01-01T00:00:00+01:00",
+				"phases": []
+			}
+		],
+		"communicationChannels": [],
+		"created": "2019-01-01T00:00:00+01:00",
+		"updated": "2019-01-01T00:00:00+01:00"
+	}
+]

@@ -1,0 +1,24 @@
+[
+	{
+		"created": "2024-01-01T00:00:00+01:00",
+		"heading": "Task 1",
+		"id": "414803ef-0074-4f24-b5e5-54c48f7c6ea9",
+		"permission": "ADMIN",
+		"questionType": "YES_OR_NO",
+		"roleType": "EMPLOYEE",
+		"sortOrder": 1,
+		"text": "Task 1",
+		"updated": "2024-01-01T00:00:00+01:00"
+	},
+	{
+		"created": "2024-01-01T00:00:00+01:00",
+		"heading": "Task 2",
+		"id": "514803ef-0074-4f24-b5e5-54c48f7c6ea9",
+		"permission": "ADMIN",
+		"questionType": "YES_OR_NO",
+		"roleType": "EMPLOYEE",
+		"sortOrder": 2,
+		"text": "Task 2",
+		"updated": "2024-01-01T00:00:00+01:00"
+	}
+]

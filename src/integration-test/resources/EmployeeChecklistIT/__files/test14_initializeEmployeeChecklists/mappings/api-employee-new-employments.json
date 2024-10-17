@@ -1,0 +1,24 @@
+{
+	"name": "api-employee-new-employments",
+	"request": {
+		"method": "GET",
+		"urlPath": "/api-employee/newemployments",
+		"headers": {
+			"Authorization": {
+				"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI4"
+			}
+        },
+        "queryParameters": {
+            "filter": {
+                "equalTo": "{}"
+            }
+        }
+	},
+	"response": {
+		"headers": {
+			"Content-Type": "application/json"
+		},
+		"status": 200,
+		"bodyFileName": "test14_initializeEmployeeChecklists/responses/api-employee-new-employments-response.json"
+	}
+}

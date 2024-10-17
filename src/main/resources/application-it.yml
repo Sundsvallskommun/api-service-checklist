@@ -1,6 +1,74 @@
-#========================================
-# Test profile settings (IT tests)
-#========================================
-logging:
-  level:
-    root: DEBUG
+#==============================================
+# IT-test configuration
+#==============================================
+config:
+  common:
+    token-url: http://localhost:${wiremock.server.port}/api-gateway/token
+    client-id: override
+    client-secret: override
+  datasource:
+    url: jdbc:tc:mariadb:10.6.14:///
+  jpa:
+    ddl-auto: validate
+    defer-datasource-initialization: false
+  flyway:
+    enabled: true
+  sql:
+    init:
+      mode: never
+  integration:
+    employee:
+      url: http://localhost:${wiremock.server.port}/api-employee
+      token-url: ${config.common.token-url}
+      client-id: ${config.common.client-id}
+      client-secret: ${config.common.client-secret}
+    messaging:
+      url: http://localhost:${wiremock.server.port}/api-messaging
+      token-url: ${config.common.token-url}
+      client-id: ${config.common.client-id}
+      client-secret: ${config.common.client-secret}
+    templating:
+      url: http://localhost:${wiremock.server.port}/api-templating
+      token-url: ${config.common.token-url}
+      client-id: ${config.common.client-id}
+      client-secret: ${config.common.client-secret}
+
+  schedulers:
+    new-employees:
+      cron: "-"
+      fetch-on-startup: false
+      delay-on-startup: PT5M
+    manager-email:
+      cron: "-"
+    lock-employee-checklists:
+      enabled: false
+
+  manager-email:
+    template: email_template
+    subject: subject
+    sender:
+      reply-to: reply_to
+      address: address
+      name: name
+
+#==============================================
+# Default overrides for IT-tests
+#==============================================
+spring:
+  cache:
+    type: none
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+  jpa:
+    properties:
+      jakarta:
+        persistence:
+          schema-generation:
+            database:
+              action: update
+            scripts:
+              action: create
+              create-target: target/database/generated-schema.sql
+cache:
+  employee:
+    enabled: false

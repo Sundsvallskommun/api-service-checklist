@@ -1,6 +1,79 @@
-#========================================
-# Test profile settings (junit tests)
-#========================================
-logging:
-  level:
-    root: DEBUG
+#==============================================
+# Junit configuration
+#==============================================
+config:
+  common:
+    token-url: http://token_url
+    client-id: client_id
+    client-secret: client_secret
+  datasource:
+    url: jdbc:tc:mariadb:10.6.14:///
+  jpa:
+    ddl-auto: create-drop
+    defer-datasource-initialization: true
+  flyway:
+    enabled: false
+  sql:
+    init:
+      mode: never
+  integration:
+    employee:
+      url: http://employee_url
+      token-url: ${config.common.token-url}
+      client-id: ${config.common.client-id}
+      client-secret: ${config.common.client-secret}
+    templating:
+      url: http://templating_url
+      token-url: ${config.common.token-url}
+      client-id: ${config.common.client-id}
+      client-secret: ${config.common.client-secret}
+    messaging:
+      url: http://messaging_url
+      token-url: ${config.common.token-url}
+      client-id: ${config.common.client-id}
+      client-secret: ${config.common.client-secret}
+
+  schedulers:
+    new-employees:
+      cron: "-"
+      fetch-on-startup: false
+      delay-on-startup: PT5M
+    manager-email:
+      cron: "-"
+    lock-employee-checklists:
+      enabled: false
+
+  manager-email:
+    template: manager-email-template
+    subject: subject
+    sender:
+      reply-to: reply_to
+      address: address
+      name: name
+
+#==============================================
+# Schema Generation
+#==============================================
+spring:
+  jpa:
+    show-sql: false
+    properties:
+      jakarta:
+        persistence:
+          schema-generation:
+            database:
+              action: update
+            scripts:
+              action: create
+              create-target: target/database/generated-schema.sql
+            create-source: metadata
+      hibernate:
+        show-sql: false
+        hbm2ddl:
+          schema-generation:
+            script:
+              append: false
+        format_sql: true
+  # Driver
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver

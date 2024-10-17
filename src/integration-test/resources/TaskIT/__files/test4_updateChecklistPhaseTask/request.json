@@ -1,0 +1,8 @@
+{
+	"heading": "string",
+	"text": "string",
+	"sortOrder": 3,
+	"permission": "SUPERADMIN",
+	"questionType": "COMPLETED_OR_NOT_RELEVANT",
+	"roleType": "MANAGER"
+}

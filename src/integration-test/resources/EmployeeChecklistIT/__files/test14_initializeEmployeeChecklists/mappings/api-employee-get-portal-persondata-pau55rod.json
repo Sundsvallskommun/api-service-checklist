@@ -1,0 +1,19 @@
+{
+	"name": "api-employee-get-portal-persondata-pau55rod",
+	"request": {
+		"method": "GET",
+		"urlPath": "/api-employee/portalpersondata/pauletta.rodgers%40noreply.com",
+		"headers": {
+			"Authorization": {
+				"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI4"
+			}
+        }
+	},
+	"response": {
+		"headers": {
+			"Content-Type": "application/json"
+		},
+		"status": 200,
+		"bodyFileName": "test14_initializeEmployeeChecklists/responses/api-employee-portal-persondata-pau55rod-response.json"
+	}
+}

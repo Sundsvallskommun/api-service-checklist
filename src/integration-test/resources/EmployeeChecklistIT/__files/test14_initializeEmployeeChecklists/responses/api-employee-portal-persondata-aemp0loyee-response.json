@@ -1,0 +1,18 @@
+{
+	"personid": "cfcb03b1-7344-4352-9b72-7aebb1f235e1",
+	"givenname": "A Emp",
+	"lastname": "Loyee",
+	"fullname": "Aron Emporium Loyee",
+	"address": "",
+	"postalCode": "",
+	"city": "",
+	"email": "a.employee@5535.com",
+	"mailNickname": "a.employee",
+	"company": "Root company",
+	"companyId": 1,
+	
+	"orgTree": "2|55|Top organization name¤3|553|Sub organization 553¤4|5535|Sub organization 5535¤5|55351|Sub organization 55351¤6|553511|Sub organization 212",
+	
+	"isManager": false,
+	"loginName": "PERSONAL\\aemp0loyee"
+}

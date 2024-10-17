@@ -1,0 +1,38 @@
+[
+	{
+		"personId": "af920bfe-630a-44e9-b2e7-53f092cd0225",
+		"personNumber": "1901111234",
+		"isClassified": false,
+		"givenname": "Jargon",
+		"lastname": "Jedi",
+		"loginname": "jar31jed",
+		"emailAddress": "jargon.jedi@noreply.com",
+		"isManager": true,
+		"employments": [
+			{
+				"companyId": 1,
+				"startDate": "2024-01-01T00:00:00",
+				"employmentType": 0,
+				"title": "Senior Screaming Executive",
+				"orgId": 553,
+				"orgName": "Sub organization 553",
+				"topOrgId": 28,
+				"topOrgName": "Top organization name",
+				"benefitGroupId": 11,
+				"formOfEmploymentId": "1",
+				"isManual": false,
+				"paTeam": "AB01",
+				"isMainEmployment": true,
+				"manager": {
+					"personId": "e4218391-49d3-415f-877a-c555105af686",
+					"givenname": "Top",
+					"lastname": "Dog",
+					"loginname": "top34dog",
+					"emailAddress": "top.dog@noreply.com",
+					"referenceNumber": "TOP1DOG"
+				},
+				"aid": "123456"
+			}
+		]
+	}
+]

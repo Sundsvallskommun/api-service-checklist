@@ -1,0 +1,23 @@
+{
+	"name": "TEST07_EMPLOYEE_CHECKLIST_(SHOULD_BE_IGNORED)",
+	"displayName": "Imported checklist for employee",
+	"roleType": "EMPLOYEE",
+	"phases": [
+		{
+			"name": "Imported phase name",
+			"bodyText": "Phase description of imported phase for employee",
+			"timeToComplete": "P1W",
+			"roleType": "EMPLOYEE",
+			"sortOrder": 1,
+			"tasks": [
+				{
+					"heading": "Imported task name",
+					"text": "Task description of imported task for employee",
+					"sortOrder": 1,
+					"roleType": "EMPLOYEE",
+					"questionType": "YES_OR_NO"
+				}
+			]
+		}
+	]
+}

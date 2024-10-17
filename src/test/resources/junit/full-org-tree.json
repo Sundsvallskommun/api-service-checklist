@@ -1,0 +1,33 @@
+{
+	"tree": {
+		"1": {
+			"level": 1,
+			"orgId": "1"
+		},
+		"2": {
+			"level": 2,
+			"orgId": "9271",
+			"orgName": "Sundsvall Energi"
+		},
+		"3": {
+			"level": 3,
+			"orgId": "9246",
+			"orgName": "SEAB Produktion Gemensamt"
+		},
+		"4": {
+			"level": 4,
+			"orgId": "9251",
+			"orgName": "SEAB Enhet drift"
+		},
+		"5": {
+			"level": 5,
+			"orgId": "9279",
+			"orgName": "SEAB Enhet drift"
+		},
+		"6": {
+			"level": 6,
+			"orgId": "9250",
+			"orgName": "SEAB Enhet drift"
+		}
+	}
+}

@@ -1,0 +1,11 @@
+{
+	"id": "15764278-50c8-4a19-af00-077bfc314fd2",
+	"organizationName": "Test Organization",
+	"organizationNumber": 1,
+	"checklists": [],
+	"communicationChannels": [
+		"EMAIL"
+	],
+	"created": "2019-01-01T00:00:00+01:00",
+	"updated": "2019-01-01T00:00:00+01:00"
+}
