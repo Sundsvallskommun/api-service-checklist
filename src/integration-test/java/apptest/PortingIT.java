@@ -50,7 +50,7 @@ class PortingIT extends AbstractAppTest {
 	@Test
 	void test01_exportLatestVersion() {
 		setupCall()
-			.withServicePath("/export/1/EMPLOYEE")
+			.withServicePath("/2281/export/1/EMPLOYEE")
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(EXPECTED_FILE)
@@ -60,7 +60,7 @@ class PortingIT extends AbstractAppTest {
 	@Test
 	void test02_exportExplicitVersion() {
 		setupCall()
-			.withServicePath("/export/1/EMPLOYEE?version=1")
+			.withServicePath("/2281/export/1/EMPLOYEE?version=1")
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(EXPECTED_FILE)
@@ -82,11 +82,11 @@ class PortingIT extends AbstractAppTest {
 		});
 
 		setupCall()
-			.withServicePath("/import/add/2/Organization_2")
+			.withServicePath("/2281/import/add/2/Organization_2")
 			.withHttpMethod(POST)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
-			.withExpectedResponseHeader(LOCATION, List.of("^/checklists/(.+)$"))
+			.withExpectedResponseHeader(LOCATION, List.of("^/2281/checklists/(.+)$"))
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
 
@@ -134,7 +134,7 @@ class PortingIT extends AbstractAppTest {
 		});
 
 		setupCall()
-			.withServicePath("/import/add/3/Organization_3")
+			.withServicePath("/2281/import/add/3/Organization_3")
 			.withHttpMethod(POST)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CONFLICT)
@@ -171,11 +171,11 @@ class PortingIT extends AbstractAppTest {
 		});
 
 		setupCall()
-			.withServicePath("/import/add/4/Organization_4")
+			.withServicePath("/2281/import/add/4/Organization_4")
 			.withHttpMethod(POST)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
-			.withExpectedResponseHeader(LOCATION, List.of("^/checklists/(.+)$"))
+			.withExpectedResponseHeader(LOCATION, List.of("^/2281/checklists/(.+)$"))
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
 
@@ -212,11 +212,11 @@ class PortingIT extends AbstractAppTest {
 		});
 
 		setupCall()
-			.withServicePath("/import/replace/5/Organization_5")
+			.withServicePath("/2281/import/replace/5/Organization_5")
 			.withHttpMethod(POST)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
-			.withExpectedResponseHeader(LOCATION, List.of("^/checklists/%s$".formatted(checklistIdWithCreatedStatus))) // No new version should be created, i.e. the id should be intact
+			.withExpectedResponseHeader(LOCATION, List.of("^/2281/checklists/%s$".formatted(checklistIdWithCreatedStatus))) // No new version should be created, i.e. the id should be intact
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
 
@@ -261,11 +261,11 @@ class PortingIT extends AbstractAppTest {
 		});
 
 		setupCall()
-			.withServicePath("/import/replace/6/Organization_6")
+			.withServicePath("/2281/import/replace/6/Organization_6")
 			.withHttpMethod(POST)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
-			.withExpectedResponseHeader(LOCATION, List.of("^/checklists/%s$".formatted(checklistIdWithCreatedStatus))) // No new version should be created, i.e. the id should be intact
+			.withExpectedResponseHeader(LOCATION, List.of("^/2281/checklists/%s$".formatted(checklistIdWithCreatedStatus))) // No new version should be created, i.e. the id should be intact
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
 
@@ -300,11 +300,11 @@ class PortingIT extends AbstractAppTest {
 		});
 
 		setupCall()
-			.withServicePath("/import/replace/7/Organization_7")
+			.withServicePath("/2281/import/replace/7/Organization_7")
 			.withHttpMethod(POST)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
-			.withExpectedResponseHeader(LOCATION, List.of("^/checklists/(.+)$"))
+			.withExpectedResponseHeader(LOCATION, List.of("^/2281/checklists/(.+)$"))
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
 
@@ -330,11 +330,11 @@ class PortingIT extends AbstractAppTest {
 		});
 
 		setupCall()
-			.withServicePath("/import/replace/8/Organization_8")
+			.withServicePath("/2281/import/replace/8/Organization_8")
 			.withHttpMethod(POST)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
-			.withExpectedResponseHeader(LOCATION, List.of("^/checklists/(.+)$"))
+			.withExpectedResponseHeader(LOCATION, List.of("^/2281/checklists/(.+)$"))
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
 

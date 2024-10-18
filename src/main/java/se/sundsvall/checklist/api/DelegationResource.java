@@ -29,10 +29,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Email;
 import se.sundsvall.checklist.api.model.DelegatedEmployeeChecklistResponse;
 import se.sundsvall.checklist.service.DelegationService;
+import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
 
 @RestController
-@RequestMapping("/employee-checklists")
+@RequestMapping("/{municipalityId}/employee-checklists")
 @Tag(name = "Delegation resources", description = "Resources for managing delegations of employee checklists")
 @ApiResponses(value = {
 	@ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = { Problem.class, ConstraintViolationProblem.class }))),
@@ -54,6 +55,7 @@ class DelegationResource {
 	})
 	@PostMapping(value = "/{employeeChecklistId}/delegate-to/{email}", produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
 	ResponseEntity<Void> delegateEmployeeChecklist(
+		@PathVariable @ValidMunicipalityId final String municipalityId,
 		@PathVariable @ValidUuid final String employeeChecklistId,
 		@PathVariable @Email final String email) {
 
@@ -65,7 +67,9 @@ class DelegationResource {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	})
 	@GetMapping(value = "/delegated-to/{userName}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
-	ResponseEntity<DelegatedEmployeeChecklistResponse> fetchDelegatedEmployeeChecklists(@PathVariable final String userName) {
+	ResponseEntity<DelegatedEmployeeChecklistResponse> fetchDelegatedEmployeeChecklists(
+		@PathVariable @ValidMunicipalityId final String municipalityId,
+		@PathVariable final String userName) {
 		return ok(delegationService.fetchDelegatedEmployeeChecklistsByUserName(userName));
 	}
 
@@ -75,6 +79,7 @@ class DelegationResource {
 	})
 	@DeleteMapping(value = "/{employeeChecklistId}/delegated-to/{email}", produces = APPLICATION_PROBLEM_JSON_VALUE)
 	ResponseEntity<Void> deleteEmployeeChecklistDelegation(
+		@PathVariable @ValidMunicipalityId final String municipalityId,
 		@PathVariable @ValidUuid final String employeeChecklistId,
 		@PathVariable @Email final String email) {
 

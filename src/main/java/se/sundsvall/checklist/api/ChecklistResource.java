@@ -37,10 +37,11 @@ import se.sundsvall.checklist.api.model.Checklist;
 import se.sundsvall.checklist.api.model.ChecklistCreateRequest;
 import se.sundsvall.checklist.api.model.ChecklistUpdateRequest;
 import se.sundsvall.checklist.service.ChecklistService;
+import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
 
 @RestController
-@RequestMapping("/checklists")
+@RequestMapping("/{municipalityId}/checklists")
 @Tag(name = "Checklist resources", description = "Resources for managing checklists")
 @ApiResponses(value = {
 	@ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = { Problem.class, ConstraintViolationProblem.class }))),
@@ -59,7 +60,9 @@ class ChecklistResource {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	})
 	@GetMapping(produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
-	ResponseEntity<List<Checklist>> fetchAllChecklists() {
+	ResponseEntity<List<Checklist>> fetchAllChecklists(
+		@PathVariable @ValidMunicipalityId final String municipalityId) {
+
 		return ok(checklistService.getAllChecklists());
 	}
 
@@ -68,7 +71,10 @@ class ChecklistResource {
 		@ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 	})
 	@GetMapping(value = "/{checklistId}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
-	ResponseEntity<Checklist> fetchChecklistById(@PathVariable @ValidUuid final String checklistId) {
+	ResponseEntity<Checklist> fetchChecklistById(
+		@PathVariable @ValidMunicipalityId final String municipalityId,
+		@PathVariable @ValidUuid final String checklistId) {
+
 		return ok(checklistService.getChecklistById(checklistId));
 	}
 
@@ -77,10 +83,12 @@ class ChecklistResource {
 	})
 	@PostMapping(produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE }, consumes = { APPLICATION_JSON_VALUE })
 	ResponseEntity<Void> createChecklist(
+		@PathVariable @ValidMunicipalityId final String municipalityId,
 		@RequestBody @Valid final ChecklistCreateRequest request) {
+
 		final var checklist = checklistService.createChecklist(request);
-		return created(UriComponentsBuilder.fromPath("/checklists" + "/{checklistId}")
-			.buildAndExpand(checklist.getId())
+		return created(UriComponentsBuilder.fromPath("/{municipalityId}/checklists/{checklistId}")
+			.buildAndExpand(municipalityId, checklist.getId())
 			.toUri()).header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 
@@ -88,10 +96,13 @@ class ChecklistResource {
 		@ApiResponse(responseCode = "201", headers = @Header(name = LOCATION, schema = @Schema(type = "string")), description = "Successful Operation", useReturnTypeSchema = true)
 	})
 	@PostMapping(value = "/{checklistId}/version", produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
-	ResponseEntity<Void> createNewVersion(@PathVariable @ValidUuid final String checklistId) {
+	ResponseEntity<Void> createNewVersion(
+		@PathVariable @ValidMunicipalityId final String municipalityId,
+		@PathVariable @ValidUuid final String checklistId) {
+
 		final var checklist = checklistService.createNewVersion(checklistId);
-		return created(UriComponentsBuilder.fromPath("/checklists" + "/{checklistId}")
-			.buildAndExpand(checklist.getId()).toUri()).header(CONTENT_TYPE, ALL_VALUE).build();
+		return created(UriComponentsBuilder.fromPath("/{municipalityId}/checklists" + "/{checklistId}")
+			.buildAndExpand(municipalityId, checklist.getId()).toUri()).header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 
 	@Operation(summary = "Activate checklist", responses = {
@@ -99,7 +110,10 @@ class ChecklistResource {
 		@ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 	})
 	@PatchMapping(value = "/{checklistId}/activate", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
-	ResponseEntity<Checklist> activateChecklist(@PathVariable @ValidUuid final String checklistId) {
+	ResponseEntity<Checklist> activateChecklist(
+		@PathVariable @ValidMunicipalityId final String municipalityId,
+		@PathVariable @ValidUuid final String checklistId) {
+
 		return ok(checklistService.activateChecklist(checklistId));
 	}
 
@@ -109,8 +123,10 @@ class ChecklistResource {
 	})
 	@PatchMapping(value = "/{checklistId}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE }, consumes = { APPLICATION_JSON_VALUE })
 	ResponseEntity<Checklist> updateChecklist(
+		@PathVariable @ValidMunicipalityId final String municipalityId,
 		@PathVariable @ValidUuid final String checklistId,
 		@RequestBody @Valid final ChecklistUpdateRequest request) {
+
 		return ok(checklistService.updateChecklist(checklistId, request));
 	}
 
@@ -120,7 +136,9 @@ class ChecklistResource {
 	})
 	@DeleteMapping(value = "/{checklistId}", produces = APPLICATION_PROBLEM_JSON_VALUE)
 	ResponseEntity<Void> deleteChecklist(
+		@PathVariable @ValidMunicipalityId final String municipalityId,
 		@PathVariable @ValidUuid final String checklistId) {
+
 		checklistService.deleteChecklist(checklistId);
 		return noContent().header(CONTENT_TYPE, ALL_VALUE).build();
 	}

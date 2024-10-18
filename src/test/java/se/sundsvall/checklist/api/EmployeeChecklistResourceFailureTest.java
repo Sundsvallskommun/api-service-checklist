@@ -38,7 +38,10 @@ import se.sundsvall.checklist.service.EmployeeChecklistService;
 @ActiveProfiles("junit")
 class EmployeeChecklistResourceFailureTest {
 
-	private static final String PATH_PREFIX = "/employee-checklists";
+	private static final String INVALID = "invalid";
+	private static final String ID = UUID.randomUUID().toString();
+	private static final String MUNICIPALITY_ID = "2281";
+	private static final String BASE_PATH = "/{municipalityId}/employee-checklists";
 
 	@MockBean
 	private EmployeeChecklistService serviceMock;
@@ -52,14 +55,13 @@ class EmployeeChecklistResourceFailureTest {
 	}
 
 	@Test
-	void deleteEmployeeChecklistInvalidUuid() {
+	void deleteEmployeeChecklistInvalidPathValues() {
 		// Arrange
-		final var id = "invalid";
 		final var path = "/{uuid}";
 
 		// Act
 		final var response = webTestClient.delete()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(Map.of("uuid", id)))
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", INVALID, "uuid", INVALID)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectBody(ConstraintViolationProblem.class)
@@ -71,14 +73,15 @@ class EmployeeChecklistResourceFailureTest {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
-				.containsExactlyInAnyOrder(tuple("deleteEmployeeChecklist.employeeChecklistId", "not a valid UUID"));
+				.containsExactlyInAnyOrder(
+					tuple("deleteEmployeeChecklist.municipalityId", "not a valid municipality ID"),
+					tuple("deleteEmployeeChecklist.employeeChecklistId", "not a valid UUID"));
 		});
 	}
 
 	@Test
-	void createCustomTaskInvalidUuids() {
+	void createCustomTaskInvalidPathValues() {
 		// Arrange
-		final var id = "invalid";
 		final var path = "/{employeeChecklistId}/phases/{phaseId}/customtasks";
 		final var body = CustomTaskCreateRequest.builder()
 			.withHeading("heading")
@@ -89,7 +92,7 @@ class EmployeeChecklistResourceFailureTest {
 
 		// Act
 		final var response = webTestClient.post()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(Map.of("employeeChecklistId", id, "phaseId", id)))
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", INVALID, "employeeChecklistId", INVALID, "phaseId", INVALID)))
 			.bodyValue(body)
 			.exchange()
 			.expectStatus().isBadRequest()
@@ -105,6 +108,7 @@ class EmployeeChecklistResourceFailureTest {
 				.extracting(
 					Violation::getField, Violation::getMessage)
 				.containsExactlyInAnyOrder(
+					tuple("createCustomTask.municipalityId", "not a valid municipality ID"),
 					tuple("createCustomTask.employeeChecklistId", "not a valid UUID"),
 					tuple("createCustomTask.phaseId", "not a valid UUID"));
 		});
@@ -113,12 +117,11 @@ class EmployeeChecklistResourceFailureTest {
 	@Test
 	void createCustomTaskNullRequest() {
 		// Arrange
-		final var id = UUID.randomUUID().toString();
 		final var path = "/{employeeChecklistId}/phases/{phaseId}/customtasks";
 
 		// Act
 		final var response = webTestClient.post()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(Map.of("employeeChecklistId", id, "phaseId", id)))
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID, "phaseId", ID)))
 			.contentType(APPLICATION_JSON)
 			.exchange()
 			.expectStatus().isBadRequest()
@@ -132,7 +135,7 @@ class EmployeeChecklistResourceFailureTest {
 			assertThat(r.getTitle()).isEqualTo("Bad Request");
 			assertThat(r.getDetail()).isEqualTo("""
 				Required request body is missing: org.springframework.http.ResponseEntity<se.sundsvall.checklist.api.model.CustomTask> \
-				se.sundsvall.checklist.api.EmployeeChecklistResource.createCustomTask(java.lang.String,java.lang.String,se.sundsvall.checklist.api.model.CustomTaskCreateRequest)\
+				se.sundsvall.checklist.api.EmployeeChecklistResource.createCustomTask(java.lang.String,java.lang.String,java.lang.String,se.sundsvall.checklist.api.model.CustomTaskCreateRequest)\
 				""");
 		});
 	}
@@ -140,13 +143,12 @@ class EmployeeChecklistResourceFailureTest {
 	@Test
 	void createCustomTaskEmptyRequest() {
 		// Arrange
-		final var id = UUID.randomUUID().toString();
 		final var path = "/{employeeChecklistId}/phases/{phaseId}/customtasks";
 		final var body = CustomTaskCreateRequest.builder().build();
 
 		// Act
 		final var response = webTestClient.post()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(Map.of("employeeChecklistId", id, "phaseId", id)))
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID, "phaseId", ID)))
 			.bodyValue(body)
 			.exchange()
 			.expectStatus().isBadRequest()
@@ -169,14 +171,13 @@ class EmployeeChecklistResourceFailureTest {
 	}
 
 	@Test
-	void readCustomTaskInvalidUuids() {
+	void readCustomTaskInvalidPathValues() {
 		// Arrange
-		final var id = "invalid";
 		final var path = "/{employeeChecklistId}/customtasks/{taskId}";
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(Map.of("employeeChecklistId", id, "taskId", id)))
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", INVALID, "employeeChecklistId", INVALID, "taskId", INVALID)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectBody(ConstraintViolationProblem.class)
@@ -191,21 +192,21 @@ class EmployeeChecklistResourceFailureTest {
 				.extracting(
 					Violation::getField, Violation::getMessage)
 				.containsExactlyInAnyOrder(
+					tuple("readCustomTask.municipalityId", "not a valid municipality ID"),
 					tuple("readCustomTask.employeeChecklistId", "not a valid UUID"),
 					tuple("readCustomTask.taskId", "not a valid UUID"));
 		});
 	}
 
 	@Test
-	void updateCustomTaskInvalidUuids() {
+	void updateCustomTaskInvalidPathValues() {
 		// Arrange
-		final var id = "invalid";
 		final var path = "/{employeeChecklistId}/customtasks/{taskId}";
 		final var body = CustomTaskUpdateRequest.builder().build();
 
 		// Act
 		final var response = webTestClient.patch()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(Map.of("employeeChecklistId", id, "taskId", id)))
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", INVALID, "employeeChecklistId", INVALID, "taskId", INVALID)))
 			.bodyValue(body)
 			.exchange()
 			.expectStatus().isBadRequest()
@@ -221,20 +222,20 @@ class EmployeeChecklistResourceFailureTest {
 				.extracting(
 					Violation::getField, Violation::getMessage)
 				.containsExactlyInAnyOrder(
+					tuple("updateCustomTask.municipalityId", "not a valid municipality ID"),
 					tuple("updateCustomTask.employeeChecklistId", "not a valid UUID"),
 					tuple("updateCustomTask.taskId", "not a valid UUID"));
 		});
 	}
 
 	@Test
-	void deleteCustomTaskInvalidUuids() {
+	void deleteCustomTaskInvalidPathValues() {
 		// Arrange
-		final var id = "invalid";
 		final var path = "/{employeeChecklistId}/customtasks/{taskId}";
 
 		// Act
 		final var response = webTestClient.delete()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(Map.of("employeeChecklistId", id, "taskId", id)))
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", INVALID, "employeeChecklistId", INVALID, "taskId", INVALID)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectBody(ConstraintViolationProblem.class)
@@ -249,15 +250,15 @@ class EmployeeChecklistResourceFailureTest {
 				.extracting(
 					Violation::getField, Violation::getMessage)
 				.containsExactlyInAnyOrder(
+					tuple("deleteCustomTask.municipalityId", "not a valid municipality ID"),
 					tuple("deleteCustomTask.employeeChecklistId", "not a valid UUID"),
 					tuple("deleteCustomTask.taskId", "not a valid UUID"));
 		});
 	}
 
 	@Test
-	void updateAllTasksFulfilmentInPhaseInvalidUuids() {
+	void updateAllTasksFulfilmentInPhaseInvalidPathValues() {
 		// Arrange
-		final var id = "invalid";
 		final var path = "/{employeeChecklistId}/phases/{phaseId}";
 		final var body = EmployeeChecklistPhaseUpdateRequest.builder()
 			.withTasksFulfilmentStatus(FulfilmentStatus.EMPTY)
@@ -265,7 +266,7 @@ class EmployeeChecklistResourceFailureTest {
 
 		// Act
 		final var response = webTestClient.patch()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(Map.of("employeeChecklistId", id, "phaseId", id)))
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", INVALID, "employeeChecklistId", INVALID, "phaseId", INVALID)))
 			.bodyValue(body)
 			.exchange()
 			.expectStatus().isBadRequest()
@@ -281,6 +282,7 @@ class EmployeeChecklistResourceFailureTest {
 				.extracting(
 					Violation::getField, Violation::getMessage)
 				.containsExactlyInAnyOrder(
+					tuple("updateAllTasksInPhase.municipalityId", "not a valid municipality ID"),
 					tuple("updateAllTasksInPhase.employeeChecklistId", "not a valid UUID"),
 					tuple("updateAllTasksInPhase.phaseId", "not a valid UUID"));
 		});
@@ -291,7 +293,7 @@ class EmployeeChecklistResourceFailureTest {
 	void updateWithNullRequest(String path, Map<String, String> pathParameters, String expectedDetail) {
 		// Act
 		final var response = webTestClient.patch()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(pathParameters))
+			.uri(builder -> builder.path(BASE_PATH + path).build(pathParameters))
 			.contentType(APPLICATION_JSON)
 			.exchange()
 			.expectStatus().isBadRequest()
@@ -308,27 +310,25 @@ class EmployeeChecklistResourceFailureTest {
 	}
 
 	private static Stream<Arguments> updateWithNullParamProvider() {
-		final var id = UUID.randomUUID().toString();
 
 		return Stream.of(
-			Arguments.of("/{employeeChecklistId}/customtasks/{taskId}", Map.of("employeeChecklistId", id, "taskId", id), """
+			Arguments.of("/{employeeChecklistId}/customtasks/{taskId}", Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID, "taskId", ID), """
 				Required request body is missing: org.springframework.http.ResponseEntity<se.sundsvall.checklist.api.model.CustomTask> \
-				se.sundsvall.checklist.api.EmployeeChecklistResource.updateCustomTask(java.lang.String,java.lang.String,se.sundsvall.checklist.api.model.CustomTaskUpdateRequest)\
+				se.sundsvall.checklist.api.EmployeeChecklistResource.updateCustomTask(java.lang.String,java.lang.String,java.lang.String,se.sundsvall.checklist.api.model.CustomTaskUpdateRequest)\
 				"""),
-			Arguments.of("/{employeeChecklistId}/phases/{phaseId}", Map.of("employeeChecklistId", id, "phaseId", id), """
+			Arguments.of("/{employeeChecklistId}/phases/{phaseId}", Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID, "phaseId", ID), """
 				Required request body is missing: org.springframework.http.ResponseEntity<se.sundsvall.checklist.api.model.EmployeeChecklistPhase> \
-				se.sundsvall.checklist.api.EmployeeChecklistResource.updateAllTasksInPhase(java.lang.String,java.lang.String,se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest)\
+				se.sundsvall.checklist.api.EmployeeChecklistResource.updateAllTasksInPhase(java.lang.String,java.lang.String,java.lang.String,se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest)\
 				"""),
-			Arguments.of("/{employeeChecklistId}/tasks/{taskId}", Map.of("employeeChecklistId", id, "taskId", id), """
+			Arguments.of("/{employeeChecklistId}/tasks/{taskId}", Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID, "taskId", ID), """
 				Required request body is missing: org.springframework.http.ResponseEntity<se.sundsvall.checklist.api.model.EmployeeChecklistTask> \
-				se.sundsvall.checklist.api.EmployeeChecklistResource.updateTaskFulfilment(java.lang.String,java.lang.String,se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest)\
+				se.sundsvall.checklist.api.EmployeeChecklistResource.updateTaskFulfilment(java.lang.String,java.lang.String,java.lang.String,se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest)\
 				"""));
 	}
 
 	@Test
-	void updateTaskFulfilmentInvalidUuids() {
+	void updateTaskFulfilmentInvalidPathValues() {
 		// Arrange
-		final var id = "invalid";
 		final var path = "/{employeeChecklistId}/tasks/{taskId}";
 		final var body = EmployeeChecklistTaskUpdateRequest.builder()
 			.withFulfilmentStatus(FulfilmentStatus.TRUE)
@@ -336,7 +336,7 @@ class EmployeeChecklistResourceFailureTest {
 
 		// Act
 		final var response = webTestClient.patch()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(Map.of("employeeChecklistId", id, "taskId", id)))
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", INVALID, "employeeChecklistId", INVALID, "taskId", INVALID)))
 			.bodyValue(body)
 			.exchange()
 			.expectStatus().isBadRequest()
@@ -352,20 +352,20 @@ class EmployeeChecklistResourceFailureTest {
 				.extracting(
 					Violation::getField, Violation::getMessage)
 				.containsExactlyInAnyOrder(
+					tuple("updateTaskFulfilment.municipalityId", "not a valid municipality ID"),
 					tuple("updateTaskFulfilment.employeeChecklistId", "not a valid UUID"),
 					tuple("updateTaskFulfilment.taskId", "not a valid UUID"));
 		});
 	}
 
 	@Test
-	void initializeEmployeeChecklistInvalidUuids() {
+	void initializeEmployeeChecklistInvalidPathValues() {
 		// Arrange
-		final var id = "invalid";
 		final var path = "/initialize/{personId}";
 
 		// Act
 		final var response = webTestClient.post()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(Map.of("personId", id)))
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", INVALID, "personId", INVALID)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectBody(ConstraintViolationProblem.class)
@@ -380,6 +380,7 @@ class EmployeeChecklistResourceFailureTest {
 				.extracting(
 					Violation::getField, Violation::getMessage)
 				.containsExactlyInAnyOrder(
+					tuple("initiateSpecificEmployeeChecklist.municipalityId", "not a valid municipality ID"),
 					tuple("initiateSpecificEmployeeChecklist.personId", "not a valid UUID"));
 		});
 	}

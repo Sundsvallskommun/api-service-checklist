@@ -25,7 +25,7 @@ class DelegationIT extends AbstractAppTest {
 	private static final String EMPLOYEE_CHECKLIST_ID = "1fb37edc-eb16-4ac3-a436-02971f020b28";
 	private static final String EMAIL = "test@test.com";
 	private static final String USERNAME = "username";
-	private static final String PATH = "/employee-checklists/";
+	private static final String PATH = "/2281/employee-checklists/";
 	private static final String EXPECTED_FILE = "expected.json";
 
 	@Test
