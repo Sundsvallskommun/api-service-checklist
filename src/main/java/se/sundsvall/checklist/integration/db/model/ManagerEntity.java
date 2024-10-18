@@ -12,6 +12,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -27,7 +28,9 @@ import lombok.Setter;
 @Setter
 @Builder(setterPrefix = "with")
 @Entity
-@Table(name = "manager")
+@Table(name = "manager", indexes = {
+	@Index(name = "idx_manager_username", columnList = "username")
+})
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ManagerEntity {
@@ -42,8 +45,8 @@ public class ManagerEntity {
 	@Column(name = "last_name")
 	private String lastName;
 
-	@Column(name = "user_name")
-	private String userName;
+	@Column(name = "username")
+	private String username;
 
 	@Column(name = "email")
 	private String email;

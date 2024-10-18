@@ -74,7 +74,7 @@ class OrganizationMapperTest {
 		assertThat(entity.getRoleType()).isEqualTo(manager ? MANAGER : EMPLOYEE);
 		assertThat(entity.getTitle()).isEqualTo(title);
 		assertThat(entity.getUpdated()).isNull();
-		assertThat(entity.getUserName()).isEqualTo(loginName);
+		assertThat(entity.getUsername()).isEqualTo(loginName);
 	}
 
 	@Test
@@ -111,7 +111,7 @@ class OrganizationMapperTest {
 		assertThat(entity.getStartDate()).isToday();
 		assertThat(entity.getTitle()).isNull();
 		assertThat(entity.getUpdated()).isNull();
-		assertThat(entity.getUserName()).isEqualTo(loginName);
+		assertThat(entity.getUsername()).isEqualTo(loginName);
 	}
 
 	@Test
@@ -165,7 +165,7 @@ class OrganizationMapperTest {
 		assertThat(entity.getRoleType()).isEqualTo(manager ? MANAGER : EMPLOYEE);
 		assertThat(entity.getTitle()).isEqualTo(title);
 		assertThat(entity.getUpdated()).isNull();
-		assertThat(entity.getUserName()).isEqualTo(loginName);
+		assertThat(entity.getUsername()).isEqualTo(loginName);
 	}
 
 	@Test
@@ -222,14 +222,14 @@ class OrganizationMapperTest {
 		final var firstName = "firstName";
 		final var id = UUID.randomUUID().toString();
 		final var lastName = "lastName";
-		final var userName = "userName";
+		final var username = "username";
 
 		final var entity = EmployeeEntity.builder()
 			.withEmail(email)
 			.withFirstName(firstName)
 			.withId(id)
 			.withLastName(lastName)
-			.withUserName(userName)
+			.withUsername(username)
 			.build();
 
 		// Act
@@ -240,7 +240,7 @@ class OrganizationMapperTest {
 		assertThat(stakeholder.getFirstName()).isEqualTo(firstName);
 		assertThat(stakeholder.getId()).isEqualTo(id);
 		assertThat(stakeholder.getLastName()).isEqualTo(lastName);
-		assertThat(stakeholder.getUserName()).isEqualTo(userName);
+		assertThat(stakeholder.getUsername()).isEqualTo(username);
 	}
 
 	@Test
@@ -250,14 +250,14 @@ class OrganizationMapperTest {
 		final var firstName = "firstName";
 		final var id = UUID.randomUUID().toString();
 		final var lastName = "lastName";
-		final var userName = "userName";
+		final var username = "username";
 
 		final var entity = ManagerEntity.builder()
 			.withEmail(email)
 			.withFirstName(firstName)
 			.withPersonId(id)
 			.withLastName(lastName)
-			.withUserName(userName)
+			.withUsername(username)
 			.build();
 
 		// Act
@@ -268,7 +268,7 @@ class OrganizationMapperTest {
 		assertThat(stakeholder.getFirstName()).isEqualTo(firstName);
 		assertThat(stakeholder.getId()).isEqualTo(id);
 		assertThat(stakeholder.getLastName()).isEqualTo(lastName);
-		assertThat(stakeholder.getUserName()).isEqualTo(userName);
+		assertThat(stakeholder.getUsername()).isEqualTo(username);
 	}
 
 	@Test

@@ -12,7 +12,7 @@ import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 @Or(value = {
 	@Spec(path = "employee.firstName", params = "searchString", spec = LikeIgnoreCase.class),
 	@Spec(path = "employee.lastName", params = "searchString", spec = LikeIgnoreCase.class),
-	@Spec(path = "employee.userName", params = "searchString", spec = LikeIgnoreCase.class),
+	@Spec(path = "employee.username", params = "searchString", spec = LikeIgnoreCase.class),
 	@Spec(path = "employee.company.organizationName", params = "searchString", spec = LikeIgnoreCase.class),
 	@Spec(path = "employee.manager.firstName", params = "searchString", spec = LikeIgnoreCase.class),
 	@Spec(path = "employee.manager.lastName", params = "searchString", spec = LikeIgnoreCase.class),

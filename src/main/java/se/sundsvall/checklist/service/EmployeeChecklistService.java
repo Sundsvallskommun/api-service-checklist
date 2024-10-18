@@ -107,7 +107,7 @@ public class EmployeeChecklistService {
 		return employeeChecklists
 			.stream()
 			.map(this::handleUpdatedEmployeeInformation)
-			.filter(ob -> Objects.equals(userId, ob.getEmployee().getManager().getUserName())) // After possible update, the checklist might not be handled by sent in userId anymore
+			.filter(ob -> Objects.equals(userId, ob.getEmployee().getManager().getUsername())) // After possible update, the checklist might not be handled by sent in userId anymore
 			.map(EmployeeChecklistMapper::toEmployeeChecklist)
 			.map(ob -> decorateWithCustomTasks(ob, customTaskRepository.findAllByEmployeeChecklistId(ob.getId())))
 			.map(ob -> decorateWithFulfilment(ob, fetchEntity(employeeChecklists, ob.getId())))

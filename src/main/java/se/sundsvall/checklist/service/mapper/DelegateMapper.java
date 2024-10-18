@@ -25,7 +25,7 @@ public final class DelegateMapper {
 		return DelegateEntity.builder()
 			.withPartyId(portalPersonData.getPersonid().toString())
 			.withEmail(portalPersonData.getEmail())
-			.withUserName(getUserNameFromLoginName(portalPersonData.getLoginName()))
+			.withUsername(getUsernameFromLoginName(portalPersonData.getLoginName()))
 			.withFirstName(portalPersonData.getGivenname())
 			.withLastName(portalPersonData.getLastname())
 			.withEmployeeChecklist(employeeChecklist)
@@ -33,7 +33,7 @@ public final class DelegateMapper {
 			.build();
 	}
 
-	static String getUserNameFromLoginName(final String loginName) {
+	static String getUsernameFromLoginName(final String loginName) {
 		if (StringUtils.isNotBlank(loginName) && loginName.contains("\\")) {
 			return loginName.substring(loginName.indexOf("\\") + 1);
 		}

@@ -66,11 +66,11 @@ class DelegationResource {
 	@Operation(summary = "Fetch all employee checklists delegated to a user", description = "Fetch all delegated employee checklists for the user that matches sent in userid", responses = {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	})
-	@GetMapping(value = "/delegated-to/{userName}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
+	@GetMapping(value = "/delegated-to/{username}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
 	ResponseEntity<DelegatedEmployeeChecklistResponse> fetchDelegatedEmployeeChecklists(
 		@PathVariable @ValidMunicipalityId final String municipalityId,
-		@PathVariable final String userName) {
-		return ok(delegationService.fetchDelegatedEmployeeChecklistsByUserName(userName));
+		@PathVariable final String username) {
+		return ok(delegationService.fetchDelegatedEmployeeChecklistsByUsername(username));
 	}
 
 	@Operation(summary = "Remove delegation of employee checklist", description = "Remove the delegation of an employee checklist matching sent in email and checklist id", responses = {

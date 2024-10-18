@@ -50,12 +50,12 @@ class DelegationResourceTest {
 
 	@Test
 	void fetchDelegations() {
-		final var userName = "abc20def";
+		final var username = "abc20def";
 		final var mockResponse = DelegatedEmployeeChecklistResponse.builder().build();
-		when(serviceMock.fetchDelegatedEmployeeChecklistsByUserName(any())).thenReturn(mockResponse);
+		when(serviceMock.fetchDelegatedEmployeeChecklistsByUsername(any())).thenReturn(mockResponse);
 
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(BASE_PATH + "/delegated-to/{userName}").build(Map.of("municipalityId", MUNICIPALITY_ID, "userName", userName)))
+			.uri(builder -> builder.path(BASE_PATH + "/delegated-to/{username}").build(Map.of("municipalityId", MUNICIPALITY_ID, "username", username)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody(DelegatedEmployeeChecklistResponse.class)
@@ -63,7 +63,7 @@ class DelegationResourceTest {
 			.getResponseBody();
 
 		assertThat(response).isEqualTo(mockResponse);
-		verify(serviceMock).fetchDelegatedEmployeeChecklistsByUserName(userName);
+		verify(serviceMock).fetchDelegatedEmployeeChecklistsByUsername(username);
 		verifyNoMoreInteractions(serviceMock);
 	}
 

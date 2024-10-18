@@ -73,11 +73,11 @@ values (2, 'YES_OR_NO', now(), now(), 'Description of managers manager task', 'e
 -- --------------------------------------------------------------------------------------
 
 -- Manager
-insert into manager (created, updated, email, first_name, id, last_name, user_name)
+insert into manager (created, updated, email, first_name, id, last_name, username)
 values (now(), now(), 'a.manager@5535.com', 'A Man', '02817ff3-632a-4228-9c31-25ad8124568c', 'Ager', 'aman0agr');
 
 -- Employee
-insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name, manager_id, title, user_name, role_type)
+insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name, manager_id, title, username, role_type)
 values ('2024-01-01', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'bd49f474-303c-4a4e-aa54-5d4f58d9188b', 'a.employee@5535.com', 'A Emp', '1810c9c4-7281-44de-9930-426d9f065f4d', 'Loyee', '02817ff3-632a-4228-9c31-25ad8124568c', 'Cleaner', 'aemp0loyee', 'EMPLOYEE');
 
 -- Employee checklist
@@ -93,7 +93,7 @@ values ('2024-01-02 12:00:00.000', '34e076da-8694-4cb9-be1a-814212801686', 'f853
 -- --------------------------------------------------------------------------------------
 
 -- Employee
-insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name, manager_id, title, user_name, role_type)
+insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name, manager_id, title, username, role_type)
 values ('2024-01-06', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'bd49f474-303c-4a4e-aa54-5d4f58d9188b', 'b.employee@5535.com', 'B Emp', '8122705b-e0e6-4055-b301-eba21986e219', 'Loyee', '02817ff3-632a-4228-9c31-25ad8124568c', 'Loather', 'bemp0loyee', 'EMPLOYEE');
 
 -- Employee checklist
@@ -117,7 +117,7 @@ insert into organization (organization_number, created, updated, organization_na
 values (55351, now(), now(), 'Sub organization 55351', '176eb3d9-ebbc-4951-9c8a-e4503f003f79');
 
 -- Employee
-insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name, manager_id, title, user_name, role_type)
+insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name, manager_id, title, username, role_type)
 values ('2024-01-06', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', '176eb3d9-ebbc-4951-9c8a-e4503f003f79', 'c.manager@55351.com', 'C Newman', 'ae93a63e-d975-4cd9-8e28-4cc9ea8b4d96', 'Ager', '02817ff3-632a-4228-9c31-25ad8124568c', 'New manager', 'cman1agr', 'MANAGER');
 
 -- Employee checklist
@@ -138,11 +138,11 @@ values ('2024-01-07 12:00:00.000', '6b17e790-f22c-46fe-8bff-f58af8cbab6a', '2e2b
 -- --------------------------------------------------------------------------------------
 
 -- Manager
-insert into manager (created, updated, email, first_name, id, last_name, user_name)
+insert into manager (created, updated, email, first_name, id, last_name, username)
 values (now(), now(), 'd.manager@55351.com', 'D Man', 'b1cf6779-f2a2-4236-89c6-0ba9beab70c7', 'Ager', 'dman2agr');
 
 -- Employee
-insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name, manager_id, title, user_name, role_type)
+insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name, manager_id, title, username, role_type)
 values ('2024-01-01', now(), subdate(now(), INTERVAL 1 DAY), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'bd49f474-303c-4a4e-aa54-5d4f58d9188b', 'c.employee@55351.com', 'C Emp', '702323a9-f542-4081-a780-a1396068c8c9', 'Loyee', 'b1cf6779-f2a2-4236-89c6-0ba9beab70c7', 'Growler', 'cemp3loyee', 'EMPLOYEE');
 
 -- Employee checklist
@@ -158,11 +158,11 @@ values ('2024-07-01', '2024-10-01', '2024-01-01', false, '2024-01-01 12:00:00.00
 -- --------------------------------------------------------------------------------------
 
 -- Manager
-insert into manager (created, updated, email, first_name, id, last_name, user_name)
+insert into manager (created, updated, email, first_name, id, last_name, username)
 values (now(), now(), 'e.manager@55351.com', 'E Man', '749fa5bb-438d-47cf-ab1c-0664e9951210', 'Ager', 'eman3agr');
 
 -- Employee
-insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name, manager_id, title, user_name, role_type)
+insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name, manager_id, title, username, role_type)
 values ('2024-01-01', now(), subdate(now(), INTERVAL 1 DAY), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'bd49f474-303c-4a4e-aa54-5d4f58d9188b', 'd.employee@55352.com', 'D Emp', 'fe34e2a9-5723-4734-91dc-42a664c5432f', 'Loyee', '749fa5bb-438d-47cf-ab1c-0664e9951210', 'Muggler', 'demp4loyee', 'EMPLOYEE');
 
 -- Employee checklist
@@ -173,11 +173,11 @@ values ('2024-07-01', '2024-10-01', '2024-01-01', false, '2024-01-01 12:00:00.00
 -- Manager G, Employee E and Employee F are used in testcases test05 and test06
 -- ======================================================================================
 -- Manager
-insert into manager (created, updated, email, first_name, id, last_name, user_name)
+insert into manager (created, updated, email, first_name, id, last_name, username)
 values (now(), now(), 'g.manager@55351.com', 'G Man', 'f59918bc-a8f1-4f97-abe3-9f80f26e6bf2', 'Ager', 'gman5agr');
 
 -- Employee E
-insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name, manager_id, title, user_name, role_type)
+insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name, manager_id, title, username, role_type)
 values ('2024-01-01', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'bd49f474-303c-4a4e-aa54-5d4f58d9188b', 'e.employee@55351.com', 'E Emp', 'bfd69468-bd32-4b84-a3b0-c5e1742a5a34', 'Loyee', 'f59918bc-a8f1-4f97-abe3-9f80f26e6bf2', 'Struggler', 'eemp5loyee', 'EMPLOYEE');
 
 -- Employee checklist
@@ -185,7 +185,7 @@ insert into employee_checklist (end_date, expiration_date, start_date, locked, c
 values ('2024-07-01', '2024-10-01', '2024-01-01', false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', 'e20598a4-6b32-459e-8c15-febbd4c5868e', NULL, 'bfd69468-bd32-4b84-a3b0-c5e1742a5a34', '8fcc1fc7-bcda-4db6-9375-ff99961ef011');
 
 -- Employee F
-insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name, manager_id, title, user_name, role_type)
+insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name, manager_id, title, username, role_type)
 values ('2024-01-01', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'bd49f474-303c-4a4e-aa54-5d4f58d9188b', 'f.employee@55351.com', 'F Emp', '87b0d9c2-c06e-409d-b77e-63f427e0dbc2', 'Loyee', 'f59918bc-a8f1-4f97-abe3-9f80f26e6bf2', 'Juggler', 'femp6loyee', 'EMPLOYEE');
 
 -- Employee checklist
@@ -193,7 +193,7 @@ insert into employee_checklist (end_date, expiration_date, start_date, locked, c
 values ('2024-07-01', '2024-10-01', '2024-01-01', false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', 'e20598a4-6b32-459e-8c15-febbd4c5868e', NULL, '87b0d9c2-c06e-409d-b77e-63f427e0dbc2', 'e4474a9b-1a57-49b8-bec8-2e50db600fbb');
 
 -- Delegation of employee checklist
-insert into delegate (email, id, manager_id, employee_checklist_id, party_id, user_name, first_name, last_name)
+insert into delegate (email, id, manager_id, employee_checklist_id, party_id, username, first_name, last_name)
 values ('delegated.email@noreply.com', 'fcfff6b0-d66f-4f09-a77c-7b02979fbe07', 'f59918bc-a8f1-4f97-abe3-9f80f26e6bf2', 'e4474a9b-1a57-49b8-bec8-2e50db600fbb', 'b33adee5-3f8f-4201-bfc5-f0e5ba8cd54f', 'dele0gate', 'John', 'Doe');
 
 -- ======================================================================================
@@ -202,11 +202,11 @@ values ('delegated.email@noreply.com', 'fcfff6b0-d66f-4f09-a77c-7b02979fbe07', '
 -- Employee H is used in testcase test10
 -- ======================================================================================
 -- Manager
-insert into manager (created, updated, email, first_name, id, last_name, user_name)
+insert into manager (created, updated, email, first_name, id, last_name, username)
 values (now(), now(), 'h.manager@55351.com', 'H Man', '9dcffa46-c500-4696-a862-04867df207d0', 'Ager', 'hman6agr');
 
 -- Employee G
-insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name, manager_id, title, user_name, role_type)
+insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name, manager_id, title, username, role_type)
 values ('2024-01-01', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'bd49f474-303c-4a4e-aa54-5d4f58d9188b', 'g.employee@55351.com', 'G Emp', 'f1abc7a4-ad20-4c74-a5d7-3d4833405a96', 'Loyee', '9dcffa46-c500-4696-a862-04867df207d0', 'Slugger', 'gemp6loyee', 'EMPLOYEE');
 
 -- Employee checklist
@@ -222,7 +222,7 @@ insert into custom_task (sort_order, created, updated, heading, id, employee_che
 values (0, '2024-01-03 12:00:00.000', '2024-01-03 12:00:00.000', 'First custom manager task', '0ef2b968-2b65-41d5-9865-e3e0d0f37e00', '855e7d4e-af50-4fd3-b81d-a71299f38d1a', '7272d1fc-540e-4394-afe2-e133ca642e91', 'Descriptive text for custom task', 'YES_OR_NO', 'MANAGER');
 
 -- Employee H
-insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name, manager_id, title, user_name, role_type)
+insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name, manager_id, title, username, role_type)
 values ('2024-01-01', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'bd49f474-303c-4a4e-aa54-5d4f58d9188b', 'h.employee@55351.com', 'H Emp', 'd59ded65-bdf8-49e9-837d-3ca12be93970', 'Loyee', '9dcffa46-c500-4696-a862-04867df207d0', 'Snuggler', 'hemp7loyee', 'EMPLOYEE');
 
 -- Employee checklist

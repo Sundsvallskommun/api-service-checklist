@@ -43,7 +43,7 @@ public class OrganizationMapper {
 				.withRoleType(ofNullable(employee.getIsManager()).orElse(false) ? MANAGER : EMPLOYEE)
 				.withStartDate(getStartDate(employee))
 				.withTitle(getJobTitle(employee))
-				.withUserName(employee.getLoginname())
+				.withUsername(employee.getLoginname())
 				.build())
 			.orElse(null);
 	}
@@ -53,7 +53,7 @@ public class OrganizationMapper {
 			entity.setEmail(employee.getEmailAddress());
 			entity.setLastName(employee.getLastname());
 			entity.setFirstName(employee.getGivenname());
-			entity.setUserName(employee.getLoginname());
+			entity.setUsername(employee.getLoginname());
 			entity.setTitle(getJobTitle(employee));
 			entity.setRoleType(ofNullable(employee.getIsManager()).orElse(false) ? MANAGER : EMPLOYEE);
 		});
@@ -113,7 +113,7 @@ public class OrganizationMapper {
 				.withFirstName(manager1.getGivenname())
 				.withLastName(manager1.getLastname())
 				.withPersonId(manager1.getPersonId().toString())
-				.withUserName(manager1.getLoginname())
+				.withUsername(manager1.getLoginname())
 				.build())
 			.orElse(null);
 	}
@@ -150,7 +150,7 @@ public class OrganizationMapper {
 				.withFirstName(entity.getFirstName())
 				.withLastName(entity.getLastName())
 				.withEmail(entity.getEmail())
-				.withUserName(entity.getUserName())
+				.withUsername(entity.getUsername())
 				.build())
 			.orElse(null);
 	}
@@ -162,9 +162,8 @@ public class OrganizationMapper {
 				.withFirstName(entity.getFirstName())
 				.withLastName(entity.getLastName())
 				.withEmail(entity.getEmail())
-				.withUserName(entity.getUserName())
+				.withUsername(entity.getUsername())
 				.build())
 			.orElse(null);
 	}
-
 }

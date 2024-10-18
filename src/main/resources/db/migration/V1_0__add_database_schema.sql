@@ -68,7 +68,7 @@
         last_name varchar(255) not null,
         manager_id varchar(255),
         party_id varchar(255) not null,
-        user_name varchar(255) not null,
+        username varchar(255) not null,
         primary key (id)
     ) engine=InnoDB;
 
@@ -84,7 +84,7 @@
         manager_id varchar(255),
         organization_id varchar(255),
         title varchar(255),
-        user_name varchar(255),
+        username varchar(255),
         role_type enum ('EMPLOYEE','MANAGER'),
         primary key (id)
     ) engine=InnoDB;
@@ -120,7 +120,7 @@
         first_name varchar(255),
         id varchar(255) not null,
         last_name varchar(255),
-        user_name varchar(255),
+        username varchar(255),
         primary key (id)
     ) engine=InnoDB;
 
@@ -170,8 +170,8 @@
     alter table if exists checklist 
        add constraint uk_checklist_name_version unique (name, version);
 
-    create index idx_delegate_user_name 
-       on delegate (user_name);
+    create index idx_delegate_username 
+       on delegate (username);
 
     create index idx_delegate_first_name 
        on delegate (first_name);
@@ -182,8 +182,8 @@
     create index idx_delegate_email 
        on delegate (email);
 
-    create index idx_employee_user_name 
-       on employee (user_name);
+    create index idx_employee_username 
+       on employee (username);
 
     create index employee_checklist_expiration_date_locked_idx 
        on employee_checklist (expiration_date, locked);

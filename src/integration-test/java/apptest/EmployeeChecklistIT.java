@@ -93,7 +93,7 @@ class EmployeeChecklistIT extends AbstractAppTest {
 
 	@Test
 	void test04_fetchChecklistsAsManagerWhenEmployeeChangedManager() {
-		final var filter = Example.of(ManagerEntity.builder().withUserName("fman4agr").build());
+		final var filter = Example.of(ManagerEntity.builder().withUsername("fman4agr").build());
 
 		// Verify that manager is not present in database before execution
 		assertThat(managerRepository.findAll(filter)).isEmpty();

@@ -2020,7 +2020,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/employee-checklists/delegated-to/{userName}:
+  /{municipalityId}/employee-checklists/delegated-to/{username}:
     get:
       tags:
       - Delegation resources
@@ -2034,7 +2034,7 @@ paths:
         required: true
         schema:
           type: string
-      - name: userName
+      - name: username
         in: path
         required: true
         schema:
@@ -3256,9 +3256,9 @@ components:
           description: The email address for the stakeholder
           readOnly: true
           example: email.address@noreply.com
-        userName:
+        username:
           type: string
-          description: The user name for the stakeholder
+          description: The username for the stakeholder
           readOnly: true
           example: abc12def
       description: Model for a stakeholder (employee or manager) to an employee checklist
