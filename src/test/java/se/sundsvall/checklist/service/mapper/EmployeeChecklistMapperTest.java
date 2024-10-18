@@ -101,14 +101,14 @@ class EmployeeChecklistMapperTest {
 		final var firstName = "firstName";
 		final var lastName = "lastName";
 		final var personId = UUID.randomUUID();
-		final var userName = "userName";
+		final var username = "username";
 
 		final var manager = new Manager()
 			.emailAddress(emailAddress)
 			.givenname(firstName)
 			.lastname(lastName)
 			.personId(personId)
-			.loginname(userName);
+			.loginname(username);
 
 		// Act
 		final var entity = OrganizationMapper.toManagerEntity(manager);
@@ -121,7 +121,7 @@ class EmployeeChecklistMapperTest {
 		assertThat(entity.getLastName()).isEqualTo(lastName);
 		assertThat(entity.getPersonId()).isEqualTo(personId.toString());
 		assertThat(entity.getUpdated()).isNull();
-		assertThat(entity.getUserName()).isEqualTo(userName);
+		assertThat(entity.getUsername()).isEqualTo(username);
 	}
 
 	@Test

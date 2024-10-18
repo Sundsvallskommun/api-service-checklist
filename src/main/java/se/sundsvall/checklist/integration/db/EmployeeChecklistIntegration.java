@@ -108,11 +108,11 @@ public class EmployeeChecklistIntegration {
 	}
 
 	public Optional<EmployeeChecklistEntity> fetchOptionalEmployeeChecklist(String userId) {
-		return ofNullable(employeeChecklistRepository.findByEmployeeUserName(userId));
+		return ofNullable(employeeChecklistRepository.findByEmployeeUsername(userId));
 	}
 
 	public List<EmployeeChecklistEntity> fetchEmployeeChecklistsForManager(String userId) {
-		return employeeChecklistRepository.findAllByEmployeeManagerUserName(userId);
+		return employeeChecklistRepository.findAllByEmployeeManagerUsername(userId);
 	}
 
 	@Transactional
@@ -320,7 +320,7 @@ public class EmployeeChecklistIntegration {
 		final var employeeRole = employeeEntity.getRoleType();
 
 		final var checklistEntity = retrieveClosestAvailableChecklist(orgTree.getTree().descendingMap().values().iterator(), employeeRole)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NO_MATCHING_CHECKLIST_FOUND.formatted(employeeRole, employeeEntity.getUserName(),
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NO_MATCHING_CHECKLIST_FOUND.formatted(employeeRole, employeeEntity.getUsername(),
 				toReadableString(orgTree.getTree().values().stream().map(OrganizationLine::getOrgId).toList()))));
 
 		employeeChecklistRepository.save(toEmployeeChecklistEntity(employeeEntity, checklistEntity));

@@ -73,8 +73,8 @@ public class DelegationService {
 		});
 	}
 
-	public DelegatedEmployeeChecklistResponse fetchDelegatedEmployeeChecklistsByUserName(final String userName) {
-		final var delegatedEmployeeChecklistEntities = delegateRepository.findAllByUserName(userName)
+	public DelegatedEmployeeChecklistResponse fetchDelegatedEmployeeChecklistsByUsername(final String username) {
+		final var delegatedEmployeeChecklistEntities = delegateRepository.findAllByUsername(username)
 			.stream()
 			.map(DelegateEntity::getEmployeeChecklist)
 			.toList();

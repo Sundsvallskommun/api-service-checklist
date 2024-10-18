@@ -6,14 +6,14 @@
 			"firstName": "A Emp",
 			"lastName": "Loyee",
 			"email": "a.employee@5535.com",
-			"userName": "aemp0loyee"
+			"username": "aemp0loyee"
 		},
 		"manager": {
 			"id": "02817ff3-632a-4228-9c31-25ad8124568c",
 			"firstName": "A Man",
 			"lastName": "Ager",
 			"email": "a.manager@5535.com",
-			"userName": "aman0agr"
+			"username": "aman0agr"
 		},
 		"completed": false,
 		"locked": false,
@@ -91,14 +91,14 @@
 			"firstName": "B Emp",
 			"lastName": "Loyee",
 			"email": "b.employee@5535.com",
-			"userName": "bemp0loyee"
+			"username": "bemp0loyee"
 		},
 		"manager": {
 			"id": "02817ff3-632a-4228-9c31-25ad8124568c",
 			"firstName": "A Man",
 			"lastName": "Ager",
 			"email": "a.manager@5535.com",
-			"userName": "aman0agr"
+			"username": "aman0agr"
 		},
 		"completed": false,
 		"locked": false,
@@ -184,14 +184,14 @@
 			"firstName": "C Newman",
 			"lastName": "Ager",
 			"email": "c.manager@55351.com",
-			"userName": "cman1agr"
+			"username": "cman1agr"
 		},
 		"manager": {
 			"id": "02817ff3-632a-4228-9c31-25ad8124568c",
 			"firstName": "A Man",
 			"lastName": "Ager",
 			"email": "a.manager@5535.com",
-			"userName": "aman0agr"
+			"username": "aman0agr"
 		},
 		"completed": true,
 		"locked": false,

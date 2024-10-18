@@ -7,7 +7,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import static org.zalando.problem.Status.BAD_REQUEST;
 
 import java.util.Map;
-import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,8 @@ import se.sundsvall.checklist.service.DelegationService;
 @ActiveProfiles("junit")
 class DelegationResourceFailureTest {
 
-	private static final String PATH_PREFIX = "/employee-checklists";
+	private static final String INVALID = "invalid";
+	private static final String BASE_PATH = "/{municipalityId}/employee-checklists";
 
 	@MockBean
 	private DelegationService delegationServiceMock;
@@ -34,11 +34,9 @@ class DelegationResourceFailureTest {
 	private WebTestClient webTestClient;
 
 	@Test
-	void delegateToInvalidEmployeeChecklistUuid() {
-		final var id = "invalid";
-
+	void delegateToEmployeeChecklistWithInvalidPathValues() {
 		final var response = webTestClient.post()
-			.uri(builder -> builder.path(PATH_PREFIX + "/{uuid}/delegate-to/random.email@noreply.com").build(Map.of("uuid", id)))
+			.uri(builder -> builder.path(BASE_PATH + "/{uuid}/delegate-to/{email}").build(Map.of("municipalityId", INVALID, "uuid", INVALID, "email", INVALID)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectBody(ConstraintViolationProblem.class)
@@ -49,40 +47,19 @@ class DelegationResourceFailureTest {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
-				.containsExactlyInAnyOrder(tuple("delegateEmployeeChecklist.employeeChecklistId", "not a valid UUID"));
+				.containsExactlyInAnyOrder(
+					tuple("delegateEmployeeChecklist.municipalityId", "not a valid municipality ID"),
+					tuple("delegateEmployeeChecklist.employeeChecklistId", "not a valid UUID"),
+					tuple("delegateEmployeeChecklist.email", "must be a well-formed email address"));
 		});
 
 		verifyNoInteractions(delegationServiceMock);
 	}
 
 	@Test
-	void delegateToInvalidEmail() {
-		final var id = UUID.randomUUID().toString();
-
-		final var response = webTestClient.post()
-			.uri(builder -> builder.path(PATH_PREFIX + "/{uuid}/delegate-to/invalid").build(Map.of("uuid", id)))
-			.exchange()
-			.expectStatus().isBadRequest()
-			.expectBody(ConstraintViolationProblem.class)
-			.returnResult()
-			.getResponseBody();
-
-		assertThat(response).isNotNull().satisfies(r -> {
-			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
-			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
-				.containsExactlyInAnyOrder(tuple("delegateEmployeeChecklist.email", "must be a well-formed email address"));
-		});
-
-		verifyNoInteractions(delegationServiceMock);
-	}
-
-	@Test
-	void removeDelegationToInvalidEmployeeChecklistUuid() {
-		final var id = "invalid";
-
+	void removeDelegationToEmployeeChecklistWithInvalidPathValues() {
 		final var response = webTestClient.delete()
-			.uri(builder -> builder.path(PATH_PREFIX + "/{uuid}/delegated-to/random.email@noreply.com").build(Map.of("uuid", id)))
+			.uri(builder -> builder.path(BASE_PATH + "/{uuid}/delegated-to/{email}").build(Map.of("municipalityId", INVALID, "uuid", INVALID, "email", INVALID)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectBody(ConstraintViolationProblem.class)
@@ -93,29 +70,10 @@ class DelegationResourceFailureTest {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
-				.containsExactlyInAnyOrder(tuple("deleteEmployeeChecklistDelegation.employeeChecklistId", "not a valid UUID"));
-		});
-
-		verifyNoInteractions(delegationServiceMock);
-	}
-
-	@Test
-	void removeDelegationToInvalidEmail() {
-		final var id = UUID.randomUUID().toString();
-
-		final var response = webTestClient.delete()
-			.uri(builder -> builder.path(PATH_PREFIX + "/{uuid}/delegated-to/invalid").build(Map.of("uuid", id)))
-			.exchange()
-			.expectStatus().isBadRequest()
-			.expectBody(ConstraintViolationProblem.class)
-			.returnResult()
-			.getResponseBody();
-
-		assertThat(response).isNotNull().satisfies(r -> {
-			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
-			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
-				.containsExactlyInAnyOrder(tuple("deleteEmployeeChecklistDelegation.email", "must be a well-formed email address"));
+				.containsExactlyInAnyOrder(
+					tuple("deleteEmployeeChecklistDelegation.municipalityId", "not a valid municipality ID"),
+					tuple("deleteEmployeeChecklistDelegation.employeeChecklistId", "not a valid UUID"),
+					tuple("deleteEmployeeChecklistDelegation.email", "must be a well-formed email address"));
 		});
 
 		verifyNoInteractions(delegationServiceMock);

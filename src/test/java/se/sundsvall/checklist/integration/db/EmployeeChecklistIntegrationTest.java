@@ -115,12 +115,12 @@ class EmployeeChecklistIntegrationTest {
 		final var userId = "userId";
 		final var entity = EmployeeChecklistEntity.builder().build();
 
-		when(employeeChecklistsRepositoryMock.findByEmployeeUserName(userId)).thenReturn(entity);
+		when(employeeChecklistsRepositoryMock.findByEmployeeUsername(userId)).thenReturn(entity);
 
 		final var result = integration.fetchOptionalEmployeeChecklist(userId);
 
 		assertThat(result).isEqualTo(Optional.of(entity));
-		verify(employeeChecklistsRepositoryMock).findByEmployeeUserName(userId);
+		verify(employeeChecklistsRepositoryMock).findByEmployeeUsername(userId);
 	}
 
 	@Test
@@ -130,7 +130,7 @@ class EmployeeChecklistIntegrationTest {
 
 		// Act, assert and verify
 		assertThat(integration.fetchOptionalEmployeeChecklist(userId)).isEmpty();
-		verify(employeeChecklistsRepositoryMock).findByEmployeeUserName(userId);
+		verify(employeeChecklistsRepositoryMock).findByEmployeeUsername(userId);
 	}
 
 	@Test
@@ -139,14 +139,14 @@ class EmployeeChecklistIntegrationTest {
 		final var userId = "userId";
 		final var entity = EmployeeChecklistEntity.builder().build();
 
-		when(employeeChecklistsRepositoryMock.findAllByEmployeeManagerUserName(userId)).thenReturn(List.of(entity));
+		when(employeeChecklistsRepositoryMock.findAllByEmployeeManagerUsername(userId)).thenReturn(List.of(entity));
 
 		// Act
 		final var result = integration.fetchEmployeeChecklistsForManager(userId);
 
 		// Verify and assert
 		assertThat(result).isNotEmpty().containsExactly(entity);
-		verify(employeeChecklistsRepositoryMock).findAllByEmployeeManagerUserName(userId);
+		verify(employeeChecklistsRepositoryMock).findAllByEmployeeManagerUsername(userId);
 	}
 
 	@Test
@@ -770,10 +770,10 @@ class EmployeeChecklistIntegrationTest {
 	@Test
 	void initiateEmployeeWithExistingEmployeeChecklist() {
 		// Arrange
-		final var userName = "userName";
+		final var username = "username";
 		final var uuid = UUID.randomUUID();
 		final var employee = new Employee()
-			.loginname(userName)
+			.loginname(username)
 			.personId(uuid);
 
 		when(employeeRepositoryMock.existsById(uuid.toString())).thenReturn(true);
@@ -783,16 +783,16 @@ class EmployeeChecklistIntegrationTest {
 
 		// Verify and assert
 		verify(employeeRepositoryMock).existsById(uuid.toString());
-		assertThat(result).isEqualTo("Employee with loginname userName already has an employee checklist.");
+		assertThat(result).isEqualTo("Employee with loginname username already has an employee checklist.");
 	}
 
 	@Test
 	void initiateEmployeeWithNoMainEmployment() {
 		// Arrange
-		final var userName = "userName";
+		final var username = "username";
 		final var uuid = UUID.randomUUID();
 		final var employee = new Employee()
-			.loginname(userName)
+			.loginname(username)
 			.personId(uuid)
 			.addEmploymentsItem(
 				new Employment()
@@ -805,16 +805,16 @@ class EmployeeChecklistIntegrationTest {
 		// Verify and assert
 		verify(employeeRepositoryMock).existsById(uuid.toString());
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
-		assertThat(e.getMessage()).isEqualTo("Not Found: No main employment found for employee with loginname userName.");
+		assertThat(e.getMessage()).isEqualTo("Not Found: No main employment found for employee with loginname username.");
 	}
 
 	@Test
 	void initiateEmployeeNotValidForChecklist() {
 		// Arrange
-		final var userName = "userName";
+		final var username = "username";
 		final var uuid = UUID.randomUUID();
 		final var employee = new Employee()
-			.loginname(userName)
+			.loginname(username)
 			.personId(uuid)
 			.addEmploymentsItem(
 				new Employment()
@@ -827,20 +827,20 @@ class EmployeeChecklistIntegrationTest {
 		// Verify and assert
 		verify(employeeRepositoryMock).existsById(uuid.toString());
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_ACCEPTABLE);
-		assertThat(e.getMessage()).isEqualTo("Not Acceptable: Employee with loginname userName does not have an employment type that validates for creating an employee checklist.");
+		assertThat(e.getMessage()).isEqualTo("Not Acceptable: Employee with loginname username does not have an employment type that validates for creating an employee checklist.");
 	}
 
 	@Test
 	void initiateEmployeeWhenOrganizationIsNotPresentInDatabase() {
 		// Arrange
-		final var userName = "userName";
+		final var username = "username";
 		final var employeeUuid = UUID.randomUUID();
 		final var companyId = 2;
 		final var orgId = 2124;
 		final var orgName = "orgName";
 		final var managerUuid = UUID.randomUUID();
 		final var employee = new Employee()
-			.loginname(userName)
+			.loginname(username)
 			.personId(employeeUuid)
 			.addEmploymentsItem(
 				new Employment()
@@ -867,13 +867,13 @@ class EmployeeChecklistIntegrationTest {
 		verify(organizationRepositoryMock, times(2)).findOneByOrganizationNumber(2124);
 
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
-		assertThat(e.getMessage()).isEqualTo("Not Found: No EMPLOYEE checklist was found for any id in the organization tree for employee userName. Search has been performed for id 2, 21, 212 and 2124.");
+		assertThat(e.getMessage()).isEqualTo("Not Found: No EMPLOYEE checklist was found for any id in the organization tree for employee username. Search has been performed for id 2, 21, 212 and 2124.");
 	}
 
 	@Test
 	void initiateEmployeeWhenOrganizationChecklistIsNotPresentInDatabase() {
 		// Arrange
-		final var userName = "userName";
+		final var username = "username";
 		final var employeeUuid = UUID.randomUUID();
 		final var companyId = 2;
 		final var orgId = 2124;
@@ -881,7 +881,7 @@ class EmployeeChecklistIntegrationTest {
 		final var managerUuid = UUID.randomUUID();
 		final var organizationUuid = UUID.randomUUID();
 		final var employee = new Employee()
-			.loginname(userName)
+			.loginname(username)
 			.personId(employeeUuid)
 			.isManager(true)
 			.addEmploymentsItem(
@@ -914,13 +914,13 @@ class EmployeeChecklistIntegrationTest {
 		verify(organizationRepositoryMock, times(2)).findOneByOrganizationNumber(2124);
 
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
-		assertThat(e.getMessage()).isEqualTo("Not Found: No MANAGER checklist was found for any id in the organization tree for employee userName. Search has been performed for id 2, 21, 212 and 2124.");
+		assertThat(e.getMessage()).isEqualTo("Not Found: No MANAGER checklist was found for any id in the organization tree for employee username. Search has been performed for id 2, 21, 212 and 2124.");
 	}
 
 	@Test
 	void initiateEmployeeWhenOrganizationActiveChecklistIsNotPresentInDatabase() {
 		// Arrange
-		final var userName = "userName";
+		final var username = "username";
 		final var employeeUuid = UUID.randomUUID();
 		final var companyId = 2;
 		final var orgId = 2124;
@@ -929,7 +929,7 @@ class EmployeeChecklistIntegrationTest {
 		final var organizationUuid = UUID.randomUUID();
 		final var checklistUuid = UUID.randomUUID();
 		final var employee = new Employee()
-			.loginname(userName)
+			.loginname(username)
 			.personId(employeeUuid)
 			.addEmploymentsItem(
 				new Employment()
@@ -965,14 +965,14 @@ class EmployeeChecklistIntegrationTest {
 		verify(organizationRepositoryMock, times(2)).findOneByOrganizationNumber(2124);
 
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
-		assertThat(e.getMessage()).isEqualTo("Not Found: No EMPLOYEE checklist was found for any id in the organization tree for employee userName. Search has been performed for id 2, 21, 212 and 2124.");
+		assertThat(e.getMessage()).isEqualTo("Not Found: No EMPLOYEE checklist was found for any id in the organization tree for employee username. Search has been performed for id 2, 21, 212 and 2124.");
 	}
 
 	@Test
 	@DisplayName("Initiation of employee belonging to a new department and a new manager, which will add department and manager entities in the database")
 	void initiateEmployeeWithNewStructure() {
 		// Arrange
-		final var userName = "userName";
+		final var username = "username";
 		final var employeeUuid = UUID.randomUUID();
 		final var companyId = 2;
 		final var orgId = 2124;
@@ -981,7 +981,7 @@ class EmployeeChecklistIntegrationTest {
 		final var organizationUuid = UUID.randomUUID();
 		final var checklistUuid = UUID.randomUUID();
 		final var employee = new Employee()
-			.loginname(userName)
+			.loginname(username)
 			.personId(employeeUuid)
 			.addEmploymentsItem(
 				new Employment()
@@ -1031,14 +1031,14 @@ class EmployeeChecklistIntegrationTest {
 		assertThat(employeeChecklistEntityCaptor.getValue().getCustomFulfilments()).isNullOrEmpty();
 		assertThat(employeeChecklistEntityCaptor.getValue().getCustomTasks()).isNullOrEmpty();
 		assertThat(employeeChecklistEntityCaptor.getValue().getFulfilments()).isNullOrEmpty();
-		assertThat(result).isEqualTo("Employee with loginname userName processed successfully.");
+		assertThat(result).isEqualTo("Employee with loginname username processed successfully.");
 	}
 
 	@Test
 	@DisplayName("Initiation of employee belonging to an existing department and manager, which will not add department and manager entities in the database and will use company checklist")
 	void initiateEmployeeWithExistingStructure() {
 		// Arrange
-		final var userName = "userName";
+		final var username = "username";
 		final var employeeUuid = UUID.randomUUID();
 		final var companyId = 2;
 		final var orgId = 2124;
@@ -1048,7 +1048,7 @@ class EmployeeChecklistIntegrationTest {
 		final var departmentUuid = UUID.randomUUID();
 		final var checklistUuid = UUID.randomUUID();
 		final var employee = new Employee()
-			.loginname(userName)
+			.loginname(username)
 			.personId(employeeUuid)
 			.addEmploymentsItem(
 				new Employment()
@@ -1114,7 +1114,7 @@ class EmployeeChecklistIntegrationTest {
 		assertThat(employeeChecklistEntityCaptor.getValue().getCustomFulfilments()).isNullOrEmpty();
 		assertThat(employeeChecklistEntityCaptor.getValue().getCustomTasks()).isNullOrEmpty();
 		assertThat(employeeChecklistEntityCaptor.getValue().getFulfilments()).isNullOrEmpty();
-		assertThat(result).isEqualTo("Employee with loginname userName processed successfully.");
+		assertThat(result).isEqualTo("Employee with loginname username processed successfully.");
 	}
 
 	@AfterEach

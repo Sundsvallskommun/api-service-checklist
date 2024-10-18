@@ -26,10 +26,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import se.sundsvall.checklist.api.model.Correspondence;
 import se.sundsvall.checklist.service.CommunicationService;
+import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
 
 @RestController
-@RequestMapping("/employee-checklists")
+@RequestMapping("/{municipalityId}/employee-checklists")
 @Tag(name = "Communication resources", description = "Resources for managing communication")
 @ApiResponses(value = {
 	@ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = { Problem.class, ConstraintViolationProblem.class }))),
@@ -49,7 +50,10 @@ class CommunicationResource {
 		@ApiResponse(responseCode = "201", description = "Successful Operation", useReturnTypeSchema = true)
 	})
 	@PostMapping(value = "/{employeeChecklistId}/email")
-	ResponseEntity<Void> sendEmail(@PathVariable @ValidUuid final String employeeChecklistId) {
+	ResponseEntity<Void> sendEmail(
+		@PathVariable @ValidMunicipalityId final String municipalityId,
+		@PathVariable @ValidUuid final String employeeChecklistId) {
+
 		communicationService.sendEmail(employeeChecklistId);
 		return status(CREATED).header(CONTENT_TYPE, ALL_VALUE).build();
 	}
@@ -58,7 +62,10 @@ class CommunicationResource {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	})
 	@GetMapping(value = "/{employeeChecklistId}/correspondence", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
-	ResponseEntity<Correspondence> fetchCorrespondence(@PathVariable @ValidUuid final String employeeChecklistId) {
+	ResponseEntity<Correspondence> fetchCorrespondence(
+		@PathVariable @ValidMunicipalityId final String municipalityId,
+		@PathVariable @ValidUuid final String employeeChecklistId) {
+
 		return ok(communicationService.fetchCorrespondence(employeeChecklistId));
 	}
 }

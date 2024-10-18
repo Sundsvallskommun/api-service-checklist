@@ -28,6 +28,6 @@ public class Stakeholder {
 	@Schema(description = "The email address for the stakeholder", example = "email.address@noreply.com", accessMode = READ_ONLY)
 	private String email;
 
-	@Schema(description = "The user name for the stakeholder", example = "abc12def", accessMode = READ_ONLY)
-	private String userName;
+	@Schema(description = "The username for the stakeholder", example = "abc12def", accessMode = READ_ONLY)
+	private String username;
 }

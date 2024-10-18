@@ -33,8 +33,10 @@ import se.sundsvall.checklist.service.TaskService;
 @ActiveProfiles("junit")
 class TaskResourceFailureTest {
 
-	private static final String BASE_PATH = "/checklists/{checklistId}/phases/{phaseId}/tasks";
+	private static final String BASE_PATH = "/{municipalityId}/checklists/{checklistId}/phases/{phaseId}/tasks";
 	private static final String RANDOM_ID = UUID.randomUUID().toString();
+	private static final String INVALID = "invalid";
+	private static final String MUNICIPALITY_ID = "2281";
 
 	@Autowired
 	private WebTestClient webTestClient;
@@ -44,48 +46,53 @@ class TaskResourceFailureTest {
 
 	private static Stream<Arguments> fetchChecklistAndPhaseAndTaskArgumentProvider() {
 		return Stream.of(
-			Arguments.of("invalidId", RANDOM_ID, RANDOM_ID, "checklistId", "not a valid UUID"),
-			Arguments.of(RANDOM_ID, "invalidId", RANDOM_ID, "phaseId", "not a valid UUID"),
-			Arguments.of(RANDOM_ID, RANDOM_ID, "invalidId", "taskId", "not a valid UUID"));
+			Arguments.of(INVALID, RANDOM_ID, RANDOM_ID, RANDOM_ID, "municipalityId", "not a valid municipality ID"),
+			Arguments.of(MUNICIPALITY_ID, INVALID, RANDOM_ID, RANDOM_ID, "checklistId", "not a valid UUID"),
+			Arguments.of(MUNICIPALITY_ID, RANDOM_ID, INVALID, RANDOM_ID, "phaseId", "not a valid UUID"),
+			Arguments.of(MUNICIPALITY_ID, RANDOM_ID, RANDOM_ID, INVALID, "taskId", "not a valid UUID"));
 	}
 
 	private static Stream<Arguments> fetchChecklistAndPhaseArgumentProvider() {
 		return Stream.of(
-			Arguments.of("invalidId", RANDOM_ID, "checklistId", "not a valid UUID"),
-			Arguments.of(RANDOM_ID, "invalidId", "phaseId", "not a valid UUID"));
+			Arguments.of(INVALID, RANDOM_ID, RANDOM_ID, "municipalityId", "not a valid municipality ID"),
+			Arguments.of(MUNICIPALITY_ID, INVALID, RANDOM_ID, "checklistId", "not a valid UUID"),
+			Arguments.of(MUNICIPALITY_ID, RANDOM_ID, INVALID, "phaseId", "not a valid UUID"));
 	}
 
 	private static Stream<Arguments> createChecklistPhaseTaskArgumentProvider() {
 		return Stream.of(
-			Arguments.of(createTaskCreateRequest(), RANDOM_ID, "invalidId", "createChecklistPhaseTask.phaseId", "not a valid UUID"),
-			Arguments.of(createTaskCreateRequest(), "invalidId", RANDOM_ID, "createChecklistPhaseTask.checklistId", "not a valid UUID"),
-			Arguments.of(createTaskCreateRequest(r -> r.setHeading(" ")), RANDOM_ID, RANDOM_ID, "heading", "must not be blank"),
-			Arguments.of(createTaskCreateRequest(r -> r.setPermission(null)), RANDOM_ID, RANDOM_ID, "permission", "must not be null"),
-			Arguments.of(createTaskCreateRequest(r -> r.setQuestionType(null)), RANDOM_ID, RANDOM_ID, "questionType", "must not be null"),
-			Arguments.of(createTaskCreateRequest(r -> r.setRoleType(null)), RANDOM_ID, RANDOM_ID, "roleType", "must not be null"),
-			Arguments.of(createTaskCreateRequest(r -> r.setSortOrder(null)), RANDOM_ID, RANDOM_ID, "sortOrder", "must not be null"));
+			Arguments.of(createTaskCreateRequest(), INVALID, RANDOM_ID, RANDOM_ID, "createChecklistPhaseTask.municipalityId", "not a valid municipality ID"),
+			Arguments.of(createTaskCreateRequest(), MUNICIPALITY_ID, RANDOM_ID, INVALID, "createChecklistPhaseTask.phaseId", "not a valid UUID"),
+			Arguments.of(createTaskCreateRequest(), MUNICIPALITY_ID, INVALID, RANDOM_ID, "createChecklistPhaseTask.checklistId", "not a valid UUID"),
+			Arguments.of(createTaskCreateRequest(r -> r.setHeading(" ")), MUNICIPALITY_ID, RANDOM_ID, RANDOM_ID, "heading", "must not be blank"),
+			Arguments.of(createTaskCreateRequest(r -> r.setPermission(null)), MUNICIPALITY_ID, RANDOM_ID, RANDOM_ID, "permission", "must not be null"),
+			Arguments.of(createTaskCreateRequest(r -> r.setQuestionType(null)), MUNICIPALITY_ID, RANDOM_ID, RANDOM_ID, "questionType", "must not be null"),
+			Arguments.of(createTaskCreateRequest(r -> r.setRoleType(null)), MUNICIPALITY_ID, RANDOM_ID, RANDOM_ID, "roleType", "must not be null"),
+			Arguments.of(createTaskCreateRequest(r -> r.setSortOrder(null)), MUNICIPALITY_ID, RANDOM_ID, RANDOM_ID, "sortOrder", "must not be null"));
 	}
 
 	private static Stream<Arguments> updateChecklistPhaseTaskArgumentProvider() {
 		return Stream.of(
-			Arguments.of(createTaskUpdateRequest(), "invalidId", RANDOM_ID, RANDOM_ID, "updateChecklistPhaseTask.checklistId", "not a valid UUID"),
-			Arguments.of(createTaskUpdateRequest(), RANDOM_ID, "invalidId", RANDOM_ID, "updateChecklistPhaseTask.phaseId", "not a valid UUID"),
-			Arguments.of(createTaskUpdateRequest(), RANDOM_ID, RANDOM_ID, "invalidId", "updateChecklistPhaseTask.taskId", "not a valid UUID"));
+			Arguments.of(createTaskUpdateRequest(), INVALID, RANDOM_ID, RANDOM_ID, RANDOM_ID, "updateChecklistPhaseTask.municipalityId", "not a valid municipality ID"),
+			Arguments.of(createTaskUpdateRequest(), MUNICIPALITY_ID, INVALID, RANDOM_ID, RANDOM_ID, "updateChecklistPhaseTask.checklistId", "not a valid UUID"),
+			Arguments.of(createTaskUpdateRequest(), MUNICIPALITY_ID, RANDOM_ID, INVALID, RANDOM_ID, "updateChecklistPhaseTask.phaseId", "not a valid UUID"),
+			Arguments.of(createTaskUpdateRequest(), MUNICIPALITY_ID, RANDOM_ID, RANDOM_ID, INVALID, "updateChecklistPhaseTask.taskId", "not a valid UUID"));
 	}
 
 	private static Stream<Arguments> deleteChecklistPhaseTaskArgumentProvider() {
 		return Stream.of(
-			Arguments.of("invalidId", RANDOM_ID, RANDOM_ID, "deleteChecklistPhaseTask.checklistId", "not a valid UUID"),
-			Arguments.of(RANDOM_ID, "invalidId", RANDOM_ID, "deleteChecklistPhaseTask.phaseId", "not a valid UUID"),
-			Arguments.of(RANDOM_ID, RANDOM_ID, "invalidId", "deleteChecklistPhaseTask.taskId", "not a valid UUID"));
+			Arguments.of(INVALID, RANDOM_ID, RANDOM_ID, RANDOM_ID, "deleteChecklistPhaseTask.municipalityId", "not a valid municipality ID"),
+			Arguments.of(MUNICIPALITY_ID, INVALID, RANDOM_ID, RANDOM_ID, "deleteChecklistPhaseTask.checklistId", "not a valid UUID"),
+			Arguments.of(MUNICIPALITY_ID, RANDOM_ID, INVALID, RANDOM_ID, "deleteChecklistPhaseTask.phaseId", "not a valid UUID"),
+			Arguments.of(MUNICIPALITY_ID, RANDOM_ID, RANDOM_ID, INVALID, "deleteChecklistPhaseTask.taskId", "not a valid UUID"));
 	}
 
 	@ParameterizedTest
 	@MethodSource("fetchChecklistAndPhaseArgumentProvider")
-	void fetchChecklistPhaseTasksInvalidArgumentTest(final String checklistId, final String phaseId,
+	void fetchChecklistPhaseTasksInvalidArgument(final String municipalityId, final String checklistId, final String phaseId,
 		final String badArgument, final String expectedMessage) {
-		var response = webTestClient.get()
-			.uri(builder -> builder.path(BASE_PATH).build(Map.of("checklistId", checklistId, "phaseId", phaseId)))
+		final var response = webTestClient.get()
+			.uri(builder -> builder.path(BASE_PATH).build(Map.of("municipalityId", municipalityId, "checklistId", checklistId, "phaseId", phaseId)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectBody(ConstraintViolationProblem.class)
@@ -103,10 +110,10 @@ class TaskResourceFailureTest {
 
 	@ParameterizedTest
 	@MethodSource("fetchChecklistAndPhaseAndTaskArgumentProvider")
-	void fetchChecklistPhaseTaskInvalidArgumentTest(final String checklistId, final String phaseId,
+	void fetchChecklistPhaseTaskInvalidArgument(final String municipalityId, final String checklistId, final String phaseId,
 		final String taskId, final String badArgument, final String expectedMessage) {
-		var response = webTestClient.get()
-			.uri(builder -> builder.path(BASE_PATH + "/{taskId}").build(Map.of("checklistId", checklistId, "phaseId", phaseId, "taskId", taskId)))
+		final var response = webTestClient.get()
+			.uri(builder -> builder.path(BASE_PATH + "/{taskId}").build(Map.of("municipalityId", municipalityId, "checklistId", checklistId, "phaseId", phaseId, "taskId", taskId)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectBody(ConstraintViolationProblem.class)
@@ -124,10 +131,10 @@ class TaskResourceFailureTest {
 
 	@ParameterizedTest
 	@MethodSource("createChecklistPhaseTaskArgumentProvider")
-	void createChecklistPhaseTaskInvalidArgumentTest(final TaskCreateRequest request, final String checklistId,
+	void createChecklistPhaseTaskInvalidArgument(final TaskCreateRequest request, final String municipalityId, final String checklistId,
 		final String phaseId, final String badArgument, final String expectedMessage) {
-		var response = webTestClient.post()
-			.uri(builder -> builder.path(BASE_PATH).build(Map.of("checklistId", checklistId, "phaseId", phaseId)))
+		final var response = webTestClient.post()
+			.uri(builder -> builder.path(BASE_PATH).build(Map.of("municipalityId", municipalityId, "checklistId", checklistId, "phaseId", phaseId)))
 			.contentType(MediaType.APPLICATION_JSON)
 			.bodyValue(request)
 			.exchange()
@@ -147,10 +154,10 @@ class TaskResourceFailureTest {
 
 	@ParameterizedTest
 	@MethodSource("updateChecklistPhaseTaskArgumentProvider")
-	void updateChecklistPhaseTaskInvalidArgumentTest(final TaskUpdateRequest request, final String checklistId,
+	void updateChecklistPhaseTaskInvalidArgument(final TaskUpdateRequest request, final String municipalityId, final String checklistId,
 		final String phaseId, final String taskId, final String badArgument, final String expectedMessage) {
-		var response = webTestClient.patch()
-			.uri(builder -> builder.path(BASE_PATH + "/{taskId}").build(Map.of("checklistId", checklistId, "phaseId", phaseId, "taskId", taskId)))
+		final var response = webTestClient.patch()
+			.uri(builder -> builder.path(BASE_PATH + "/{taskId}").build(Map.of("municipalityId", municipalityId, "checklistId", checklistId, "phaseId", phaseId, "taskId", taskId)))
 			.contentType(MediaType.APPLICATION_JSON)
 			.bodyValue(request)
 			.exchange()
@@ -170,10 +177,10 @@ class TaskResourceFailureTest {
 
 	@ParameterizedTest
 	@MethodSource("deleteChecklistPhaseTaskArgumentProvider")
-	void deleteChecklistPhaseTaskInvalidArgumentTest(final String checklistId, final String phaseId,
+	void deleteChecklistPhaseTaskInvalidArgument(final String municipalityId, final String checklistId, final String phaseId,
 		final String taskId, final String badArgument, final String expectedMessage) {
-		var response = webTestClient.delete()
-			.uri(builder -> builder.path(BASE_PATH + "/{taskId}").build(Map.of("checklistId", checklistId, "phaseId", phaseId, "taskId", taskId)))
+		final var response = webTestClient.delete()
+			.uri(builder -> builder.path(BASE_PATH + "/{taskId}").build(Map.of("municipalityId", municipalityId, "checklistId", checklistId, "phaseId", phaseId, "taskId", taskId)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectBody(ConstraintViolationProblem.class)

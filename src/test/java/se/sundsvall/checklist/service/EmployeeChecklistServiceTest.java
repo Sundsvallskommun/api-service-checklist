@@ -203,7 +203,7 @@ class EmployeeChecklistServiceTest {
 		final var employeChecklistId = UUID.randomUUID().toString();
 		final var customTaskId = UUID.randomUUID().toString();
 		final var manager = ManagerEntity.builder()
-			.withUserName(userId)
+			.withUsername(userId)
 			.build();
 		final var employee = EmployeeEntity.builder()
 			.withManager(manager)
@@ -242,7 +242,7 @@ class EmployeeChecklistServiceTest {
 		final var newManagerId = "newManagerId";
 		final var employeChecklistId = UUID.randomUUID().toString();
 		final var managerEntity = ManagerEntity.builder()
-			.withUserName(oldManagerId)
+			.withUsername(oldManagerId)
 			.build();
 		final var employeeEntity = EmployeeEntity.builder()
 			.withId(employeeId)

@@ -23,7 +23,7 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 })
 class CommunicationIT extends AbstractAppTest {
 
-	private static final String PATH = "/employee-checklists";
+	private static final String PATH = "/2281/employee-checklists";
 	private static final String EXPECTED_FILE = "expected.json";
 	private static final String EMPLOYEE_CHECKLIST_ID = "1fb37edc-eb16-4ac3-a436-02971f020b28";
 

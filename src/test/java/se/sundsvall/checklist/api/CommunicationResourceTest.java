@@ -24,7 +24,9 @@ import se.sundsvall.checklist.service.CommunicationService;
 @ActiveProfiles("junit")
 class CommunicationResourceTest {
 
-	private static final String PATH_PREFIX = "/employee-checklists";
+	private static final String MUNICIPALITY_ID = "2281";
+	private static final String ID = UUID.randomUUID().toString();
+	private static final String BASE_PATH = "/{municipalityId}/employee-checklists";
 
 	@MockBean
 	private CommunicationService communicationServiceMock;
@@ -34,32 +36,28 @@ class CommunicationResourceTest {
 
 	@Test
 	void sendEmail() {
-		// Arrange
-		final var id = UUID.randomUUID().toString();
-
 		// Act
 		webTestClient.post()
-			.uri(builder -> builder.path(PATH_PREFIX + "/{uuid}/email").build(Map.of("uuid", id)))
+			.uri(builder -> builder.path(BASE_PATH + "/{uuid}/email").build(Map.of("municipalityId", MUNICIPALITY_ID, "uuid", ID)))
 			.exchange()
 			.expectStatus().isCreated()
 			.expectBody().isEmpty();
 
 		// Assert and verify
-		verify(communicationServiceMock).sendEmail(id);
+		verify(communicationServiceMock).sendEmail(ID);
 		verifyNoMoreInteractions(communicationServiceMock);
 	}
 
 	@Test
 	void retreiveCorrespondence() {
 		// Arrange
-		final var id = UUID.randomUUID().toString();
-		final var correspondence = Correspondence.builder().build();
+		final var mockedResponse = Correspondence.builder().build();
 
-		when(communicationServiceMock.fetchCorrespondence(id)).thenReturn(correspondence);
+		when(communicationServiceMock.fetchCorrespondence(ID)).thenReturn(mockedResponse);
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(PATH_PREFIX + "/{uuid}/correspondence").build(Map.of("uuid", id)))
+			.uri(builder -> builder.path(BASE_PATH + "/{uuid}/correspondence").build(Map.of("municipalityId", MUNICIPALITY_ID, "uuid", ID)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody(Correspondence.class)
@@ -67,8 +65,8 @@ class CommunicationResourceTest {
 			.getResponseBody();
 
 		// Assert and verify
-		assertThat(response).isEqualTo(correspondence);
-		verify(communicationServiceMock).fetchCorrespondence(id);
+		assertThat(response).isEqualTo(mockedResponse);
+		verify(communicationServiceMock).fetchCorrespondence(ID);
 		verifyNoMoreInteractions(communicationServiceMock);
 	}
 }

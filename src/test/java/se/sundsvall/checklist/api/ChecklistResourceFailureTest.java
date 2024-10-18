@@ -21,12 +21,16 @@ import org.zalando.problem.violations.ConstraintViolationProblem;
 import org.zalando.problem.violations.Violation;
 
 import se.sundsvall.checklist.Application;
+import se.sundsvall.checklist.TestObjectFactory;
 import se.sundsvall.checklist.api.model.ChecklistCreateRequest;
 import se.sundsvall.checklist.service.ChecklistService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
 class ChecklistResourceFailureTest {
+
+	private static final String INVALID = "invalid";
+	private static final String MUNICIPALITY_ID = "2281";
 
 	@Autowired
 	private WebTestClient webTestClient;
@@ -35,11 +39,9 @@ class ChecklistResourceFailureTest {
 	private ChecklistService mockChecklistService;
 
 	@Test
-	void fetchChecklistByIdWithInvalidIdTest() {
-		final var id = "invalid";
-
-		var response = webTestClient.get()
-			.uri(builder -> builder.path("/checklists/{checklistId}").build(Map.of("checklistId", id)))
+	void fetchChecklistByIdWithInvalidPathValues() {
+		final var response = webTestClient.get()
+			.uri(builder -> builder.path("/{municipalityId}/checklists/{checklistId}").build(Map.of("municipalityId", INVALID, "checklistId", INVALID)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectBody(ConstraintViolationProblem.class)
@@ -50,23 +52,47 @@ class ChecklistResourceFailureTest {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
-				.containsExactlyInAnyOrder(tuple("fetchChecklistById.checklistId", "not a valid UUID"));
+				.containsExactlyInAnyOrder(
+					tuple("fetchChecklistById.municipalityId", "not a valid municipality ID"),
+					tuple("fetchChecklistById.checklistId", "not a valid UUID"));
 		});
 
 		verifyNoInteractions(mockChecklistService);
 	}
 
 	@Test
-	void createChecklistWithNullRoleTypeTest() {
-		var body = ChecklistCreateRequest.builder()
+	void createChecklistWithInvalidPathValues() {
+		final var body = TestObjectFactory.createChecklistCreateRequest();
+
+		final var response = webTestClient.post()
+			.uri(builder -> builder.path("/{municipalityId}/checklists").build(Map.of("municipalityId", INVALID)))
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		assertThat(response).isNotNull().satisfies(r -> {
+			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
+			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
+			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+				.containsExactlyInAnyOrder(tuple("createChecklist.municipalityId", "not a valid municipality ID"));
+		});
+		verifyNoInteractions(mockChecklistService);
+	}
+
+	@Test
+	void createChecklistWithNullRoleType() {
+		final var body = ChecklistCreateRequest.builder()
 			.withName("Name")
 			.withOrganizationNumber(11)
 			.withRoleType(null)
 			.withDisplayName("displayName")
 			.build();
 
-		var response = webTestClient.post()
-			.uri(builder -> builder.path("/checklists").build())
+		final var response = webTestClient.post()
+			.uri(builder -> builder.path("/{municipalityId}/checklists").build(Map.of("municipalityId", MUNICIPALITY_ID)))
 			.bodyValue(body)
 			.exchange()
 			.expectStatus().isBadRequest()
@@ -84,16 +110,16 @@ class ChecklistResourceFailureTest {
 	}
 
 	@Test
-	void createChecklistWithBlankNameTest() {
-		var body = ChecklistCreateRequest.builder()
+	void createChecklistWithBlankName() {
+		final var body = ChecklistCreateRequest.builder()
 			.withName("")
 			.withRoleType(EMPLOYEE)
 			.withOrganizationNumber(11)
 			.withDisplayName("displayName")
 			.build();
 
-		var response = webTestClient.post()
-			.uri(builder -> builder.path("/checklists").build())
+		final var response = webTestClient.post()
+			.uri(builder -> builder.path("/{municipalityId}/checklists").build(Map.of("municipalityId", MUNICIPALITY_ID)))
 			.bodyValue(body)
 			.exchange()
 			.expectStatus().isBadRequest()
@@ -111,11 +137,9 @@ class ChecklistResourceFailureTest {
 	}
 
 	@Test
-	void createNewVersionWithInvalidIdTest() {
-		final var id = "invalid";
-
-		var response = webTestClient.post()
-			.uri(builder -> builder.path("/checklists/{checklistId}/version").build(Map.of("checklistId", id)))
+	void createNewVersionWithInvalidPathValues() {
+		final var response = webTestClient.post()
+			.uri(builder -> builder.path("/{municipalityId}/checklists/{checklistId}/version").build(Map.of("municipalityId", INVALID, "checklistId", INVALID)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectBody(ConstraintViolationProblem.class)
@@ -126,18 +150,18 @@ class ChecklistResourceFailureTest {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
-				.containsExactlyInAnyOrder(tuple("createNewVersion.checklistId", "not a valid UUID"));
+				.containsExactlyInAnyOrder(
+					tuple("createNewVersion.municipalityId", "not a valid municipality ID"),
+					tuple("createNewVersion.checklistId", "not a valid UUID"));
 		});
 
 		verifyNoInteractions(mockChecklistService);
 	}
 
 	@Test
-	void activateChecklistWithInvalidIdTest() {
-		final var id = "invalid";
-
-		var response = webTestClient.patch()
-			.uri(builder -> builder.path("/checklists/{checklistId}/activate").build(Map.of("checklistId", id)))
+	void activateChecklistWithInvalidPathValues() {
+		final var response = webTestClient.patch()
+			.uri(builder -> builder.path("/{municipalityId}/checklists/{checklistId}/activate").build(Map.of("municipalityId", INVALID, "checklistId", INVALID)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectBody(ConstraintViolationProblem.class)
@@ -148,18 +172,18 @@ class ChecklistResourceFailureTest {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
-				.containsExactlyInAnyOrder(tuple("activateChecklist.checklistId", "not a valid UUID"));
+				.containsExactlyInAnyOrder(
+					tuple("activateChecklist.municipalityId", "not a valid municipality ID"),
+					tuple("activateChecklist.checklistId", "not a valid UUID"));
 		});
 
 		verifyNoInteractions(mockChecklistService);
 	}
 
 	@Test
-	void updateChecklistWithInvalidIdTest() {
-		final var id = "invalid";
-
-		var response = webTestClient.patch()
-			.uri(builder -> builder.path("/checklists/{checklistId}").build(Map.of("checklistId", id)))
+	void updateChecklistWithInvalidPathValues() {
+		final var response = webTestClient.patch()
+			.uri(builder -> builder.path("/{municipalityId}/checklists/{checklistId}").build(Map.of("municipalityId", INVALID, "checklistId", INVALID)))
 			.contentType(MediaType.APPLICATION_JSON)
 			.bodyValue(createChecklistUpdateRequest())
 			.exchange()
@@ -172,18 +196,18 @@ class ChecklistResourceFailureTest {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
-				.containsExactlyInAnyOrder(tuple("updateChecklist.checklistId", "not a valid UUID"));
+				.containsExactlyInAnyOrder(
+					tuple("updateChecklist.municipalityId", "not a valid municipality ID"),
+					tuple("updateChecklist.checklistId", "not a valid UUID"));
 		});
 
 		verifyNoInteractions(mockChecklistService);
 	}
 
 	@Test
-	void deleteChecklistWithInvalidIdTest() {
-		final var id = "invalid";
-
-		var response = webTestClient.delete()
-			.uri(builder -> builder.path("/checklists/{checklistId}").build(Map.of("checklistId", id)))
+	void deleteChecklistWithInvalidPathValues() {
+		final var response = webTestClient.delete()
+			.uri(builder -> builder.path("/{municipalityId}/checklists/{checklistId}").build(Map.of("municipalityId", INVALID, "checklistId", INVALID)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectBody(ConstraintViolationProblem.class)
@@ -194,7 +218,9 @@ class ChecklistResourceFailureTest {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
-				.containsExactlyInAnyOrder(tuple("deleteChecklist.checklistId", "not a valid UUID"));
+				.containsExactlyInAnyOrder(
+					tuple("deleteChecklist.municipalityId", "not a valid municipality ID"),
+					tuple("deleteChecklist.checklistId", "not a valid UUID"));
 		});
 
 		verifyNoInteractions(mockChecklistService);

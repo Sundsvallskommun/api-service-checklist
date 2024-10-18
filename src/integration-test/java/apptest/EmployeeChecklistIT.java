@@ -42,7 +42,7 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 })
 class EmployeeChecklistIT extends AbstractAppTest {
 
-	private static final String PATH_PREFIX = "/employee-checklists";
+	private static final String PATH_PREFIX = "/2281/employee-checklists";
 	private static final String REQUEST_FILE = "request.json";
 	private static final String EXPECTED_FILE = "expected.json";
 
@@ -93,7 +93,7 @@ class EmployeeChecklistIT extends AbstractAppTest {
 
 	@Test
 	void test04_fetchChecklistsAsManagerWhenEmployeeChangedManager() {
-		final var filter = Example.of(ManagerEntity.builder().withUserName("fman4agr").build());
+		final var filter = Example.of(ManagerEntity.builder().withUsername("fman4agr").build());
 
 		// Verify that manager is not present in database before execution
 		assertThat(managerRepository.findAll(filter)).isEmpty();
@@ -158,7 +158,7 @@ class EmployeeChecklistIT extends AbstractAppTest {
 			.withHttpMethod(POST)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
-			.withExpectedResponseHeader(LOCATION, List.of("^/employee-checklists/" + employeeChecklistId + "/customtasks/(.+)$"))
+			.withExpectedResponseHeader(LOCATION, List.of("^/2281/employee-checklists/" + employeeChecklistId + "/customtasks/(.+)$"))
 			.withExpectedResponse(EXPECTED_FILE)
 			.sendRequestAndVerifyResponse();
 	}

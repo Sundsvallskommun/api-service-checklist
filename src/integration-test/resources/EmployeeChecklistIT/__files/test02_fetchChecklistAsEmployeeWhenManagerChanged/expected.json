@@ -5,14 +5,14 @@
 		"firstName": "C Emp",
 		"lastName": "Loyee",
 		"email": "c.employee@55351.com",
-		"userName": "cemp3loyee"
+		"username": "cemp3loyee"
 	},
 	"manager": {
 		"id": "ae93a63e-d975-4cd9-8e28-4cc9ea8b4d96",
 		"firstName": "C Newman",
 		"lastName": "Ager",
 		"email": "c.manager@55351.com",
-		"userName": "cman1agr"
+		"username": "cman1agr"
 	},
 	"completed": false,
 	"locked": false,

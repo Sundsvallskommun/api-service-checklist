@@ -85,29 +85,29 @@ class ServiceUtilsTest {
 	void getMainEmploymentWhenMainEmploymentSignalIsNull() {
 		// Arrange
 		final var sideEmployment = new Employment();
-		final var userName = "userName";
-		final var employee = new Employee().loginname(userName).employments(List.of(sideEmployment));
+		final var username = "username";
+		final var employee = new Employee().loginname(username).employments(List.of(sideEmployment));
 
 		// Act
 		final var e = assertThrows(ThrowableProblem.class, () -> ServiceUtils.getMainEmployment(employee));
 
 		// Assert
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
-		assertThat(e.getMessage()).isEqualTo("Not Found: No main employment found for employee with loginname %s.".formatted(userName));
+		assertThat(e.getMessage()).isEqualTo("Not Found: No main employment found for employee with loginname %s.".formatted(username));
 	}
 
 	@Test
 	void getMainEmploymentWhenEmploymentsAreNull() {
 		// Arrange
-		final var userName = "userName";
-		final var employee = new Employee().loginname(userName);
+		final var username = "username";
+		final var employee = new Employee().loginname(username);
 
 		// Act
 		final var e = assertThrows(ThrowableProblem.class, () -> ServiceUtils.getMainEmployment(employee));
 
 		// Assert
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
-		assertThat(e.getMessage()).isEqualTo("Not Found: No main employment found for employee with loginname %s.".formatted(userName));
+		assertThat(e.getMessage()).isEqualTo("Not Found: No main employment found for employee with loginname %s.".formatted(username));
 	}
 
 	@Test

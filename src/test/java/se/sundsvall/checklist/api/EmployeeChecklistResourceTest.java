@@ -6,7 +6,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.http.HttpHeaders.LOCATION;
 
 import java.util.List;
 import java.util.Map;
@@ -46,7 +45,11 @@ import se.sundsvall.checklist.service.EmployeeChecklistService;
 })
 class EmployeeChecklistResourceTest {
 
-	private static final String PATH_PREFIX = "/employee-checklists";
+	private static final String MUNICIPALITY_ID = "2281";
+	private static final String ID = UUID.randomUUID().toString();
+	private static final String SUB_ID = UUID.randomUUID().toString();
+	private static final String USER_ID = "usr123";
+	private static final String BASE_PATH = "/{municipalityId}/employee-checklists";
 
 	@MockBean
 	private EmployeeChecklistService serviceMock;
@@ -57,13 +60,15 @@ class EmployeeChecklistResourceTest {
 	@Test
 	void findEmployeeChecklistBySearchString() {
 		// Arrange
-		final var response1 = new EmployeeChecklistPaginatedResponse();
+		final var mockedResponse = new EmployeeChecklistPaginatedResponse();
 
-		when(serviceMock.findEmployeeChecklistsBySearchString(any(), any())).thenReturn(response1);
+		when(serviceMock.findEmployeeChecklistsBySearchString(any(), any())).thenReturn(mockedResponse);
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(PATH_PREFIX + "/search?searchString=test")
+			.uri(builder -> builder.path(BASE_PATH + "/search")
+				.queryParam("searchString", "test")
+				.build(Map.of("municipalityId", MUNICIPALITY_ID)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody(EmployeeChecklistPaginatedResponse.class)
@@ -71,7 +76,7 @@ class EmployeeChecklistResourceTest {
 			.getResponseBody();
 
 		// Assert and verify
-		assertThat(response).isEqualTo(response1);
+		assertThat(response).isEqualTo(mockedResponse);
 
 		verify(serviceMock).findEmployeeChecklistsBySearchString(any(), any());
 		verifyNoMoreInteractions(serviceMock);
@@ -80,15 +85,14 @@ class EmployeeChecklistResourceTest {
 	@Test
 	void fetchChecklistForEmployee() {
 		// Arrange
-		final var userId = "abc12def";
 		final var path = "/employee/{userId}";
-		final var employeeChecklist = EmployeeChecklist.builder().build();
+		final var mockedResponse = EmployeeChecklist.builder().build();
 
-		when(serviceMock.fetchChecklistForEmployee(userId)).thenReturn(Optional.of(employeeChecklist));
+		when(serviceMock.fetchChecklistForEmployee(USER_ID)).thenReturn(Optional.of(mockedResponse));
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(Map.of("userId", userId)))
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "userId", USER_ID)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody(EmployeeChecklist.class)
@@ -96,45 +100,43 @@ class EmployeeChecklistResourceTest {
 			.getResponseBody();
 
 		// Assert and verify
-		assertThat(response).isEqualTo(employeeChecklist);
+		assertThat(response).isEqualTo(mockedResponse);
 
-		verify(serviceMock).fetchChecklistForEmployee(userId);
+		verify(serviceMock).fetchChecklistForEmployee(USER_ID);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
 	@Test
 	void fetchChecklistForEmployeeWithNoActiveChecklist() {
 		// Arrange
-		final var userId = "abc12def";
 		final var path = "/employee/{userId}";
 
-		when(serviceMock.fetchChecklistForEmployee(userId)).thenReturn(Optional.empty());
+		when(serviceMock.fetchChecklistForEmployee(USER_ID)).thenReturn(Optional.empty());
 
 		// Act
 		webTestClient.get()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(Map.of("userId", userId)))
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "userId", USER_ID)))
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectBody()
 			.isEmpty();
 
 		// Assert and verify
-		verify(serviceMock).fetchChecklistForEmployee(userId);
+		verify(serviceMock).fetchChecklistForEmployee(USER_ID);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
 	@Test
 	void fetchChecklistsForManager() {
 		// Arrange
-		final var userId = "abc12def";
 		final var path = "/manager/{userId}";
-		final var employeeChecklists = List.of(EmployeeChecklist.builder().build(), EmployeeChecklist.builder().build());
+		final var mockedResponse = List.of(EmployeeChecklist.builder().build(), EmployeeChecklist.builder().build());
 
-		when(serviceMock.fetchChecklistsForManager(userId)).thenReturn(employeeChecklists);
+		when(serviceMock.fetchChecklistsForManager(USER_ID)).thenReturn(mockedResponse);
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(Map.of("userId", userId)))
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "userId", USER_ID)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBodyList(EmployeeChecklist.class)
@@ -142,36 +144,33 @@ class EmployeeChecklistResourceTest {
 			.getResponseBody();
 
 		// Assert and verify
-		assertThat(response).isEqualTo(employeeChecklists);
+		assertThat(response).isEqualTo(mockedResponse);
 
-		verify(serviceMock).fetchChecklistsForManager(userId);
+		verify(serviceMock).fetchChecklistsForManager(USER_ID);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
 	@Test
 	void deleteEmployeeChecklist() {
 		// Arrange
-		final var employeeChecklistId = UUID.randomUUID().toString();
 		final var path = "/{employeeChecklistId}";
 
 		// Act
 		webTestClient.delete()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(Map.of("employeeChecklistId", employeeChecklistId)))
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID)))
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectBody().isEmpty();
 
 		// Assert and verify
-		verify(serviceMock).deleteEmployeChecklist(employeeChecklistId);
+		verify(serviceMock).deleteEmployeChecklist(ID);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
 	@Test
 	void createCustomTask() {
 		// Arrange
-		final var employeeChecklistId = UUID.randomUUID().toString();
-		final var phaseId = UUID.randomUUID().toString();
-		final var customTask = CustomTask.builder().build();
+		final var mockedResponse = CustomTask.builder().withId(UUID.randomUUID().toString()).build();
 		final var path = "/{employeeChecklistId}/phases/{phaseId}/customtasks";
 		final var request = CustomTaskCreateRequest.builder()
 			.withHeading("heading")
@@ -180,39 +179,37 @@ class EmployeeChecklistResourceTest {
 			.withSortOrder(1)
 			.build();
 
-		when(serviceMock.createCustomTask(employeeChecklistId, phaseId, request)).thenReturn(customTask);
+		when(serviceMock.createCustomTask(ID, SUB_ID, request)).thenReturn(mockedResponse);
 
 		// Act
 		final var response = webTestClient.post()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(Map.of("employeeChecklistId", employeeChecklistId, "phaseId", phaseId)))
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID, "phaseId", SUB_ID)))
 			.bodyValue(request)
 			.exchange()
 			.expectStatus().isCreated()
-			.expectHeader().exists(LOCATION)
+			.expectHeader().location("/%s/employee-checklists/%s/customtasks/%s".formatted(MUNICIPALITY_ID, ID, mockedResponse.getId()))
 			.expectBody(CustomTask.class)
 			.returnResult()
 			.getResponseBody();
 
 		// Assert and verify
-		assertThat(response).isEqualTo(customTask);
+		assertThat(response).isEqualTo(mockedResponse);
 
-		verify(serviceMock).createCustomTask(employeeChecklistId, phaseId, request);
+		verify(serviceMock).createCustomTask(ID, SUB_ID, request);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
 	@Test
 	void readCustomTask() {
 		// Arrange
-		final var employeeChecklistId = UUID.randomUUID().toString();
-		final var taskId = UUID.randomUUID().toString();
-		final var customTask = CustomTask.builder().build();
+		final var mockedResponse = CustomTask.builder().build();
 		final var path = "/{employeeChecklistId}/customtasks/{taskId}";
 
-		when(serviceMock.readCustomTask(employeeChecklistId, taskId)).thenReturn(customTask);
+		when(serviceMock.readCustomTask(ID, SUB_ID)).thenReturn(mockedResponse);
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(Map.of("employeeChecklistId", employeeChecklistId, "taskId", taskId)))
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID, "taskId", SUB_ID)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody(CustomTask.class)
@@ -220,18 +217,16 @@ class EmployeeChecklistResourceTest {
 			.getResponseBody();
 
 		// Assert and verify
-		assertThat(response).isEqualTo(customTask);
+		assertThat(response).isEqualTo(mockedResponse);
 
-		verify(serviceMock).readCustomTask(employeeChecklistId, taskId);
+		verify(serviceMock).readCustomTask(ID, SUB_ID);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
 	@Test
 	void updateCustomTask() {
 		// Arrange
-		final var employeeChecklistId = UUID.randomUUID().toString();
-		final var taskId = UUID.randomUUID().toString();
-		final var customTask = CustomTask.builder().build();
+		final var mockedResponse = CustomTask.builder().build();
 		final var path = "/{employeeChecklistId}/customtasks/{taskId}";
 		final var request = CustomTaskUpdateRequest.builder()
 			.withHeading("heading")
@@ -240,11 +235,11 @@ class EmployeeChecklistResourceTest {
 			.withSortOrder(1)
 			.build();
 
-		when(serviceMock.updateCustomTask(employeeChecklistId, taskId, request)).thenReturn(customTask);
+		when(serviceMock.updateCustomTask(ID, SUB_ID, request)).thenReturn(mockedResponse);
 
 		// Act
 		final var response = webTestClient.patch()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(Map.of("employeeChecklistId", employeeChecklistId, "taskId", taskId)))
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID, "taskId", SUB_ID)))
 			.bodyValue(request)
 			.exchange()
 			.expectStatus().isOk()
@@ -253,47 +248,43 @@ class EmployeeChecklistResourceTest {
 			.getResponseBody();
 
 		// Assert and verify
-		assertThat(response).isEqualTo(customTask);
+		assertThat(response).isEqualTo(mockedResponse);
 
-		verify(serviceMock).updateCustomTask(employeeChecklistId, taskId, request);
+		verify(serviceMock).updateCustomTask(ID, SUB_ID, request);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
 	@Test
 	void deleteCustomTask() {
 		// Arrange
-		final var employeeChecklistId = UUID.randomUUID().toString();
-		final var taskId = UUID.randomUUID().toString();
 		final var path = "/{employeeChecklistId}/customtasks/{taskId}";
 
 		// Act
 		webTestClient.delete()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(Map.of("employeeChecklistId", employeeChecklistId, "taskId", taskId)))
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID, "taskId", SUB_ID)))
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectBody().isEmpty();
 
 		// Assert and verify
-		verify(serviceMock).deleteCustomTask(employeeChecklistId, taskId);
+		verify(serviceMock).deleteCustomTask(ID, SUB_ID);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
 	@Test
 	void updateAllTasksFulfilmentInPhase() {
 		// Arrange
-		final var employeeChecklistId = UUID.randomUUID().toString();
-		final var phaseId = UUID.randomUUID().toString();
 		final var employeeChecklistPhase = EmployeeChecklistPhase.builder().build();
 		final var path = "/{employeeChecklistId}/phases/{phaseId}";
 		final var request = EmployeeChecklistPhaseUpdateRequest.builder()
 			.withTasksFulfilmentStatus(FulfilmentStatus.TRUE)
 			.build();
 
-		when(serviceMock.updateAllTasksInPhase(employeeChecklistId, phaseId, request)).thenReturn(employeeChecklistPhase);
+		when(serviceMock.updateAllTasksInPhase(ID, SUB_ID, request)).thenReturn(employeeChecklistPhase);
 
 		// Act
 		final var response = webTestClient.patch()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(Map.of("employeeChecklistId", employeeChecklistId, "phaseId", phaseId)))
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID, "phaseId", SUB_ID)))
 			.bodyValue(request)
 			.exchange()
 			.expectStatus().isOk()
@@ -304,27 +295,25 @@ class EmployeeChecklistResourceTest {
 		// Assert and verify
 		assertThat(response).isEqualTo(employeeChecklistPhase);
 
-		verify(serviceMock).updateAllTasksInPhase(employeeChecklistId, phaseId, request);
+		verify(serviceMock).updateAllTasksInPhase(ID, SUB_ID, request);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
 	@Test
 	void updateTaskFulfilment() {
 		// Arrange
-		final var employeeChecklistId = UUID.randomUUID().toString();
-		final var taskId = UUID.randomUUID().toString();
-		final var employeeChecklistTask = EmployeeChecklistTask.builder().build();
+		final var mockedResponse = EmployeeChecklistTask.builder().build();
 		final var path = "/{employeeChecklistId}/tasks/{taskId}";
 		final var request = EmployeeChecklistTaskUpdateRequest.builder()
 			.withFulfilmentStatus(FulfilmentStatus.FALSE)
 			.withResponseText("responseText")
 			.build();
 
-		when(serviceMock.updateTaskFulfilment(employeeChecklistId, taskId, request)).thenReturn(employeeChecklistTask);
+		when(serviceMock.updateTaskFulfilment(ID, SUB_ID, request)).thenReturn(mockedResponse);
 
 		// Act
 		final var response = webTestClient.patch()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(Map.of("employeeChecklistId", employeeChecklistId, "taskId", taskId)))
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID, "taskId", SUB_ID)))
 			.bodyValue(request)
 			.exchange()
 			.expectStatus().isOk()
@@ -333,9 +322,9 @@ class EmployeeChecklistResourceTest {
 			.getResponseBody();
 
 		// Assert and verify
-		assertThat(response).isEqualTo(employeeChecklistTask);
+		assertThat(response).isEqualTo(mockedResponse);
 
-		verify(serviceMock).updateTaskFulfilment(employeeChecklistId, taskId, request);
+		verify(serviceMock).updateTaskFulfilment(ID, SUB_ID, request);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
@@ -343,16 +332,16 @@ class EmployeeChecklistResourceTest {
 	void initiateChecklistsForAllEmployees() {
 		// Arrange
 		final var path = "/initialize";
-		final var result = EmployeeChecklistResponse.builder()
+		final var mockedResponse = EmployeeChecklistResponse.builder()
 			.withSummary("summary")
 			.withDetails(List.of(Detail.builder().withInformation("information").withStatus(Status.OK).build()))
 			.build();
 
-		when(serviceMock.initiateEmployeeChecklists()).thenReturn(result);
+		when(serviceMock.initiateEmployeeChecklists()).thenReturn(mockedResponse);
 
 		// Act
 		final var response = webTestClient.post()
-			.uri(PATH_PREFIX + path)
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody(EmployeeChecklistResponse.class)
@@ -360,7 +349,7 @@ class EmployeeChecklistResourceTest {
 			.getResponseBody();
 
 		// Assert and verify
-		assertThat(response).isEqualTo(result);
+		assertThat(response).isEqualTo(mockedResponse);
 
 		verify(serviceMock).initiateEmployeeChecklists();
 	}
@@ -369,17 +358,16 @@ class EmployeeChecklistResourceTest {
 	void initiateChecklistForSpecificEmployees() {
 		// Arrange
 		final var path = "/initialize/{personId}";
-		final var id = UUID.randomUUID().toString();
-		final var result = EmployeeChecklistResponse.builder()
+		final var mockedResponse = EmployeeChecklistResponse.builder()
 			.withSummary("summary")
 			.withDetails(List.of(Detail.builder().withInformation("information").withStatus(Status.OK).build()))
 			.build();
 
-		when(serviceMock.initiateSpecificEmployeeChecklist(id)).thenReturn(result);
+		when(serviceMock.initiateSpecificEmployeeChecklist(ID)).thenReturn(mockedResponse);
 
 		// Act
 		final var response = webTestClient.post()
-			.uri(builder -> builder.path(PATH_PREFIX + path).build(Map.of("personId", id)))
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "personId", ID)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody(EmployeeChecklistResponse.class)
@@ -387,8 +375,8 @@ class EmployeeChecklistResourceTest {
 			.getResponseBody();
 
 		// Assert and verify
-		assertThat(response).isEqualTo(result);
+		assertThat(response).isEqualTo(mockedResponse);
 
-		verify(serviceMock).initiateSpecificEmployeeChecklist(id);
+		verify(serviceMock).initiateSpecificEmployeeChecklist(ID);
 	}
 }

@@ -14,6 +14,7 @@ import static se.sundsvall.checklist.TestObjectFactory.createTaskUpdateRequest;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,10 @@ import se.sundsvall.checklist.service.TaskService;
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
 class TaskResourceTest {
-
-	private static final String BASE_PATH = "/checklists/{checklistId}/phases/{phaseId}/tasks";
+	private static final String MUNICIPALITY_ID = "2281";
+	private static final String ID = UUID.randomUUID().toString();
+	private static final String SUB_ID = UUID.randomUUID().toString();
+	private static final String BASE_PATH = "/{municipalityId}/checklists/{checklistId}/phases/{phaseId}/tasks";
 
 	@Autowired
 	private WebTestClient webTestClient;
@@ -39,75 +42,68 @@ class TaskResourceTest {
 	private TaskService mockTaskService;
 
 	@Test
-	void fetchChecklistPhaseTasksTest() {
-		final var checklistId = randomUUID().toString();
-		final var phaseId = randomUUID().toString();
-		final var taskList = List.of(createTask(), createTask());
-		when(mockTaskService.getAllTasksInPhase(checklistId, phaseId)).thenReturn(taskList);
+	void fetchChecklistPhaseTasks() {
+		final var mockedResponse = List.of(createTask(), createTask());
+		when(mockTaskService.getAllTasksInPhase(ID, SUB_ID)).thenReturn(mockedResponse);
 
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(BASE_PATH).build(Map.of("checklistId", checklistId, "phaseId", phaseId)))
+			.uri(builder -> builder.path(BASE_PATH).build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID, "phaseId", SUB_ID)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBodyList(Task.class)
 			.returnResult();
 
-		assertThat(response.getResponseBody()).isEqualTo(taskList);
-		verify(mockTaskService).getAllTasksInPhase(checklistId, phaseId);
+		assertThat(response.getResponseBody()).isEqualTo(mockedResponse);
+		verify(mockTaskService).getAllTasksInPhase(ID, SUB_ID);
 		verifyNoMoreInteractions(mockTaskService);
 	}
 
 	@Test
 	void fetchChecklistPhaseTaskTest() {
-		final var checklistId = randomUUID().toString();
-		final var phaseId = randomUUID().toString();
-		final var task = createTask(task1 -> task1.setId(randomUUID().toString()));
-		when(mockTaskService.getTaskInPhaseById(checklistId, phaseId, task.getId())).thenReturn(task);
+		final var taskId = randomUUID().toString();
+		final var mockedResponse = createTask(task -> task.setId(taskId));
+		when(mockTaskService.getTaskInPhaseById(ID, SUB_ID, mockedResponse.getId())).thenReturn(mockedResponse);
 
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(BASE_PATH + "/{taskId}").build(Map.of("checklistId", checklistId, "phaseId", phaseId, "taskId", task.getId())))
+			.uri(builder -> builder.path(BASE_PATH + "/{taskId}").build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID, "phaseId", SUB_ID, "taskId", taskId)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody(Task.class)
 			.returnResult();
 
-		assertThat(response.getResponseBody()).isEqualTo(task);
-		verify(mockTaskService).getTaskInPhaseById(checklistId, phaseId, task.getId());
+		assertThat(response.getResponseBody()).isEqualTo(mockedResponse);
+		verify(mockTaskService).getTaskInPhaseById(ID, SUB_ID, taskId);
 		verifyNoMoreInteractions(mockTaskService);
 	}
 
 	@Test
 	void createChecklistPhaseTaskTest() {
-		final var checklistId = randomUUID().toString();
-		final var phaseId = randomUUID().toString();
-		final var task = createTask(task1 -> task1.setId(randomUUID().toString()));
-		when(mockTaskService.createTask(checklistId, phaseId, createTaskCreateRequest())).thenReturn(task);
+		final var mockedResponse = createTask(task -> task.setId(randomUUID().toString()));
+		when(mockTaskService.createTask(ID, SUB_ID, createTaskCreateRequest())).thenReturn(mockedResponse);
 
 		webTestClient.post()
-			.uri(builder -> builder.path(BASE_PATH).build(Map.of("checklistId", checklistId, "phaseId", phaseId)))
+			.uri(builder -> builder.path(BASE_PATH).build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID, "phaseId", SUB_ID)))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(createTaskCreateRequest())
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL)
-			.expectHeader().location("/checklists/" + checklistId + "/phases/" + phaseId + "/tasks/" + task.getId())
+			.expectHeader().location("/%s/checklists/%s/phases/%s/tasks/%s".formatted(MUNICIPALITY_ID, ID, SUB_ID, mockedResponse.getId()))
 			.expectBody().isEmpty();
 
-		verify(mockTaskService).createTask(checklistId, phaseId, createTaskCreateRequest());
+		verify(mockTaskService).createTask(ID, SUB_ID, createTaskCreateRequest());
 		verifyNoMoreInteractions(mockTaskService);
 	}
 
 	@Test
 	void updateChecklistPhaseTaskTest() {
-		final var checklistId = randomUUID().toString();
-		final var phaseId = randomUUID().toString();
 		final var taskId = randomUUID().toString();
-		final var task = createTask(task1 -> task1.setId(taskId));
+		final var mockedResponse = createTask(task -> task.setId(taskId));
 		final var requestBody = createTaskUpdateRequest();
-		when(mockTaskService.updateTask(checklistId, phaseId, taskId, requestBody)).thenReturn(task);
+		when(mockTaskService.updateTask(ID, SUB_ID, taskId, requestBody)).thenReturn(mockedResponse);
 
 		final var response = webTestClient.patch()
-			.uri(builder -> builder.path(BASE_PATH + "/{taskId}").build(Map.of("checklistId", checklistId, "phaseId", phaseId, "taskId", taskId)))
+			.uri(builder -> builder.path(BASE_PATH + "/{taskId}").build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID, "phaseId", SUB_ID, "taskId", taskId)))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(requestBody)
 			.exchange()
@@ -115,24 +111,22 @@ class TaskResourceTest {
 			.expectBody(Task.class)
 			.returnResult();
 
-		assertThat(response.getResponseBody()).isEqualTo(task);
-		verify(mockTaskService).updateTask(checklistId, phaseId, taskId, requestBody);
+		assertThat(response.getResponseBody()).isEqualTo(mockedResponse);
+		verify(mockTaskService).updateTask(ID, SUB_ID, taskId, requestBody);
 		verifyNoMoreInteractions(mockTaskService);
 	}
 
 	@Test
 	void deleteChecklistPhaseTaskTest() {
-		final var checklistId = randomUUID().toString();
-		final var phaseId = randomUUID().toString();
 		final var taskId = randomUUID().toString();
 
 		webTestClient.delete()
-			.uri(builder -> builder.path(BASE_PATH + "/{taskId}").build(Map.of("checklistId", checklistId, "phaseId", phaseId, "taskId", taskId)))
+			.uri(builder -> builder.path(BASE_PATH + "/{taskId}").build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID, "phaseId", SUB_ID, "taskId", taskId)))
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectBody().isEmpty();
 
-		verify(mockTaskService).deleteTask(checklistId, phaseId, taskId);
+		verify(mockTaskService).deleteTask(ID, SUB_ID, taskId);
 		verifyNoMoreInteractions(mockTaskService);
 	}
 

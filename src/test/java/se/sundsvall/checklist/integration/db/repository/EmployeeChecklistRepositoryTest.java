@@ -63,7 +63,7 @@ class EmployeeChecklistRepositoryTest {
 
 	@Test
 	void findByEmployeeUserName() {
-		final var result = repository.findByEmployeeUserName("aemp0loyee");
+		final var result = repository.findByEmployeeUsername("aemp0loyee");
 
 		assertThat(result).isNotNull();
 		assertThat(result.getId()).isEqualTo("f853e2b1-a144-4305-b05e-ee8d6dc6d005");
@@ -71,7 +71,7 @@ class EmployeeChecklistRepositoryTest {
 
 	@Test
 	void findAllByEmployeeManagerUserName() {
-		final var result = repository.findAllByEmployeeManagerUserName("aman0agr");
+		final var result = repository.findAllByEmployeeManagerUsername("aman0agr");
 
 		assertThat(result)
 			.hasSize(3)

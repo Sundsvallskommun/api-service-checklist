@@ -5,10 +5,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.MediaType.ALL;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static se.sundsvall.checklist.TestObjectFactory.createOrganization;
 
 import java.util.List;
 import java.util.Map;
@@ -23,6 +21,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import se.sundsvall.checklist.Application;
+import se.sundsvall.checklist.TestObjectFactory;
 import se.sundsvall.checklist.api.model.Organization;
 import se.sundsvall.checklist.api.model.OrganizationCreateRequest;
 import se.sundsvall.checklist.api.model.OrganizationUpdateRequest;
@@ -33,6 +32,10 @@ import se.sundsvall.checklist.service.OrganizationService;
 @ActiveProfiles("junit")
 class OrganizationResourceTest {
 
+	private static final String ID = UUID.randomUUID().toString();
+	private static final String MUNICIPALITY_ID = "2281";
+	private static final String BASE_PATH = "/{municipalityId}/organizations";
+
 	@MockBean
 	private OrganizationService serviceMock;
 
@@ -40,23 +43,23 @@ class OrganizationResourceTest {
 	private WebTestClient webTestClient;
 
 	@Test
-	void createOrganizationTest() {
-		var body = OrganizationCreateRequest.builder()
+	void createOrganization() {
+		final var body = OrganizationCreateRequest.builder()
 			.withCommunicationChannels(Set.of(CommunicationChannel.EMAIL))
 			.withOrganizationName("organizationName")
 			.withOrganizationNumber(1234)
 			.build();
 
-		when(serviceMock.createOrganization(body)).thenReturn(UUID.randomUUID().toString());
+		when(serviceMock.createOrganization(body)).thenReturn(ID);
 
 		webTestClient.post()
-			.uri("/organizations")
+			.uri(builder -> builder.path(BASE_PATH).build(Map.of("municipalityId", MUNICIPALITY_ID)))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(body)
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL)
-			.expectHeader().exists(LOCATION)
+			.expectHeader().location("/%s/organizations/%s".formatted(MUNICIPALITY_ID, ID))
 			.expectBody().isEmpty();
 
 		verify(serviceMock).createOrganization(body);
@@ -64,10 +67,10 @@ class OrganizationResourceTest {
 	}
 
 	@Test
-	void fetchOrganizationsTest() {
-		when(serviceMock.fetchAllOrganizations()).thenReturn(List.of(createOrganization(), createOrganization()));
-		var response = webTestClient.get()
-			.uri("/organizations")
+	void fetchOrganizations() {
+		when(serviceMock.fetchAllOrganizations()).thenReturn(List.of(TestObjectFactory.createOrganization(), TestObjectFactory.createOrganization()));
+		final var response = webTestClient.get()
+			.uri(builder -> builder.path(BASE_PATH).build(Map.of("municipalityId", MUNICIPALITY_ID)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBodyList(Organization.class)
@@ -80,35 +83,33 @@ class OrganizationResourceTest {
 	}
 
 	@Test
-	void fetchOrganizationTest() {
-		final var id = UUID.randomUUID().toString();
-		final var organization = createOrganization();
-		when(serviceMock.fetchOrganizationById(id)).thenReturn(organization);
+	void fetchOrganization() {
+		final var mockedResponse = TestObjectFactory.createOrganization();
+		when(serviceMock.fetchOrganizationById(ID)).thenReturn(mockedResponse);
 
-		var response = webTestClient.get()
-			.uri(builder -> builder.path("/organizations/{id}").build(Map.of("id", id)))
+		final var response = webTestClient.get()
+			.uri(builder -> builder.path(BASE_PATH + "/{id}").build(Map.of("municipalityId", MUNICIPALITY_ID, "id", ID)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody(Organization.class)
 			.returnResult()
 			.getResponseBody();
 
-		assertThat(response).isEqualTo(organization);
-		verify(serviceMock).fetchOrganizationById(id);
+		assertThat(response).isEqualTo(mockedResponse);
+		verify(serviceMock).fetchOrganizationById(ID);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
 	@Test
-	void updateOrganizationTest() {
-		final var id = UUID.randomUUID().toString();
+	void updateOrganization() {
 		final var body = OrganizationUpdateRequest.builder()
 			.withCommunicationChannels(Set.of(CommunicationChannel.EMAIL))
 			.withOrganizationName("updatedName")
 			.build();
-		when(serviceMock.updateOrganization(id, body)).thenReturn(createOrganization());
+		when(serviceMock.updateOrganization(ID, body)).thenReturn(TestObjectFactory.createOrganization());
 
-		var response = webTestClient.patch()
-			.uri(builder -> builder.path("/organizations/{id}").build(Map.of("id", id)))
+		final var response = webTestClient.patch()
+			.uri(builder -> builder.path(BASE_PATH + "/{id}").build(Map.of("municipalityId", MUNICIPALITY_ID, "id", ID)))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(body)
 			.exchange()
@@ -119,21 +120,19 @@ class OrganizationResourceTest {
 
 		assertThat(response).isNotNull();
 
-		verify(serviceMock).updateOrganization(id, body);
+		verify(serviceMock).updateOrganization(ID, body);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
 	@Test
-	void deleteOrganizationTest() {
-		final var id = UUID.randomUUID().toString();
-
+	void deleteOrganization() {
 		webTestClient.delete()
-			.uri(builder -> builder.path("/organizations/{id}").build(Map.of("id", id)))
+			.uri(builder -> builder.path(BASE_PATH + "/{id}").build(Map.of("municipalityId", MUNICIPALITY_ID, "id", ID)))
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectBody().isEmpty();
 
-		verify(serviceMock).deleteOrganization(id);
+		verify(serviceMock).deleteOrganization(ID);
 		verifyNoMoreInteractions(serviceMock);
 	}
 }

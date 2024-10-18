@@ -18,11 +18,11 @@ VALUES ('187933cd-45f2-4aad-8048-d2514bf49037', 'Sundsvall API Stuga', '1234',
        ('22236b39-d094-40d0-b25d-9f3722a229e5', 'Sundsvall API Stuga B', '321',
         '2024-01-01 00:00:00', '2024-01-02 00:00:00');
 
-INSERT INTO manager(id, first_name, last_name, user_name, email, created, updated)
+INSERT INTO manager(id, first_name, last_name, username, email, created, updated)
 VALUES ('1273fadb-0455-455e-a5e6-0eebda329867', 'Kalle', 'Anka', 'kalleanka', 'kalleanka@email.com',
         '2024-01-01 00:00:00', '2024-01-02 00:00:00');
 
-INSERT INTO employee(id, first_name, last_name, email, user_name, title, role_type, start_date,
+INSERT INTO employee(id, first_name, last_name, email, username, title, role_type, start_date,
                      created, updated, organization_id, department_id, manager_id)
 VALUES ('1f183588-48ef-4287-9725-4963997c817d', 'John', 'Doe', 'johndoe@email.com', 'johndoe',
         'title', 'EMPLOYEE', '2021-03-01 00:00:00', '2020-01-01 00:00:00', '2024-01-01 00:00:00',

@@ -23,7 +23,7 @@ import lombok.Setter;
 @Builder(setterPrefix = "with")
 @Entity
 @Table(name = "delegate", indexes = {
-	@Index(name = "idx_delegate_user_name", columnList = "user_name"),
+	@Index(name = "idx_delegate_username", columnList = "username"),
 	@Index(name = "idx_delegate_first_name", columnList = "first_name"),
 	@Index(name = "idx_delegate_last_name", columnList = "last_name"),
 	@Index(name = "idx_delegate_email", columnList = "email") })
@@ -38,8 +38,8 @@ public class DelegateEntity {
 	@Column(name = "party_id", nullable = false)
 	private String partyId;
 
-	@Column(name = "user_name", nullable = false)
-	private String userName;
+	@Column(name = "username", nullable = false)
+	private String username;
 
 	@Column(name = "first_name", nullable = false)
 	private String firstName;
