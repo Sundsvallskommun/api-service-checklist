@@ -24,7 +24,8 @@ import se.sundsvall.checklist.service.CommunicationService;
 @ActiveProfiles("junit")
 class CommunicationResourceFailureTest {
 
-	private static final String PATH_PREFIX = "/employee-checklists";
+	private static final String INVALID = "invalid";
+	private static final String BASE_PATH = "/{municipalityId}/employee-checklists";
 
 	@MockBean
 	private CommunicationService communicationServiceMock;
@@ -33,11 +34,10 @@ class CommunicationResourceFailureTest {
 	private WebTestClient webTestClient;
 
 	@Test
-	void sendEmailInvalidEmployeeChecklistUuid() {
-		final var id = "invalid";
+	void sendEmailWithInvalidPathValues() {
 
 		final var response = webTestClient.post()
-			.uri(builder -> builder.path(PATH_PREFIX + "/{uuid}/email").build(Map.of("uuid", id)))
+			.uri(builder -> builder.path(BASE_PATH + "/{uuid}/email").build(Map.of("municipalityId", INVALID, "uuid", INVALID)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectBody(ConstraintViolationProblem.class)
@@ -48,18 +48,18 @@ class CommunicationResourceFailureTest {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
-				.containsExactlyInAnyOrder(tuple("sendEmail.employeeChecklistId", "not a valid UUID"));
+				.containsExactlyInAnyOrder(
+					tuple("sendEmail.municipalityId", "not a valid municipality ID"),
+					tuple("sendEmail.employeeChecklistId", "not a valid UUID"));
 		});
 
 		verifyNoInteractions(communicationServiceMock);
 	}
 
 	@Test
-	void retreiveCorrespondenceInvalidEmployeeChecklistUuid() {
-		final var id = "invalid";
-
+	void retreiveCorrespondenceWithInvalidPathValues() {
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(PATH_PREFIX + "/{uuid}/correspondence").build(Map.of("uuid", id)))
+			.uri(builder -> builder.path(BASE_PATH + "/{uuid}/correspondence").build(Map.of("municipalityId", INVALID, "uuid", INVALID)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectBody(ConstraintViolationProblem.class)
@@ -70,7 +70,9 @@ class CommunicationResourceFailureTest {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
-				.containsExactlyInAnyOrder(tuple("fetchCorrespondence.employeeChecklistId", "not a valid UUID"));
+				.containsExactlyInAnyOrder(
+					tuple("fetchCorrespondence.municipalityId", "not a valid municipality ID"),
+					tuple("fetchCorrespondence.employeeChecklistId", "not a valid UUID"));
 		});
 
 		verifyNoInteractions(communicationServiceMock);

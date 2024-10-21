@@ -40,12 +40,17 @@ class PhaseResourceFailureTest {
 	@MockBean
 	private PhaseService mockPhaseService;
 
-	private static final String BASE_PATH = "/checklists/{checklistId}/phases";
+	private static final String INVALID = "invalid";
+	private static final String MUNICIPALITY_ID = "2281";
+	private static final String ID = UUID.randomUUID().toString();
+	private static final String SUB_ID = UUID.randomUUID().toString();
+	private static final String BASE_PATH = "/{municipalityId}/checklists/{checklistId}/phases";
 
 	private static Stream<Arguments> invalidIdsProvider() {
 		return Stream.of(
-			Arguments.of("invalidId", UUID.randomUUID().toString(), "checklistId", "not a valid UUID"),
-			Arguments.of(UUID.randomUUID().toString(), "invalidId", "phaseId", "not a valid UUID"));
+			Arguments.of(INVALID, ID, SUB_ID, "municipalityId", "not a valid municipality ID"),
+			Arguments.of(MUNICIPALITY_ID, INVALID, SUB_ID, "checklistId", "not a valid UUID"),
+			Arguments.of(MUNICIPALITY_ID, ID, INVALID, "phaseId", "not a valid UUID"));
 	}
 
 	private static Stream<Arguments> invalidCreateRequestProvider() {
@@ -58,11 +63,9 @@ class PhaseResourceFailureTest {
 	}
 
 	@Test
-	void fetchChecklistPhasesWithInvalidIdTest() {
-		final var id = "invalidId";
-
-		var response = webTestClient.get()
-			.uri(builder -> builder.path(BASE_PATH).build(Map.of("checklistId", id)))
+	void fetchChecklistPhasesWithInvalidPathValues() {
+		final var response = webTestClient.get()
+			.uri(builder -> builder.path(BASE_PATH).build(Map.of("municipalityId", INVALID, "checklistId", INVALID)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectBody(ConstraintViolationProblem.class)
@@ -73,18 +76,20 @@ class PhaseResourceFailureTest {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
-				.containsExactlyInAnyOrder(tuple("fetchChecklistPhases.checklistId", "not a valid UUID"));
+				.containsExactlyInAnyOrder(
+					tuple("fetchChecklistPhases.municipalityId", "not a valid municipality ID"),
+					tuple("fetchChecklistPhases.checklistId", "not a valid UUID"));
 		});
+
 		verifyNoInteractions(mockPhaseService);
 	}
 
 	@Test
-	void createChecklistPhaseWithInvalidChecklistIdTest() {
-		final var checklistId = "invalidId";
+	void createChecklistPhaseWithInvalidPathValues() {
 		final var body = createPhaseCreateRequest();
 
-		var response = webTestClient.post()
-			.uri(builder -> builder.path(BASE_PATH).build(Map.of("checklistId", checklistId)))
+		final var response = webTestClient.post()
+			.uri(builder -> builder.path(BASE_PATH).build(Map.of("municipalityId", INVALID, "checklistId", INVALID)))
 			.contentType(MediaType.APPLICATION_JSON)
 			.bodyValue(body)
 			.exchange()
@@ -97,14 +102,16 @@ class PhaseResourceFailureTest {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
-				.containsExactlyInAnyOrder(tuple("createChecklistPhase.checklistId", "not a valid UUID"));
+				.containsExactlyInAnyOrder(
+					tuple("createChecklistPhase.municipalityId", "not a valid municipality ID"),
+					tuple("createChecklistPhase.checklistId", "not a valid UUID"));
 		});
 		verifyNoInteractions(mockPhaseService);
 	}
 
 	@Test
-	void updateChecklistPhaseWithInvalidRequestTest() {
-		var request = PhaseUpdateRequest.builder()
+	void updateChecklistPhaseWithInvalidRequest() {
+		final var request = PhaseUpdateRequest.builder()
 			.withName(null)
 			.withBodyText(null)
 			.withTimeToComplete("THIS IS INVALID")
@@ -112,8 +119,8 @@ class PhaseResourceFailureTest {
 			.withSortOrder(null)
 			.build();
 
-		var response = webTestClient.patch()
-			.uri(builder -> builder.path(BASE_PATH + "/{phaseId}").build(Map.of("checklistId", UUID.randomUUID().toString(), "phaseId", UUID.randomUUID().toString())))
+		final var response = webTestClient.patch()
+			.uri(builder -> builder.path(BASE_PATH + "/{phaseId}").build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID, "phaseId", SUB_ID)))
 			.contentType(MediaType.APPLICATION_JSON)
 			.bodyValue(request)
 			.exchange()
@@ -133,10 +140,10 @@ class PhaseResourceFailureTest {
 
 	@ParameterizedTest
 	@MethodSource("invalidIdsProvider")
-	void fetchChecklistPhaseWithInvalidIdsTest(final String checklistId, final String phaseId, final String badArgument, final String expectedMessage) {
-		var faultyArgument = "fetchChecklistPhase." + badArgument;
-		var response = webTestClient.get()
-			.uri(builder -> builder.path(BASE_PATH + "/{phaseId}").build(Map.of("checklistId", checklistId, "phaseId", phaseId)))
+	void fetchChecklistPhaseWithInvalidIds(final String municipalityId, final String checklistId, final String phaseId, final String badArgument, final String expectedMessage) {
+		final var faultyArgument = "fetchChecklistPhase." + badArgument;
+		final var response = webTestClient.get()
+			.uri(builder -> builder.path(BASE_PATH + "/{phaseId}").build(Map.of("municipalityId", municipalityId, "checklistId", checklistId, "phaseId", phaseId)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectBody(ConstraintViolationProblem.class)
@@ -154,11 +161,11 @@ class PhaseResourceFailureTest {
 
 	@ParameterizedTest
 	@MethodSource("invalidIdsProvider")
-	void deleteChecklistPhaseWithInvalidIdsTest(final String checklistId, final String phaseId, final String badArgument, final String expectedMessage) {
-		var faultyArgument = "deleteChecklistPhase." + badArgument;
+	void deleteChecklistPhaseWithInvalidIds(final String municipalityId, final String checklistId, final String phaseId, final String badArgument, final String expectedMessage) {
+		final var faultyArgument = "deleteChecklistPhase." + badArgument;
 
-		var response = webTestClient.delete()
-			.uri(builder -> builder.path(BASE_PATH + "/{phaseId}").build(Map.of("checklistId", checklistId, "phaseId", phaseId)))
+		final var response = webTestClient.delete()
+			.uri(builder -> builder.path(BASE_PATH + "/{phaseId}").build(Map.of("municipalityId", municipalityId, "checklistId", checklistId, "phaseId", phaseId)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectBody(ConstraintViolationProblem.class)
@@ -176,11 +183,11 @@ class PhaseResourceFailureTest {
 
 	@ParameterizedTest
 	@MethodSource("invalidIdsProvider")
-	void updateChecklistPhaseWithInvalidIdsTest(final String checklistId, final String phaseId, final String badArgument, final String expectedMessage) {
-		var faultyArgument = "updateChecklistPhase." + badArgument;
-		var request = createPhaseUpdateRequest();
-		var response = webTestClient.patch()
-			.uri(builder -> builder.path(BASE_PATH + "/{phaseId}").build(Map.of("checklistId", checklistId, "phaseId", phaseId)))
+	void updateChecklistPhaseWithInvalidIds(final String municipalityId, final String checklistId, final String phaseId, final String badArgument, final String expectedMessage) {
+		final var faultyArgument = "updateChecklistPhase." + badArgument;
+		final var request = createPhaseUpdateRequest();
+		final var response = webTestClient.patch()
+			.uri(builder -> builder.path(BASE_PATH + "/{phaseId}").build(Map.of("municipalityId", municipalityId, "checklistId", checklistId, "phaseId", phaseId)))
 			.contentType(MediaType.APPLICATION_JSON)
 			.bodyValue(request)
 			.exchange()
@@ -200,11 +207,9 @@ class PhaseResourceFailureTest {
 
 	@ParameterizedTest
 	@MethodSource("invalidCreateRequestProvider")
-	void createChecklistPhaseWithInvalidRequestTest(final PhaseCreateRequest request, final String badArgument, final String expectedMessage) {
-		final var checklistId = UUID.randomUUID().toString();
-
-		var response = webTestClient.post()
-			.uri(builder -> builder.path(BASE_PATH).build(Map.of("checklistId", checklistId)))
+	void createChecklistPhaseWithInvalidRequest(final PhaseCreateRequest request, final String badArgument, final String expectedMessage) {
+		final var response = webTestClient.post()
+			.uri(builder -> builder.path(BASE_PATH).build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID)))
 			.contentType(MediaType.APPLICATION_JSON)
 			.bodyValue(request)
 			.exchange()

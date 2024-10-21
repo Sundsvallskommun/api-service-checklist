@@ -27,7 +27,7 @@ class ChecklistIT extends AbstractAppTest {
 
 	private static final String CHECKLIST_ID = "15764278-50c8-4a19-af00-077bfc314fd2";
 
-	private static final String PATH = "/checklists";
+	private static final String PATH = "/2281/checklists";
 	private static final String REQUEST_FILE = "request.json";
 	private static final String EXPECTED_FILE = "expected.json";
 
@@ -58,7 +58,7 @@ class ChecklistIT extends AbstractAppTest {
 			.withRequest(REQUEST_FILE)
 			.withHttpMethod(POST)
 			.withExpectedResponseStatus(CREATED)
-			.withExpectedResponseHeader(LOCATION, List.of("^/checklists/(.+)$"))
+			.withExpectedResponseHeader(LOCATION, List.of("^/2281/checklists/(.+)$"))
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
 	}
@@ -70,7 +70,7 @@ class ChecklistIT extends AbstractAppTest {
 			.withServicePath(PATH + "/" + retiredChecklistId + "/version")
 			.withHttpMethod(POST)
 			.withExpectedResponseStatus(CREATED)
-			.withExpectedResponseHeader(LOCATION, List.of("^/checklists/(.+)$"))
+			.withExpectedResponseHeader(LOCATION, List.of("^/2281/checklists/(.+)$"))
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
 	}

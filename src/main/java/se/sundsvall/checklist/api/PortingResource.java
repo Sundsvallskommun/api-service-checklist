@@ -8,6 +8,7 @@ import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
 import static org.springframework.http.ResponseEntity.created;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -28,6 +30,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import se.sundsvall.checklist.api.validation.ValidJson;
 import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 import se.sundsvall.checklist.service.PortingService;
+import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
 @RestController
 @Tag(name = "Porting resources", description = "Resources for managing import and export of checklists")
@@ -36,6 +39,7 @@ import se.sundsvall.checklist.service.PortingService;
 	@ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class))),
 	@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 })
+@Validated
 class PortingResource {
 
 	private final PortingService portingService;
@@ -47,8 +51,13 @@ class PortingResource {
 	@Operation(summary = "Export checklist structure", description = "Returns complete structure for the checklist matching provided organizationNumber and roletype. If version if prodvided it will be matched, otherwise the latest version will be returned", responses = {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true) })
 
-	@GetMapping(path = "/export/{organizationNumber}/{roleType}", produces = { APPLICATION_JSON_VALUE })
-	ResponseEntity<String> exportChecklist(@PathVariable Integer organizationNumber, @PathVariable RoleType roleType, @RequestParam(required = false) Integer version) {
+	@GetMapping(path = "/{municipalityId}/export/{organizationNumber}/{roleType}", produces = { APPLICATION_JSON_VALUE })
+	ResponseEntity<String> exportChecklist(
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId String municipalityId,
+		@Parameter(name = "organizationNumber", description = "Organization number", example = "53") @PathVariable Integer organizationNumber,
+		@Parameter(name = "roleType", description = "Role type", example = "EMPLOYEE") @PathVariable RoleType roleType,
+		@Parameter(name = "version", description = "Version", example = "2") @RequestParam(required = false) Integer version) {
+
 		return ResponseEntity.ok(portingService.exportChecklist(organizationNumber, roleType, version));
 	}
 
@@ -62,16 +71,17 @@ class PortingResource {
 		""", responses = {
 		@ApiResponse(responseCode = "201", headers = @Header(name = LOCATION, schema = @Schema(type = "string")), description = "Successful Operation", useReturnTypeSchema = true) })
 
-	@PostMapping(path = "/import/add/{organizationNumber}/{organizationName}", produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE }, consumes = { APPLICATION_JSON_VALUE })
+	@PostMapping(path = "/{municipalityId}/import/add/{organizationNumber}/{organizationName}", produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE }, consumes = { APPLICATION_JSON_VALUE })
 	ResponseEntity<Void> importChecklistAsNewVersion(
-		@PathVariable Integer organizationNumber,
-		@PathVariable String organizationName,
-		@RequestBody @ValidJson String jsonStructure) {
-		final var id = portingService.importChecklist(organizationNumber, organizationName, jsonStructure, false);
-		return created(UriComponentsBuilder.fromPath("/checklists" + "/{checklistId}")
-			.buildAndExpand(id)
-			.toUri()).header(CONTENT_TYPE, ALL_VALUE).build();
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId String municipalityId,
+		@Parameter(name = "organizationNumber", description = "Organization number", example = "53") @PathVariable Integer organizationNumber,
+		@Parameter(name = "organizationName", description = "Organization name", example = "Organization ABC") @PathVariable String organizationName,
+		@Parameter(description = "Json checklist structure to import") @RequestBody @ValidJson String jsonStructure) {
 
+		final var id = portingService.importChecklist(organizationNumber, organizationName, jsonStructure, false);
+		return created(UriComponentsBuilder.fromPath("/{municipalityId}/checklists/{checklistId}")
+			.buildAndExpand(municipalityId, id)
+			.toUri()).header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 
 	@Operation(summary = "Import checklist structure for a organization, replacing currently CREATED or ACTIVE version", description = """
@@ -84,14 +94,16 @@ class PortingResource {
 		""", responses = {
 		@ApiResponse(responseCode = "201", headers = @Header(name = LOCATION, schema = @Schema(type = "string")), description = "Successful Operation", useReturnTypeSchema = true) })
 
-	@PostMapping(path = "/import/replace/{organizationNumber}/{organizationName}", produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE }, consumes = { APPLICATION_JSON_VALUE })
+	@PostMapping(path = "/{municipalityId}/import/replace/{organizationNumber}/{organizationName}", produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE }, consumes = { APPLICATION_JSON_VALUE })
 	ResponseEntity<Void> importAndOverwriteExistingChecklist(
-		@PathVariable Integer organizationNumber,
-		@PathVariable String organizationName,
-		@RequestBody @ValidJson String jsonStructure) {
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId String municipalityId,
+		@Parameter(name = "organizationNumber", description = "Organization number", example = "53") @PathVariable Integer organizationNumber,
+		@Parameter(name = "organizationName", description = "Organization name", example = "Organization ABC") @PathVariable String organizationName,
+		@Parameter(description = "Json checklist structure to import") @RequestBody @ValidJson String jsonStructure) {
+
 		final var id = portingService.importChecklist(organizationNumber, organizationName, jsonStructure, true);
-		return created(UriComponentsBuilder.fromPath("/checklists" + "/{checklistId}")
-			.buildAndExpand(id)
+		return created(UriComponentsBuilder.fromPath("/{municipalityId}/checklists/{checklistId}")
+			.buildAndExpand(municipalityId, id)
 			.toUri()).header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 }

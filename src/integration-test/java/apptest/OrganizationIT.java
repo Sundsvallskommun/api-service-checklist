@@ -32,7 +32,7 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 })
 class OrganizationIT extends AbstractAppTest {
 
-	private static final String PATH = "/organizations";
+	private static final String PATH = "/2281/organizations";
 	private static final String REQUEST_FILE = "request.json";
 	private static final String EXPECTED_FILE = "expected.json";
 
@@ -77,7 +77,7 @@ class OrganizationIT extends AbstractAppTest {
 			.withHttpMethod(POST)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
-			.withExpectedResponseHeader(LOCATION, List.of("^/organizations/(.+)$"))
+			.withExpectedResponseHeader(LOCATION, List.of("^/2281/organizations/(.+)$"))
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
 

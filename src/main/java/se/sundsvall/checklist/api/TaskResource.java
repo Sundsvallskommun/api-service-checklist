@@ -26,6 +26,7 @@ import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,10 +38,11 @@ import se.sundsvall.checklist.api.model.Task;
 import se.sundsvall.checklist.api.model.TaskCreateRequest;
 import se.sundsvall.checklist.api.model.TaskUpdateRequest;
 import se.sundsvall.checklist.service.TaskService;
+import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
 
 @RestController
-@RequestMapping("/checklists/{checklistId}/phases/{phaseId}/tasks")
+@RequestMapping("/{municipalityId}/checklists/{checklistId}/phases/{phaseId}/tasks")
 @Tag(name = "Task resources", description = "Resources for managing tasks in a phase")
 @ApiResponses(value = {
 	@ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = { Problem.class, ConstraintViolationProblem.class }))),
@@ -60,8 +62,10 @@ class TaskResource {
 	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	@GetMapping(produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
 	ResponseEntity<List<Task>> fetchChecklistPhaseTasks(
-		@PathVariable @ValidUuid final String checklistId,
-		@PathVariable @ValidUuid final String phaseId) {
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,
+		@Parameter(name = "phaseId", description = "Phase id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String phaseId) {
+
 		return ok(taskService.getAllTasksInPhase(checklistId, phaseId));
 	}
 
@@ -69,9 +73,11 @@ class TaskResource {
 	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	@GetMapping(value = "/{taskId}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
 	ResponseEntity<Task> fetchChecklistPhaseTask(
-		@PathVariable @ValidUuid final String checklistId,
-		@PathVariable @ValidUuid final String phaseId,
-		@PathVariable @ValidUuid final String taskId) {
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,
+		@Parameter(name = "phaseId", description = "Phase id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String phaseId,
+		@Parameter(name = "taskId", description = "Task id", example = "55904052-0db0-4622-850c-3273ee60def4") @PathVariable @ValidUuid final String taskId) {
+
 		return ok(taskService.getTaskInPhaseById(checklistId, phaseId, taskId));
 	}
 
@@ -79,12 +85,14 @@ class TaskResource {
 	@ApiResponse(responseCode = "201", description = "Successful Operation", useReturnTypeSchema = true, headers = @Header(name = LOCATION, schema = @Schema(type = "string")))
 	@PostMapping(produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE }, consumes = { APPLICATION_JSON_VALUE })
 	ResponseEntity<Void> createChecklistPhaseTask(
-		@PathVariable @ValidUuid final String checklistId,
-		@PathVariable @ValidUuid final String phaseId,
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,
+		@Parameter(name = "phaseId", description = "Phase id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String phaseId,
 		@RequestBody @Valid final TaskCreateRequest request) {
+
 		final var task = taskService.createTask(checklistId, phaseId, request);
-		return created(UriComponentsBuilder.fromPath("/checklists/{checklistId}/phases/{phaseId}/tasks/{taskId}")
-			.buildAndExpand(checklistId, phaseId, task.getId())
+		return created(UriComponentsBuilder.fromPath("/{municipalityId}/checklists/{checklistId}/phases/{phaseId}/tasks/{taskId}")
+			.buildAndExpand(municipalityId, checklistId, phaseId, task.getId())
 			.toUri()).header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 
@@ -92,10 +100,12 @@ class TaskResource {
 	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	@PatchMapping(value = "/{taskId}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE }, consumes = { APPLICATION_JSON_VALUE })
 	ResponseEntity<Task> updateChecklistPhaseTask(
-		@PathVariable @ValidUuid final String checklistId,
-		@PathVariable @ValidUuid final String phaseId,
-		@PathVariable @ValidUuid final String taskId,
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,
+		@Parameter(name = "phaseId", description = "Phase id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String phaseId,
+		@Parameter(name = "taskId", description = "Task id", example = "55904052-0db0-4622-850c-3273ee60def4") @PathVariable @ValidUuid final String taskId,
 		@RequestBody @Valid final TaskUpdateRequest request) {
+
 		return ok(taskService.updateTask(checklistId, phaseId, taskId, request));
 	}
 
@@ -103,11 +113,12 @@ class TaskResource {
 	@ApiResponse(responseCode = "204", description = "No Content", useReturnTypeSchema = true)
 	@DeleteMapping(value = "/{taskId}", produces = APPLICATION_PROBLEM_JSON_VALUE)
 	ResponseEntity<Void> deleteChecklistPhaseTask(
-		@PathVariable @ValidUuid final String checklistId,
-		@PathVariable @ValidUuid final String phaseId,
-		@PathVariable @ValidUuid final String taskId) {
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,
+		@Parameter(name = "phaseId", description = "Phase id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String phaseId,
+		@Parameter(name = "taskId", description = "Task id", example = "55904052-0db0-4622-850c-3273ee60def4") @PathVariable @ValidUuid final String taskId) {
+
 		taskService.deleteTask(checklistId, phaseId, taskId);
 		return noContent().header(CONTENT_TYPE, ALL_VALUE).build();
 	}
-
 }

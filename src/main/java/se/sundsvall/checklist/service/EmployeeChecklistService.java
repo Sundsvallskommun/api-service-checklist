@@ -88,8 +88,8 @@ public class EmployeeChecklistService {
 		return employeeChecklistIntegration.fetchPaginatedEmployeeChecklistsByString(specification, pageable);
 	}
 
-	public Optional<EmployeeChecklist> fetchChecklistForEmployee(String userId) {
-		final var employeeChecklist = employeeChecklistIntegration.fetchOptionalEmployeeChecklist(userId);
+	public Optional<EmployeeChecklist> fetchChecklistForEmployee(String username) {
+		final var employeeChecklist = employeeChecklistIntegration.fetchOptionalEmployeeChecklist(username);
 
 		return employeeChecklist
 			.map(this::handleUpdatedEmployeeInformation)
@@ -101,13 +101,13 @@ public class EmployeeChecklistService {
 			.map(this::removeManagerObjects);
 	}
 
-	public List<EmployeeChecklist> fetchChecklistsForManager(String userId) {
-		final var employeeChecklists = employeeChecklistIntegration.fetchEmployeeChecklistsForManager(userId);
+	public List<EmployeeChecklist> fetchChecklistsForManager(String username) {
+		final var employeeChecklists = employeeChecklistIntegration.fetchEmployeeChecklistsForManager(username);
 
 		return employeeChecklists
 			.stream()
 			.map(this::handleUpdatedEmployeeInformation)
-			.filter(ob -> Objects.equals(userId, ob.getEmployee().getManager().getUserName())) // After possible update, the checklist might not be handled by sent in userId anymore
+			.filter(ob -> Objects.equals(username, ob.getEmployee().getManager().getUsername())) // After possible update, the checklist might not be handled by sent in username anymore
 			.map(EmployeeChecklistMapper::toEmployeeChecklist)
 			.map(ob -> decorateWithCustomTasks(ob, customTaskRepository.findAllByEmployeeChecklistId(ob.getId())))
 			.map(ob -> decorateWithFulfilment(ob, fetchEntity(employeeChecklists, ob.getId())))

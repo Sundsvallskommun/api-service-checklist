@@ -8,7 +8,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.MediaType.ALL;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static se.sundsvall.checklist.TestObjectFactory.createChecklist;
 import static se.sundsvall.checklist.TestObjectFactory.createChecklistCreateRequest;
 import static se.sundsvall.checklist.TestObjectFactory.createChecklistUpdateRequest;
 
@@ -24,12 +23,16 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import se.sundsvall.checklist.Application;
+import se.sundsvall.checklist.TestObjectFactory;
 import se.sundsvall.checklist.api.model.Checklist;
 import se.sundsvall.checklist.service.ChecklistService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
 class ChecklistResourceTest {
+
+	private static final String MUNICIPALITY_ID = "2281";
+	private static final String ID = UUID.randomUUID().toString();
 
 	@MockBean
 	private ChecklistService mockService;
@@ -38,13 +41,13 @@ class ChecklistResourceTest {
 	private WebTestClient webTestClient;
 
 	@Test
-	void fetchAllChecklistsTest() {
+	void fetchAllChecklists() {
 		// Arrange
-		when(mockService.getAllChecklists()).thenReturn(List.of(createChecklist(), createChecklist()));
+		when(mockService.getAllChecklists()).thenReturn(List.of(TestObjectFactory.createChecklist(), TestObjectFactory.createChecklist()));
 
 		// Act
 		final var response = webTestClient.get()
-			.uri("/checklists")
+			.uri(builder -> builder.path("/{municipalityId}/checklists").build(Map.of("municipalityId", MUNICIPALITY_ID)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBodyList(Checklist.class)
@@ -60,15 +63,14 @@ class ChecklistResourceTest {
 	}
 
 	@Test
-	void fetchChecklistByIdTest() {
+	void fetchChecklistById() {
 		// Arrange
-		var id = UUID.randomUUID().toString();
-		var checklist = createChecklist();
-		when(mockService.getChecklistById(id)).thenReturn(checklist);
+		final var mockedResponse = TestObjectFactory.createChecklist();
+		when(mockService.getChecklistById(ID)).thenReturn(mockedResponse);
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path("/checklists/{checklistId}").build(Map.of("checklistId", id)))
+			.uri(builder -> builder.path("/{municipalityId}/checklists/{checklistId}").build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody(Checklist.class)
@@ -76,60 +78,58 @@ class ChecklistResourceTest {
 			.getResponseBody();
 
 		// Assert and verify
-		assertThat(response).isNotNull().isEqualTo(checklist);
+		assertThat(response).isNotNull().isEqualTo(mockedResponse);
 
-		verify(mockService).getChecklistById(id);
+		verify(mockService).getChecklistById(ID);
 	}
 
 	@Test
-	void createChecklistTest() {
+	void createChecklist() {
 		// Arrange
-		var body = createChecklistCreateRequest();
-		var result = createChecklist();
-		result.setId(UUID.randomUUID().toString());
-		when(mockService.createChecklist(body)).thenReturn(result);
+		final var body = createChecklistCreateRequest();
+		final var mockedResponse = TestObjectFactory.createChecklist();
+		mockedResponse.setId(ID);
+		when(mockService.createChecklist(body)).thenReturn(mockedResponse);
 
 		// Act
 		webTestClient.post()
-			.uri("/checklists")
+			.uri(builder -> builder.path("/{municipalityId}/checklists").build(Map.of("municipalityId", MUNICIPALITY_ID)))
 			.bodyValue(body)
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL)
-			.expectHeader().exists(LOCATION);
+			.expectHeader().location("/%s/checklists/%s".formatted(MUNICIPALITY_ID, ID));
 
 		// Assert and verify
 		verify(mockService).createChecklist(body);
 	}
 
 	@Test
-	void createNewVersionTest() {
-		// Arrange
-		var id = UUID.randomUUID().toString();
-		when(mockService.createNewVersion(anyString())).thenReturn(createChecklist());
+	void createNewVersion() {
+		final var checklist = TestObjectFactory.createChecklist();
+		when(mockService.createNewVersion(anyString())).thenReturn(checklist);
 
 		// Act
 		webTestClient.post()
-			.uri(builder -> builder.path("/checklists/{checklistId}/version").build(Map.of("checklistId", id)))
+			.uri(builder -> builder.path("/{municipalityId}/checklists/{checklistId}/version").build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID)))
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL)
-			.expectHeader().exists(LOCATION);
+			.expectHeader().exists(LOCATION)
+			.expectHeader().valueEquals(LOCATION, "/%s/checklists/%s".formatted(MUNICIPALITY_ID, checklist.getId()));
 
 		// Assert and verify
-		verify(mockService).createNewVersion(id);
+		verify(mockService).createNewVersion(ID);
 	}
 
 	@Test
-	void activateChecklistTest() {
-		// Arrange
-		var id = UUID.randomUUID().toString();
-		var response = createChecklist();
-		when(mockService.activateChecklist(anyString())).thenReturn(response);
+	void activateChecklist() {
+		final var mockedResponse = TestObjectFactory.createChecklist();
+		when(mockService.activateChecklist(anyString())).thenReturn(mockedResponse);
 
 		// Act
-		final var result = webTestClient.patch()
-			.uri(builder -> builder.path("/checklists/{checklistId}/activate").build(Map.of("checklistId", id)))
+		final var response = webTestClient.patch()
+			.uri(builder -> builder.path("/{municipalityId}/checklists/{checklistId}/activate").build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody(Checklist.class)
@@ -137,23 +137,22 @@ class ChecklistResourceTest {
 			.getResponseBody();
 
 		// Assert and verify
-		assertThat(result).isNotNull().isEqualTo(response);
+		assertThat(response).isNotNull().isEqualTo(mockedResponse);
 
 		verify(mockService).activateChecklist(anyString());
 	}
 
 	@Test
-	void updateChecklistTest() {
+	void updateChecklist() {
 		// Arrange
-		var id = UUID.randomUUID().toString();
-		var request = createChecklistUpdateRequest();
-		var result = createChecklist();
-		result.setId(id);
-		when(mockService.updateChecklist(id, request)).thenReturn(result);
+		final var request = createChecklistUpdateRequest();
+		final var mockedResponse = TestObjectFactory.createChecklist();
+		mockedResponse.setId(ID);
+		when(mockService.updateChecklist(ID, request)).thenReturn(mockedResponse);
 
 		// Act
 		final var response = webTestClient.patch()
-			.uri(builder -> builder.path("/checklists/{checklistId}").build(Map.of("checklistId", id)))
+			.uri(builder -> builder.path("/{municipalityId}/checklists/{checklistId}").build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID)))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(request)
 			.exchange()
@@ -163,24 +162,21 @@ class ChecklistResourceTest {
 			.getResponseBody();
 
 		// Assert and verify
-		assertThat(response).isNotNull().isEqualTo(result);
+		assertThat(response).isNotNull().isEqualTo(mockedResponse);
 
-		verify(mockService).updateChecklist(id, request);
+		verify(mockService).updateChecklist(ID, request);
 	}
 
 	@Test
-	void deleteChecklistTest() {
-		var id = UUID.randomUUID().toString();
-
+	void deleteChecklist() {
 		// Act
 		webTestClient.delete()
-			.uri(builder -> builder.path("/checklists/{checklistId}").build(Map.of("checklistId", id)))
+			.uri(builder -> builder.path("/{municipalityId}/checklists/{checklistId}").build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID)))
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectBody().isEmpty();
 
 		// Assert and verify
-		verify(mockService).deleteChecklist(id);
+		verify(mockService).deleteChecklist(ID);
 	}
-
 }

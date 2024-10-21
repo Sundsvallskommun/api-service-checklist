@@ -34,7 +34,7 @@ import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 @Builder(setterPrefix = "with")
 @Entity
 @Table(name = "employee", indexes = {
-	@Index(name = "idx_employee_user_name", columnList = "user_name")
+	@Index(name = "idx_employee_username", columnList = "username")
 })
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -53,8 +53,8 @@ public class EmployeeEntity {
 	@Column(name = "email")
 	private String email;
 
-	@Column(name = "user_name")
-	private String userName;
+	@Column(name = "username")
+	private String username;
 
 	@Column(name = "title")
 	private String title;

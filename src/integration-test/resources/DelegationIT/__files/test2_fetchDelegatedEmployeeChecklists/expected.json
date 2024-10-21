@@ -7,14 +7,14 @@
         "firstName": "John",
         "lastName": "Dear",
         "email": "john.doe@email.com",
-        "userName": "johndoe"
+        "username": "johndoe"
       },
       "manager": {
         "id": "1273fadb-0455-455e-a5e6-0eebda329867",
         "firstName": "Kalle",
         "lastName": "Anka",
         "email": "kalleanka@email.com",
-        "userName": "kalleanka"
+        "username": "kalleanka"
       },
       "completed": true,
       "locked": false,

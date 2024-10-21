@@ -37,10 +37,10 @@ VALUES ('aba82aca-f841-4257-baec-d745e3ab78bf', 'Fika', 'Bjud på hembakat fika'
         'EMPLOYEE', 'COMPLETED_OR_NOT_RELEVANT_WITH_TEXT', '2019-01-01 00:00:00', 1,
         '2019-01-01 00:00:00', '1455a5d4-1db8-4a25-a49f-92fdd0c60a14');
         
-insert into manager (created, updated, email, first_name, id, last_name, user_name)
+insert into manager (created, updated, email, first_name, id, last_name, username)
 values (now(), now(), 'a.manager@5535.com', 'A Man', '02817ff3-632a-4228-9c31-25ad8124568c', 'Ager', 'aman0agr');
 
-insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name, manager_id, title, user_name, role_type)
+insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name, manager_id, title, username, role_type)
 values ('2024-01-01', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'bd49f474-303c-4a4e-aa54-5d4f58d9188b', 'a.employee@5535.com', 
         'A Emp', '1810c9c4-7281-44de-9930-426d9f065f4d', 'Loyee', '02817ff3-632a-4228-9c31-25ad8124568c', 'Cleaner', 'aemp0loyee', 'EMPLOYEE'),
        ('2024-01-01', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'bd49f474-303c-4a4e-aa54-5d4f58d9188b', 'B.employee@5535.com', 

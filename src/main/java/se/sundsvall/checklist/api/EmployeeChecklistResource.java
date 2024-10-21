@@ -26,6 +26,7 @@ import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -44,10 +45,11 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
 import se.sundsvall.checklist.api.specification.EmployeeCheclistFilterSpecification;
 import se.sundsvall.checklist.service.EmployeeChecklistService;
+import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
 
 @RestController
-@RequestMapping("/employee-checklists")
+@RequestMapping("/{municipalityId}/employee-checklists")
 @Tag(name = "Employee checklist resources", description = "Resources for managing employee checklists")
 @ApiResponses(value = {
 	@ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = { Problem.class, ConstraintViolationProblem.class }))),
@@ -63,8 +65,8 @@ class EmployeeChecklistResource {
 		this.employeeChecklistService = employeeChecklistService;
 	}
 
-	@Operation(summary = """
-		Fetches employee checklists based on search string, the string is matched against the following
+	@Operation(summary = "Fetches employee checklists where pre defined fields matches provided search string", description = """
+		Search string is matched against the following
 		attributes using 'LikeIgnoreCase':
 		- Employee's first name
 		- Employee's last name
@@ -78,7 +80,11 @@ class EmployeeChecklistResource {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	})
 	@GetMapping(value = "/search", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
-	ResponseEntity<EmployeeChecklistPaginatedResponse> findemployeeChecklistsBySearchString(final EmployeeCheclistFilterSpecification specification, final Pageable pageable) {
+	ResponseEntity<EmployeeChecklistPaginatedResponse> findemployeeChecklistsBySearchString(
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		final EmployeeCheclistFilterSpecification specification,
+		final Pageable pageable) {
+
 		return ok(employeeChecklistService.findEmployeeChecklistsBySearchString(specification, pageable));
 	}
 
@@ -86,9 +92,12 @@ class EmployeeChecklistResource {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true),
 		@ApiResponse(responseCode = "204", description = "No employee checklist found")
 	})
-	@GetMapping(value = "/employee/{userId}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
-	ResponseEntity<EmployeeChecklist> fetchChecklistForEmployee(@PathVariable final String userId) {
-		return employeeChecklistService.fetchChecklistForEmployee(userId)
+	@GetMapping(value = "/employee/{username}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
+	ResponseEntity<EmployeeChecklist> fetchChecklistForEmployee(
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "username", description = "Username for user to fetch checklists for", example = "usr123") @PathVariable final String username) {
+
+		return employeeChecklistService.fetchChecklistForEmployee(username)
 			.map(employeeChecklist -> ok().body(employeeChecklist))
 			.orElse(noContent().build());
 	}
@@ -96,16 +105,22 @@ class EmployeeChecklistResource {
 	@Operation(summary = "Fetch checklists where user acts as manager", description = "Fetch a users checklists where the user has the role of manager", responses = {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	})
-	@GetMapping(value = "/manager/{userId}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
-	ResponseEntity<List<EmployeeChecklist>> fetchChecklistsForManager(@PathVariable final String userId) {
-		return ok().body(employeeChecklistService.fetchChecklistsForManager(userId));
+	@GetMapping(value = "/manager/{username}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
+	ResponseEntity<List<EmployeeChecklist>> fetchChecklistsForManager(
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "username", description = "Username for user to fetch checklists for", example = "usr123") @PathVariable final String username) {
+
+		return ok().body(employeeChecklistService.fetchChecklistsForManager(username));
 	}
 
 	@Operation(summary = "Delete an employee checklist", description = "Delete an employee checklist completely", responses = {
 		@ApiResponse(responseCode = "204", description = "Successful Operation", useReturnTypeSchema = true)
 	})
 	@DeleteMapping(value = "/{employeeChecklistId}", produces = APPLICATION_PROBLEM_JSON_VALUE)
-	ResponseEntity<Void> deleteEmployeeChecklist(@PathVariable @ValidUuid final String employeeChecklistId) {
+	ResponseEntity<Void> deleteEmployeeChecklist(
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId) {
+
 		employeeChecklistService.deleteEmployeChecklist(employeeChecklistId);
 		return noContent().header(CONTENT_TYPE, ALL_VALUE).build();
 	}
@@ -115,15 +130,16 @@ class EmployeeChecklistResource {
 	})
 	@PostMapping(value = "/{employeeChecklistId}/phases/{phaseId}/customtasks", consumes = APPLICATION_JSON_VALUE, produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
 	ResponseEntity<CustomTask> createCustomTask(
-		@PathVariable @ValidUuid final String employeeChecklistId,
-		@PathVariable @ValidUuid final String phaseId,
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId,
+		@Parameter(name = "phaseId", description = "Phase id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String phaseId,
 		@RequestBody @Valid final CustomTaskCreateRequest request) {
 
 		final var createdTask = employeeChecklistService.createCustomTask(employeeChecklistId, phaseId, request);
 		return created(
 			UriComponentsBuilder
-				.fromPath("/employee-checklists/{employeeChecklistId}/customtasks/{taskId}")
-				.buildAndExpand(employeeChecklistId, createdTask.getId())
+				.fromPath("/{municipalityId}/employee-checklists/{employeeChecklistId}/customtasks/{taskId}")
+				.buildAndExpand(municipalityId, employeeChecklistId, createdTask.getId())
 				.toUri())
 					.body(createdTask);
 	}
@@ -133,8 +149,9 @@ class EmployeeChecklistResource {
 	})
 	@GetMapping(value = "/{employeeChecklistId}/customtasks/{taskId}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
 	ResponseEntity<CustomTask> readCustomTask(
-		@PathVariable @ValidUuid final String employeeChecklistId,
-		@PathVariable @ValidUuid final String taskId) {
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId,
+		@Parameter(name = "taskId", description = "Task id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String taskId) {
 
 		return ok().body(employeeChecklistService.readCustomTask(employeeChecklistId, taskId));
 	}
@@ -144,8 +161,9 @@ class EmployeeChecklistResource {
 	})
 	@PatchMapping(value = "/{employeeChecklistId}/customtasks/{taskId}", consumes = APPLICATION_JSON_VALUE, produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
 	ResponseEntity<CustomTask> updateCustomTask(
-		@PathVariable @ValidUuid final String employeeChecklistId,
-		@PathVariable @ValidUuid final String taskId,
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId,
+		@Parameter(name = "taskId", description = "Task id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String taskId,
 		@RequestBody @Valid final CustomTaskUpdateRequest request) {
 
 		return ok().body(employeeChecklistService.updateCustomTask(employeeChecklistId, taskId, request));
@@ -156,8 +174,9 @@ class EmployeeChecklistResource {
 	})
 	@DeleteMapping(value = "/{employeeChecklistId}/customtasks/{taskId}", produces = { APPLICATION_PROBLEM_JSON_VALUE })
 	ResponseEntity<Void> deleteCustomTask(
-		@PathVariable @ValidUuid final String employeeChecklistId,
-		@PathVariable @ValidUuid final String taskId) {
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId,
+		@Parameter(name = "taskId", description = "Task id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String taskId) {
 
 		employeeChecklistService.deleteCustomTask(employeeChecklistId, taskId);
 		return noContent().header(CONTENT_TYPE, ALL_VALUE).build();
@@ -168,8 +187,9 @@ class EmployeeChecklistResource {
 	})
 	@PatchMapping(value = "/{employeeChecklistId}/phases/{phaseId}", consumes = APPLICATION_JSON_VALUE, produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
 	ResponseEntity<EmployeeChecklistPhase> updateAllTasksInPhase(
-		@PathVariable @ValidUuid final String employeeChecklistId,
-		@PathVariable @ValidUuid final String phaseId,
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId,
+		@Parameter(name = "phaseId", description = "Phase id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String phaseId,
 		@RequestBody @Valid final EmployeeChecklistPhaseUpdateRequest request) {
 
 		return ok().body(employeeChecklistService.updateAllTasksInPhase(employeeChecklistId, phaseId, request));
@@ -180,8 +200,9 @@ class EmployeeChecklistResource {
 	})
 	@PatchMapping(value = "/{employeeChecklistId}/tasks/{taskId}", consumes = APPLICATION_JSON_VALUE, produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
 	ResponseEntity<EmployeeChecklistTask> updateTaskFulfilment(
-		@PathVariable @ValidUuid final String employeeChecklistId,
-		@PathVariable @ValidUuid final String taskId,
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId,
+		@Parameter(name = "taskId", description = "Task id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String taskId,
 		@RequestBody @Valid final EmployeeChecklistTaskUpdateRequest request) {
 
 		return ok().body(employeeChecklistService.updateTaskFulfilment(employeeChecklistId, taskId, request));
@@ -191,7 +212,9 @@ class EmployeeChecklistResource {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	})
 	@PostMapping(value = "/initialize", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
-	ResponseEntity<EmployeeChecklistResponse> initiateEmployeeChecklists() {
+	ResponseEntity<EmployeeChecklistResponse> initiateEmployeeChecklists(
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId) {
+
 		return ok().body(employeeChecklistService.initiateEmployeeChecklists());
 	}
 
@@ -200,7 +223,9 @@ class EmployeeChecklistResource {
 	})
 	@PostMapping(value = "/initialize/{personId}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
 	ResponseEntity<EmployeeChecklistResponse> initiateSpecificEmployeeChecklist(
-		@PathVariable @ValidUuid final String personId) {
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "personId", description = "Person id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String personId) {
+
 		return ok().body(employeeChecklistService.initiateSpecificEmployeeChecklist(personId));
 	}
 }

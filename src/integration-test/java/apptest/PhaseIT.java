@@ -27,7 +27,7 @@ class PhaseIT extends AbstractAppTest {
 
 	private static final String CHECKLIST_ID = "1fb37edc-eb16-4ac3-a436-02971f020b28";
 	private static final String PHASE_ID = "28f2b2cc-1fc8-42ee-a752-fae751c1a858";
-	private static final String PATH = "/checklists/" + CHECKLIST_ID + "/phases";
+	private static final String PATH = "/2281/checklists/" + CHECKLIST_ID + "/phases";
 	private static final String REQUEST_FILE = "request.json";
 	private static final String EXPECTED_FILE = "expected.json";
 
@@ -58,7 +58,7 @@ class PhaseIT extends AbstractAppTest {
 			.withHttpMethod(POST)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
-			.withExpectedResponseHeader(LOCATION, List.of("^/checklists/(.+)/phases/(.+)$"))
+			.withExpectedResponseHeader(LOCATION, List.of("^/2281/checklists/(.+)/phases/(.+)$"))
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
 	}

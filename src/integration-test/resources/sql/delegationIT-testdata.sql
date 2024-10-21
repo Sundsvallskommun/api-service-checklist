@@ -18,11 +18,11 @@ VALUES ('187933cd-45f2-4aad-8048-d2514bf49037', 'Sundsvall API Stuga', '1234',
        ('22236b39-d094-40d0-b25d-9f3722a229e5', 'Sundsvall API Stuga B', '321',
         '2024-01-01 00:00:00', '2024-01-02 00:00:00');
 
-INSERT INTO manager(id, first_name, last_name, user_name, email, created, updated)
+INSERT INTO manager(id, first_name, last_name, username, email, created, updated)
 VALUES ('1273fadb-0455-455e-a5e6-0eebda329867', 'Kalle', 'Anka', 'kalleanka', 'kalleanka@email.com',
         '2024-01-01 00:00:00', '2024-01-02 00:00:00');
 
-INSERT INTO employee(id, first_name, last_name, email, user_name, title, role_type, start_date,
+INSERT INTO employee(id, first_name, last_name, email, username, title, role_type, start_date,
                      created, updated, organization_id, department_id, manager_id)
 VALUES ('1f183588-48ef-4287-9725-4963997c817d', 'John', 'Doe', 'johndoe@email.com', 'johndoe',
         'title', 'EMPLOYEE', '2021-03-01 00:00:00', '2020-01-01 00:00:00', '2024-01-01 00:00:00',
@@ -62,7 +62,7 @@ VALUES ('1fb37edc-eb16-4ac3-a436-02971f020b28', '2019-01-01 00:00:00', '2024-01-
         '3f183588-48ef-4287-9725-4963997c817d', '37989a99-dbee-4a1c-b3a7-c5225e1fd64f',
         '313ec51b-f122-4b1a-a040-ed38c7a6656e');
 
-INSERT INTO delegate(id, party_id, user_name, first_name, last_name, email, manager_id,
+INSERT INTO delegate(id, party_id, username, first_name, last_name, email, manager_id,
                      employee_checklist_id)
 VALUES ('17aab7e8-a8fb-480b-a8d7-250cae716e77', '11ad1a4c-1ca5-4281-8c89-c70116f527e2',
         'username', 'John', 'Doe', 'test@test5.com', '1273fadb-0455-455e-a5e6-0eebda329867',

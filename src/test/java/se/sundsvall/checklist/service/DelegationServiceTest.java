@@ -145,39 +145,39 @@ class DelegationServiceTest {
 	}
 
 	@Test
-	void fetchDelegatedEmployeeChecklistsByUserNameTest() {
-		final var userName = "userName";
+	void fetchDelegatedEmployeeChecklistsByUsernameTest() {
+		final var username = "username";
 		final var delegateEntity = createDelegateEntity();
 
-		when(mockDelegateRepository.findAllByUserName(userName)).thenReturn(List.of(delegateEntity));
+		when(mockDelegateRepository.findAllByUsername(username)).thenReturn(List.of(delegateEntity));
 
-		final var result = service.fetchDelegatedEmployeeChecklistsByUserName(userName);
+		final var result = service.fetchDelegatedEmployeeChecklistsByUsername(username);
 
 		assertThat(result).isNotNull();
 		assertThat(result.getEmployeeChecklists()).hasSize(1);
 
-		verify(mockDelegateRepository).findAllByUserName(userName);
+		verify(mockDelegateRepository).findAllByUsername(username);
 		verify(mockCustomTaskRepository).findAllByEmployeeChecklistId(delegateEntity.getEmployeeChecklist().getId());
 		verify(mockEmployeeChecklistIntegration).fetchDelegateEmails(delegateEntity.getEmployeeChecklist().getId());
 	}
 
 	@Test
-	void fetchDelegatedEmployeeChecklistsByUserNameWhenEmployeeInformationNeedsUpdateTest() {
-		final var userName = "userName";
+	void fetchDelegatedEmployeeChecklistsByUsernameWhenEmployeeInformationNeedsUpdateTest() {
+		final var username = "username";
 		final var delegateEntity = createDelegateEntity();
 		final var filter = buildUuidEmployeeFilter(delegateEntity.getEmployeeChecklist().getEmployee().getId());
 		final var employee = new Employee();
 		delegateEntity.getEmployeeChecklist().getEmployee().setUpdated(OffsetDateTime.now().minusDays(1).minusNanos(1));
 
-		when(mockDelegateRepository.findAllByUserName(userName)).thenReturn(List.of(delegateEntity));
+		when(mockDelegateRepository.findAllByUsername(username)).thenReturn(List.of(delegateEntity));
 		when(mockEmployeeIntegration.getEmployeeInformation(filter)).thenReturn(List.of(employee));
 
-		final var result = service.fetchDelegatedEmployeeChecklistsByUserName(userName);
+		final var result = service.fetchDelegatedEmployeeChecklistsByUsername(username);
 
 		assertThat(result).isNotNull();
 		assertThat(result.getEmployeeChecklists()).hasSize(1);
 
-		verify(mockDelegateRepository).findAllByUserName(userName);
+		verify(mockDelegateRepository).findAllByUsername(username);
 		verify(mockEmployeeIntegration).getEmployeeInformation(filter);
 		verify(mockEmployeeChecklistIntegration).updateEmployeeInformation(delegateEntity.getEmployeeChecklist().getEmployee(), employee);
 		verify(mockCustomTaskRepository).findAllByEmployeeChecklistId(delegateEntity.getEmployeeChecklist().getId());
@@ -185,17 +185,17 @@ class DelegationServiceTest {
 	}
 
 	@Test
-	void fetchDelegatedEmployeeChecklistsByUserNameWhenEmptyTest() {
-		final var userName = "userName";
+	void fetchDelegatedEmployeeChecklistsByUsernameWhenEmptyTest() {
+		final var username = "username";
 
-		when(mockDelegateRepository.findAllByUserName(userName)).thenReturn(List.of());
+		when(mockDelegateRepository.findAllByUsername(username)).thenReturn(List.of());
 
-		final var result = service.fetchDelegatedEmployeeChecklistsByUserName(userName);
+		final var result = service.fetchDelegatedEmployeeChecklistsByUsername(username);
 
 		assertThat(result).isNotNull();
 		assertThat(result.getEmployeeChecklists()).isEmpty();
 
-		verify(mockDelegateRepository).findAllByUserName(userName);
+		verify(mockDelegateRepository).findAllByUsername(username);
 	}
 
 	@Test

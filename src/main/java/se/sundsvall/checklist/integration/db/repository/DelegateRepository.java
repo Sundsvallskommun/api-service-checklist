@@ -16,7 +16,7 @@ public interface DelegateRepository extends JpaRepository<DelegateEntity, String
 
 	List<DelegateEntity> findAllByEmployeeChecklistId(final String employeeChecklistId);
 
-	List<DelegateEntity> findAllByUserName(final String userName);
+	List<DelegateEntity> findAllByUsername(final String username);
 
 	boolean existsByEmployeeChecklistAndEmail(final EmployeeChecklistEntity employeeChecklist, final String email);
 

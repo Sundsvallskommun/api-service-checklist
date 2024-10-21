@@ -16,9 +16,9 @@ public interface EmployeeChecklistRepository extends JpaRepository<EmployeeCheck
 
 	List<EmployeeChecklistEntity> findAllByCorrespondenceCorrespondenceStatus(CorrespondenceStatus status);
 
-	EmployeeChecklistEntity findByEmployeeUserName(String userName);
+	EmployeeChecklistEntity findByEmployeeUsername(String username);
 
-	List<EmployeeChecklistEntity> findAllByEmployeeManagerUserName(String userName);
+	List<EmployeeChecklistEntity> findAllByEmployeeManagerUsername(String username);
 
 	List<EmployeeChecklistEntity> findAllByExpirationDateIsBeforeAndLockedIsFalse(LocalDate date);
 }

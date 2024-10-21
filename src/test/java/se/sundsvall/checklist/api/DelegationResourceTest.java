@@ -25,7 +25,10 @@ import se.sundsvall.checklist.service.DelegationService;
 @ActiveProfiles("junit")
 class DelegationResourceTest {
 
-	private static final String PATH_PREFIX = "/employee-checklists";
+	private static final String MUNICIPALITY_ID = "2281";
+	private static final String ID = UUID.randomUUID().toString();
+	private static final String EMAIL = "test@test.com";
+	private static final String BASE_PATH = "{municipalityId}/employee-checklists";
 
 	@MockBean
 	private DelegationService serviceMock;
@@ -35,27 +38,24 @@ class DelegationResourceTest {
 
 	@Test
 	void delegateTo() {
-		final var id = UUID.randomUUID().toString();
-		final var email = "test@test.com";
-
 		webTestClient.post()
-			.uri(builder -> builder.path(PATH_PREFIX + "/{uuid}/delegate-to/{email}").build(Map.of("uuid", id, "email", email)))
+			.uri(builder -> builder.path(BASE_PATH + "/{uuid}/delegate-to/{email}").build(Map.of("municipalityId", MUNICIPALITY_ID, "uuid", ID, "email", EMAIL)))
 			.exchange()
 			.expectStatus().isCreated()
 			.expectBody().isEmpty();
 
-		verify(serviceMock).delegateEmployeeChecklist(id, email);
+		verify(serviceMock).delegateEmployeeChecklist(ID, EMAIL);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
 	@Test
 	void fetchDelegations() {
-		final var userName = "abc20def";
+		final var username = "abc20def";
 		final var mockResponse = DelegatedEmployeeChecklistResponse.builder().build();
-		when(serviceMock.fetchDelegatedEmployeeChecklistsByUserName(any())).thenReturn(mockResponse);
+		when(serviceMock.fetchDelegatedEmployeeChecklistsByUsername(any())).thenReturn(mockResponse);
 
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(PATH_PREFIX + "/delegated-to/{userName}").build(Map.of("userName", userName)))
+			.uri(builder -> builder.path(BASE_PATH + "/delegated-to/{username}").build(Map.of("municipalityId", MUNICIPALITY_ID, "username", username)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody(DelegatedEmployeeChecklistResponse.class)
@@ -63,21 +63,19 @@ class DelegationResourceTest {
 			.getResponseBody();
 
 		assertThat(response).isEqualTo(mockResponse);
-		verify(serviceMock).fetchDelegatedEmployeeChecklistsByUserName(userName);
+		verify(serviceMock).fetchDelegatedEmployeeChecklistsByUsername(username);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
 	@Test
 	void removeDelegation() {
-		final var id = UUID.randomUUID().toString();
-
 		webTestClient.delete()
-			.uri(builder -> builder.path(PATH_PREFIX + "/{uuid}/delegated-to/{email}").build(Map.of("uuid", id, "email", "test@test.com")))
+			.uri(builder -> builder.path(BASE_PATH + "/{uuid}/delegated-to/{email}").build(Map.of("municipalityId", MUNICIPALITY_ID, "uuid", ID, "email", EMAIL)))
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectBody().isEmpty();
 
-		verify(serviceMock).removeEmployeeChecklistDelegation(id, "test@test.com");
+		verify(serviceMock).removeEmployeeChecklistDelegation(ID, EMAIL);
 		verifyNoMoreInteractions(serviceMock);
 	}
 

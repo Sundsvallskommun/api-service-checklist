@@ -119,7 +119,7 @@ public final class EmployeeChecklistMapper {
 			.map(entity -> EmployeeChecklistInformation.builder()
 				.withId(entity.getId())
 				.withEmployeeName(entity.getEmployee().getFirstName() + " " + entity.getEmployee().getLastName())
-				.withEmployeeUsername(entity.getEmployee().getUserName())
+				.withEmployeeUsername(entity.getEmployee().getUsername())
 				.withOrganizationName(entity.getEmployee().getCompany().getOrganizationName())
 				.withManagerName(entity.getEmployee().getManager().getFirstName() + " " + entity.getEmployee().getManager().getLastName())
 				.withEmployeeStartDate(entity.getEmployee().getStartDate())

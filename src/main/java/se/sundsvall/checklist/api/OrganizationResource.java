@@ -26,6 +26,7 @@ import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,10 +38,11 @@ import se.sundsvall.checklist.api.model.Organization;
 import se.sundsvall.checklist.api.model.OrganizationCreateRequest;
 import se.sundsvall.checklist.api.model.OrganizationUpdateRequest;
 import se.sundsvall.checklist.service.OrganizationService;
+import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
 
 @RestController
-@RequestMapping("/organizations")
+@RequestMapping("/{municipalityId}/organizations")
 @Tag(name = "Organization resources", description = "Resources for managing organizational units")
 @ApiResponses(value = {
 	@ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = { Problem.class, ConstraintViolationProblem.class }))),
@@ -58,14 +60,19 @@ class OrganizationResource {
 	@Operation(summary = "Fetch all organizations", description = "Fetch all organizations")
 	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	@GetMapping(produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
-	ResponseEntity<List<Organization>> fetchOrganizations() {
+	ResponseEntity<List<Organization>> fetchOrganizations(
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId) {
+
 		return ok(organizationService.fetchAllOrganizations());
 	}
 
 	@Operation(summary = "Fetch organization by id", description = "Fetch organization that matches provided id")
 	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	@GetMapping(value = "/{organizationId}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
-	ResponseEntity<Organization> fetchOrganizationById(@PathVariable @ValidUuid final String organizationId) {
+	ResponseEntity<Organization> fetchOrganizationById(
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "organizationId", description = "Organization id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String organizationId) {
+
 		return ok(organizationService.fetchOrganizationById(organizationId));
 	}
 
@@ -74,11 +81,14 @@ class OrganizationResource {
 		@ApiResponse(responseCode = "409", description = "Conflict", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 	})
 	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
-	ResponseEntity<Void> createOrganization(@Valid @RequestBody final OrganizationCreateRequest request) {
+	ResponseEntity<Void> createOrganization(
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Valid @RequestBody final OrganizationCreateRequest request) {
+
 		final var organizationId = organizationService.createOrganization(request);
 		return created(
-			UriComponentsBuilder.fromPath("/organizations/{organizationId}")
-				.buildAndExpand(organizationId)
+			UriComponentsBuilder.fromPath("/{municipalityId}/organizations/{organizationId}")
+				.buildAndExpand(municipalityId, organizationId)
 				.toUri())
 					.header(CONTENT_TYPE, ALL_VALUE)
 					.build();
@@ -89,7 +99,11 @@ class OrganizationResource {
 		@ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 	})
 	@PatchMapping(value = "/{organizationId}", consumes = APPLICATION_JSON_VALUE, produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
-	ResponseEntity<Organization> updateOrganization(@PathVariable @ValidUuid final String organizationId, @Valid @RequestBody final OrganizationUpdateRequest request) {
+	ResponseEntity<Organization> updateOrganization(
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "organizationId", description = "Organization id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String organizationId,
+		@Valid @RequestBody final OrganizationUpdateRequest request) {
+
 		return ok(organizationService.updateOrganization(organizationId, request));
 	}
 
@@ -99,7 +113,10 @@ class OrganizationResource {
 		@ApiResponse(responseCode = "409", description = "Conflict", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 	})
 	@DeleteMapping(value = "/{organizationId}", produces = APPLICATION_PROBLEM_JSON_VALUE)
-	ResponseEntity<Void> deleteOrganization(@PathVariable @ValidUuid final String organizationId) {
+	ResponseEntity<Void> deleteOrganization(
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "organizationId", description = "Organization id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String organizationId) {
+
 		organizationService.deleteOrganization(organizationId);
 		return noContent().header(CONTENT_TYPE, ALL_VALUE).build();
 	}
