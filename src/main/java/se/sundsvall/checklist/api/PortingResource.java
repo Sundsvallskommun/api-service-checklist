@@ -20,6 +20,7 @@ import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -52,10 +53,10 @@ class PortingResource {
 
 	@GetMapping(path = "/{municipalityId}/export/{organizationNumber}/{roleType}", produces = { APPLICATION_JSON_VALUE })
 	ResponseEntity<String> exportChecklist(
-		@PathVariable @ValidMunicipalityId String municipalityId,
-		@PathVariable Integer organizationNumber,
-		@PathVariable RoleType roleType,
-		@RequestParam(required = false) Integer version) {
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId String municipalityId,
+		@Parameter(name = "organizationNumber", description = "Organization number", example = "53") @PathVariable Integer organizationNumber,
+		@Parameter(name = "roleType", description = "Role type", example = "EMPLOYEE") @PathVariable RoleType roleType,
+		@Parameter(name = "version", description = "Version", example = "2") @RequestParam(required = false) Integer version) {
 
 		return ResponseEntity.ok(portingService.exportChecklist(organizationNumber, roleType, version));
 	}
@@ -72,10 +73,10 @@ class PortingResource {
 
 	@PostMapping(path = "/{municipalityId}/import/add/{organizationNumber}/{organizationName}", produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE }, consumes = { APPLICATION_JSON_VALUE })
 	ResponseEntity<Void> importChecklistAsNewVersion(
-		@PathVariable @ValidMunicipalityId String municipalityId,
-		@PathVariable Integer organizationNumber,
-		@PathVariable String organizationName,
-		@RequestBody @ValidJson String jsonStructure) {
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId String municipalityId,
+		@Parameter(name = "organizationNumber", description = "Organization number", example = "53") @PathVariable Integer organizationNumber,
+		@Parameter(name = "organizationName", description = "Organization name", example = "Organization ABC") @PathVariable String organizationName,
+		@Parameter(description = "Json checklist structure to import") @RequestBody @ValidJson String jsonStructure) {
 
 		final var id = portingService.importChecklist(organizationNumber, organizationName, jsonStructure, false);
 		return created(UriComponentsBuilder.fromPath("/{municipalityId}/checklists/{checklistId}")
@@ -95,10 +96,10 @@ class PortingResource {
 
 	@PostMapping(path = "/{municipalityId}/import/replace/{organizationNumber}/{organizationName}", produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE }, consumes = { APPLICATION_JSON_VALUE })
 	ResponseEntity<Void> importAndOverwriteExistingChecklist(
-		@PathVariable @ValidMunicipalityId String municipalityId,
-		@PathVariable Integer organizationNumber,
-		@PathVariable String organizationName,
-		@RequestBody @ValidJson String jsonStructure) {
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId String municipalityId,
+		@Parameter(name = "organizationNumber", description = "Organization number", example = "53") @PathVariable Integer organizationNumber,
+		@Parameter(name = "organizationName", description = "Organization name", example = "Organization ABC") @PathVariable String organizationName,
+		@Parameter(description = "Json checklist structure to import") @RequestBody @ValidJson String jsonStructure) {
 
 		final var id = portingService.importChecklist(organizationNumber, organizationName, jsonStructure, true);
 		return created(UriComponentsBuilder.fromPath("/{municipalityId}/checklists/{checklistId}")

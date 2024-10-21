@@ -21,6 +21,7 @@ import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -55,9 +56,9 @@ class DelegationResource {
 	})
 	@PostMapping(value = "/{employeeChecklistId}/delegate-to/{email}", produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
 	ResponseEntity<Void> delegateEmployeeChecklist(
-		@PathVariable @ValidMunicipalityId final String municipalityId,
-		@PathVariable @ValidUuid final String employeeChecklistId,
-		@PathVariable @Email final String email) {
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId,
+		@Parameter(name = "email", description = "Email for person to delegate to", example = "delegate.person@noreply.com") @PathVariable @Email final String email) {
 
 		delegationService.delegateEmployeeChecklist(employeeChecklistId, email);
 		return status(CREATED).header(CONTENT_TYPE, ALL_VALUE).build();
@@ -68,8 +69,9 @@ class DelegationResource {
 	})
 	@GetMapping(value = "/delegated-to/{username}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
 	ResponseEntity<DelegatedEmployeeChecklistResponse> fetchDelegatedEmployeeChecklists(
-		@PathVariable @ValidMunicipalityId final String municipalityId,
-		@PathVariable final String username) {
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "username", description = "Username to fetch delegations for", example = "usr123") @PathVariable final String username) {
+
 		return ok(delegationService.fetchDelegatedEmployeeChecklistsByUsername(username));
 	}
 
@@ -79,9 +81,9 @@ class DelegationResource {
 	})
 	@DeleteMapping(value = "/{employeeChecklistId}/delegated-to/{email}", produces = APPLICATION_PROBLEM_JSON_VALUE)
 	ResponseEntity<Void> deleteEmployeeChecklistDelegation(
-		@PathVariable @ValidMunicipalityId final String municipalityId,
-		@PathVariable @ValidUuid final String employeeChecklistId,
-		@PathVariable @Email final String email) {
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId,
+		@Parameter(name = "email", description = "Email for person to remove delegation from", example = "delegate.person@noreply.com") @PathVariable @Email final String email) {
 
 		delegationService.removeEmployeeChecklistDelegation(employeeChecklistId, email);
 		return noContent().header(CONTENT_TYPE, ALL_VALUE).build();

@@ -107,12 +107,12 @@ public class EmployeeChecklistIntegration {
 			.build();
 	}
 
-	public Optional<EmployeeChecklistEntity> fetchOptionalEmployeeChecklist(String userId) {
-		return ofNullable(employeeChecklistRepository.findByEmployeeUsername(userId));
+	public Optional<EmployeeChecklistEntity> fetchOptionalEmployeeChecklist(String username) {
+		return ofNullable(employeeChecklistRepository.findByEmployeeUsername(username));
 	}
 
-	public List<EmployeeChecklistEntity> fetchEmployeeChecklistsForManager(String userId) {
-		return employeeChecklistRepository.findAllByEmployeeManagerUsername(userId);
+	public List<EmployeeChecklistEntity> fetchEmployeeChecklistsForManager(String username) {
+		return employeeChecklistRepository.findAllByEmployeeManagerUsername(username);
 	}
 
 	@Transactional

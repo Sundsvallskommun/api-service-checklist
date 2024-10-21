@@ -26,6 +26,7 @@ import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -61,8 +62,8 @@ class PhaseResource {
 	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	@GetMapping(produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
 	ResponseEntity<List<Phase>> fetchChecklistPhases(
-		@PathVariable @ValidMunicipalityId final String municipalityId,
-		@PathVariable @ValidUuid final String checklistId) {
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId) {
 
 		final var phases = phaseService.getChecklistPhases(checklistId);
 		return ok(phases);
@@ -72,9 +73,9 @@ class PhaseResource {
 	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	@GetMapping(value = "/{phaseId}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
 	ResponseEntity<Phase> fetchChecklistPhase(
-		@PathVariable @ValidMunicipalityId final String municipalityId,
-		@PathVariable @ValidUuid final String checklistId,
-		@PathVariable @ValidUuid final String phaseId) {
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,
+		@Parameter(name = "phaseId", description = "Phase id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String phaseId) {
 
 		return ok(phaseService.getChecklistPhase(checklistId, phaseId));
 	}
@@ -83,8 +84,8 @@ class PhaseResource {
 	@ApiResponse(responseCode = "201", headers = @Header(name = LOCATION, schema = @Schema(type = "string")), description = "Successful Operation", useReturnTypeSchema = true)
 	@PostMapping(produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE }, consumes = { APPLICATION_JSON_VALUE })
 	ResponseEntity<Void> createChecklistPhase(
-		@PathVariable @ValidMunicipalityId final String municipalityId,
-		@PathVariable @ValidUuid final String checklistId,
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,
 		@RequestBody @Valid final PhaseCreateRequest request) {
 
 		final var phase = phaseService.createChecklistPhase(checklistId, request);
@@ -97,9 +98,9 @@ class PhaseResource {
 	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	@PatchMapping(value = "/{phaseId}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE }, consumes = { APPLICATION_JSON_VALUE })
 	ResponseEntity<Phase> updateChecklistPhase(
-		@PathVariable @ValidMunicipalityId final String municipalityId,
-		@PathVariable @ValidUuid final String checklistId,
-		@PathVariable @ValidUuid final String phaseId,
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,
+		@Parameter(name = "phaseId", description = "Phase id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String phaseId,
 		@RequestBody @Valid final PhaseUpdateRequest request) {
 
 		return ok(phaseService.updateChecklistPhase(checklistId, phaseId, request));
@@ -109,9 +110,9 @@ class PhaseResource {
 	@ApiResponse(responseCode = "204", description = "Successful Operation", useReturnTypeSchema = true)
 	@DeleteMapping(value = "/{phaseId}", produces = APPLICATION_PROBLEM_JSON_VALUE)
 	ResponseEntity<Void> deleteChecklistPhase(
-		@PathVariable @ValidMunicipalityId final String municipalityId,
-		@PathVariable @ValidUuid final String checklistId,
-		@PathVariable @ValidUuid final String phaseId) {
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,
+		@Parameter(name = "phaseId", description = "Phase id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String phaseId) {
 
 		phaseService.deleteChecklistPhase(checklistId, phaseId);
 		return noContent().header(CONTENT_TYPE, ALL_VALUE).build();

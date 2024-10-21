@@ -37,10 +37,18 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       responses:
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -62,12 +70,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Organization"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
     post:
       tags:
       - Organization resources
@@ -77,9 +79,11 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       requestBody:
         content:
           application/json:
@@ -100,6 +104,12 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -108,12 +118,6 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
   /{municipalityId}/import/replace/{organizationNumber}/{organizationName}:
     post:
       tags:
@@ -131,25 +135,32 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: organizationNumber
         in: path
+        description: Organization number
         required: true
         schema:
           type: integer
           format: int32
+        example: 53
       - name: organizationName
         in: path
+        description: Organization name
         required: true
         schema:
           type: string
+        example: Organization ABC
       requestBody:
         content:
           application/json:
             schema:
               type: string
+              description: Json checklist structure to import
         required: true
       responses:
         "201":
@@ -159,8 +170,8 @@ paths:
               style: simple
               schema:
                 type: string
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -173,8 +184,8 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
@@ -196,25 +207,32 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: organizationNumber
         in: path
+        description: Organization number
         required: true
         schema:
           type: integer
           format: int32
+        example: 53
       - name: organizationName
         in: path
+        description: Organization name
         required: true
         schema:
           type: string
+        example: Organization ABC
       requestBody:
         content:
           application/json:
             schema:
               type: string
+              description: Json checklist structure to import
         required: true
       responses:
         "201":
@@ -224,8 +242,8 @@ paths:
               style: simple
               schema:
                 type: string
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -238,8 +256,8 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
@@ -254,19 +272,25 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: employeeChecklistId
         in: path
+        description: Employee checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       - name: phaseId
         in: path
+        description: Phase id
         required: true
         schema:
           type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       requestBody:
         content:
           application/json:
@@ -283,8 +307,8 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/CustomTask"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -297,8 +321,8 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
@@ -314,17 +338,33 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: employeeChecklistId
         in: path
+        description: Employee checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       responses:
         "201":
           description: Successful Operation
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -333,18 +373,6 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
   /{municipalityId}/employee-checklists/{employeeChecklistId}/delegate-to/{email}:
     post:
       tags:
@@ -356,19 +384,25 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: employeeChecklistId
         in: path
+        description: Employee checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       - name: email
         in: path
+        description: Email for person to delegate to
         required: true
         schema:
           type: string
+        example: delegate.person@noreply.com
       responses:
         "201":
           description: Successful Operation
@@ -384,6 +418,12 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -392,12 +432,6 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
   /{municipalityId}/employee-checklists/initialize:
     post:
       tags:
@@ -408,9 +442,11 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       responses:
         "200":
           description: Successful Operation
@@ -421,8 +457,8 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/EmployeeChecklistResponse"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -435,8 +471,8 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
@@ -452,14 +488,18 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: personId
         in: path
+        description: Person id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       responses:
         "200":
           description: Successful Operation
@@ -470,8 +510,8 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/EmployeeChecklistResponse"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -484,8 +524,8 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
@@ -499,9 +539,11 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       responses:
         "200":
           description: Successful Operation
@@ -516,6 +558,12 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Checklist"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -524,12 +572,6 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
     post:
       tags:
       - Checklist resources
@@ -538,9 +580,11 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       requestBody:
         content:
           application/json:
@@ -555,6 +599,12 @@ paths:
               style: simple
               schema:
                 type: string
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -563,12 +613,6 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
   /{municipalityId}/checklists/{checklistId}/version:
     post:
       tags:
@@ -578,14 +622,18 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: checklistId
         in: path
+        description: Checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       responses:
         "201":
           description: Successful Operation
@@ -594,6 +642,12 @@ paths:
               style: simple
               schema:
                 type: string
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -602,12 +656,6 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
   /{municipalityId}/checklists/{checklistId}/phases:
     get:
       tags:
@@ -617,17 +665,21 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: checklistId
         in: path
+        description: Checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       responses:
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -653,8 +705,8 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Phase"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
@@ -667,14 +719,18 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: checklistId
         in: path
+        description: Checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       requestBody:
         content:
           application/json:
@@ -682,8 +738,15 @@ paths:
               $ref: "#/components/schemas/PhaseCreateRequest"
         required: true
       responses:
-        "404":
-          description: Not Found
+        "201":
+          description: Successful Operation
+          headers:
+            Location:
+              style: simple
+              schema:
+                type: string
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -696,15 +759,8 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "201":
-          description: Successful Operation
-          headers:
-            Location:
-              style: simple
-              schema:
-                type: string
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
@@ -718,22 +774,28 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: checklistId
         in: path
+        description: Checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       - name: phaseId
         in: path
+        description: Phase id
         required: true
         schema:
           type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       responses:
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -759,8 +821,8 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Task"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
@@ -773,19 +835,25 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: checklistId
         in: path
+        description: Checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       - name: phaseId
         in: path
+        description: Phase id
         required: true
         schema:
           type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       requestBody:
         content:
           application/json:
@@ -793,8 +861,15 @@ paths:
               $ref: "#/components/schemas/TaskCreateRequest"
         required: true
       responses:
-        "404":
-          description: Not Found
+        "201":
+          description: Successful Operation
+          headers:
+            Location:
+              style: simple
+              schema:
+                type: string
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -807,15 +882,8 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "201":
-          description: Successful Operation
-          headers:
-            Location:
-              style: simple
-              schema:
-                type: string
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
@@ -830,15 +898,25 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: organizationId
         in: path
+        description: Organization id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       responses:
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -856,12 +934,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Organization"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
     delete:
       tags:
       - Organization resources
@@ -871,14 +943,18 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: organizationId
         in: path
+        description: Organization id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       responses:
         "204":
           description: Successful Operation
@@ -894,6 +970,12 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -902,12 +984,6 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
     patch:
       tags:
       - Organization resources
@@ -917,14 +993,18 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: organizationId
         in: path
+        description: Organization id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       requestBody:
         content:
           application/json:
@@ -947,6 +1027,12 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -955,12 +1041,6 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
   /{municipalityId}/employee-checklists/{employeeChecklistId}/tasks/{taskId}:
     patch:
       tags:
@@ -970,19 +1050,25 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: employeeChecklistId
         in: path
+        description: Employee checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       - name: taskId
         in: path
+        description: Task id
         required: true
         schema:
           type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       requestBody:
         content:
           application/json:
@@ -999,8 +1085,8 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/EmployeeChecklistTask"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -1013,8 +1099,8 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
@@ -1029,19 +1115,25 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: employeeChecklistId
         in: path
+        description: Employee checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       - name: phaseId
         in: path
+        description: Phase id
         required: true
         schema:
           type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       requestBody:
         content:
           application/json:
@@ -1058,8 +1150,8 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/EmployeeChecklistPhase"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -1072,8 +1164,8 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
@@ -1088,19 +1180,25 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: employeeChecklistId
         in: path
+        description: Employee checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       - name: taskId
         in: path
+        description: Task id
         required: true
         schema:
           type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       responses:
         "200":
           description: Successful Operation
@@ -1111,8 +1209,8 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/CustomTask"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -1125,8 +1223,8 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
@@ -1140,24 +1238,30 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: employeeChecklistId
         in: path
+        description: Employee checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       - name: taskId
         in: path
+        description: Task id
         required: true
         schema:
           type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       responses:
         "204":
           description: Successful Operation
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -1170,8 +1274,8 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
@@ -1185,19 +1289,25 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: employeeChecklistId
         in: path
+        description: Employee checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       - name: taskId
         in: path
+        description: Task id
         required: true
         schema:
           type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       requestBody:
         content:
           application/json:
@@ -1214,8 +1324,8 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/CustomTask"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -1228,8 +1338,8 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
@@ -1243,14 +1353,18 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: checklistId
         in: path
+        description: Checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       responses:
         "200":
           description: Successful Operation
@@ -1267,6 +1381,12 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -1275,12 +1395,6 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
     delete:
       tags:
       - Checklist resources
@@ -1289,14 +1403,18 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: checklistId
         in: path
+        description: Checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       responses:
         "204":
           description: No Content
@@ -1306,6 +1424,12 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -1314,12 +1438,6 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
     patch:
       tags:
       - Checklist resources
@@ -1328,14 +1446,18 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: checklistId
         in: path
+        description: Checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       requestBody:
         content:
           application/json:
@@ -1358,6 +1480,12 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -1366,12 +1494,6 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
   /{municipalityId}/checklists/{checklistId}/phases/{phaseId}:
     get:
       tags:
@@ -1381,22 +1503,28 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: checklistId
         in: path
+        description: Checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       - name: phaseId
         in: path
+        description: Phase id
         required: true
         schema:
           type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       responses:
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -1418,8 +1546,8 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Phase"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
@@ -1432,24 +1560,30 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: checklistId
         in: path
+        description: Checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       - name: phaseId
         in: path
+        description: Phase id
         required: true
         schema:
           type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       responses:
         "204":
           description: Successful Operation
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -1462,8 +1596,8 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
@@ -1476,19 +1610,25 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: checklistId
         in: path
+        description: Checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       - name: phaseId
         in: path
+        description: Phase id
         required: true
         schema:
           type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       requestBody:
         content:
           application/json:
@@ -1496,8 +1636,8 @@ paths:
               $ref: "#/components/schemas/PhaseUpdateRequest"
         required: true
       responses:
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -1519,8 +1659,8 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Phase"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
@@ -1534,27 +1674,35 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: checklistId
         in: path
+        description: Checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       - name: phaseId
         in: path
+        description: Phase id
         required: true
         schema:
           type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       - name: taskId
         in: path
+        description: Task id
         required: true
         schema:
           type: string
+        example: 55904052-0db0-4622-850c-3273ee60def4
       responses:
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -1576,8 +1724,8 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Task"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
@@ -1590,31 +1738,41 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: checklistId
         in: path
+        description: Checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       - name: phaseId
         in: path
+        description: Phase id
         required: true
         schema:
           type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       - name: taskId
         in: path
+        description: Task id
         required: true
         schema:
           type: string
+        example: 55904052-0db0-4622-850c-3273ee60def4
       responses:
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+        "204":
+          description: No Content
         "400":
           description: Bad Request
           content:
@@ -1623,10 +1781,8 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "204":
-          description: No Content
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
@@ -1639,24 +1795,32 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: checklistId
         in: path
+        description: Checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       - name: phaseId
         in: path
+        description: Phase id
         required: true
         schema:
           type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       - name: taskId
         in: path
+        description: Task id
         required: true
         schema:
           type: string
+        example: 55904052-0db0-4622-850c-3273ee60def4
       requestBody:
         content:
           application/json:
@@ -1664,8 +1828,8 @@ paths:
               $ref: "#/components/schemas/TaskUpdateRequest"
         required: true
       responses:
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -1687,8 +1851,8 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Task"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
@@ -1702,14 +1866,18 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: checklistId
         in: path
+        description: Checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       responses:
         "200":
           description: Successful Operation
@@ -1726,6 +1894,12 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -1734,12 +1908,6 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
   /{municipalityId}/export/{organizationNumber}/{roleType}:
     get:
       tags:
@@ -1752,26 +1920,34 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: organizationNumber
         in: path
+        description: Organization number
         required: true
         schema:
           type: integer
           format: int32
+        example: 53
       - name: roleType
         in: path
+        description: Role type
         required: true
         schema:
           $ref: "#/components/schemas/RoleType"
+        example: EMPLOYEE
       - name: version
         in: query
+        description: Version
         required: false
         schema:
           type: integer
           format: int32
+        example: 2
       responses:
         "200":
           description: Successful Operation
@@ -1779,8 +1955,8 @@ paths:
             application/json:
               schema:
                 type: string
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -1793,8 +1969,8 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
@@ -1809,14 +1985,18 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: employeeChecklistId
         in: path
+        description: Employee checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       responses:
         "200":
           description: Successful Operation
@@ -1827,6 +2007,18 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Correspondence"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -1835,18 +2027,6 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
   /{municipalityId}/employee-checklists/search:
     get:
       tags:
@@ -1868,9 +2048,11 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: pageable
         in: query
         required: true
@@ -1891,8 +2073,8 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/EmployeeChecklistPaginatedResponse"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -1905,13 +2087,13 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/employee-checklists/manager/{userId}:
+  /{municipalityId}/employee-checklists/manager/{username}:
     get:
       tags:
       - Employee checklist resources
@@ -1921,14 +2103,18 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
-      - name: userId
+        example: 2281
+      - name: username
         in: path
+        description: Username for user to fetch checklists for
         required: true
         schema:
           type: string
+        example: usr123
       responses:
         "200":
           description: Successful Operation
@@ -1943,8 +2129,8 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/EmployeeChecklist"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -1957,13 +2143,13 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/employee-checklists/employee/{userId}:
+  /{municipalityId}/employee-checklists/employee/{username}:
     get:
       tags:
       - Employee checklist resources
@@ -1973,14 +2159,18 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
-      - name: userId
+        example: 2281
+      - name: username
         in: path
+        description: Username for user to fetch checklists for
         required: true
         schema:
           type: string
+        example: usr123
       responses:
         "200":
           description: Successful Operation
@@ -2000,8 +2190,8 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/EmployeeChecklist"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -2014,8 +2204,8 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
@@ -2031,14 +2221,18 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: username
         in: path
+        description: Username to fetch delegations for
         required: true
         schema:
           type: string
+        example: usr123
       responses:
         "200":
           description: Successful Operation
@@ -2049,6 +2243,12 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/DelegatedEmployeeChecklistResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -2057,12 +2257,6 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
   /api-docs:
     get:
       tags:
@@ -2089,19 +2283,23 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: employeeChecklistId
         in: path
+        description: Employee checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       responses:
         "204":
           description: Successful Operation
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -2114,8 +2312,8 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
@@ -2131,24 +2329,36 @@ paths:
       parameters:
       - name: municipalityId
         in: path
+        description: Municipality id
         required: true
         schema:
           type: string
+        example: 2281
       - name: employeeChecklistId
         in: path
+        description: Employee checklist id
         required: true
         schema:
           type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       - name: email
         in: path
+        description: Email for person to remove delegation from
         required: true
         schema:
           type: string
+        example: delegate.person@noreply.com
       responses:
         "204":
           description: Successful Operation
         "404":
           description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -2161,12 +2371,6 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
 components:
   schemas:
     Problem:
@@ -2184,9 +2388,9 @@ components:
             type: object
         status:
           $ref: "#/components/schemas/StatusType"
-        detail:
-          type: string
         title:
+          type: string
+        detail:
           type: string
     StatusType:
       type: object
@@ -2351,9 +2555,9 @@ components:
             type: object
         status:
           $ref: "#/components/schemas/StatusType"
-        detail:
-          type: string
         title:
+          type: string
+        detail:
           type: string
         suppressed:
           type: array
