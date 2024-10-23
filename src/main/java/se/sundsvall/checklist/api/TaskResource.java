@@ -66,7 +66,7 @@ class TaskResource {
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,
 		@Parameter(name = "phaseId", description = "Phase id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String phaseId) {
 
-		return ok(taskService.getAllTasksInPhase(checklistId, phaseId));
+		return ok(taskService.getTasks(municipalityId, checklistId, phaseId));
 	}
 
 	@Operation(summary = "Fetch task in a checklist phase")
@@ -78,7 +78,7 @@ class TaskResource {
 		@Parameter(name = "phaseId", description = "Phase id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String phaseId,
 		@Parameter(name = "taskId", description = "Task id", example = "55904052-0db0-4622-850c-3273ee60def4") @PathVariable @ValidUuid final String taskId) {
 
-		return ok(taskService.getTaskInPhaseById(checklistId, phaseId, taskId));
+		return ok(taskService.getTask(municipalityId, checklistId, phaseId, taskId));
 	}
 
 	@Operation(summary = "Create task in checklist phase")
@@ -90,7 +90,7 @@ class TaskResource {
 		@Parameter(name = "phaseId", description = "Phase id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String phaseId,
 		@RequestBody @Valid final TaskCreateRequest request) {
 
-		final var task = taskService.createTask(checklistId, phaseId, request);
+		final var task = taskService.createTask(municipalityId, checklistId, phaseId, request);
 		return created(UriComponentsBuilder.fromPath("/{municipalityId}/checklists/{checklistId}/phases/{phaseId}/tasks/{taskId}")
 			.buildAndExpand(municipalityId, checklistId, phaseId, task.getId())
 			.toUri()).header(CONTENT_TYPE, ALL_VALUE).build();
@@ -106,7 +106,7 @@ class TaskResource {
 		@Parameter(name = "taskId", description = "Task id", example = "55904052-0db0-4622-850c-3273ee60def4") @PathVariable @ValidUuid final String taskId,
 		@RequestBody @Valid final TaskUpdateRequest request) {
 
-		return ok(taskService.updateTask(checklistId, phaseId, taskId, request));
+		return ok(taskService.updateTask(municipalityId, checklistId, phaseId, taskId, request));
 	}
 
 	@Operation(summary = "Delete task in checklist phase")
@@ -118,7 +118,7 @@ class TaskResource {
 		@Parameter(name = "phaseId", description = "Phase id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String phaseId,
 		@Parameter(name = "taskId", description = "Task id", example = "55904052-0db0-4622-850c-3273ee60def4") @PathVariable @ValidUuid final String taskId) {
 
-		taskService.deleteTask(checklistId, phaseId, taskId);
+		taskService.deleteTask(municipalityId, checklistId, phaseId, taskId);
 		return noContent().header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 }

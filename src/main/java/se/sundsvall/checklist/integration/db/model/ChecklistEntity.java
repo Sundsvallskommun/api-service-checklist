@@ -37,7 +37,7 @@ import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 @Builder(setterPrefix = "with")
 @Entity
 @Table(name = "checklist", uniqueConstraints = {
-	@UniqueConstraint(name = "uk_checklist_name_version", columnNames = { "name", "version" })
+	@UniqueConstraint(name = "uk_checklist_name_municipality_id_version", columnNames = { "name", "municipality_id", "version" })
 })
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -52,6 +52,9 @@ public class ChecklistEntity {
 
 	@Column(name = "display_name")
 	private String displayName;
+
+	@Column(name = "municipality_id")
+	private String municipalityId;
 
 	@Column(name = "version")
 	private int version;

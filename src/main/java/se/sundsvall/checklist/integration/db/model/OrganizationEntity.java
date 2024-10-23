@@ -40,9 +40,10 @@ import se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel;
 @Builder(setterPrefix = "with")
 @Entity
 @Table(name = "organization", indexes = {
-	@Index(name = "organization_number_idx", columnList = "organization_number")
+	@Index(name = "organization_number_municipality_id_idx", columnList = "organization_number, municipality_id")
 }, uniqueConstraints = {
-	@UniqueConstraint(name = "uk_organization_organization_number", columnNames = "organization_number") })
+	@UniqueConstraint(name = "uk_organization_organization_number_municipality_id", columnNames = { "organization_number", "municipality_id" })
+})
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class OrganizationEntity {
@@ -56,6 +57,9 @@ public class OrganizationEntity {
 
 	@Column(name = "organization_number")
 	private int organizationNumber;
+
+	@Column(name = "municipality_id")
+	private String municipalityId;
 
 	@Column(name = "created")
 	@TimeZoneStorage(NORMALIZE)

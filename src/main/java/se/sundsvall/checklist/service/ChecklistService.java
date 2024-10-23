@@ -34,8 +34,8 @@ public class ChecklistService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ChecklistService.class);
 
-	private static final String CHECKLIST_NOT_FOUND = "Checklist not found";
-	private static final String CHECKLIST_CANNOT_BE_DELETED = "Cannot delete checklist with lifecycle: %s";
+	private static final String CHECKLIST_NOT_FOUND = "Checklist not found within municipality %s";
+	private static final String CHECKLIST_CANNOT_BE_DELETED = "Cannot delete checklist with lifecycle %s";
 	private static final String DEEP_COPY_ERROR = "Error creating deep copy of checklist entity";
 
 	private final OrganizationRepository organizationRepository;
@@ -52,37 +52,37 @@ public class ChecklistService {
 		this.objectMapper = objectMapper;
 	}
 
-	public List<Checklist> getAllChecklists() {
-		return checklistRepository.findAll().stream()
+	public List<Checklist> getChecklists(final String municipalityId) {
+		return checklistRepository.findAllByMunicipalityId(municipalityId).stream()
 			.map(ChecklistMapper::toChecklist)
 			.toList();
 	}
 
-	public Checklist getChecklistById(final String id) {
-		final var checklist = checklistRepository.findById(id)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND));
+	public Checklist getChecklist(final String municipalityId, final String id) {
+		final var checklist = checklistRepository.findByIdAndMunicipalityId(id, municipalityId)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND.formatted(municipalityId)));
 		return toChecklist(checklist);
 	}
 
 	@Transactional
-	public Checklist createChecklist(final ChecklistCreateRequest request) {
-		if (checklistRepository.existsByName(request.getName())) {
-			throw Problem.valueOf(BAD_REQUEST, "Checklist with name: %s already exists".formatted(request.getName()));
+	public Checklist createChecklist(final String municipalityId, final ChecklistCreateRequest request) {
+		if (checklistRepository.existsByNameAndMunicipalityId(request.getName(), municipalityId)) {
+			throw Problem.valueOf(BAD_REQUEST, "Checklist with name '%s' already exists in municipality %s".formatted(request.getName(), municipalityId));
 		}
 
-		final var organization = organizationRepository.findByOrganizationNumber(request.getOrganizationNumber())
-			.orElseThrow(() -> Problem.valueOf(BAD_REQUEST, "Organization with organization number: %s does not exist".formatted(request.getOrganizationNumber())));
+		final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(request.getOrganizationNumber(), municipalityId)
+			.orElseThrow(() -> Problem.valueOf(BAD_REQUEST, "Organization with organization number %s does not exist within municipality %s.".formatted(request.getOrganizationNumber(), municipalityId)));
 
-		final var entity = checklistRepository.save(toChecklistEntity(request));
+		final var entity = checklistRepository.save(toChecklistEntity(request, municipalityId));
 		organization.getChecklists().add(entity);
 		organizationRepository.save(organization);
 		return toChecklist(entity);
 	}
 
-	public Checklist createNewVersion(final String checklistId) {
-		final var entity = checklistRepository.findById(checklistId)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND));
-		if (checklistRepository.existsByNameAndLifeCycle(entity.getName(), CREATED)) {
+	public Checklist createNewVersion(final String municipalityId, final String checklistId) {
+		final var entity = checklistRepository.findByIdAndMunicipalityId(checklistId, municipalityId)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND.formatted(municipalityId)));
+		if (checklistRepository.existsByNameAndMunicipalityIdAndLifeCycle(entity.getName(), municipalityId, CREATED)) {
 			throw Problem.valueOf(BAD_REQUEST,
 				"Checklist already has a draft version in progress preventing another draft version from being created");
 		}
@@ -95,36 +95,36 @@ public class ChecklistService {
 		return toChecklist(checklistRepository.save(copy));
 	}
 
-	public Checklist activateChecklist(final String checklistId) {
-		final var entity = checklistRepository.findById(checklistId)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND));
-		checklistRepository.findByNameAndLifeCycle(entity.getName(), ACTIVE)
+	public Checklist activateChecklist(final String municipalityId, final String checklistId) {
+		final var entity = checklistRepository.findByIdAndMunicipalityId(checklistId, municipalityId)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND.formatted(municipalityId)));
+		checklistRepository.findByNameAndMunicipalityIdAndLifeCycle(entity.getName(), municipalityId, ACTIVE)
 			.ifPresent(ch -> ch.setLifeCycle(DEPRECATED));
 		entity.setLifeCycle(ACTIVE);
 		return toChecklist(checklistRepository.save(entity));
 	}
 
 	@Transactional
-	public void deleteChecklist(final String id) {
-		final var checklist = checklistRepository.findById(id)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND));
+	public void deleteChecklist(final String municipalityId, final String id) {
+		final var checklist = checklistRepository.findByIdAndMunicipalityId(id, municipalityId)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND.formatted(municipalityId)));
 
 		if (checklist.getLifeCycle() == ACTIVE || checklist.getLifeCycle() == DEPRECATED) {
 			throw Problem.valueOf(BAD_REQUEST, CHECKLIST_CANNOT_BE_DELETED.formatted(checklist.getLifeCycle()));
 		}
 
 		// First remove checklist from organization if it has been attached to such
-		organizationRepository.findByChecklistsId(id).ifPresent(organization -> {
+		organizationRepository.findByChecklistsIdAndChecklistsMunicipalityId(id, municipalityId).ifPresent(organization -> {
 			organization.getChecklists().removeIf(ch -> Objects.equals(id, ch.getId()));
 			organizationRepository.save(organization);
 		});
 
-		checklistRepository.deleteById(id);
+		checklistRepository.delete(checklist);
 	}
 
-	public Checklist updateChecklist(final String id, final ChecklistUpdateRequest request) {
-		final var entity = checklistRepository.findById(id)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND));
+	public Checklist updateChecklist(final String municipalityId, final String id, final ChecklistUpdateRequest request) {
+		final var entity = checklistRepository.findByIdAndMunicipalityId(id, municipalityId)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND.formatted(municipalityId)));
 
 		return toChecklist(checklistRepository.save(updateChecklistEntity(entity, request)));
 	}

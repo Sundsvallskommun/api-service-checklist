@@ -91,21 +91,21 @@ class ChecklistRepositoryTest {
 
 	@Test
 	void existsByNameTest() {
-		final var result = checklistRepository.existsByName("Checklista Elnät");
+		final var result = checklistRepository.existsByNameAndMunicipalityId("Checklista Elnät", "2281");
 
 		assertThat(result).isTrue();
 	}
 
 	@Test
 	void existsByNameAndLifeCycleTest() {
-		final var result = checklistRepository.existsByNameAndLifeCycle("Checklista för Vård och omsorg", ACTIVE);
+		final var result = checklistRepository.existsByNameAndMunicipalityIdAndLifeCycle("Checklista för Vård och omsorg", "2281", ACTIVE);
 
 		assertThat(result).isTrue();
 	}
 
 	@Test
 	void findByNameAndLifeCycleTest() {
-		final var result = checklistRepository.findByNameAndLifeCycle("Checklista för Vård och omsorg", ACTIVE);
+		final var result = checklistRepository.findByNameAndMunicipalityIdAndLifeCycle("Checklista för Vård och omsorg", "2281", ACTIVE);
 
 		assertThat(result).isNotEmpty().satisfies(r -> {
 			assertThat(r.get().getId()).isEqualTo("25764278-50c8-4a19-af00-077bfc314fd2");

@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import se.sundsvall.checklist.api.model.ChecklistCreateRequest;
 import se.sundsvall.checklist.api.model.ChecklistUpdateRequest;
 import se.sundsvall.checklist.api.model.PhaseCreateRequest;
 import se.sundsvall.checklist.api.model.PhaseUpdateRequest;
@@ -100,11 +101,41 @@ class ChecklistMapperTest {
 	}
 
 	@Test
+	void toChecklistEntity() {
+		// Arrange
+		final var displayName = "displayName";
+		final var name = "name";
+		final var municipalityId = "municipalityId";
+		final var organizationNumber = 123456;
+		final var roleType = RoleType.MANAGER;
+
+		final var request = ChecklistCreateRequest.builder()
+			.withDisplayName(displayName)
+			.withName(name)
+			.withOrganizationNumber(organizationNumber)
+			.withRoleType(roleType)
+			.build();
+
+		// Act
+		final var entity = ChecklistMapper.toChecklistEntity(request, municipalityId);
+
+		// Assert
+		assertThat(entity).hasAllNullFieldsOrPropertiesExcept("displayName", "municipalityId", "name", "organizationNumber", "roleType", "version", "lifeCycle", "phases");
+		assertThat(entity.getDisplayName()).isEqualTo(displayName);
+		assertThat(entity.getName()).isEqualTo(name);
+		assertThat(entity.getMunicipalityId()).isEqualTo(municipalityId);
+		assertThat(entity.getRoleType()).isEqualTo(roleType);
+		assertThat(entity.getVersion()).isOne();
+		assertThat(entity.getPhases()).isEmpty();
+	}
+
+	@Test
 	void toChecklists() {
 		// Arrange
 		final var created = OffsetDateTime.now().minusWeeks(1);
 		final var id = "id";
 		final var lifeCycle = LifeCycle.ACTIVE;
+		final var municipalityId = "municipalityId";
 		final var name = "name";
 		final var displayName = "displayName";
 		final var phases = List.of(PhaseEntity.builder().build());
@@ -115,6 +146,7 @@ class ChecklistMapperTest {
 			.withCreated(created)
 			.withId(id)
 			.withLifeCycle(lifeCycle)
+			.withMunicipalityId(municipalityId)
 			.withName(name)
 			.withDisplayName(displayName)
 			.withPhases(phases)
@@ -147,6 +179,7 @@ class ChecklistMapperTest {
 		final var id = "id";
 		final var lifeCycle = LifeCycle.ACTIVE;
 		final var name = "name";
+		final var municipalityId = "municipalityId";
 		final var displayName = "displayName";
 		final var phases = List.of(PhaseEntity.builder().build());
 		final var roleType = RoleType.MANAGER;
@@ -156,6 +189,7 @@ class ChecklistMapperTest {
 			.withCreated(created)
 			.withId(id)
 			.withLifeCycle(lifeCycle)
+			.withMunicipalityId(municipalityId)
 			.withName(name)
 			.withDisplayName(displayName)
 			.withPhases(phases)
@@ -347,7 +381,7 @@ class ChecklistMapperTest {
 
 	@Test
 	void toChecklistEntityFromNull() {
-		assertThat(ChecklistMapper.toChecklistEntity(null)).isNull();
+		assertThat(ChecklistMapper.toChecklistEntity(null, "whatever")).isNull();
 	}
 
 	@Test

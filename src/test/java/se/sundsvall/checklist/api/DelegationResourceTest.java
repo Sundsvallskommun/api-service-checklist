@@ -1,7 +1,6 @@
 package se.sundsvall.checklist.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -44,7 +43,7 @@ class DelegationResourceTest {
 			.expectStatus().isCreated()
 			.expectBody().isEmpty();
 
-		verify(serviceMock).delegateEmployeeChecklist(ID, EMAIL);
+		verify(serviceMock).delegateEmployeeChecklist(MUNICIPALITY_ID, ID, EMAIL);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
@@ -52,7 +51,7 @@ class DelegationResourceTest {
 	void fetchDelegations() {
 		final var username = "abc20def";
 		final var mockResponse = DelegatedEmployeeChecklistResponse.builder().build();
-		when(serviceMock.fetchDelegatedEmployeeChecklistsByUsername(any())).thenReturn(mockResponse);
+		when(serviceMock.fetchDelegatedEmployeeChecklistsByUsername(MUNICIPALITY_ID, username)).thenReturn(mockResponse);
 
 		final var response = webTestClient.get()
 			.uri(builder -> builder.path(BASE_PATH + "/delegated-to/{username}").build(Map.of("municipalityId", MUNICIPALITY_ID, "username", username)))
@@ -63,7 +62,7 @@ class DelegationResourceTest {
 			.getResponseBody();
 
 		assertThat(response).isEqualTo(mockResponse);
-		verify(serviceMock).fetchDelegatedEmployeeChecklistsByUsername(username);
+		verify(serviceMock).fetchDelegatedEmployeeChecklistsByUsername(MUNICIPALITY_ID, username);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
@@ -75,7 +74,7 @@ class DelegationResourceTest {
 			.expectStatus().isNoContent()
 			.expectBody().isEmpty();
 
-		verify(serviceMock).removeEmployeeChecklistDelegation(ID, EMAIL);
+		verify(serviceMock).removeEmployeeChecklistDelegation(MUNICIPALITY_ID, ID, EMAIL);
 		verifyNoMoreInteractions(serviceMock);
 	}
 

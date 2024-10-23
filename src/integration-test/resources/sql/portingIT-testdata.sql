@@ -1,18 +1,18 @@
-INSERT INTO organization(id, organization_name, organization_number, created, updated)
+INSERT INTO organization(municipality_id, id, organization_name, organization_number, created, updated)
 -- Organization for test01 and test02
-VALUES ('15764278-50c8-4a19-af00-077bfc314fd2', 'Organization_1', '1', now(), now()),
+VALUES ('2281', '15764278-50c8-4a19-af00-077bfc314fd2', 'Organization_1', '1', now(), now()),
 -- Organization for test03
-       ('25764278-50c8-4a19-af00-077bfc314fd2', 'Organization_2', '2', now(), now()),
+       ('2281', '25764278-50c8-4a19-af00-077bfc314fd2', 'Organization_2', '2', now(), now()),
 -- Organization for test04
-       ('35764278-50c8-4a19-af00-077bfc314fd2', 'Organization_3', '3', now(), now()),
+       ('2281', '35764278-50c8-4a19-af00-077bfc314fd2', 'Organization_3', '3', now(), now()),
 -- Organization for test05
-       ('45764278-50c8-4a19-af00-077bfc314fd2', 'Organization_4', '4', now(), now()),
+       ('2281', '45764278-50c8-4a19-af00-077bfc314fd2', 'Organization_4', '4', now(), now()),
 -- Organization for test06
-       ('55764278-50c8-4a19-af00-077bfc314fd2', 'Organization_5', '5', now(), now()),
+       ('2281', '55764278-50c8-4a19-af00-077bfc314fd2', 'Organization_5', '5', now(), now()),
 -- Organization for test07
-       ('65764278-50c8-4a19-af00-077bfc314fd2', 'Organization_6', '6', now(), now()),
+       ('2281', '65764278-50c8-4a19-af00-077bfc314fd2', 'Organization_6', '6', now(), now()),
 -- Organization for test08
-       ('75764278-50c8-4a19-af00-077bfc314fd2', 'Organization_7', '7', now(), now());
+       ('2281', '75764278-50c8-4a19-af00-077bfc314fd2', 'Organization_7', '7', now(), now());
 
 INSERT INTO organization_communication_channel(organization_id, communication_channel)
 VALUES ('15764278-50c8-4a19-af00-077bfc314fd2', 'EMAIL'),
@@ -23,21 +23,21 @@ VALUES ('15764278-50c8-4a19-af00-077bfc314fd2', 'EMAIL'),
        ('65764278-50c8-4a19-af00-077bfc314fd2', 'EMAIL'),
        ('75764278-50c8-4a19-af00-077bfc314fd2', 'EMAIL');
        
-INSERT INTO checklist(id, organization_id, name, display_name, version, role_type, life_cycle, created, updated)
+INSERT INTO checklist(municipality_id, id, organization_id, name, display_name, version, role_type, life_cycle, created, updated)
 -- Checklists for test01 and test02
-VALUES ('1bc85739-cf6d-4223-b9dc-09218f044db7', '15764278-50c8-4a19-af00-077bfc314fd2', 'TEST01_02_EMPLOYEE_CHECKLIST', 'Checklist for employee',    1, 'EMPLOYEE', 'DEPRECATED', now(), now()),
-       ('2bc85739-cf6d-4223-b9dc-09218f044db7', '15764278-50c8-4a19-af00-077bfc314fd2', 'TEST01_02_EMPLOYEE_CHECKLIST', 'Checklist for employee',    2, 'EMPLOYEE', 'ACTIVE',     now(), now()),
-       ('1a16a4a5-3dce-48a6-b6f1-31abca9af606', '15764278-50c8-4a19-af00-077bfc314fd2', 'TEST01_02_MANAGER_CHECKLIST',  'Checklist for manager',     1, 'MANAGER',  'ACTIVE',     now(), now()),
+VALUES ('2281', '1bc85739-cf6d-4223-b9dc-09218f044db7', '15764278-50c8-4a19-af00-077bfc314fd2', 'TEST01_02_EMPLOYEE_CHECKLIST', 'Checklist for employee',    1, 'EMPLOYEE', 'DEPRECATED', now(), now()),
+       ('2281', '2bc85739-cf6d-4223-b9dc-09218f044db7', '15764278-50c8-4a19-af00-077bfc314fd2', 'TEST01_02_EMPLOYEE_CHECKLIST', 'Checklist for employee',    2, 'EMPLOYEE', 'ACTIVE',     now(), now()),
+       ('2281', '1a16a4a5-3dce-48a6-b6f1-31abca9af606', '15764278-50c8-4a19-af00-077bfc314fd2', 'TEST01_02_MANAGER_CHECKLIST',  'Checklist for manager',     1, 'MANAGER',  'ACTIVE',     now(), now()),
 -- Checklist for test03
-       ('83929b6a-c29e-4d95-9212-b02fb3f9b9cf', '25764278-50c8-4a19-af00-077bfc314fd2', 'TEST03_EMPLOYEE_CHECKLIST', 'Active checklist for employee', 1, 'EMPLOYEE', 'ACTIVE',  now(), now()),
+       ('2281', '83929b6a-c29e-4d95-9212-b02fb3f9b9cf', '25764278-50c8-4a19-af00-077bfc314fd2', 'TEST03_EMPLOYEE_CHECKLIST', 'Active checklist for employee', 1, 'EMPLOYEE', 'ACTIVE',  now(), now()),
 -- Checklists for test04
-       ('141896ee-6c32-4b53-8c81-3bae51a1ed05', '35764278-50c8-4a19-af00-077bfc314fd2', 'TEST04_EMPLOYEE_CHECKLIST', 'Active checklist for employee', 1, 'EMPLOYEE', 'ACTIVE',  now(), now()),
-       ('241896ee-6c32-4b53-8c81-3bae51a1ed05', '35764278-50c8-4a19-af00-077bfc314fd2', 'TEST04_EMPLOYEE_CHECKLIST', 'Draft checklist for employee',  2, 'EMPLOYEE', 'CREATED', now(), now()),
+       ('2281', '141896ee-6c32-4b53-8c81-3bae51a1ed05', '35764278-50c8-4a19-af00-077bfc314fd2', 'TEST04_EMPLOYEE_CHECKLIST', 'Active checklist for employee', 1, 'EMPLOYEE', 'ACTIVE',  now(), now()),
+       ('2281', '241896ee-6c32-4b53-8c81-3bae51a1ed05', '35764278-50c8-4a19-af00-077bfc314fd2', 'TEST04_EMPLOYEE_CHECKLIST', 'Draft checklist for employee',  2, 'EMPLOYEE', 'CREATED', now(), now()),
 -- Checklist for test06
-       ('3880efec-e66e-42a5-a3ac-ea2d08da0e5c', '55764278-50c8-4a19-af00-077bfc314fd2', 'TEST06_EMPLOYEE_CHECKLIST', 'Active checklist for employee', 1, 'EMPLOYEE', 'ACTIVE',  now(), now()),
+       ('2281', '3880efec-e66e-42a5-a3ac-ea2d08da0e5c', '55764278-50c8-4a19-af00-077bfc314fd2', 'TEST06_EMPLOYEE_CHECKLIST', 'Active checklist for employee', 1, 'EMPLOYEE', 'ACTIVE',  now(), now()),
 -- Checklists for test07
-       ('1914e06d-5ca5-4ea7-9052-23228be56cca', '65764278-50c8-4a19-af00-077bfc314fd2', 'TEST07_EMPLOYEE_CHECKLIST', 'Active checklist for employee', 1, 'EMPLOYEE', 'ACTIVE',  now(), now()),
-       ('2914e06d-5ca5-4ea7-9052-23228be56cca', '65764278-50c8-4a19-af00-077bfc314fd2', 'TEST07_EMPLOYEE_CHECKLIST', 'Draft checklist for employee', 2, 'EMPLOYEE', 'CREATED', now(), now());
+       ('2281', '1914e06d-5ca5-4ea7-9052-23228be56cca', '65764278-50c8-4a19-af00-077bfc314fd2', 'TEST07_EMPLOYEE_CHECKLIST', 'Active checklist for employee', 1, 'EMPLOYEE', 'ACTIVE',  now(), now()),
+       ('2281', '2914e06d-5ca5-4ea7-9052-23228be56cca', '65764278-50c8-4a19-af00-077bfc314fd2', 'TEST07_EMPLOYEE_CHECKLIST', 'Draft checklist for employee', 2, 'EMPLOYEE', 'CREATED', now(), now());
 
 INSERT INTO phase(id, name, body_text, time_to_complete, role_type, sort_order, created, updated, checklist_id)
 -- Phases for checklists in test01 and test02

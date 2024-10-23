@@ -39,6 +39,8 @@ import se.sundsvall.checklist.service.mapper.OrganizationMapper;
 @ExtendWith(MockitoExtension.class)
 class PortingServiceTest {
 
+	private static final String MUNICIPALITY_ID = "municipalityId";
+
 	@Mock
 	private ChecklistRepository checklistRepositoryMock;
 
@@ -75,15 +77,15 @@ class PortingServiceTest {
 					.build()))
 			.build();
 
-		when(organizationRepositoryMock.findByOrganizationNumber(organizationNumber)).thenReturn(Optional.of(organizationEntity));
+		when(organizationRepositoryMock.findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID)).thenReturn(Optional.of(organizationEntity));
 
 		// Act
-		final var response = service.exportChecklist(organizationNumber, roleType, null);
+		final var response = service.exportChecklist(MUNICIPALITY_ID, organizationNumber, roleType, null);
 
 		// Assert and verify
 		assertThat(response).isEqualTo("{\"version\":2,\"roleType\":\"%s\",\"phases\":[]}".formatted(roleType));
 
-		verify(organizationRepositoryMock).findByOrganizationNumber(organizationNumber);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID);
 	}
 
 	@Test
@@ -106,15 +108,15 @@ class PortingServiceTest {
 					.build()))
 			.build();
 
-		when(organizationRepositoryMock.findByOrganizationNumber(organizationNumber)).thenReturn(Optional.of(organizationEntity));
+		when(organizationRepositoryMock.findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID)).thenReturn(Optional.of(organizationEntity));
 
 		// Act
-		final var response = service.exportChecklist(organizationNumber, EMPLOYEE, 1);
+		final var response = service.exportChecklist(MUNICIPALITY_ID, organizationNumber, EMPLOYEE, 1);
 
 		// Assert and verify
 		assertThat(response).isEqualTo("{\"version\":1,\"roleType\":\"EMPLOYEE\",\"phases\":[]}");
 
-		verify(organizationRepositoryMock).findByOrganizationNumber(organizationNumber);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID);
 	}
 
 	@Test
@@ -123,16 +125,16 @@ class PortingServiceTest {
 		final var organizationNumber = 123;
 		final var organizationEntity = OrganizationEntity.builder().build();
 
-		when(organizationRepositoryMock.findByOrganizationNumber(organizationNumber)).thenReturn(Optional.of(organizationEntity));
+		when(organizationRepositoryMock.findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID)).thenReturn(Optional.of(organizationEntity));
 
 		// Act
-		final var e = assertThrows(ThrowableProblem.class, () -> service.exportChecklist(organizationNumber, EMPLOYEE, null));
+		final var e = assertThrows(ThrowableProblem.class, () -> service.exportChecklist(MUNICIPALITY_ID, organizationNumber, EMPLOYEE, null));
 
 		// Assert and verify
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: No checklist matching sent in parameters exist.");
 
-		verify(organizationRepositoryMock).findByOrganizationNumber(organizationNumber);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID);
 	}
 
 	@Test
@@ -157,13 +159,13 @@ class PortingServiceTest {
 				"displayName": "displayName"
 			}""";
 
-		when(organizationRepositoryMock.findByOrganizationNumber(organizationNumber)).thenReturn(Optional.of(organizationEntity));
+		when(organizationRepositoryMock.findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID)).thenReturn(Optional.of(organizationEntity));
 
 		// Act
-		service.importChecklist(organizationNumber, organizationName, jsonStructure, false);
+		service.importChecklist(MUNICIPALITY_ID, organizationNumber, organizationName, jsonStructure, false);
 
 		// Assert and verify
-		verify(organizationRepositoryMock).findByOrganizationNumber(organizationNumber);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID);
 		verify(checklistRepositoryMock).save(checklistEntityCaptor.capture());
 
 		assertThat(organizationEntity.getChecklists()).hasSize(2)
@@ -208,13 +210,13 @@ class PortingServiceTest {
 				"displayName": "displayName"
 			}""";
 
-		when(organizationRepositoryMock.findByOrganizationNumber(organizationNumber)).thenReturn(Optional.of(organizationEntity));
+		when(organizationRepositoryMock.findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID)).thenReturn(Optional.of(organizationEntity));
 
 		// Act
-		final var e = assertThrows(ThrowableProblem.class, () -> service.importChecklist(organizationNumber, organizationName, jsonStructure, false));
+		final var e = assertThrows(ThrowableProblem.class, () -> service.importChecklist(MUNICIPALITY_ID, organizationNumber, organizationName, jsonStructure, false));
 
 		// Assert and verify
-		verify(organizationRepositoryMock).findByOrganizationNumber(organizationNumber);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID);
 
 		assertThat(organizationEntity.getChecklists()).isEqualTo(existingChecklistEntities);
 		assertThat(e.getStatus()).isEqualTo(Status.CONFLICT);
@@ -234,13 +236,13 @@ class PortingServiceTest {
 				"displayName": "displayName"
 			}""";
 
-		when(organizationRepositoryMock.findByOrganizationNumber(organizationNumber)).thenReturn(Optional.of(organizationEntity));
+		when(organizationRepositoryMock.findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID)).thenReturn(Optional.of(organizationEntity));
 
 		// Act
-		service.importChecklist(organizationNumber, organizationName, jsonStructure, false);
+		service.importChecklist(MUNICIPALITY_ID, organizationNumber, organizationName, jsonStructure, false);
 
 		// Assert and verify
-		verify(organizationRepositoryMock).findByOrganizationNumber(organizationNumber);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID);
 		verify(checklistRepositoryMock).save(checklistEntityCaptor.capture());
 
 		assertThat(organizationEntity.getChecklists()).hasSize(1)
@@ -262,7 +264,7 @@ class PortingServiceTest {
 		// Arrange
 		final var organizationNumber = 123;
 		final var organizationName = "organizationName";
-		final var organizationEntity = OrganizationMapper.toOrganizationEntity(organizationNumber, organizationName);
+		final var organizationEntity = OrganizationMapper.toOrganizationEntity(organizationNumber, organizationName, MUNICIPALITY_ID);
 		final var jsonStructure = """
 			{
 				"name": "name",
@@ -273,10 +275,10 @@ class PortingServiceTest {
 		when(organizationRepositoryMock.save(any())).thenReturn(organizationEntity);
 
 		// Act
-		service.importChecklist(organizationNumber, organizationName, jsonStructure, false);
+		service.importChecklist(MUNICIPALITY_ID, organizationNumber, organizationName, jsonStructure, false);
 
 		// Assert and verify
-		verify(organizationRepositoryMock).findByOrganizationNumber(organizationNumber);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID);
 		verify(organizationRepositoryMock).save(organizationEntityCaptor.capture());
 		verify(checklistRepositoryMock).save(checklistEntityCaptor.capture());
 
@@ -321,13 +323,13 @@ class PortingServiceTest {
 				"displayName": "displayName"
 			}""";
 
-		when(organizationRepositoryMock.findByOrganizationNumber(organizationNumber)).thenReturn(Optional.of(organizationEntity));
+		when(organizationRepositoryMock.findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID)).thenReturn(Optional.of(organizationEntity));
 
 		// Act
-		service.importChecklist(organizationNumber, organizationName, jsonStructure, true);
+		service.importChecklist(MUNICIPALITY_ID, organizationNumber, organizationName, jsonStructure, true);
 
 		// Assert and verify
-		verify(organizationRepositoryMock).findByOrganizationNumber(organizationNumber);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID);
 		verify(checklistRepositoryMock).save(checklistEntityCaptor.capture());
 
 		assertThat(organizationEntity.getChecklists()).hasSize(1)
@@ -374,13 +376,13 @@ class PortingServiceTest {
 				"displayName": "displayName"
 			}""";
 
-		when(organizationRepositoryMock.findByOrganizationNumber(organizationNumber)).thenReturn(Optional.of(organizationEntity));
+		when(organizationRepositoryMock.findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID)).thenReturn(Optional.of(organizationEntity));
 
 		// Act
-		service.importChecklist(organizationNumber, organizationName, jsonStructure, true);
+		service.importChecklist(MUNICIPALITY_ID, organizationNumber, organizationName, jsonStructure, true);
 
 		// Assert and verify
-		verify(organizationRepositoryMock).findByOrganizationNumber(organizationNumber);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID);
 		verify(checklistRepositoryMock).save(checklistEntityCaptor.capture());
 
 		assertThat(organizationEntity.getChecklists()).hasSize(2)
@@ -411,13 +413,13 @@ class PortingServiceTest {
 				"displayName": "displayName"
 			}""";
 
-		when(organizationRepositoryMock.findByOrganizationNumber(organizationNumber)).thenReturn(Optional.of(organizationEntity));
+		when(organizationRepositoryMock.findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID)).thenReturn(Optional.of(organizationEntity));
 
 		// Act
-		service.importChecklist(organizationNumber, organizationName, jsonStructure, true);
+		service.importChecklist(MUNICIPALITY_ID, organizationNumber, organizationName, jsonStructure, true);
 
 		// Assert and verify
-		verify(organizationRepositoryMock).findByOrganizationNumber(organizationNumber);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID);
 		verify(checklistRepositoryMock).save(checklistEntityCaptor.capture());
 
 		assertThat(organizationEntity.getChecklists()).hasSize(1)
@@ -439,7 +441,7 @@ class PortingServiceTest {
 		// Arrange
 		final var organizationNumber = 123;
 		final var organizationName = "organizationName";
-		final var organizationEntity = OrganizationMapper.toOrganizationEntity(organizationNumber, organizationName);
+		final var organizationEntity = OrganizationMapper.toOrganizationEntity(organizationNumber, organizationName, MUNICIPALITY_ID);
 		final var jsonStructure = """
 			{
 				"name": "name",
@@ -450,10 +452,10 @@ class PortingServiceTest {
 		when(organizationRepositoryMock.save(any())).thenReturn(organizationEntity);
 
 		// Act
-		service.importChecklist(organizationNumber, organizationName, jsonStructure, true);
+		service.importChecklist(MUNICIPALITY_ID, organizationNumber, organizationName, jsonStructure, true);
 
 		// Assert and verify
-		verify(organizationRepositoryMock).findByOrganizationNumber(organizationNumber);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID);
 		verify(organizationRepositoryMock).save(organizationEntityCaptor.capture());
 		verify(checklistRepositoryMock).save(checklistEntityCaptor.capture());
 

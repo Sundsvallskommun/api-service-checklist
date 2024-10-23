@@ -58,7 +58,7 @@ class PortingResource {
 		@Parameter(name = "roleType", description = "Role type", example = "EMPLOYEE") @PathVariable RoleType roleType,
 		@Parameter(name = "version", description = "Version", example = "2") @RequestParam(required = false) Integer version) {
 
-		return ResponseEntity.ok(portingService.exportChecklist(organizationNumber, roleType, version));
+		return ResponseEntity.ok(portingService.exportChecklist(municipalityId, organizationNumber, roleType, version));
 	}
 
 	@Operation(summary = "Import checklist structure for a organization as a new version with lifecycle status CREATED", description = """
@@ -78,7 +78,7 @@ class PortingResource {
 		@Parameter(name = "organizationName", description = "Organization name", example = "Organization ABC") @PathVariable String organizationName,
 		@Parameter(description = "Json checklist structure to import") @RequestBody @ValidJson String jsonStructure) {
 
-		final var id = portingService.importChecklist(organizationNumber, organizationName, jsonStructure, false);
+		final var id = portingService.importChecklist(municipalityId, organizationNumber, organizationName, jsonStructure, false);
 		return created(UriComponentsBuilder.fromPath("/{municipalityId}/checklists/{checklistId}")
 			.buildAndExpand(municipalityId, id)
 			.toUri()).header(CONTENT_TYPE, ALL_VALUE).build();
@@ -101,7 +101,7 @@ class PortingResource {
 		@Parameter(name = "organizationName", description = "Organization name", example = "Organization ABC") @PathVariable String organizationName,
 		@Parameter(description = "Json checklist structure to import") @RequestBody @ValidJson String jsonStructure) {
 
-		final var id = portingService.importChecklist(organizationNumber, organizationName, jsonStructure, true);
+		final var id = portingService.importChecklist(municipalityId, organizationNumber, organizationName, jsonStructure, true);
 		return created(UriComponentsBuilder.fromPath("/{municipalityId}/checklists/{checklistId}")
 			.buildAndExpand(municipalityId, id)
 			.toUri()).header(CONTENT_TYPE, ALL_VALUE).build();

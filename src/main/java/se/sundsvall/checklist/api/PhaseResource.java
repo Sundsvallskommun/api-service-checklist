@@ -65,7 +65,7 @@ class PhaseResource {
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId) {
 
-		final var phases = phaseService.getChecklistPhases(checklistId);
+		final var phases = phaseService.getPhases(municipalityId, checklistId);
 		return ok(phases);
 	}
 
@@ -77,7 +77,7 @@ class PhaseResource {
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,
 		@Parameter(name = "phaseId", description = "Phase id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String phaseId) {
 
-		return ok(phaseService.getChecklistPhase(checklistId, phaseId));
+		return ok(phaseService.getPhase(municipalityId, checklistId, phaseId));
 	}
 
 	@Operation(summary = "Create phase in a checklist")
@@ -88,7 +88,7 @@ class PhaseResource {
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,
 		@RequestBody @Valid final PhaseCreateRequest request) {
 
-		final var phase = phaseService.createChecklistPhase(checklistId, request);
+		final var phase = phaseService.createPhase(municipalityId, checklistId, request);
 		return created(UriComponentsBuilder.fromPath("/{municipalityId}/checklists/{checklistId}/phases/{phaseId}")
 			.buildAndExpand(municipalityId, checklistId, phase.getId())
 			.toUri()).header(CONTENT_TYPE, ALL_VALUE).build();
@@ -103,7 +103,7 @@ class PhaseResource {
 		@Parameter(name = "phaseId", description = "Phase id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String phaseId,
 		@RequestBody @Valid final PhaseUpdateRequest request) {
 
-		return ok(phaseService.updateChecklistPhase(checklistId, phaseId, request));
+		return ok(phaseService.updatePhase(municipalityId, checklistId, phaseId, request));
 	}
 
 	@Operation(summary = "Delete phase in a checklist")
@@ -114,8 +114,7 @@ class PhaseResource {
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,
 		@Parameter(name = "phaseId", description = "Phase id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String phaseId) {
 
-		phaseService.deleteChecklistPhase(checklistId, phaseId);
+		phaseService.deletePhase(municipalityId, checklistId, phaseId);
 		return noContent().header(CONTENT_TYPE, ALL_VALUE).build();
 	}
-
 }

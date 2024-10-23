@@ -63,7 +63,7 @@ class OrganizationResource {
 	ResponseEntity<List<Organization>> fetchOrganizations(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId) {
 
-		return ok(organizationService.fetchAllOrganizations());
+		return ok(organizationService.fetchAllOrganizations(municipalityId));
 	}
 
 	@Operation(summary = "Fetch organization by id", description = "Fetch organization that matches provided id")
@@ -73,7 +73,7 @@ class OrganizationResource {
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "organizationId", description = "Organization id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String organizationId) {
 
-		return ok(organizationService.fetchOrganizationById(organizationId));
+		return ok(organizationService.fetchOrganization(municipalityId, organizationId));
 	}
 
 	@Operation(summary = "Create an organization", description = "Create a new organizational unit", responses = {
@@ -85,7 +85,7 @@ class OrganizationResource {
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Valid @RequestBody final OrganizationCreateRequest request) {
 
-		final var organizationId = organizationService.createOrganization(request);
+		final var organizationId = organizationService.createOrganization(municipalityId, request);
 		return created(
 			UriComponentsBuilder.fromPath("/{municipalityId}/organizations/{organizationId}")
 				.buildAndExpand(municipalityId, organizationId)
@@ -104,7 +104,7 @@ class OrganizationResource {
 		@Parameter(name = "organizationId", description = "Organization id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String organizationId,
 		@Valid @RequestBody final OrganizationUpdateRequest request) {
 
-		return ok(organizationService.updateOrganization(organizationId, request));
+		return ok(organizationService.updateOrganization(municipalityId, organizationId, request));
 	}
 
 	@Operation(summary = "Delete organization", description = "Delete an existing organizational unit", responses = {
@@ -117,7 +117,7 @@ class OrganizationResource {
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "organizationId", description = "Organization id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String organizationId) {
 
-		organizationService.deleteOrganization(organizationId);
+		organizationService.deleteOrganization(municipalityId, organizationId);
 		return noContent().header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 }

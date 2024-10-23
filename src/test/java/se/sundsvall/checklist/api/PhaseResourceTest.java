@@ -43,7 +43,7 @@ class PhaseResourceTest {
 	@Test
 	void fetchChecklistPhases() {
 		final var mockedResponse = List.of(createPhase(), createPhase());
-		when(mockPhaseService.getChecklistPhases(ID)).thenReturn(mockedResponse);
+		when(mockPhaseService.getPhases(MUNICIPALITY_ID, ID)).thenReturn(mockedResponse);
 
 		final var response = webTestClient.get()
 			.uri(builder -> builder.path(BASE_PATH).build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID)))
@@ -53,14 +53,14 @@ class PhaseResourceTest {
 			.returnResult();
 
 		assertThat(response.getResponseBody()).isEqualTo(mockedResponse);
-		verify(mockPhaseService).getChecklistPhases(ID);
+		verify(mockPhaseService).getPhases(MUNICIPALITY_ID, ID);
 		verifyNoMoreInteractions(mockPhaseService);
 	}
 
 	@Test
 	void fetchChecklistPhase() {
 		final var mockedResponse = createPhase();
-		when(mockPhaseService.getChecklistPhase(ID, SUB_ID)).thenReturn(mockedResponse);
+		when(mockPhaseService.getPhase(MUNICIPALITY_ID, ID, SUB_ID)).thenReturn(mockedResponse);
 
 		final var response = webTestClient.get()
 			.uri(builder -> builder.path(BASE_PATH + "/{phaseId}").build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID, "phaseId", SUB_ID)))
@@ -70,7 +70,7 @@ class PhaseResourceTest {
 			.returnResult();
 
 		assertThat(response.getResponseBody()).isEqualTo(mockedResponse);
-		verify(mockPhaseService).getChecklistPhase(ID, SUB_ID);
+		verify(mockPhaseService).getPhase(MUNICIPALITY_ID, ID, SUB_ID);
 		verifyNoMoreInteractions(mockPhaseService);
 	}
 
@@ -78,7 +78,7 @@ class PhaseResourceTest {
 	void createChecklistPhase() {
 		final var mockedResponse = createPhase(p -> p.setId(SUB_ID));
 		final var request = createPhaseCreateRequest();
-		when(mockPhaseService.createChecklistPhase(ID, request)).thenReturn(mockedResponse);
+		when(mockPhaseService.createPhase(MUNICIPALITY_ID, ID, request)).thenReturn(mockedResponse);
 
 		webTestClient.post()
 			.uri(builder -> builder.path(BASE_PATH).build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID)))
@@ -89,7 +89,7 @@ class PhaseResourceTest {
 			.expectHeader().location("/%s/checklists/%s/phases/%s".formatted(MUNICIPALITY_ID, ID, SUB_ID))
 			.expectBody().isEmpty();
 
-		verify(mockPhaseService).createChecklistPhase(ID, request);
+		verify(mockPhaseService).createPhase(MUNICIPALITY_ID, ID, request);
 		verifyNoMoreInteractions(mockPhaseService);
 	}
 
@@ -97,7 +97,7 @@ class PhaseResourceTest {
 	void updateChecklistPhase() {
 		final var mockedResponse = createPhase();
 		final var request = createPhaseUpdateRequest();
-		when(mockPhaseService.updateChecklistPhase(ID, SUB_ID, request)).thenReturn(mockedResponse);
+		when(mockPhaseService.updatePhase(MUNICIPALITY_ID, ID, SUB_ID, request)).thenReturn(mockedResponse);
 
 		final var response = webTestClient.patch()
 			.uri(builder -> builder.path(BASE_PATH + "/{phaseId}").build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID, "phaseId", SUB_ID)))
@@ -108,7 +108,7 @@ class PhaseResourceTest {
 			.returnResult();
 
 		assertThat(response.getResponseBody()).isEqualTo(mockedResponse);
-		verify(mockPhaseService).updateChecklistPhase(ID, SUB_ID, request);
+		verify(mockPhaseService).updatePhase(MUNICIPALITY_ID, ID, SUB_ID, request);
 		verifyNoMoreInteractions(mockPhaseService);
 	}
 
@@ -120,7 +120,7 @@ class PhaseResourceTest {
 			.expectStatus().isNoContent()
 			.expectBody().isEmpty();
 
-		verify(mockPhaseService).deleteChecklistPhase(ID, SUB_ID);
+		verify(mockPhaseService).deletePhase(MUNICIPALITY_ID, ID, SUB_ID);
 		verifyNoMoreInteractions(mockPhaseService);
 	}
 

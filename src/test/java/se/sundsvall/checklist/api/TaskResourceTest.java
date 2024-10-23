@@ -44,7 +44,7 @@ class TaskResourceTest {
 	@Test
 	void fetchChecklistPhaseTasks() {
 		final var mockedResponse = List.of(createTask(), createTask());
-		when(mockTaskService.getAllTasksInPhase(ID, SUB_ID)).thenReturn(mockedResponse);
+		when(mockTaskService.getTasks(MUNICIPALITY_ID, ID, SUB_ID)).thenReturn(mockedResponse);
 
 		final var response = webTestClient.get()
 			.uri(builder -> builder.path(BASE_PATH).build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID, "phaseId", SUB_ID)))
@@ -54,7 +54,7 @@ class TaskResourceTest {
 			.returnResult();
 
 		assertThat(response.getResponseBody()).isEqualTo(mockedResponse);
-		verify(mockTaskService).getAllTasksInPhase(ID, SUB_ID);
+		verify(mockTaskService).getTasks(MUNICIPALITY_ID, ID, SUB_ID);
 		verifyNoMoreInteractions(mockTaskService);
 	}
 
@@ -62,7 +62,7 @@ class TaskResourceTest {
 	void fetchChecklistPhaseTaskTest() {
 		final var taskId = randomUUID().toString();
 		final var mockedResponse = createTask(task -> task.setId(taskId));
-		when(mockTaskService.getTaskInPhaseById(ID, SUB_ID, mockedResponse.getId())).thenReturn(mockedResponse);
+		when(mockTaskService.getTask(MUNICIPALITY_ID, ID, SUB_ID, mockedResponse.getId())).thenReturn(mockedResponse);
 
 		final var response = webTestClient.get()
 			.uri(builder -> builder.path(BASE_PATH + "/{taskId}").build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID, "phaseId", SUB_ID, "taskId", taskId)))
@@ -72,14 +72,14 @@ class TaskResourceTest {
 			.returnResult();
 
 		assertThat(response.getResponseBody()).isEqualTo(mockedResponse);
-		verify(mockTaskService).getTaskInPhaseById(ID, SUB_ID, taskId);
+		verify(mockTaskService).getTask(MUNICIPALITY_ID, ID, SUB_ID, taskId);
 		verifyNoMoreInteractions(mockTaskService);
 	}
 
 	@Test
 	void createChecklistPhaseTaskTest() {
 		final var mockedResponse = createTask(task -> task.setId(randomUUID().toString()));
-		when(mockTaskService.createTask(ID, SUB_ID, createTaskCreateRequest())).thenReturn(mockedResponse);
+		when(mockTaskService.createTask(MUNICIPALITY_ID, ID, SUB_ID, createTaskCreateRequest())).thenReturn(mockedResponse);
 
 		webTestClient.post()
 			.uri(builder -> builder.path(BASE_PATH).build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID, "phaseId", SUB_ID)))
@@ -91,7 +91,7 @@ class TaskResourceTest {
 			.expectHeader().location("/%s/checklists/%s/phases/%s/tasks/%s".formatted(MUNICIPALITY_ID, ID, SUB_ID, mockedResponse.getId()))
 			.expectBody().isEmpty();
 
-		verify(mockTaskService).createTask(ID, SUB_ID, createTaskCreateRequest());
+		verify(mockTaskService).createTask(MUNICIPALITY_ID, ID, SUB_ID, createTaskCreateRequest());
 		verifyNoMoreInteractions(mockTaskService);
 	}
 
@@ -100,7 +100,7 @@ class TaskResourceTest {
 		final var taskId = randomUUID().toString();
 		final var mockedResponse = createTask(task -> task.setId(taskId));
 		final var requestBody = createTaskUpdateRequest();
-		when(mockTaskService.updateTask(ID, SUB_ID, taskId, requestBody)).thenReturn(mockedResponse);
+		when(mockTaskService.updateTask(MUNICIPALITY_ID, ID, SUB_ID, taskId, requestBody)).thenReturn(mockedResponse);
 
 		final var response = webTestClient.patch()
 			.uri(builder -> builder.path(BASE_PATH + "/{taskId}").build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID, "phaseId", SUB_ID, "taskId", taskId)))
@@ -112,7 +112,7 @@ class TaskResourceTest {
 			.returnResult();
 
 		assertThat(response.getResponseBody()).isEqualTo(mockedResponse);
-		verify(mockTaskService).updateTask(ID, SUB_ID, taskId, requestBody);
+		verify(mockTaskService).updateTask(MUNICIPALITY_ID, ID, SUB_ID, taskId, requestBody);
 		verifyNoMoreInteractions(mockTaskService);
 	}
 
@@ -126,7 +126,7 @@ class TaskResourceTest {
 			.expectStatus().isNoContent()
 			.expectBody().isEmpty();
 
-		verify(mockTaskService).deleteTask(ID, SUB_ID, taskId);
+		verify(mockTaskService).deleteTask(MUNICIPALITY_ID, ID, SUB_ID, taskId);
 		verifyNoMoreInteractions(mockTaskService);
 	}
 

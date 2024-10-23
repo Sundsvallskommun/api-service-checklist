@@ -1,7 +1,6 @@
 package se.sundsvall.checklist.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -26,7 +25,6 @@ import se.sundsvall.checklist.api.model.CustomTask;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklist;
-import se.sundsvall.checklist.api.model.EmployeeChecklistPaginatedResponse;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhase;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse;
@@ -58,37 +56,12 @@ class EmployeeChecklistResourceTest {
 	private WebTestClient webTestClient;
 
 	@Test
-	void findEmployeeChecklistBySearchString() {
-		// Arrange
-		final var mockedResponse = new EmployeeChecklistPaginatedResponse();
-
-		when(serviceMock.findEmployeeChecklistsBySearchString(any(), any())).thenReturn(mockedResponse);
-
-		// Act
-		final var response = webTestClient.get()
-			.uri(builder -> builder.path(BASE_PATH + "/search")
-				.queryParam("searchString", "test")
-				.build(Map.of("municipalityId", MUNICIPALITY_ID)))
-			.exchange()
-			.expectStatus().isOk()
-			.expectBody(EmployeeChecklistPaginatedResponse.class)
-			.returnResult()
-			.getResponseBody();
-
-		// Assert and verify
-		assertThat(response).isEqualTo(mockedResponse);
-
-		verify(serviceMock).findEmployeeChecklistsBySearchString(any(), any());
-		verifyNoMoreInteractions(serviceMock);
-	}
-
-	@Test
 	void fetchChecklistForEmployee() {
 		// Arrange
 		final var path = "/employee/{userId}";
 		final var mockedResponse = EmployeeChecklist.builder().build();
 
-		when(serviceMock.fetchChecklistForEmployee(USER_ID)).thenReturn(Optional.of(mockedResponse));
+		when(serviceMock.fetchChecklistForEmployee(MUNICIPALITY_ID, USER_ID)).thenReturn(Optional.of(mockedResponse));
 
 		// Act
 		final var response = webTestClient.get()
@@ -102,7 +75,7 @@ class EmployeeChecklistResourceTest {
 		// Assert and verify
 		assertThat(response).isEqualTo(mockedResponse);
 
-		verify(serviceMock).fetchChecklistForEmployee(USER_ID);
+		verify(serviceMock).fetchChecklistForEmployee(MUNICIPALITY_ID, USER_ID);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
@@ -111,7 +84,7 @@ class EmployeeChecklistResourceTest {
 		// Arrange
 		final var path = "/employee/{userId}";
 
-		when(serviceMock.fetchChecklistForEmployee(USER_ID)).thenReturn(Optional.empty());
+		when(serviceMock.fetchChecklistForEmployee(MUNICIPALITY_ID, USER_ID)).thenReturn(Optional.empty());
 
 		// Act
 		webTestClient.get()
@@ -122,7 +95,7 @@ class EmployeeChecklistResourceTest {
 			.isEmpty();
 
 		// Assert and verify
-		verify(serviceMock).fetchChecklistForEmployee(USER_ID);
+		verify(serviceMock).fetchChecklistForEmployee(MUNICIPALITY_ID, USER_ID);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
@@ -132,7 +105,7 @@ class EmployeeChecklistResourceTest {
 		final var path = "/manager/{userId}";
 		final var mockedResponse = List.of(EmployeeChecklist.builder().build(), EmployeeChecklist.builder().build());
 
-		when(serviceMock.fetchChecklistsForManager(USER_ID)).thenReturn(mockedResponse);
+		when(serviceMock.fetchChecklistsForManager(MUNICIPALITY_ID, USER_ID)).thenReturn(mockedResponse);
 
 		// Act
 		final var response = webTestClient.get()
@@ -146,7 +119,7 @@ class EmployeeChecklistResourceTest {
 		// Assert and verify
 		assertThat(response).isEqualTo(mockedResponse);
 
-		verify(serviceMock).fetchChecklistsForManager(USER_ID);
+		verify(serviceMock).fetchChecklistsForManager(MUNICIPALITY_ID, USER_ID);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
@@ -163,7 +136,7 @@ class EmployeeChecklistResourceTest {
 			.expectBody().isEmpty();
 
 		// Assert and verify
-		verify(serviceMock).deleteEmployeChecklist(ID);
+		verify(serviceMock).deleteEmployeChecklist(MUNICIPALITY_ID, ID);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
@@ -179,7 +152,7 @@ class EmployeeChecklistResourceTest {
 			.withSortOrder(1)
 			.build();
 
-		when(serviceMock.createCustomTask(ID, SUB_ID, request)).thenReturn(mockedResponse);
+		when(serviceMock.createCustomTask(MUNICIPALITY_ID, ID, SUB_ID, request)).thenReturn(mockedResponse);
 
 		// Act
 		final var response = webTestClient.post()
@@ -195,7 +168,7 @@ class EmployeeChecklistResourceTest {
 		// Assert and verify
 		assertThat(response).isEqualTo(mockedResponse);
 
-		verify(serviceMock).createCustomTask(ID, SUB_ID, request);
+		verify(serviceMock).createCustomTask(MUNICIPALITY_ID, ID, SUB_ID, request);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
@@ -205,7 +178,7 @@ class EmployeeChecklistResourceTest {
 		final var mockedResponse = CustomTask.builder().build();
 		final var path = "/{employeeChecklistId}/customtasks/{taskId}";
 
-		when(serviceMock.readCustomTask(ID, SUB_ID)).thenReturn(mockedResponse);
+		when(serviceMock.readCustomTask(MUNICIPALITY_ID, ID, SUB_ID)).thenReturn(mockedResponse);
 
 		// Act
 		final var response = webTestClient.get()
@@ -219,7 +192,7 @@ class EmployeeChecklistResourceTest {
 		// Assert and verify
 		assertThat(response).isEqualTo(mockedResponse);
 
-		verify(serviceMock).readCustomTask(ID, SUB_ID);
+		verify(serviceMock).readCustomTask(MUNICIPALITY_ID, ID, SUB_ID);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
@@ -235,7 +208,7 @@ class EmployeeChecklistResourceTest {
 			.withSortOrder(1)
 			.build();
 
-		when(serviceMock.updateCustomTask(ID, SUB_ID, request)).thenReturn(mockedResponse);
+		when(serviceMock.updateCustomTask(MUNICIPALITY_ID, ID, SUB_ID, request)).thenReturn(mockedResponse);
 
 		// Act
 		final var response = webTestClient.patch()
@@ -250,7 +223,7 @@ class EmployeeChecklistResourceTest {
 		// Assert and verify
 		assertThat(response).isEqualTo(mockedResponse);
 
-		verify(serviceMock).updateCustomTask(ID, SUB_ID, request);
+		verify(serviceMock).updateCustomTask(MUNICIPALITY_ID, ID, SUB_ID, request);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
@@ -267,7 +240,7 @@ class EmployeeChecklistResourceTest {
 			.expectBody().isEmpty();
 
 		// Assert and verify
-		verify(serviceMock).deleteCustomTask(ID, SUB_ID);
+		verify(serviceMock).deleteCustomTask(MUNICIPALITY_ID, ID, SUB_ID);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
@@ -280,7 +253,7 @@ class EmployeeChecklistResourceTest {
 			.withTasksFulfilmentStatus(FulfilmentStatus.TRUE)
 			.build();
 
-		when(serviceMock.updateAllTasksInPhase(ID, SUB_ID, request)).thenReturn(employeeChecklistPhase);
+		when(serviceMock.updateAllTasksInPhase(MUNICIPALITY_ID, ID, SUB_ID, request)).thenReturn(employeeChecklistPhase);
 
 		// Act
 		final var response = webTestClient.patch()
@@ -295,7 +268,7 @@ class EmployeeChecklistResourceTest {
 		// Assert and verify
 		assertThat(response).isEqualTo(employeeChecklistPhase);
 
-		verify(serviceMock).updateAllTasksInPhase(ID, SUB_ID, request);
+		verify(serviceMock).updateAllTasksInPhase(MUNICIPALITY_ID, ID, SUB_ID, request);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
@@ -309,7 +282,7 @@ class EmployeeChecklistResourceTest {
 			.withResponseText("responseText")
 			.build();
 
-		when(serviceMock.updateTaskFulfilment(ID, SUB_ID, request)).thenReturn(mockedResponse);
+		when(serviceMock.updateTaskFulfilment(MUNICIPALITY_ID, ID, SUB_ID, request)).thenReturn(mockedResponse);
 
 		// Act
 		final var response = webTestClient.patch()
@@ -324,7 +297,7 @@ class EmployeeChecklistResourceTest {
 		// Assert and verify
 		assertThat(response).isEqualTo(mockedResponse);
 
-		verify(serviceMock).updateTaskFulfilment(ID, SUB_ID, request);
+		verify(serviceMock).updateTaskFulfilment(MUNICIPALITY_ID, ID, SUB_ID, request);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
@@ -337,7 +310,7 @@ class EmployeeChecklistResourceTest {
 			.withDetails(List.of(Detail.builder().withInformation("information").withStatus(Status.OK).build()))
 			.build();
 
-		when(serviceMock.initiateEmployeeChecklists()).thenReturn(mockedResponse);
+		when(serviceMock.initiateEmployeeChecklists(MUNICIPALITY_ID)).thenReturn(mockedResponse);
 
 		// Act
 		final var response = webTestClient.post()
@@ -351,7 +324,7 @@ class EmployeeChecklistResourceTest {
 		// Assert and verify
 		assertThat(response).isEqualTo(mockedResponse);
 
-		verify(serviceMock).initiateEmployeeChecklists();
+		verify(serviceMock).initiateEmployeeChecklists(MUNICIPALITY_ID);
 	}
 
 	@Test
@@ -363,7 +336,7 @@ class EmployeeChecklistResourceTest {
 			.withDetails(List.of(Detail.builder().withInformation("information").withStatus(Status.OK).build()))
 			.build();
 
-		when(serviceMock.initiateSpecificEmployeeChecklist(ID)).thenReturn(mockedResponse);
+		when(serviceMock.initiateSpecificEmployeeChecklist(MUNICIPALITY_ID, ID)).thenReturn(mockedResponse);
 
 		// Act
 		final var response = webTestClient.post()
@@ -377,6 +350,6 @@ class EmployeeChecklistResourceTest {
 		// Assert and verify
 		assertThat(response).isEqualTo(mockedResponse);
 
-		verify(serviceMock).initiateSpecificEmployeeChecklist(ID);
+		verify(serviceMock).initiateSpecificEmployeeChecklist(MUNICIPALITY_ID, ID);
 	}
 }

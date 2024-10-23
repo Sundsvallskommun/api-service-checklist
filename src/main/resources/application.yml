@@ -81,6 +81,8 @@ logbook:
 # Config of schedulers etc
 #===========================
 checklist:
+  managed-municipality-ids:
+    - 2281
   new-employees:
     cron: ${config.schedulers.new-employees.cron}
     fetch-on-startup: ${config.schedulers.new-employees.fetch-on-startup:true}

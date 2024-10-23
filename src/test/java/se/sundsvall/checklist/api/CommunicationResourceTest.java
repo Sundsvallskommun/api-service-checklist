@@ -44,7 +44,7 @@ class CommunicationResourceTest {
 			.expectBody().isEmpty();
 
 		// Assert and verify
-		verify(communicationServiceMock).sendEmail(ID);
+		verify(communicationServiceMock).sendEmail(MUNICIPALITY_ID, ID);
 		verifyNoMoreInteractions(communicationServiceMock);
 	}
 
@@ -53,7 +53,7 @@ class CommunicationResourceTest {
 		// Arrange
 		final var mockedResponse = Correspondence.builder().build();
 
-		when(communicationServiceMock.fetchCorrespondence(ID)).thenReturn(mockedResponse);
+		when(communicationServiceMock.fetchCorrespondence(MUNICIPALITY_ID, ID)).thenReturn(mockedResponse);
 
 		// Act
 		final var response = webTestClient.get()
@@ -66,7 +66,7 @@ class CommunicationResourceTest {
 
 		// Assert and verify
 		assertThat(response).isEqualTo(mockedResponse);
-		verify(communicationServiceMock).fetchCorrespondence(ID);
+		verify(communicationServiceMock).fetchCorrespondence(MUNICIPALITY_ID, ID);
 		verifyNoMoreInteractions(communicationServiceMock);
 	}
 }
