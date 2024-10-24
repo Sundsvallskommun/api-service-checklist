@@ -96,7 +96,7 @@ class TaskServiceTest {
 
 		assertThatThrownBy(() -> taskService.getTasks(MUNICIPALITY_ID, checklistEntity.getId(), UUID.randomUUID().toString()))
 			.isInstanceOf(Problem.class)
-			.hasMessage("Not Found: Phase not found".formatted(MUNICIPALITY_ID));
+			.hasMessage("Not Found: Phase not found");
 
 		verify(mockChecklistRepository).findByIdAndMunicipalityId(checklistEntity.getId(), MUNICIPALITY_ID);
 		verifyNoMoreInteractions(mockChecklistRepository, mockPhaseRepository, mockTaskRepository);
@@ -134,7 +134,7 @@ class TaskServiceTest {
 
 		assertThatThrownBy(() -> taskService.getTask(MUNICIPALITY_ID, checklistEntity.getId(), phaseEntity.getId(), UUID.randomUUID().toString()))
 			.isInstanceOf(Problem.class)
-			.hasMessage("Not Found: Task not found".formatted(MUNICIPALITY_ID));
+			.hasMessage("Not Found: Task not found");
 
 		verify(mockChecklistRepository).findByIdAndMunicipalityId(checklistEntity.getId(), MUNICIPALITY_ID);
 		verifyNoMoreInteractions(mockChecklistRepository, mockPhaseRepository, mockTaskRepository);
@@ -178,7 +178,7 @@ class TaskServiceTest {
 
 		assertThatThrownBy(() -> taskService.createTask(MUNICIPALITY_ID, checklistEntity.getId(), UUID.randomUUID().toString(), createRequest))
 			.isInstanceOf(Problem.class)
-			.hasMessage("Not Found: Phase not found".formatted(MUNICIPALITY_ID));
+			.hasMessage("Not Found: Phase not found");
 
 		verify(mockChecklistRepository).findByIdAndMunicipalityId(checklistEntity.getId(), MUNICIPALITY_ID);
 		verifyNoMoreInteractions(mockChecklistRepository, mockPhaseRepository, mockTaskRepository);
@@ -218,7 +218,7 @@ class TaskServiceTest {
 
 		assertThatThrownBy(() -> taskService.updateTask(MUNICIPALITY_ID, checklistEntity.getId(), UUID.randomUUID().toString(), taskEntity.getId(), updateRequest))
 			.isInstanceOf(Problem.class)
-			.hasMessage("Not Found: Phase not found".formatted(MUNICIPALITY_ID));
+			.hasMessage("Not Found: Phase not found");
 
 		verify(mockChecklistRepository).findByIdAndMunicipalityId(checklistEntity.getId(), MUNICIPALITY_ID);
 		verifyNoMoreInteractions(mockChecklistRepository, mockPhaseRepository, mockTaskRepository);
@@ -230,7 +230,7 @@ class TaskServiceTest {
 
 		assertThatThrownBy(() -> taskService.updateTask(MUNICIPALITY_ID, checklistEntity.getId(), phaseEntity.getId(), UUID.randomUUID().toString(), updateRequest))
 			.isInstanceOf(Problem.class)
-			.hasMessage("Not Found: Task not found".formatted(MUNICIPALITY_ID));
+			.hasMessage("Not Found: Task not found");
 
 		verify(mockChecklistRepository).findByIdAndMunicipalityId(checklistEntity.getId(), MUNICIPALITY_ID);
 		verifyNoMoreInteractions(mockChecklistRepository, mockPhaseRepository, mockTaskRepository);
@@ -269,7 +269,7 @@ class TaskServiceTest {
 
 		assertThatThrownBy(() -> taskService.deleteTask(MUNICIPALITY_ID, checklistEntity.getId(), phaseEntity.getId(), UUID.randomUUID().toString()))
 			.isInstanceOf(Problem.class)
-			.hasMessage("Not Found: Task not found".formatted(MUNICIPALITY_ID));
+			.hasMessage("Not Found: Task not found");
 
 		verify(mockChecklistRepository).findByIdAndMunicipalityId(checklistEntity.getId(), MUNICIPALITY_ID);
 		verifyNoMoreInteractions(mockChecklistRepository, mockPhaseRepository, mockTaskRepository);
