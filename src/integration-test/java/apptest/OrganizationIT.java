@@ -113,7 +113,7 @@ class OrganizationIT extends AbstractAppTest {
 		final var organizationId = "45764278-50c8-4a19-af00-077bfc314fd2";
 
 		assertThat(organizationRepository.existsById(organizationId)).isTrue();
-		assertThat(checklistRepository.existsByName("CHECKLIST_SHOULD_BE_DELETED")).isTrue();
+		assertThat(checklistRepository.existsByNameAndMunicipalityId("CHECKLIST_SHOULD_BE_DELETED", "2281")).isTrue();
 
 		setupCall()
 			.withServicePath(PATH + "/" + organizationId)
@@ -123,7 +123,7 @@ class OrganizationIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 
 		assertThat(organizationRepository.existsById(organizationId)).isFalse();
-		assertThat(checklistRepository.existsByName("CHECKLIST_SHOULD_BE_DELETED")).isFalse();
+		assertThat(checklistRepository.existsByNameAndMunicipalityId("CHECKLIST_SHOULD_BE_DELETED", "2281")).isFalse();
 	}
 
 }

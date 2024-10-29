@@ -82,20 +82,22 @@ public class OrganizationMapper {
 			.orElse(LocalDate.now());
 	}
 
-	public static OrganizationEntity toOrganizationEntity(int organizationNumber, final String organizationName) {
+	public static OrganizationEntity toOrganizationEntity(int organizationNumber, final String organizationName, final String municipalityId) {
 		return OrganizationEntity.builder()
 			.withOrganizationNumber(organizationNumber)
 			.withOrganizationName(organizationName)
 			.withCommunicationChannels(Set.of(EMAIL))
+			.withMunicipalityId(municipalityId)
 			.build();
 	}
 
-	public static OrganizationEntity toOrganizationEntity(final OrganizationCreateRequest request) {
+	public static OrganizationEntity toOrganizationEntity(final OrganizationCreateRequest request, final String municipalityId) {
 		return ofNullable(request)
 			.map(organizationEntity -> OrganizationEntity.builder()
 				.withOrganizationNumber(organizationEntity.getOrganizationNumber())
 				.withOrganizationName(organizationEntity.getOrganizationName())
 				.withCommunicationChannels(organizationEntity.getCommunicationChannels())
+				.withMunicipalityId(municipalityId)
 				.build())
 			.orElse(null);
 	}

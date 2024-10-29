@@ -5,10 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static se.sundsvall.checklist.TestObjectFactory.createEmployeeChecklistEntity;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,9 +22,6 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
 
@@ -36,7 +31,6 @@ import generated.se.sundsvall.employee.Manager;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
-import se.sundsvall.checklist.api.specification.EmployeeCheclistFilterSpecification;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
@@ -58,7 +52,6 @@ import se.sundsvall.checklist.integration.db.repository.EmployeeRepository;
 import se.sundsvall.checklist.integration.db.repository.ManagerRepository;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
 import se.sundsvall.checklist.service.OrganizationTree;
-import se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper;
 import se.sundsvall.checklist.service.mapper.OrganizationMapper;
 
 @ExtendWith(MockitoExtension.class)
@@ -92,61 +85,46 @@ class EmployeeChecklistIntegrationTest {
 	private ArgumentCaptor<EmployeeChecklistEntity> employeeChecklistEntityCaptor;
 
 	@Test
-	void fetchPaginatedEmployeeChecklistsByString() {
-		final var entity = createEmployeeChecklistEntity();
-		final var dto = EmployeeChecklistMapper.toEmployeeChecklistDTO(entity);
-		final EmployeeCheclistFilterSpecification spec = (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("id"), entity.getId());
-		final var pageable = PageRequest.of(0, 10);
-		final Page<EmployeeChecklistEntity> page = new PageImpl<>(List.of(entity), pageable, 1);
-
-		when(employeeChecklistsRepositoryMock.findAll(spec, pageable)).thenReturn(page);
-
-		final var result = integration.fetchPaginatedEmployeeChecklistsByString(spec, pageable);
-
-		assertThat(result.getEmployeeChecklists().getFirst()).isEqualTo(dto);
-		verify(employeeChecklistsRepositoryMock).findAll(spec, pageable);
-		verifyNoMoreInteractions(employeeChecklistsRepositoryMock);
-		verifyNoInteractions(employeeRepositoryMock, managerRepositoryMock, organizationRepositoryMock, delegateRepositoryMock);
-	}
-
-	@Test
 	void fetchOptionalEmployeeChecklist() {
 		// Arrange
-		final var userId = "userId";
+		final var municipalityId = "municipalityId";
+		final var username = "username";
 		final var entity = EmployeeChecklistEntity.builder().build();
 
-		when(employeeChecklistsRepositoryMock.findByEmployeeUsername(userId)).thenReturn(entity);
+		when(employeeChecklistsRepositoryMock.findByChecklistMunicipalityIdAndEmployeeUsername(municipalityId, username)).thenReturn(entity);
 
-		final var result = integration.fetchOptionalEmployeeChecklist(userId);
+		final var result = integration.fetchOptionalEmployeeChecklist(municipalityId, username);
 
 		assertThat(result).isEqualTo(Optional.of(entity));
-		verify(employeeChecklistsRepositoryMock).findByEmployeeUsername(userId);
+		verify(employeeChecklistsRepositoryMock).findByChecklistMunicipalityIdAndEmployeeUsername(municipalityId, username);
 	}
 
 	@Test
 	void fetchNonExistingOptionalEmployeeChecklist() {
 		// Arrange
-		final var userId = "userId";
+		final var municipalityId = "municipalityId";
+		final var username = "username";
 
 		// Act, assert and verify
-		assertThat(integration.fetchOptionalEmployeeChecklist(userId)).isEmpty();
-		verify(employeeChecklistsRepositoryMock).findByEmployeeUsername(userId);
+		assertThat(integration.fetchOptionalEmployeeChecklist(municipalityId, username)).isEmpty();
+		verify(employeeChecklistsRepositoryMock).findByChecklistMunicipalityIdAndEmployeeUsername(municipalityId, username);
 	}
 
 	@Test
 	void fetchEmployeeChecklistsForManager() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var userId = "userId";
 		final var entity = EmployeeChecklistEntity.builder().build();
 
-		when(employeeChecklistsRepositoryMock.findAllByEmployeeManagerUsername(userId)).thenReturn(List.of(entity));
+		when(employeeChecklistsRepositoryMock.findAllByChecklistMunicipalityIdAndEmployeeManagerUsername(municipalityId, userId)).thenReturn(List.of(entity));
 
 		// Act
-		final var result = integration.fetchEmployeeChecklistsForManager(userId);
+		final var result = integration.fetchEmployeeChecklistsForManager(municipalityId, userId);
 
 		// Verify and assert
 		assertThat(result).isNotEmpty().containsExactly(entity);
-		verify(employeeChecklistsRepositoryMock).findAllByEmployeeManagerUsername(userId);
+		verify(employeeChecklistsRepositoryMock).findAllByChecklistMunicipalityIdAndEmployeeManagerUsername(municipalityId, userId);
 	}
 
 	@Test
@@ -231,6 +209,7 @@ class EmployeeChecklistIntegrationTest {
 	@Test
 	void updateAllTasksInPhaseOnLockedEmployeeChecklist() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var employeeChecklistId = UUID.randomUUID().toString();
 		final var phaseId = UUID.randomUUID().toString();
 		final var fulfilmentStatus = FulfilmentStatus.EMPTY;
@@ -242,21 +221,22 @@ class EmployeeChecklistIntegrationTest {
 			.withLocked(true)
 			.build();
 
-		when(employeeChecklistsRepositoryMock.findById(employeeChecklistId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		// Act
-		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateAllTasksInPhase(employeeChecklistId, phaseId, request));
+		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request));
 
 		// Assert and verify
 		assertThat(e.getStatus()).isEqualTo(Status.BAD_REQUEST);
 		assertThat(e.getMessage()).isEqualTo("Bad Request: Employee checklist with id %s is locked and can not be modified.".formatted(employeeChecklistId));
 
-		verify(employeeChecklistsRepositoryMock).findById(employeeChecklistId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
 	}
 
 	@Test
 	void updateAllTasksInPhaseWhenNoPresentFulfilmentExists() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var employeeChecklistId = UUID.randomUUID().toString();
 		final var phaseId = UUID.randomUUID().toString();
 		final var fulfilmentStatus = FulfilmentStatus.EMPTY;
@@ -278,14 +258,14 @@ class EmployeeChecklistIntegrationTest {
 				.build()))
 			.build();
 
-		when(employeeChecklistsRepositoryMock.findById(employeeChecklistId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 		when(employeeChecklistsRepositoryMock.save(entity)).thenReturn(entity);
 
 		// Act
-		final var result = integration.updateAllTasksInPhase(employeeChecklistId, phaseId, request);
+		final var result = integration.updateAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request);
 
 		// Verify and assert
-		verify(employeeChecklistsRepositoryMock).findById(employeeChecklistId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
 		verify(employeeChecklistsRepositoryMock).save(entity);
 
 		assertThat(result.getFulfilments()).hasSize(1).allSatisfy(f -> {
@@ -301,6 +281,7 @@ class EmployeeChecklistIntegrationTest {
 	@Test
 	void updateAllTasksInPhaseWhenPresentFulfilmentExists() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var employeeChecklistId = UUID.randomUUID().toString();
 		final var phaseId = UUID.randomUUID().toString();
 		final var fulfilmentStatus = FulfilmentStatus.EMPTY;
@@ -331,14 +312,14 @@ class EmployeeChecklistIntegrationTest {
 			.withCustomTask(entity.getCustomTasks().getFirst())
 			.build()));
 
-		when(employeeChecklistsRepositoryMock.findById(employeeChecklistId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 		when(employeeChecklistsRepositoryMock.save(entity)).thenReturn(entity);
 
 		// Act
-		final var result = integration.updateAllTasksInPhase(employeeChecklistId, phaseId, request);
+		final var result = integration.updateAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request);
 
 		// Verify and assert
-		verify(employeeChecklistsRepositoryMock).findById(employeeChecklistId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
 		verify(employeeChecklistsRepositoryMock).save(entity);
 
 		assertThat(result.getFulfilments()).hasSize(1).allSatisfy(f -> {
@@ -354,72 +335,77 @@ class EmployeeChecklistIntegrationTest {
 	@Test
 	void updateAllTasksInPhaseWhenFulfilmentStatusNotSetInRequest() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var employeeChecklistId = UUID.randomUUID().toString();
 		final var phaseId = UUID.randomUUID().toString();
 		final var request = EmployeeChecklistPhaseUpdateRequest.builder().build();
 		final var entity = EmployeeChecklistEntity.builder().build();
 
-		when(employeeChecklistsRepositoryMock.findById(employeeChecklistId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		// Act
-		final var result = integration.updateAllTasksInPhase(employeeChecklistId, phaseId, request);
+		final var result = integration.updateAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request);
 
 		// Verify and assert
-		verify(employeeChecklistsRepositoryMock).findById(employeeChecklistId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
 		assertThat(result).isEqualTo(entity);
 	}
 
 	@Test
 	void updateAllTasksInPhaseForNonExistingEmployeeChecklist() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var employeeChecklistId = UUID.randomUUID().toString();
 		final var phaseId = UUID.randomUUID().toString();
 		final var request = EmployeeChecklistPhaseUpdateRequest.builder().build();
 
 		// Act
-		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateAllTasksInPhase(employeeChecklistId, phaseId, request));
+		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request));
 
 		// Verify and assert
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
-		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s was not found.".formatted(employeeChecklistId));
+		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s was not found within municipality %s.".formatted(employeeChecklistId, municipalityId));
 
-		verify(employeeChecklistsRepositoryMock).findById(employeeChecklistId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
 	}
 
 	@Test
 	void fetchEmployeeChecklist() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var employeeChecklistId = UUID.randomUUID().toString();
 		final var entity = EmployeeChecklistEntity.builder().build();
 
-		when(employeeChecklistsRepositoryMock.findById(employeeChecklistId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		// Act
-		final var result = integration.fetchEmployeeChecklist(employeeChecklistId);
+		final var result = integration.fetchEmployeeChecklist(municipalityId, employeeChecklistId);
 
 		// Verify and assert
-		verify(employeeChecklistsRepositoryMock).findById(employeeChecklistId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
 		assertThat(result).isEqualTo(entity);
 	}
 
 	@Test
 	void fetchNonExistingEmployeeChecklist() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var employeeChecklistId = UUID.randomUUID().toString();
 
 		// Act
-		final var e = assertThrows(ThrowableProblem.class, () -> integration.fetchEmployeeChecklist(employeeChecklistId));
+		final var e = assertThrows(ThrowableProblem.class, () -> integration.fetchEmployeeChecklist(municipalityId, employeeChecklistId));
 
 		// Verify and assert
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
-		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s was not found.".formatted(employeeChecklistId));
+		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s was not found within municipality %s.".formatted(employeeChecklistId, municipalityId));
 
-		verify(employeeChecklistsRepositoryMock).findById(employeeChecklistId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
 	}
 
 	@Test
 	void updateCommonTaskFulfilmentWhenNoPresentFulfilmentsExists() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var employeeChecklistId = UUID.randomUUID().toString();
 		final var taskId = UUID.randomUUID().toString();
 		final var fulfilmentStatus = FulfilmentStatus.TRUE;
@@ -440,22 +426,23 @@ class EmployeeChecklistIntegrationTest {
 				.build())
 			.build();
 
-		when(employeeChecklistsRepositoryMock.findById(employeeChecklistId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		// Act
-		final var result = integration.updateCommonTaskFulfilment(employeeChecklistId, taskId, request);
+		final var result = integration.updateCommonTaskFulfilment(municipalityId, employeeChecklistId, taskId, request);
 
 		// Verify and assert
 		assertThat(result.getCompleted()).isEqualTo(fulfilmentStatus);
 		assertThat(result.getResponseText()).isEqualTo(responseText);
 
-		verify(employeeChecklistsRepositoryMock).findById(employeeChecklistId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
 		verify(employeeChecklistsRepositoryMock).save(entity);
 	}
 
 	@Test
 	void updateCommonTaskFulfilmentWhenPresentFulfilmentsExists() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var employeeChecklistId = UUID.randomUUID().toString();
 		final var taskId = UUID.randomUUID().toString();
 		final var fulfilmentStatus = FulfilmentStatus.TRUE;
@@ -480,23 +467,24 @@ class EmployeeChecklistIntegrationTest {
 			.withTask(entity.getChecklist().getPhases().getFirst().getTasks().getFirst())
 			.build()));
 
-		when(employeeChecklistsRepositoryMock.findById(employeeChecklistId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		// Act
-		final var result = integration.updateCommonTaskFulfilment(employeeChecklistId, taskId, request);
+		final var result = integration.updateCommonTaskFulfilment(municipalityId, employeeChecklistId, taskId, request);
 
 		// Verify and assert
 		assertThat(result).isEqualTo(entity.getFulfilments().getFirst());
 		assertThat(result.getCompleted()).isEqualTo(fulfilmentStatus);
 		assertThat(result.getResponseText()).isEqualTo(responseText);
 
-		verify(employeeChecklistsRepositoryMock).findById(employeeChecklistId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
 		verify(employeeChecklistsRepositoryMock).save(entity);
 	}
 
 	@Test
 	void updateCommonTaskFulfilmentForNonExistingTask() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var employeeChecklistId = UUID.randomUUID().toString();
 		final var taskId = UUID.randomUUID().toString();
 		final var fulfilmentStatus = FulfilmentStatus.TRUE;
@@ -517,38 +505,40 @@ class EmployeeChecklistIntegrationTest {
 				.build())
 			.build();
 
-		when(employeeChecklistsRepositoryMock.findById(employeeChecklistId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		// Act
-		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateCommonTaskFulfilment(employeeChecklistId, taskId, request));
+		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateCommonTaskFulfilment(municipalityId, employeeChecklistId, taskId, request));
 
 		// Verify and assert
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: No fulfilment information found for task with id %s in employee checklist with id %s.".formatted(taskId, employeeChecklistId));
 
-		verify(employeeChecklistsRepositoryMock).findById(employeeChecklistId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
 	}
 
 	@Test
 	void updateCommonTaskFulfilmentOnNonExistingEmployeeChecklist() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var employeeChecklistId = UUID.randomUUID().toString();
 		final var taskId = UUID.randomUUID().toString();
 		final var request = EmployeeChecklistTaskUpdateRequest.builder().build();
 
 		// Act
-		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateCommonTaskFulfilment(employeeChecklistId, taskId, request));
+		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateCommonTaskFulfilment(municipalityId, employeeChecklistId, taskId, request));
 
 		// Verify and assert
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
-		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s was not found.".formatted(employeeChecklistId));
+		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s was not found within municipality %s.".formatted(employeeChecklistId, municipalityId));
 
-		verify(employeeChecklistsRepositoryMock).findById(employeeChecklistId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
 	}
 
 	@Test
 	void updateCustomTaskFulfilmentWhenNoPresentFulfilmentsExists() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var employeeChecklistId = UUID.randomUUID().toString();
 		final var taskId = UUID.randomUUID().toString();
 		final var fulfilmentStatus = FulfilmentStatus.TRUE;
@@ -565,23 +555,24 @@ class EmployeeChecklistIntegrationTest {
 				.build()))
 			.build();
 
-		when(employeeChecklistsRepositoryMock.findById(employeeChecklistId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		// Act
-		final var result = integration.updateCustomTaskFulfilment(employeeChecklistId, taskId, request);
+		final var result = integration.updateCustomTaskFulfilment(municipalityId, employeeChecklistId, taskId, request);
 
 		// Verify and assert
 		assertThat(result).isEqualTo(entity.getCustomFulfilments().getFirst());
 		assertThat(result.getCompleted()).isEqualTo(fulfilmentStatus);
 		assertThat(result.getResponseText()).isEqualTo(responseText);
 
-		verify(employeeChecklistsRepositoryMock).findById(employeeChecklistId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
 		verify(employeeChecklistsRepositoryMock).save(entity);
 	}
 
 	@Test
 	void updateCustomTaskFulfilmentWhenPresentFulfilmentsExists() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var employeeChecklistId = UUID.randomUUID().toString();
 		final var taskId = UUID.randomUUID().toString();
 		final var fulfilmentStatus = FulfilmentStatus.TRUE;
@@ -602,23 +593,24 @@ class EmployeeChecklistIntegrationTest {
 			.withCustomTask(entity.getCustomTasks().getFirst())
 			.build()));
 
-		when(employeeChecklistsRepositoryMock.findById(employeeChecklistId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		// Act
-		final var result = integration.updateCustomTaskFulfilment(employeeChecklistId, taskId, request);
+		final var result = integration.updateCustomTaskFulfilment(municipalityId, employeeChecklistId, taskId, request);
 
 		// Verify and assert
 		assertThat(result).isEqualTo(entity.getCustomFulfilments().getFirst());
 		assertThat(result.getCompleted()).isEqualTo(fulfilmentStatus);
 		assertThat(result.getResponseText()).isEqualTo(responseText);
 
-		verify(employeeChecklistsRepositoryMock).findById(employeeChecklistId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
 		verify(employeeChecklistsRepositoryMock).save(entity);
 	}
 
 	@Test
 	void updateCustomTaskFulfilmentForNonExistingTask() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var employeeChecklistId = UUID.randomUUID().toString();
 		final var taskId = UUID.randomUUID().toString();
 		final var fulfilmentStatus = FulfilmentStatus.TRUE;
@@ -635,48 +627,50 @@ class EmployeeChecklistIntegrationTest {
 				.build()))
 			.build();
 
-		when(employeeChecklistsRepositoryMock.findById(employeeChecklistId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		// Act
-		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateCustomTaskFulfilment(employeeChecklistId, taskId, request));
+		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateCustomTaskFulfilment(municipalityId, employeeChecklistId, taskId, request));
 
 		// Verify and assert
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: No fulfilment information found for task with id %s in employee checklist with id %s.".formatted(taskId, employeeChecklistId));
 
-		verify(employeeChecklistsRepositoryMock).findById(employeeChecklistId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
 	}
 
 	@Test
 	void updateCustomTaskFulfilmentOnNonExistingEmployeeChecklist() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var employeeChecklistId = UUID.randomUUID().toString();
 		final var taskId = UUID.randomUUID().toString();
 		final var request = EmployeeChecklistTaskUpdateRequest.builder().build();
 
 		// Act
-		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateCustomTaskFulfilment(employeeChecklistId, taskId, request));
+		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateCustomTaskFulfilment(municipalityId, employeeChecklistId, taskId, request));
 
 		// Verify and assert
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
-		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s was not found.".formatted(employeeChecklistId));
+		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s was not found within municipality %s.".formatted(employeeChecklistId, municipalityId));
 
-		verify(employeeChecklistsRepositoryMock).findById(employeeChecklistId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
 	}
 
 	@Test
 	void deleteEmployeeChecklist() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var employeeChecklistId = UUID.randomUUID().toString();
 		final var entity = EmployeeChecklistEntity.builder().build();
 
-		when(employeeChecklistsRepositoryMock.findById(employeeChecklistId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		// Act
-		integration.deleteEmployeeChecklist(employeeChecklistId);
+		integration.deleteEmployeeChecklist(municipalityId, employeeChecklistId);
 
 		// Verify and assert
-		verify(employeeChecklistsRepositoryMock).findById(employeeChecklistId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
 		verify(delegateRepositoryMock).deleteByEmployeeChecklist(entity);
 		verify(employeeChecklistsRepositoryMock).deleteById(employeeChecklistId);
 	}
@@ -684,21 +678,23 @@ class EmployeeChecklistIntegrationTest {
 	@Test
 	void deleteNonExistingEmployeeChecklist() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var employeeChecklistId = UUID.randomUUID().toString();
 
 		// Act
-		final var e = assertThrows(ThrowableProblem.class, () -> integration.deleteEmployeeChecklist(employeeChecklistId));
+		final var e = assertThrows(ThrowableProblem.class, () -> integration.deleteEmployeeChecklist(municipalityId, employeeChecklistId));
 
 		// Verify and assert
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
-		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s was not found.".formatted(employeeChecklistId));
+		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s was not found within municipality %s.".formatted(employeeChecklistId, municipalityId));
 
-		verify(employeeChecklistsRepositoryMock).findById(employeeChecklistId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
 	}
 
 	@Test
 	void createCustomTask() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var employeeChecklistId = UUID.randomUUID().toString();
 		final var phaseId = UUID.randomUUID().toString();
 		final var request = CustomTaskCreateRequest.builder().withSortOrder(1).build();
@@ -710,15 +706,15 @@ class EmployeeChecklistIntegrationTest {
 				.build())
 			.build();
 
-		when(employeeChecklistsRepositoryMock.findById(employeeChecklistId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		// Act
-		final var result = integration.createCustomTask(employeeChecklistId, phaseId, request);
+		final var result = integration.createCustomTask(municipalityId, employeeChecklistId, phaseId, request);
 
 		// Verify and assert
 		assertThat(result).isNotNull().isInstanceOf(CustomTaskEntity.class);
 
-		verify(employeeChecklistsRepositoryMock).findById(employeeChecklistId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
 		verify(employeeChecklistsRepositoryMock).save(entity);
 		verify(customTaskRepositoryMock).save(result);
 	}
@@ -726,22 +722,24 @@ class EmployeeChecklistIntegrationTest {
 	@Test
 	void createCustomTaskForNonExistingEmployeeChecklist() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var employeeChecklistId = UUID.randomUUID().toString();
 		final var phaseId = UUID.randomUUID().toString();
 		final var request = CustomTaskCreateRequest.builder().withSortOrder(1).build();
 
-		final var e = assertThrows(ThrowableProblem.class, () -> integration.createCustomTask(employeeChecklistId, phaseId, request));
+		final var e = assertThrows(ThrowableProblem.class, () -> integration.createCustomTask(municipalityId, employeeChecklistId, phaseId, request));
 
 		// Verify and assert
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
-		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s was not found.".formatted(employeeChecklistId));
+		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s was not found within municipality %s.".formatted(employeeChecklistId, municipalityId));
 
-		verify(employeeChecklistsRepositoryMock).findById(employeeChecklistId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
 	}
 
 	@Test
 	void createCustomTaskForNonExistingEmployeeChecklistPhase() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var employeeChecklistId = UUID.randomUUID().toString();
 		final var phaseId = UUID.randomUUID().toString();
 		final var request = CustomTaskCreateRequest.builder().withSortOrder(1).build();
@@ -753,23 +751,22 @@ class EmployeeChecklistIntegrationTest {
 				.build())
 			.build();
 
-		when(employeeChecklistsRepositoryMock.findById(employeeChecklistId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
-		when(employeeChecklistsRepositoryMock.findById(employeeChecklistId)).thenReturn(Optional.of(entity));
-
-		final var e = assertThrows(ThrowableProblem.class, () -> integration.createCustomTask(employeeChecklistId, phaseId, request));
+		final var e = assertThrows(ThrowableProblem.class, () -> integration.createCustomTask(municipalityId, employeeChecklistId, phaseId, request));
 
 		// Verify and assert
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Phase with id %s was not found in employee checklist with id %s.".formatted(phaseId, employeeChecklistId));
 
-		verify(employeeChecklistsRepositoryMock).findById(employeeChecklistId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
 
 	}
 
 	@Test
 	void initiateEmployeeWithExistingEmployeeChecklist() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var username = "username";
 		final var uuid = UUID.randomUUID();
 		final var employee = new Employee()
@@ -779,7 +776,7 @@ class EmployeeChecklistIntegrationTest {
 		when(employeeRepositoryMock.existsById(uuid.toString())).thenReturn(true);
 
 		// Act
-		final var result = integration.initiateEmployee(employee, null);
+		final var result = integration.initiateEmployee(municipalityId, employee, null);
 
 		// Verify and assert
 		verify(employeeRepositoryMock).existsById(uuid.toString());
@@ -789,6 +786,7 @@ class EmployeeChecklistIntegrationTest {
 	@Test
 	void initiateEmployeeWithNoMainEmployment() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var username = "username";
 		final var uuid = UUID.randomUUID();
 		final var employee = new Employee()
@@ -800,7 +798,7 @@ class EmployeeChecklistIntegrationTest {
 					.formOfEmploymentId("1"));
 
 		// Act
-		final var e = assertThrows(ThrowableProblem.class, () -> integration.initiateEmployee(employee, null));
+		final var e = assertThrows(ThrowableProblem.class, () -> integration.initiateEmployee(municipalityId, employee, null));
 
 		// Verify and assert
 		verify(employeeRepositoryMock).existsById(uuid.toString());
@@ -811,6 +809,7 @@ class EmployeeChecklistIntegrationTest {
 	@Test
 	void initiateEmployeeNotValidForChecklist() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var username = "username";
 		final var uuid = UUID.randomUUID();
 		final var employee = new Employee()
@@ -822,7 +821,7 @@ class EmployeeChecklistIntegrationTest {
 					.formOfEmploymentId("999"));
 
 		// Act
-		final var e = assertThrows(ThrowableProblem.class, () -> integration.initiateEmployee(employee, null));
+		final var e = assertThrows(ThrowableProblem.class, () -> integration.initiateEmployee(municipalityId, employee, null));
 
 		// Verify and assert
 		verify(employeeRepositoryMock).existsById(uuid.toString());
@@ -833,6 +832,7 @@ class EmployeeChecklistIntegrationTest {
 	@Test
 	void initiateEmployeeWhenOrganizationIsNotPresentInDatabase() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var username = "username";
 		final var employeeUuid = UUID.randomUUID();
 		final var companyId = 2;
@@ -856,15 +856,15 @@ class EmployeeChecklistIntegrationTest {
 		when(employeeRepositoryMock.save(any())).thenReturn(OrganizationMapper.toEmployeeEntity(employee));
 
 		// Act
-		final var e = assertThrows(ThrowableProblem.class, () -> integration.initiateEmployee(employee, orgTree));
+		final var e = assertThrows(ThrowableProblem.class, () -> integration.initiateEmployee(municipalityId, employee, orgTree));
 
 		// Verify and assert
 		verify(employeeRepositoryMock).existsById(employeeUuid.toString());
 		verify(managerRepositoryMock).findById(managerUuid.toString());
-		verify(organizationRepositoryMock, times(2)).findOneByOrganizationNumber(2);
-		verify(organizationRepositoryMock).findOneByOrganizationNumber(21);
-		verify(organizationRepositoryMock).findOneByOrganizationNumber(212);
-		verify(organizationRepositoryMock, times(2)).findOneByOrganizationNumber(2124);
+		verify(organizationRepositoryMock, times(2)).findByOrganizationNumberAndMunicipalityId(2, municipalityId);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(21, municipalityId);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(212, municipalityId);
+		verify(organizationRepositoryMock, times(2)).findByOrganizationNumberAndMunicipalityId(2124, municipalityId);
 
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: No EMPLOYEE checklist was found for any id in the organization tree for employee username. Search has been performed for id 2, 21, 212 and 2124.");
@@ -873,6 +873,7 @@ class EmployeeChecklistIntegrationTest {
 	@Test
 	void initiateEmployeeWhenOrganizationChecklistIsNotPresentInDatabase() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var username = "username";
 		final var employeeUuid = UUID.randomUUID();
 		final var companyId = 2;
@@ -900,18 +901,18 @@ class EmployeeChecklistIntegrationTest {
 			.build();
 
 		when(employeeRepositoryMock.save(any())).thenReturn(OrganizationMapper.toEmployeeEntity(employee));
-		when(organizationRepositoryMock.findOneByOrganizationNumber(companyId)).thenReturn(organization);
+		when(organizationRepositoryMock.findByOrganizationNumberAndMunicipalityId(companyId, municipalityId)).thenReturn(Optional.of(organization));
 
 		// Act
-		final var e = assertThrows(ThrowableProblem.class, () -> integration.initiateEmployee(employee, orgTree));
+		final var e = assertThrows(ThrowableProblem.class, () -> integration.initiateEmployee(municipalityId, employee, orgTree));
 
 		// Verify and assert
 		verify(employeeRepositoryMock).existsById(employeeUuid.toString());
 		verify(managerRepositoryMock).findById(managerUuid.toString());
-		verify(organizationRepositoryMock, times(2)).findOneByOrganizationNumber(2);
-		verify(organizationRepositoryMock).findOneByOrganizationNumber(21);
-		verify(organizationRepositoryMock).findOneByOrganizationNumber(212);
-		verify(organizationRepositoryMock, times(2)).findOneByOrganizationNumber(2124);
+		verify(organizationRepositoryMock, times(2)).findByOrganizationNumberAndMunicipalityId(2, municipalityId);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(21, municipalityId);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(212, municipalityId);
+		verify(organizationRepositoryMock, times(2)).findByOrganizationNumberAndMunicipalityId(2124, municipalityId);
 
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: No MANAGER checklist was found for any id in the organization tree for employee username. Search has been performed for id 2, 21, 212 and 2124.");
@@ -920,6 +921,7 @@ class EmployeeChecklistIntegrationTest {
 	@Test
 	void initiateEmployeeWhenOrganizationActiveChecklistIsNotPresentInDatabase() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var username = "username";
 		final var employeeUuid = UUID.randomUUID();
 		final var companyId = 2;
@@ -951,18 +953,18 @@ class EmployeeChecklistIntegrationTest {
 			.build();
 
 		when(employeeRepositoryMock.save(any())).thenReturn(OrganizationMapper.toEmployeeEntity(employee));
-		when(organizationRepositoryMock.findOneByOrganizationNumber(companyId)).thenReturn(organization);
+		when(organizationRepositoryMock.findByOrganizationNumberAndMunicipalityId(companyId, municipalityId)).thenReturn(Optional.of(organization));
 
 		// Act
-		final var e = assertThrows(ThrowableProblem.class, () -> integration.initiateEmployee(employee, orgTree));
+		final var e = assertThrows(ThrowableProblem.class, () -> integration.initiateEmployee(municipalityId, employee, orgTree));
 
 		// Verify and assert
 		verify(employeeRepositoryMock).existsById(employeeUuid.toString());
 		verify(managerRepositoryMock).findById(managerUuid.toString());
-		verify(organizationRepositoryMock, times(2)).findOneByOrganizationNumber(2);
-		verify(organizationRepositoryMock).findOneByOrganizationNumber(21);
-		verify(organizationRepositoryMock).findOneByOrganizationNumber(212);
-		verify(organizationRepositoryMock, times(2)).findOneByOrganizationNumber(2124);
+		verify(organizationRepositoryMock, times(2)).findByOrganizationNumberAndMunicipalityId(2, municipalityId);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(21, municipalityId);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(212, municipalityId);
+		verify(organizationRepositoryMock, times(2)).findByOrganizationNumberAndMunicipalityId(2124, municipalityId);
 
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: No EMPLOYEE checklist was found for any id in the organization tree for employee username. Search has been performed for id 2, 21, 212 and 2124.");
@@ -972,6 +974,7 @@ class EmployeeChecklistIntegrationTest {
 	@DisplayName("Initiation of employee belonging to a new department and a new manager, which will add department and manager entities in the database")
 	void initiateEmployeeWithNewStructure() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var username = "username";
 		final var employeeUuid = UUID.randomUUID();
 		final var companyId = 2;
@@ -1006,19 +1009,19 @@ class EmployeeChecklistIntegrationTest {
 		final var employeeEntity = OrganizationMapper.toEmployeeEntity(employee);
 
 		when(employeeRepositoryMock.save(any())).thenReturn(employeeEntity);
-		when(organizationRepositoryMock.findOneByOrganizationNumber(companyId)).thenReturn(companyEntity);
+		when(organizationRepositoryMock.findByOrganizationNumberAndMunicipalityId(companyId, municipalityId)).thenReturn(Optional.of(companyEntity));
 
 		// Act
-		final var result = integration.initiateEmployee(employee, orgTree);
+		final var result = integration.initiateEmployee(municipalityId, employee, orgTree);
 
 		// Verify and assert
 		verify(employeeRepositoryMock).existsById(employeeUuid.toString());
 		verify(managerRepositoryMock).findById(managerUuid.toString());
 		verify(employeeRepositoryMock).save(employeeEntityCaptor.capture());
-		verify(organizationRepositoryMock, times(2)).findOneByOrganizationNumber(orgId);
-		verify(organizationRepositoryMock, times(2)).findOneByOrganizationNumber(companyId);
-		verify(organizationRepositoryMock).findOneByOrganizationNumber(212);
-		verify(organizationRepositoryMock).findOneByOrganizationNumber(21);
+		verify(organizationRepositoryMock, times(2)).findByOrganizationNumberAndMunicipalityId(orgId, municipalityId);
+		verify(organizationRepositoryMock, times(2)).findByOrganizationNumberAndMunicipalityId(companyId, municipalityId);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(212, municipalityId);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(21, municipalityId);
 		verify(employeeChecklistsRepositoryMock).save(employeeChecklistEntityCaptor.capture());
 
 		assertThat(employeeEntityCaptor.getValue().getDepartment()).isNotNull();
@@ -1038,6 +1041,7 @@ class EmployeeChecklistIntegrationTest {
 	@DisplayName("Initiation of employee belonging to an existing department and manager, which will not add department and manager entities in the database and will use company checklist")
 	void initiateEmployeeWithExistingStructure() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var username = "username";
 		final var employeeUuid = UUID.randomUUID();
 		final var companyId = 2;
@@ -1088,21 +1092,21 @@ class EmployeeChecklistIntegrationTest {
 		final var employeeEntity = OrganizationMapper.toEmployeeEntity(employee);
 
 		when(employeeRepositoryMock.save(any())).thenReturn(employeeEntity);
-		when(organizationRepositoryMock.findOneByOrganizationNumber(companyId)).thenReturn(companyEntity);
-		when(organizationRepositoryMock.findOneByOrganizationNumber(orgId)).thenReturn(departmentEntity);
+		when(organizationRepositoryMock.findByOrganizationNumberAndMunicipalityId(companyId, municipalityId)).thenReturn(Optional.of(companyEntity));
+		when(organizationRepositoryMock.findByOrganizationNumberAndMunicipalityId(orgId, municipalityId)).thenReturn(Optional.of(departmentEntity));
 		when(managerRepositoryMock.findById(managerUuid.toString())).thenReturn(Optional.of(managerEntity));
 
 		// Act
-		final var result = integration.initiateEmployee(employee, orgTree);
+		final var result = integration.initiateEmployee(municipalityId, employee, orgTree);
 
 		// Verify and assert
 		verify(employeeRepositoryMock).existsById(employeeUuid.toString());
 		verify(managerRepositoryMock).findById(managerUuid.toString());
 		verify(employeeRepositoryMock).save(employeeEntityCaptor.capture());
-		verify(organizationRepositoryMock, times(2)).findOneByOrganizationNumber(orgId);
-		verify(organizationRepositoryMock).findOneByOrganizationNumber(21);
-		verify(organizationRepositoryMock).findOneByOrganizationNumber(212);
-		verify(organizationRepositoryMock, times(2)).findOneByOrganizationNumber(companyId);
+		verify(organizationRepositoryMock, times(2)).findByOrganizationNumberAndMunicipalityId(orgId, municipalityId);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(21, municipalityId);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(212, municipalityId);
+		verify(organizationRepositoryMock, times(2)).findByOrganizationNumberAndMunicipalityId(companyId, municipalityId);
 		verify(employeeChecklistsRepositoryMock).save(employeeChecklistEntityCaptor.capture());
 
 		assertThat(employeeEntityCaptor.getValue().getDepartment()).isEqualTo(departmentEntity);

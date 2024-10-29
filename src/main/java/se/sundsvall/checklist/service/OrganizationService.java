@@ -20,9 +20,9 @@ import se.sundsvall.checklist.service.mapper.OrganizationMapper;
 @Service
 public class OrganizationService {
 
-	private static final String ORGANIZATION_NUMBER_ALREADY_EXISTS = "Organization with organization number %s already exists";
+	private static final String ORGANIZATION_NUMBER_ALREADY_EXISTS = "Organization with organization number %s already exists in municipality %s";
 	private static final String ORGANIZATION_HAS_CHECKLISTS = "Organization with id %s has non retired checklists and cannot be deleted";
-	private static final String ORGANIZATION_NOT_FOUND = "Organization with id %s does not exist";
+	private static final String ORGANIZATION_NOT_FOUND = "Organization with id %s does not exist within municipality %s";
 
 	private final OrganizationRepository organizationRepository;
 
@@ -30,44 +30,43 @@ public class OrganizationService {
 		this.organizationRepository = organizationRepository;
 	}
 
-	public String createOrganization(final OrganizationCreateRequest request) {
-		organizationRepository.findByOrganizationNumber(request.getOrganizationNumber())
+	public String createOrganization(final String municipalityId, final OrganizationCreateRequest request) {
+		organizationRepository.findByOrganizationNumberAndMunicipalityId(request.getOrganizationNumber(), municipalityId)
 			.ifPresent(organizationEntity -> {
-				throw Problem.valueOf(CONFLICT, ORGANIZATION_NUMBER_ALREADY_EXISTS.formatted(request.getOrganizationNumber()));
+				throw Problem.valueOf(CONFLICT, ORGANIZATION_NUMBER_ALREADY_EXISTS.formatted(request.getOrganizationNumber(), municipalityId));
 			});
 
-		var entity = organizationRepository.save(toOrganizationEntity(request));
+		final var entity = organizationRepository.save(toOrganizationEntity(request, municipalityId));
 		return entity.getId();
 	}
 
-	public List<Organization> fetchAllOrganizations() {
-		return organizationRepository.findAll().stream()
+	public List<Organization> fetchAllOrganizations(final String municipalityId) {
+		return organizationRepository.findAllByMunicipalityId(municipalityId).stream()
 			.map(OrganizationMapper::toOrganization)
 			.toList();
 	}
 
-	public Organization fetchOrganizationById(final String organizationId) {
-		return organizationRepository.findById(organizationId)
+	public Organization fetchOrganization(final String municipalityId, final String organizationId) {
+		return organizationRepository.findByIdAndMunicipalityId(organizationId, municipalityId)
 			.map(OrganizationMapper::toOrganization)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ORGANIZATION_NOT_FOUND.formatted(organizationId)));
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ORGANIZATION_NOT_FOUND.formatted(organizationId, municipalityId)));
 	}
 
-	public Organization updateOrganization(final String organizationId, final OrganizationUpdateRequest request) {
-		return organizationRepository.findById(organizationId)
+	public Organization updateOrganization(final String municipalityId, final String organizationId, final OrganizationUpdateRequest request) {
+		return organizationRepository.findByIdAndMunicipalityId(organizationId, municipalityId)
 			.map(entity -> updateOrganizationEntity(entity, request))
 			.map(organizationRepository::save)
 			.map(OrganizationMapper::toOrganization)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ORGANIZATION_NOT_FOUND.formatted(organizationId)));
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ORGANIZATION_NOT_FOUND.formatted(organizationId, municipalityId)));
 	}
 
-	public void deleteOrganization(final String organizationId) {
-		var entity = organizationRepository.findById(organizationId)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ORGANIZATION_NOT_FOUND.formatted(organizationId)));
+	public void deleteOrganization(final String municipalityId, final String organizationId) {
+		final var entity = organizationRepository.findByIdAndMunicipalityId(organizationId, municipalityId)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ORGANIZATION_NOT_FOUND.formatted(organizationId, municipalityId)));
 
 		if (entity.getChecklists().stream().anyMatch(checklist -> checklist.getLifeCycle() != LifeCycle.RETIRED)) {
 			throw Problem.valueOf(CONFLICT, ORGANIZATION_HAS_CHECKLISTS.formatted(organizationId));
 		}
 		organizationRepository.delete(entity);
 	}
-
 }

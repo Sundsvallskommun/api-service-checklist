@@ -1,6 +1,5 @@
 package se.sundsvall.checklist.integration.db;
 
-import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 import static org.zalando.problem.Status.NOT_ACCEPTABLE;
@@ -25,7 +24,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
@@ -35,10 +33,8 @@ import generated.se.sundsvall.employee.Employee;
 import generated.se.sundsvall.employee.Employment;
 import generated.se.sundsvall.employee.Manager;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
-import se.sundsvall.checklist.api.model.EmployeeChecklistPaginatedResponse;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
-import se.sundsvall.checklist.api.specification.EmployeeCheclistFilterSpecification;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
@@ -60,8 +56,6 @@ import se.sundsvall.checklist.integration.db.repository.ManagerRepository;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
 import se.sundsvall.checklist.service.OrganizationTree;
 import se.sundsvall.checklist.service.OrganizationTree.OrganizationLine;
-import se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper;
-import se.sundsvall.dept44.models.api.paging.PagingAndSortingMetaData;
 
 @Component
 public class EmployeeChecklistIntegration {
@@ -69,7 +63,7 @@ public class EmployeeChecklistIntegration {
 	private static final String EMPLOYEE_SUCCESSFULLY_PROCESSED = "Employee with loginname %s processed successfully.";
 	private static final String EMPLOYMENT_TYPE_NOT_VALID_FOR_CHECKLIST = "Employee with loginname %s does not have an employment type that validates for creating an employee checklist.";
 	private static final String NO_MATCHING_CHECKLIST_FOUND = "No %s checklist was found for any id in the organization tree for employee %s. Search has been performed for id %s.";
-	private static final String NO_MATCHING_EMPLOYEE_CHECKLIST_FOUND = "Employee checklist with id %s was not found.";
+	private static final String NO_MATCHING_EMPLOYEE_CHECKLIST_FOUND = "Employee checklist with id %s was not found within municipality %s.";
 	private static final String NO_MATCHING_EMPLOYEE_CHECKLIST_PHASE_FOUND = "Phase with id %s was not found in employee checklist with id %s.";
 	private static final String NO_FULFILMENT_INFORMATION_FOUND = "No fulfilment information found for task with id %s in employee checklist with id %s.";
 	private static final List<String> VALID_EMPLOYMENT_FORMS_FOR_CHECKLIST = List.of("1", "2", "9"); // Permanent employment ("1"), temporary monthly paid employment ("2") and probationary employment ("9")
@@ -97,22 +91,12 @@ public class EmployeeChecklistIntegration {
 		this.customTaskRepository = customTaskRepository;
 	}
 
-	public EmployeeChecklistPaginatedResponse fetchPaginatedEmployeeChecklistsByString(final EmployeeCheclistFilterSpecification specification, final Pageable pageable) {
-		final var matches = employeeChecklistRepository.findAll(specification, pageable);
-		final var employeeChecklists = matches.getContent();
-
-		return EmployeeChecklistPaginatedResponse.builder()
-			.withPagingAndSortingMetaData(PagingAndSortingMetaData.create().withPageData(matches))
-			.withEmployeeChecklists(employeeChecklists.stream().map(EmployeeChecklistMapper::toEmployeeChecklistDTO).toList())
-			.build();
+	public Optional<EmployeeChecklistEntity> fetchOptionalEmployeeChecklist(String municipalityId, String username) {
+		return ofNullable(employeeChecklistRepository.findByChecklistMunicipalityIdAndEmployeeUsername(municipalityId, username));
 	}
 
-	public Optional<EmployeeChecklistEntity> fetchOptionalEmployeeChecklist(String username) {
-		return ofNullable(employeeChecklistRepository.findByEmployeeUsername(username));
-	}
-
-	public List<EmployeeChecklistEntity> fetchEmployeeChecklistsForManager(String username) {
-		return employeeChecklistRepository.findAllByEmployeeManagerUsername(username);
+	public List<EmployeeChecklistEntity> fetchEmployeeChecklistsForManager(String municipalityId, String username) {
+		return employeeChecklistRepository.findAllByChecklistMunicipalityIdAndEmployeeManagerUsername(municipalityId, username);
 	}
 
 	@Transactional
@@ -132,9 +116,9 @@ public class EmployeeChecklistIntegration {
 	}
 
 	@Transactional
-	public EmployeeChecklistEntity updateAllTasksInPhase(String employeeChecklistId, String phaseId, EmployeeChecklistPhaseUpdateRequest request) {
-		final var employeeChecklist = employeeChecklistRepository.findById(employeeChecklistId)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NO_MATCHING_EMPLOYEE_CHECKLIST_FOUND.formatted(employeeChecklistId)));
+	public EmployeeChecklistEntity updateAllTasksInPhase(String municipalityId, String employeeChecklistId, String phaseId, EmployeeChecklistPhaseUpdateRequest request) {
+		final var employeeChecklist = employeeChecklistRepository.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NO_MATCHING_EMPLOYEE_CHECKLIST_FOUND.formatted(employeeChecklistId, municipalityId)));
 
 		verifyUnlockedEmployeeChecklist(employeeChecklist);
 
@@ -175,14 +159,14 @@ public class EmployeeChecklistIntegration {
 				() -> employeeChecklist.getCustomFulfilments().add(toCustomFulfilmentEntity(employeeChecklist, customTask, fulfilmentStatus)));
 	}
 
-	public EmployeeChecklistEntity fetchEmployeeChecklist(String employeeChecklistId) {
-		return employeeChecklistRepository.findById(employeeChecklistId)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NO_MATCHING_EMPLOYEE_CHECKLIST_FOUND.formatted(employeeChecklistId)));
+	public EmployeeChecklistEntity fetchEmployeeChecklist(String municipalityId, String employeeChecklistId) {
+		return employeeChecklistRepository.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NO_MATCHING_EMPLOYEE_CHECKLIST_FOUND.formatted(employeeChecklistId, municipalityId)));
 	}
 
 	@Transactional
-	public FulfilmentEntity updateCommonTaskFulfilment(String employeeChecklistId, String taskId, EmployeeChecklistTaskUpdateRequest request) {
-		final var employeeChecklist = fetchEmployeeChecklist(employeeChecklistId);
+	public FulfilmentEntity updateCommonTaskFulfilment(String municipalityId, String employeeChecklistId, String taskId, EmployeeChecklistTaskUpdateRequest request) {
+		final var employeeChecklist = fetchEmployeeChecklist(municipalityId, employeeChecklistId);
 
 		employeeChecklist.getChecklist().getPhases().stream()
 			.map(PhaseEntity::getTasks)
@@ -212,8 +196,8 @@ public class EmployeeChecklistIntegration {
 	}
 
 	@Transactional
-	public CustomFulfilmentEntity updateCustomTaskFulfilment(String employeeChecklistId, String taskId, EmployeeChecklistTaskUpdateRequest request) {
-		final var employeeChecklist = fetchEmployeeChecklist(employeeChecklistId);
+	public CustomFulfilmentEntity updateCustomTaskFulfilment(String municipalityId, String employeeChecklistId, String taskId, EmployeeChecklistTaskUpdateRequest request) {
+		final var employeeChecklist = fetchEmployeeChecklist(municipalityId, employeeChecklistId);
 
 		employeeChecklist.getCustomTasks().stream()
 			.filter(task -> Objects.equals(task.getId(), taskId))
@@ -241,16 +225,16 @@ public class EmployeeChecklistIntegration {
 	}
 
 	@Transactional
-	public void deleteEmployeeChecklist(String employeeChecklistId) {
-		final var employeeChecklist = fetchEmployeeChecklist(employeeChecklistId);
+	public void deleteEmployeeChecklist(String municipalityId, String employeeChecklistId) {
+		final var employeeChecklist = fetchEmployeeChecklist(municipalityId, employeeChecklistId);
 
 		delegateRepository.deleteByEmployeeChecklist(employeeChecklist);
 		employeeChecklistRepository.deleteById(employeeChecklistId);
 	}
 
 	@Transactional
-	public CustomTaskEntity createCustomTask(String employeeChecklistId, String phaseId, CustomTaskCreateRequest request) {
-		final var employeeChecklist = fetchEmployeeChecklist(employeeChecklistId);
+	public CustomTaskEntity createCustomTask(String municipalityId, String employeeChecklistId, String phaseId, CustomTaskCreateRequest request) {
+		final var employeeChecklist = fetchEmployeeChecklist(municipalityId, employeeChecklistId);
 
 		final var phaseEntity = employeeChecklist.getChecklist().getPhases().stream()
 			.filter(phase -> Objects.equals(phase.getId(), phaseId))
@@ -269,13 +253,14 @@ public class EmployeeChecklistIntegration {
 	/**
 	 * Method for creating an employee checklist based on nearest organizational checklist.
 	 *
-	 * @param employee the employee to onboard
-	 * @param orgTree  the organization tree for the employee
+	 * @param municipalityId the id of the municipality where the employee belongs
+	 * @param employee       the employee to onboard
+	 * @param orgTree        the organization tree for the employee
 	 * @return status of the process of creating the employee checklist
 	 * @throws ThrowableProblem if error occurs when processing employee
 	 */
 	@Transactional
-	public String initiateEmployee(Employee employee, OrganizationTree orgTree) {
+	public String initiateEmployee(String municipalityId, Employee employee, OrganizationTree orgTree) {
 		if (employeeRepository.existsById(employee.getPersonId().toString())) {
 			return EMPLOYEE_HAS_CHECKLIST.formatted(employee.getLoginname());
 		}
@@ -286,15 +271,15 @@ public class EmployeeChecklistIntegration {
 		final var employeeEntity = toEmployeeEntity(employee);
 
 		// Attach existing organizational units to the employee (or create new unit if not present in the persistant layer)
-		employeeEntity.setCompany(retrieveOrganizationEntity(employment.getCompanyId(), null));
-		employeeEntity.setDepartment(retrieveOrganizationEntity(employment.getOrgId(), employment.getOrgName()));
+		employeeEntity.setCompany(retrieveOrganizationEntity(municipalityId, employment.getCompanyId(), null));
+		employeeEntity.setDepartment(retrieveOrganizationEntity(municipalityId, employment.getOrgId(), employment.getOrgName()));
 
 		// Attach existing manager to the employee (or create new manager if not present in the persistant layer)
 		employeeEntity.setManager(retrieveManagerEntity(employment.getManager()));
 
 		// Persist employee and create checklist for him/her
 		final var persistedEmployee = employeeRepository.save(employeeEntity);
-		initiateEmployeeChecklist(persistedEmployee, orgTree);
+		initiateEmployeeChecklist(municipalityId, persistedEmployee, orgTree);
 
 		return EMPLOYEE_SUCCESSFULLY_PROCESSED.formatted(employee.getLoginname());
 	}
@@ -311,37 +296,36 @@ public class EmployeeChecklistIntegration {
 			.orElse(toManagerEntity(manager));
 	}
 
-	private OrganizationEntity retrieveOrganizationEntity(int organizationNumber, String organizationName) {
-		return ofNullable(organizationRepository.findOneByOrganizationNumber(organizationNumber))
-			.orElse(toOrganizationEntity(organizationNumber, organizationName));
+	private OrganizationEntity retrieveOrganizationEntity(String municipalityId, int organizationNumber, String organizationName) {
+		return organizationRepository.findByOrganizationNumberAndMunicipalityId(organizationNumber, municipalityId)
+			.orElse(toOrganizationEntity(organizationNumber, organizationName, municipalityId));
 	}
 
-	private void initiateEmployeeChecklist(EmployeeEntity employeeEntity, OrganizationTree orgTree) {
+	private void initiateEmployeeChecklist(String municipalityId, EmployeeEntity employeeEntity, OrganizationTree orgTree) {
 		final var employeeRole = employeeEntity.getRoleType();
 
-		final var checklistEntity = retrieveClosestAvailableChecklist(orgTree.getTree().descendingMap().values().iterator(), employeeRole)
+		final var checklistEntity = retrieveClosestAvailableChecklist(municipalityId, orgTree.getTree().descendingMap().values().iterator(), employeeRole)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NO_MATCHING_CHECKLIST_FOUND.formatted(employeeRole, employeeEntity.getUsername(),
 				toReadableString(orgTree.getTree().values().stream().map(OrganizationLine::getOrgId).toList()))));
 
 		employeeChecklistRepository.save(toEmployeeChecklistEntity(employeeEntity, checklistEntity));
 	}
 
-	private Optional<ChecklistEntity> retrieveClosestAvailableChecklist(Iterator<OrganizationLine> organizationIterator, RoleType roleType) {
+	private Optional<ChecklistEntity> retrieveClosestAvailableChecklist(String municipalityId, Iterator<OrganizationLine> organizationIterator, RoleType roleType) {
 		if (organizationIterator.hasNext()) {
-			return retrieveChecklist(Integer.parseInt(organizationIterator.next().getOrgId()), roleType)
-				.or(() -> retrieveClosestAvailableChecklist(organizationIterator, roleType));
+			return retrieveChecklist(municipalityId, Integer.parseInt(organizationIterator.next().getOrgId()), roleType)
+				.or(() -> retrieveClosestAvailableChecklist(municipalityId, organizationIterator, roleType));
 		}
 		return Optional.empty();
 	}
 
-	private Optional<ChecklistEntity> retrieveChecklist(int organizationNumber, RoleType roleType) {
-		final var organization = organizationRepository.findOneByOrganizationNumber(organizationNumber);
+	private Optional<ChecklistEntity> retrieveChecklist(String municipalityId, int organizationNumber, RoleType roleType) {
+		final var possibleMatch = organizationRepository.findByOrganizationNumberAndMunicipalityId(organizationNumber, municipalityId);
 
-		if (isNull(organization)) {
-			return Optional.empty();
-		}
-
-		return ofNullable(organization.getChecklists()).orElse(emptyList()).stream()
+		return possibleMatch
+			.map(OrganizationEntity::getChecklists)
+			.map(List::stream)
+			.orElse(Stream.empty())
 			.filter(checklist -> Objects.equals(checklist.getLifeCycle(), ACTIVE))
 			.filter(checklist -> Objects.equals(checklist.getRoleType(), roleType))
 			.findAny();

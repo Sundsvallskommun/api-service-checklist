@@ -60,7 +60,7 @@ class DelegationResource {
 		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId,
 		@Parameter(name = "email", description = "Email for person to delegate to", example = "delegate.person@noreply.com") @PathVariable @Email final String email) {
 
-		delegationService.delegateEmployeeChecklist(employeeChecklistId, email);
+		delegationService.delegateEmployeeChecklist(municipalityId, employeeChecklistId, email);
 		return status(CREATED).header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 
@@ -72,7 +72,7 @@ class DelegationResource {
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "username", description = "Username to fetch delegations for", example = "usr123") @PathVariable final String username) {
 
-		return ok(delegationService.fetchDelegatedEmployeeChecklistsByUsername(username));
+		return ok(delegationService.fetchDelegatedEmployeeChecklistsByUsername(municipalityId, username));
 	}
 
 	@Operation(summary = "Remove delegation of employee checklist", description = "Remove the delegation of an employee checklist matching sent in email and checklist id", responses = {
@@ -85,7 +85,7 @@ class DelegationResource {
 		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId,
 		@Parameter(name = "email", description = "Email for person to remove delegation from", example = "delegate.person@noreply.com") @PathVariable @Email final String email) {
 
-		delegationService.removeEmployeeChecklistDelegation(employeeChecklistId, email);
+		delegationService.removeEmployeeChecklistDelegation(municipalityId, employeeChecklistId, email);
 		return noContent().header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 

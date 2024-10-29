@@ -10,7 +10,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -180,31 +179,34 @@ class OrganizationMapperTest {
 	@Test
 	void toOrganizationEntityWithChecklist() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var organizationName = "organizationName";
 		final var organizationNumber = 12345;
 		final var checklistId = UUID.randomUUID().toString();
 
 		// Act
-		final var entity = OrganizationMapper.toOrganizationEntity(organizationNumber, organizationName);
+		final var entity = OrganizationMapper.toOrganizationEntity(organizationNumber, organizationName, municipalityId);
 		entity.getChecklists().add(ChecklistEntity.builder().withId(checklistId).build());
 
 		// Assert
-		assertThat(entity.getChecklists()).hasSize(1).allSatisfy(ch -> Objects.equals(checklistId, ch.getId()));
+		assertThat(entity.getChecklists()).hasSize(1).satisfiesExactly(ch -> assertThat(ch.getId()).isEqualTo(checklistId));
 		assertThat(entity.getCreated()).isNull();
 		assertThat(entity.getId()).isNull();
 		assertThat(entity.getOrganizationName()).isEqualTo(organizationName);
 		assertThat(entity.getOrganizationNumber()).isEqualTo(organizationNumber);
+		assertThat(entity.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(entity.getUpdated()).isNull();
 	}
 
 	@Test
 	void toOrganizationEntityWithoutChecklist() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var organizationName = "organizationName";
 		final var organizationNumber = 12345;
 
 		// Act
-		final var entity = OrganizationMapper.toOrganizationEntity(organizationNumber, organizationName);
+		final var entity = OrganizationMapper.toOrganizationEntity(organizationNumber, organizationName, municipalityId);
 
 		// Assert
 		assertThat(entity.getChecklists()).isEmpty();
@@ -212,6 +214,7 @@ class OrganizationMapperTest {
 		assertThat(entity.getId()).isNull();
 		assertThat(entity.getOrganizationName()).isEqualTo(organizationName);
 		assertThat(entity.getOrganizationNumber()).isEqualTo(organizationNumber);
+		assertThat(entity.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(entity.getUpdated()).isNull();
 	}
 

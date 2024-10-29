@@ -64,7 +64,7 @@ class ChecklistResource {
 	ResponseEntity<List<Checklist>> fetchAllChecklists(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId) {
 
-		return ok(checklistService.getAllChecklists());
+		return ok(checklistService.getChecklists(municipalityId));
 	}
 
 	@Operation(summary = "Fetch checklist by id", responses = {
@@ -76,7 +76,7 @@ class ChecklistResource {
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId) {
 
-		return ok(checklistService.getChecklistById(checklistId));
+		return ok(checklistService.getChecklist(municipalityId, checklistId));
 	}
 
 	@Operation(summary = "Create a new checklist", responses = {
@@ -87,7 +87,7 @@ class ChecklistResource {
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@RequestBody @Valid final ChecklistCreateRequest request) {
 
-		final var checklist = checklistService.createChecklist(request);
+		final var checklist = checklistService.createChecklist(municipalityId, request);
 		return created(UriComponentsBuilder.fromPath("/{municipalityId}/checklists/{checklistId}")
 			.buildAndExpand(municipalityId, checklist.getId())
 			.toUri()).header(CONTENT_TYPE, ALL_VALUE).build();
@@ -101,7 +101,7 @@ class ChecklistResource {
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId) {
 
-		final var checklist = checklistService.createNewVersion(checklistId);
+		final var checklist = checklistService.createNewVersion(municipalityId, checklistId);
 		return created(UriComponentsBuilder.fromPath("/{municipalityId}/checklists" + "/{checklistId}")
 			.buildAndExpand(municipalityId, checklist.getId()).toUri()).header(CONTENT_TYPE, ALL_VALUE).build();
 	}
@@ -115,7 +115,7 @@ class ChecklistResource {
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId) {
 
-		return ok(checklistService.activateChecklist(checklistId));
+		return ok(checklistService.activateChecklist(municipalityId, checklistId));
 	}
 
 	@Operation(summary = "Update a checklist", responses = {
@@ -128,7 +128,7 @@ class ChecklistResource {
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,
 		@RequestBody @Valid final ChecklistUpdateRequest request) {
 
-		return ok(checklistService.updateChecklist(checklistId, request));
+		return ok(checklistService.updateChecklist(municipalityId, checklistId, request));
 	}
 
 	@Operation(summary = "Delete a checklist", responses = {
@@ -140,7 +140,7 @@ class ChecklistResource {
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId) {
 
-		checklistService.deleteChecklist(checklistId);
+		checklistService.deleteChecklist(municipalityId, checklistId);
 		return noContent().header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 

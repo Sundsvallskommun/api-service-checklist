@@ -1,5 +1,6 @@
 package se.sundsvall.checklist.integration.db.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,9 +10,11 @@ import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 
 @CircuitBreaker(name = "organizationRepository")
 public interface OrganizationRepository extends JpaRepository<OrganizationEntity, String> {
-	OrganizationEntity findOneByOrganizationNumber(int organizationNumber);
+	Optional<OrganizationEntity> findByOrganizationNumberAndMunicipalityId(final int organizationNumber, final String municipalityId);
 
-	Optional<OrganizationEntity> findByOrganizationNumber(int organizationNumber);
+	Optional<OrganizationEntity> findByChecklistsIdAndChecklistsMunicipalityId(final String id, final String municipalityId);
 
-	Optional<OrganizationEntity> findByChecklistsId(String id);
+	Optional<OrganizationEntity> findByIdAndMunicipalityId(final String id, final String municipalityId);
+
+	List<OrganizationEntity> findAllByMunicipalityId(final String municipalityId);
 }

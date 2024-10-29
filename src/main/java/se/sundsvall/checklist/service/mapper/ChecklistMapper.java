@@ -29,14 +29,15 @@ public final class ChecklistMapper {
 	// Entity mappings
 	// -----------------------------
 
-	public static ChecklistEntity toChecklistEntity(final ChecklistCreateRequest request) {
-		return ofNullable(request)
-			.map(request1 -> ChecklistEntity.builder()
-				.withName(request1.getName())
-				.withDisplayName(request1.getDisplayName())
-				.withRoleType(request1.getRoleType())
+	public static ChecklistEntity toChecklistEntity(final ChecklistCreateRequest checklistCreateRequest, final String municipalityId) {
+		return ofNullable(checklistCreateRequest)
+			.map(request -> ChecklistEntity.builder()
+				.withName(request.getName())
+				.withDisplayName(request.getDisplayName())
+				.withRoleType(request.getRoleType())
 				.withVersion(1)
 				.withLifeCycle(CREATED)
+				.withMunicipalityId(municipalityId)
 				.build())
 			.orElse(null);
 	}

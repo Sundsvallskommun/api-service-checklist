@@ -57,8 +57,8 @@ public class DelegationService {
 		this.employeeInformationUpdateInterval = employeeInformationUpdateInterval;
 	}
 
-	public void delegateEmployeeChecklist(final String employeeChecklistId, final String email) {
-		final var employeeChecklist = employeeChecklistRepository.findById(employeeChecklistId)
+	public void delegateEmployeeChecklist(final String municipalityId, final String employeeChecklistId, final String email) {
+		final var employeeChecklist = employeeChecklistRepository.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, EMPLOYEE_CHECKLIST_NOT_FOUND.formatted(employeeChecklistId)));
 
 		final var employeeData = employeeIntegration.getEmployeeByEmail(email)
@@ -73,22 +73,22 @@ public class DelegationService {
 		});
 	}
 
-	public DelegatedEmployeeChecklistResponse fetchDelegatedEmployeeChecklistsByUsername(final String username) {
+	public DelegatedEmployeeChecklistResponse fetchDelegatedEmployeeChecklistsByUsername(final String municipalityId, final String username) {
 		final var delegatedEmployeeChecklistEntities = delegateRepository.findAllByUsername(username)
 			.stream()
 			.map(DelegateEntity::getEmployeeChecklist)
 			.toList();
 
 		return DelegatedEmployeeChecklistResponse.builder()
-			.withEmployeeChecklists(toEmployeeChecklists(delegatedEmployeeChecklistEntities))
+			.withEmployeeChecklists(toEmployeeChecklists(municipalityId, delegatedEmployeeChecklistEntities))
 			.build();
 	}
 
-	private List<EmployeeChecklist> toEmployeeChecklists(List<EmployeeChecklistEntity> delegatedEmployeeChecklistEntities) {
+	private List<EmployeeChecklist> toEmployeeChecklists(String municipalityId, List<EmployeeChecklistEntity> delegatedEmployeeChecklistEntities) {
 		return delegatedEmployeeChecklistEntities.stream()
 			.map(this::handleUpdatedEmployeeInformation)
 			.map(EmployeeChecklistMapper::toEmployeeChecklist)
-			.map(ob -> decorateWithCustomTasks(ob, customTaskRepository.findAllByEmployeeChecklistId(ob.getId())))
+			.map(ob -> decorateWithCustomTasks(ob, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(ob.getId(), municipalityId)))
 			.map(ob -> decorateWithFulfilment(ob, fetchEntity(delegatedEmployeeChecklistEntities, ob.getId())))
 			.map(this::decorateWithDelegateInformation)
 			.map(ServiceUtils::calculateCompleted)
@@ -112,8 +112,8 @@ public class DelegationService {
 	}
 
 	@Transactional
-	public void removeEmployeeChecklistDelegation(final String employeeChecklistId, final String email) {
-		final var employeeChecklist = employeeChecklistRepository.findById(employeeChecklistId)
+	public void removeEmployeeChecklistDelegation(final String municipalityId, final String employeeChecklistId, final String email) {
+		final var employeeChecklist = employeeChecklistRepository.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, EMPLOYEE_CHECKLIST_NOT_FOUND.formatted(employeeChecklistId)));
 
 		if (delegateRepository.existsByEmployeeChecklistAndEmail(employeeChecklist, email)) {

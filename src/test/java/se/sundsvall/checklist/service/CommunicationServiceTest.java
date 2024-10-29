@@ -27,6 +27,8 @@ import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistReposit
 @ExtendWith(MockitoExtension.class)
 class CommunicationServiceTest {
 
+	private static final String MUNICIPALITY_ID = "municipalityId";
+
 	@Mock
 	private MailHandler mailHandlerMock;
 
@@ -43,14 +45,14 @@ class CommunicationServiceTest {
 		final var correspondence = CorrespondenceEntity.builder().build();
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder().withCorrespondence(correspondence).build();
 
-		when(employeeChecklistRepositoryMock.findById(id)).thenReturn(Optional.of(employeeChecklistEntity));
+		when(employeeChecklistRepositoryMock.findByIdAndChecklistMunicipalityId(id, MUNICIPALITY_ID)).thenReturn(Optional.of(employeeChecklistEntity));
 
 		// Act
-		final var result = service.fetchCorrespondence(id);
+		final var result = service.fetchCorrespondence(MUNICIPALITY_ID, id);
 
 		// Assert and verify
 		assertThat(result).isNotNull();
-		verify(employeeChecklistRepositoryMock).findById(id);
+		verify(employeeChecklistRepositoryMock).findByIdAndChecklistMunicipalityId(id, MUNICIPALITY_ID);
 		verifyNoMoreInteractions(employeeChecklistRepositoryMock);
 		verifyNoInteractions(mailHandlerMock);
 	}
@@ -61,12 +63,12 @@ class CommunicationServiceTest {
 		final var id = UUID.randomUUID().toString();
 
 		// Act
-		final var e = assertThrows(ThrowableProblem.class, () -> service.fetchCorrespondence(id));
+		final var e = assertThrows(ThrowableProblem.class, () -> service.fetchCorrespondence(MUNICIPALITY_ID, id));
 
 		// Assert and verify
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
-		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s not found".formatted(id));
-		verify(employeeChecklistRepositoryMock).findById(id);
+		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s not found within municipality %s.".formatted(id, MUNICIPALITY_ID));
+		verify(employeeChecklistRepositoryMock).findByIdAndChecklistMunicipalityId(id, MUNICIPALITY_ID);
 		verifyNoMoreInteractions(employeeChecklistRepositoryMock);
 		verifyNoInteractions(mailHandlerMock);
 	}
@@ -77,13 +79,13 @@ class CommunicationServiceTest {
 		final var id = UUID.randomUUID().toString();
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder().build();
 
-		when(employeeChecklistRepositoryMock.findById(id)).thenReturn(Optional.of(employeeChecklistEntity));
+		when(employeeChecklistRepositoryMock.findByIdAndChecklistMunicipalityId(id, MUNICIPALITY_ID)).thenReturn(Optional.of(employeeChecklistEntity));
 
 		// Act
-		service.sendEmail(id);
+		service.sendEmail(MUNICIPALITY_ID, id);
 
 		// Assert and verify
-		verify(employeeChecklistRepositoryMock).findById(id);
+		verify(employeeChecklistRepositoryMock).findByIdAndChecklistMunicipalityId(id, MUNICIPALITY_ID);
 		verify(mailHandlerMock).sendEmail(eq(employeeChecklistEntity), any());
 		verifyNoMoreInteractions(employeeChecklistRepositoryMock, mailHandlerMock);
 	}
@@ -94,12 +96,12 @@ class CommunicationServiceTest {
 		final var id = UUID.randomUUID().toString();
 
 		// Act
-		final var e = assertThrows(ThrowableProblem.class, () -> service.sendEmail(id));
+		final var e = assertThrows(ThrowableProblem.class, () -> service.sendEmail(MUNICIPALITY_ID, id));
 
 		// Assert and verify
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
-		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s not found".formatted(id));
-		verify(employeeChecklistRepositoryMock).findById(id);
+		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s not found within municipality %s.".formatted(id, MUNICIPALITY_ID));
+		verify(employeeChecklistRepositoryMock).findByIdAndChecklistMunicipalityId(id, MUNICIPALITY_ID);
 		verifyNoMoreInteractions(employeeChecklistRepositoryMock);
 		verifyNoInteractions(mailHandlerMock);
 

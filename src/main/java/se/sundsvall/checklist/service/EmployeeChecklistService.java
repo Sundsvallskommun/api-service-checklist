@@ -28,7 +28,6 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
@@ -40,14 +39,12 @@ import se.sundsvall.checklist.api.model.CustomTask;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklist;
-import se.sundsvall.checklist.api.model.EmployeeChecklistPaginatedResponse;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhase;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse.Detail;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
-import se.sundsvall.checklist.api.specification.EmployeeCheclistFilterSpecification;
 import se.sundsvall.checklist.integration.db.EmployeeChecklistIntegration;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
@@ -84,32 +81,28 @@ public class EmployeeChecklistService {
 		this.employeeInformationUpdateInterval = employeeInformationUpdateInterval;
 	}
 
-	public EmployeeChecklistPaginatedResponse findEmployeeChecklistsBySearchString(final EmployeeCheclistFilterSpecification specification, final Pageable pageable) {
-		return employeeChecklistIntegration.fetchPaginatedEmployeeChecklistsByString(specification, pageable);
-	}
-
-	public Optional<EmployeeChecklist> fetchChecklistForEmployee(String username) {
-		final var employeeChecklist = employeeChecklistIntegration.fetchOptionalEmployeeChecklist(username);
+	public Optional<EmployeeChecklist> fetchChecklistForEmployee(String municipalityId, String username) {
+		final var employeeChecklist = employeeChecklistIntegration.fetchOptionalEmployeeChecklist(municipalityId, username);
 
 		return employeeChecklist
 			.map(this::handleUpdatedEmployeeInformation)
 			.map(EmployeeChecklistMapper::toEmployeeChecklist)
-			.map(ob -> decorateWithCustomTasks(ob, customTaskRepository.findAllByEmployeeChecklistId(ob.getId())))
+			.map(ob -> decorateWithCustomTasks(ob, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(ob.getId(), municipalityId)))
 			.map(ob -> decorateWithFulfilment(ob, employeeChecklist))
 			.map(this::decorateWithDelegateInformation)
 			.map(ServiceUtils::calculateCompleted)
 			.map(this::removeManagerObjects);
 	}
 
-	public List<EmployeeChecklist> fetchChecklistsForManager(String username) {
-		final var employeeChecklists = employeeChecklistIntegration.fetchEmployeeChecklistsForManager(username);
+	public List<EmployeeChecklist> fetchChecklistsForManager(String municipalityId, String username) {
+		final var employeeChecklists = employeeChecklistIntegration.fetchEmployeeChecklistsForManager(municipalityId, username);
 
 		return employeeChecklists
 			.stream()
 			.map(this::handleUpdatedEmployeeInformation)
 			.filter(ob -> Objects.equals(username, ob.getEmployee().getManager().getUsername())) // After possible update, the checklist might not be handled by sent in username anymore
 			.map(EmployeeChecklistMapper::toEmployeeChecklist)
-			.map(ob -> decorateWithCustomTasks(ob, customTaskRepository.findAllByEmployeeChecklistId(ob.getId())))
+			.map(ob -> decorateWithCustomTasks(ob, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(ob.getId(), municipalityId)))
 			.map(ob -> decorateWithFulfilment(ob, fetchEntity(employeeChecklists, ob.getId())))
 			.map(this::decorateWithDelegateInformation)
 			.map(ServiceUtils::calculateCompleted)
@@ -134,32 +127,32 @@ public class EmployeeChecklistService {
 
 	private EmployeeChecklist removeManagerObjects(EmployeeChecklist employeeChecklist) {
 		employeeChecklist.getPhases().removeIf(ph -> MANAGER == ph.getRoleType());
-		employeeChecklist.getPhases().forEach(ph -> {
-			ph.getTasks().removeIf(task -> MANAGER == task.getRoleType());
-		});
+		employeeChecklist.getPhases().forEach(ph -> ph.getTasks().removeIf(task -> MANAGER == task.getRoleType()));
 
 		return employeeChecklist;
 	}
 
-	public void deleteEmployeChecklist(String employeeChecklistId) {
-		employeeChecklistIntegration.deleteEmployeeChecklist(employeeChecklistId);
+	public void deleteEmployeChecklist(String municipalityId, String employeeChecklistId) {
+		employeeChecklistIntegration.deleteEmployeeChecklist(municipalityId, employeeChecklistId);
 	}
 
-	public CustomTask createCustomTask(String employeeChecklistId, String phaseId, CustomTaskCreateRequest request) {
-		verifyUnlockedEmployeeChecklist(employeeChecklistIntegration.fetchEmployeeChecklist(employeeChecklistId));
-		return toCustomTask(employeeChecklistIntegration.createCustomTask(employeeChecklistId, phaseId, request));
+	public CustomTask createCustomTask(String municipalityId, String employeeChecklistId, String phaseId, CustomTaskCreateRequest request) {
+		verifyUnlockedEmployeeChecklist(employeeChecklistIntegration.fetchEmployeeChecklist(municipalityId, employeeChecklistId));
+		return toCustomTask(employeeChecklistIntegration.createCustomTask(municipalityId, employeeChecklistId, phaseId, request));
 	}
 
-	public CustomTask readCustomTask(String employeeChecklistId, String taskId) {
+	public CustomTask readCustomTask(String municipalityId, String employeeChecklistId, String taskId) {
 		return customTaskRepository.findById(taskId)
 			.filter(customTask -> Objects.equals(employeeChecklistId, customTask.getEmployeeChecklist().getId()))
+			.filter(customTask -> Objects.equals(municipalityId, customTask.getEmployeeChecklist().getChecklist().getMunicipalityId()))
 			.map(EmployeeChecklistMapper::toCustomTask)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CUSTOM_TASK_NOT_FOUND.formatted(employeeChecklistId, taskId)));
 	}
 
-	public CustomTask updateCustomTask(String employeeChecklistId, String taskId, CustomTaskUpdateRequest request) {
+	public CustomTask updateCustomTask(String municipalityId, String employeeChecklistId, String taskId, CustomTaskUpdateRequest request) {
 		final var entity = customTaskRepository.findById(taskId)
 			.filter(customTask -> Objects.equals(employeeChecklistId, customTask.getEmployeeChecklist().getId()))
+			.filter(customTask -> Objects.equals(municipalityId, customTask.getEmployeeChecklist().getChecklist().getMunicipalityId()))
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CUSTOM_TASK_NOT_FOUND.formatted(employeeChecklistId, taskId)));
 
 		verifyUnlockedEmployeeChecklist(entity.getEmployeeChecklist());
@@ -170,9 +163,10 @@ public class EmployeeChecklistService {
 	}
 
 	@Transactional
-	public void deleteCustomTask(String employeeChecklistId, String taskId) {
+	public void deleteCustomTask(String municipalityId, String employeeChecklistId, String taskId) {
 		final var entity = customTaskRepository.findById(taskId)
 			.filter(customTask -> Objects.equals(employeeChecklistId, customTask.getEmployeeChecklist().getId()))
+			.filter(customTask -> Objects.equals(municipalityId, customTask.getEmployeeChecklist().getChecklist().getMunicipalityId()))
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CUSTOM_TASK_NOT_FOUND.formatted(employeeChecklistId, taskId)));
 
 		verifyUnlockedEmployeeChecklist(entity.getEmployeeChecklist());
@@ -183,31 +177,31 @@ public class EmployeeChecklistService {
 		customTaskRepository.delete(entity);
 	}
 
-	public EmployeeChecklistPhase updateAllTasksInPhase(String employeeChecklistId, String phaseId, EmployeeChecklistPhaseUpdateRequest request) {
-		final var employeeChecklist = employeeChecklistIntegration.updateAllTasksInPhase(employeeChecklistId, phaseId, request);
+	public EmployeeChecklistPhase updateAllTasksInPhase(String municipalityId, String employeeChecklistId, String phaseId, EmployeeChecklistPhaseUpdateRequest request) {
+		final var employeeChecklist = employeeChecklistIntegration.updateAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request);
 
 		return employeeChecklist.getChecklist().getPhases().stream()
 			.filter(phase -> Objects.equals(phase.getId(), phaseId))
 			.findAny()
 			.map(EmployeeChecklistMapper::toEmployeeChecklistPhase)
-			.map(phase -> decorateWithCustomTasks(phase, customTaskRepository.findAllByEmployeeChecklistId(employeeChecklistId)))
+			.map(phase -> decorateWithCustomTasks(phase, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(employeeChecklistId, municipalityId)))
 			.map(phase -> decorateWithFulfilment(phase, employeeChecklist))
 			.orElseThrow(() -> Problem.valueOf(INTERNAL_SERVER_ERROR, ERROR_READING_PHASE_FROM_EMPLOYEE_CHECKLIST.formatted(phaseId, employeeChecklistId)));
 	}
 
-	public EmployeeChecklistTask updateTaskFulfilment(String employeeChecklistId, String taskId, EmployeeChecklistTaskUpdateRequest request) {
-		final var employeeChecklist = employeeChecklistIntegration.fetchEmployeeChecklist(employeeChecklistId);
+	public EmployeeChecklistTask updateTaskFulfilment(String municipalityId, String employeeChecklistId, String taskId, EmployeeChecklistTaskUpdateRequest request) {
+		final var employeeChecklist = employeeChecklistIntegration.fetchEmployeeChecklist(municipalityId, employeeChecklistId);
 		verifyUnlockedEmployeeChecklist(employeeChecklist);
 
 		if (calculateTaskType(employeeChecklist, taskId) == TaskType.COMMON) {
-			final var fulfilment = employeeChecklistIntegration.updateCommonTaskFulfilment(employeeChecklistId, taskId, request);
+			final var fulfilment = employeeChecklistIntegration.updateCommonTaskFulfilment(municipalityId, employeeChecklistId, taskId, request);
 			return findTask(taskId, employeeChecklist.getChecklist())
 				.map(EmployeeChecklistMapper::toEmployeeChecklistTask)
 				.map(employeeChecklistTask -> decorateWithFulfilment(employeeChecklistTask, fulfilment))
 				.orElse(null); // This will never happen as the task is verified to exist in the calculateTaskType method
 
 		}
-		final var fulfilment = employeeChecklistIntegration.updateCustomTaskFulfilment(employeeChecklistId, taskId, request);
+		final var fulfilment = employeeChecklistIntegration.updateCustomTaskFulfilment(municipalityId, employeeChecklistId, taskId, request);
 		return findCustomTask(taskId, employeeChecklist.getCustomTasks())
 			.map(EmployeeChecklistMapper::toEmployeeChecklistTask)
 			.map(employeeChecklistTask -> decorateWithFulfilment(employeeChecklistTask, fulfilment))
@@ -232,7 +226,7 @@ public class EmployeeChecklistService {
 	 * Fetch a specific employee from employee integration (regardless of other data than uuid,
 	 * for example if it is a new or old employee) and initiate checklists for him or her.
 	 */
-	public EmployeeChecklistResponse initiateSpecificEmployeeChecklist(String uuid) {
+	public EmployeeChecklistResponse initiateSpecificEmployeeChecklist(String municipalityId, String uuid) {
 		final var filter = buildUuidEmployeeFilter(uuid);
 		LOGGER.info("Fetching employee with filter: {}", filter);
 
@@ -241,13 +235,13 @@ public class EmployeeChecklistService {
 			return buildNoMatchResponse();
 		}
 
-		return processEmployees(employees);
+		return processEmployees(municipalityId, employees);
 	}
 
 	/**
 	 * Fetch new employees from employee integration and initiate checklists for them.
 	 */
-	public EmployeeChecklistResponse initiateEmployeeChecklists() {
+	public EmployeeChecklistResponse initiateEmployeeChecklists(String municipalityId) {
 		final var filter = buildDefaultNewEmployeeFilter();
 		LOGGER.info("Fetching new employees with filter: {}", filter);
 
@@ -256,12 +250,12 @@ public class EmployeeChecklistService {
 			return buildNoMatchResponse();
 		}
 
-		return processEmployees(employees);
+		return processEmployees(municipalityId, employees);
 	}
 
-	private EmployeeChecklistResponse processEmployees(final List<Employee> employees) {
+	private EmployeeChecklistResponse processEmployees(String municipalityId, final List<Employee> employees) {
 		LOGGER.info("Found {} employees, creating checklists for these employees", employees.size());
-		final var employeeChecklistResponse = createEmployeeChecklist(employees);
+		final var employeeChecklistResponse = createEmployeeChecklist(municipalityId, employees);
 		final var errors = ofNullable(employeeChecklistResponse.getDetails()).orElse(emptyList())
 			.stream()
 			.filter(detail -> notEqual(OK, detail.getStatus()))
@@ -272,7 +266,7 @@ public class EmployeeChecklistService {
 		return employeeChecklistResponse;
 	}
 
-	private EmployeeChecklistResponse createEmployeeChecklist(final List<Employee> employees) {
+	private EmployeeChecklistResponse createEmployeeChecklist(String municipalityId, final List<Employee> employees) {
 		final var emplyeeChecklistResponse = new EmployeeChecklistResponse();
 
 		employees.forEach(employee -> {
@@ -283,7 +277,7 @@ public class EmployeeChecklistService {
 				final var portalPersonData = employeeIntegration.getEmployeeByEmail(employee.getEmailAddress())
 					.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ORGANIZATIONAL_STRUCTURE_DATA_NOT_FOUND.formatted(employee.getLoginname())));
 
-				final var result = employeeChecklistIntegration.initiateEmployee(employee, OrganizationTree.map(portalPersonData.getCompanyId(), portalPersonData.getOrgTree()));
+				final var result = employeeChecklistIntegration.initiateEmployee(municipalityId, employee, OrganizationTree.map(portalPersonData.getCompanyId(), portalPersonData.getOrgTree()));
 				emplyeeChecklistResponse.getDetails().add(createDetail(OK, result));
 			} catch (final ThrowableProblem e) {
 				emplyeeChecklistResponse.getDetails().add(createDetail(e.getStatus(), e.getMessage()));

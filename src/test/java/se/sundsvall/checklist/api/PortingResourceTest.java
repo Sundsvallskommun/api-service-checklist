@@ -1,8 +1,6 @@
 package se.sundsvall.checklist.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -42,7 +40,7 @@ class PortingResourceTest {
 	void exportLatestChecklistVersion() {
 		final var jsonStructure = "{\"key\": \"value\"}";
 
-		when(mockPortingService.exportChecklist(ORGANIZATION_NUMBER, RoleType.EMPLOYEE, null)).thenReturn(jsonStructure);
+		when(mockPortingService.exportChecklist(MUNICIPALITY_ID, ORGANIZATION_NUMBER, RoleType.EMPLOYEE, null)).thenReturn(jsonStructure);
 
 		final var response = webTestClient.get()
 			.uri(builder -> builder.path(BASE_PATH + "/export/{orgNbr}/{roleType}").build(Map.of("municipalityId", MUNICIPALITY_ID, "orgNbr", ORGANIZATION_NUMBER, "roleType", RoleType.EMPLOYEE)))
@@ -54,7 +52,7 @@ class PortingResourceTest {
 
 		assertThat(response).isEqualTo(jsonStructure);
 
-		verify(mockPortingService).exportChecklist(ORGANIZATION_NUMBER, RoleType.EMPLOYEE, null);
+		verify(mockPortingService).exportChecklist(MUNICIPALITY_ID, ORGANIZATION_NUMBER, RoleType.EMPLOYEE, null);
 		verifyNoMoreInteractions(mockPortingService);
 	}
 
@@ -63,7 +61,7 @@ class PortingResourceTest {
 		final var version = 321;
 		final var jsonStructure = "{\"key\": \"value\"}";
 
-		when(mockPortingService.exportChecklist(ORGANIZATION_NUMBER, RoleType.EMPLOYEE, version)).thenReturn(jsonStructure);
+		when(mockPortingService.exportChecklist(MUNICIPALITY_ID, ORGANIZATION_NUMBER, RoleType.EMPLOYEE, version)).thenReturn(jsonStructure);
 
 		final var response = webTestClient.get()
 			.uri(builder -> builder.path(BASE_PATH + "/export/{orgNbr}/{roleType}")
@@ -77,7 +75,7 @@ class PortingResourceTest {
 
 		assertThat(response).isEqualTo(jsonStructure);
 
-		verify(mockPortingService).exportChecklist(ORGANIZATION_NUMBER, RoleType.EMPLOYEE, version);
+		verify(mockPortingService).exportChecklist(MUNICIPALITY_ID, ORGANIZATION_NUMBER, RoleType.EMPLOYEE, version);
 		verifyNoMoreInteractions(mockPortingService);
 	}
 
@@ -91,7 +89,7 @@ class PortingResourceTest {
 				"displayName": "displayName"
 			}""";
 
-		when(mockPortingService.importChecklist(eq(ORGANIZATION_NUMBER), eq(ORGANIZATION_NAME), any(), eq(false))).thenReturn(id);
+		when(mockPortingService.importChecklist(MUNICIPALITY_ID, ORGANIZATION_NUMBER, ORGANIZATION_NAME, jsonStructure, false)).thenReturn(id);
 
 		webTestClient.post()
 			.uri(builder -> builder.path(BASE_PATH + "/import/add/{orgNbr}/{orgName}").build(Map.of("municipalityId", MUNICIPALITY_ID, "orgNbr", ORGANIZATION_NUMBER, "orgName", ORGANIZATION_NAME)))
@@ -103,7 +101,7 @@ class PortingResourceTest {
 			.expectHeader().location("/%s/checklists/%s".formatted(MUNICIPALITY_ID, id))
 			.expectBody().isEmpty();
 
-		verify(mockPortingService).importChecklist(ORGANIZATION_NUMBER, ORGANIZATION_NAME, jsonStructure, false);
+		verify(mockPortingService).importChecklist(MUNICIPALITY_ID, ORGANIZATION_NUMBER, ORGANIZATION_NAME, jsonStructure, false);
 		verifyNoMoreInteractions(mockPortingService);
 	}
 
@@ -119,7 +117,7 @@ class PortingResourceTest {
 				"displayName": "displayName"
 			}""";
 
-		when(mockPortingService.importChecklist(eq(organizationNumber), eq(organizationName), any(), eq(true))).thenReturn(id);
+		when(mockPortingService.importChecklist(MUNICIPALITY_ID, organizationNumber, organizationName, jsonStructure, true)).thenReturn(id);
 
 		webTestClient.post()
 			.uri(builder -> builder.path(BASE_PATH + "/import/replace/{orgNbr}/{orgName}").build(Map.of("municipalityId", MUNICIPALITY_ID, "orgNbr", ORGANIZATION_NUMBER, "orgName", ORGANIZATION_NAME)))
@@ -131,7 +129,7 @@ class PortingResourceTest {
 			.expectHeader().location("/%s/checklists/%s".formatted(MUNICIPALITY_ID, id))
 			.expectBody().isEmpty();
 
-		verify(mockPortingService).importChecklist(organizationNumber, organizationName, jsonStructure, true);
+		verify(mockPortingService).importChecklist(MUNICIPALITY_ID, organizationNumber, organizationName, jsonStructure, true);
 		verifyNoMoreInteractions(mockPortingService);
 	}
 

@@ -33,7 +33,7 @@ class PortingIT extends AbstractAppTest {
 
 	private static final String REQUEST_FILE = "request.json";
 	private static final String EXPECTED_FILE = "expected.json";
-
+	private static final String MUNCIPALITY_ID = "2281";
 	@Autowired
 	private PlatformTransactionManager transactionManager;
 
@@ -71,7 +71,7 @@ class PortingIT extends AbstractAppTest {
 	void test03_importAsNewVersionWhenActiveChecklistExist() {
 		// Assert organization before import
 		transactionTemplate.executeWithoutResult(status -> {
-			final var organization = organizationRepository.findByOrganizationNumber(2).orElseThrow();
+			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(2, MUNCIPALITY_ID).orElseThrow();
 			assertThat(organization.getChecklists()).hasSize(1).allSatisfy(ch -> {
 				assertThat(ch.getVersion()).isEqualTo(1);
 				assertThat(ch.getName()).isEqualTo("TEST03_EMPLOYEE_CHECKLIST");
@@ -92,7 +92,7 @@ class PortingIT extends AbstractAppTest {
 
 		// Assert organization after import
 		transactionTemplate.executeWithoutResult(status -> {
-			final var organization = organizationRepository.findByOrganizationNumber(2).orElseThrow();
+			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(2, MUNCIPALITY_ID).orElseThrow();
 			assertThat(organization.getChecklists()).hasSize(2)
 				.anySatisfy(ch -> {
 					assertThat(ch.getVersion()).isEqualTo(1);
@@ -115,7 +115,7 @@ class PortingIT extends AbstractAppTest {
 	void test04_importAsNewVersionWhenCreatedChecklistExist() {
 		// Assert organization before import
 		transactionTemplate.executeWithoutResult(status -> {
-			final var organization = organizationRepository.findByOrganizationNumber(3).orElseThrow();
+			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(3, MUNCIPALITY_ID).orElseThrow();
 			assertThat(organization.getChecklists()).hasSize(2)
 				.anySatisfy(ch -> {
 					assertThat(ch.getVersion()).isEqualTo(1);
@@ -143,7 +143,7 @@ class PortingIT extends AbstractAppTest {
 
 		// Assert organization after import
 		transactionTemplate.executeWithoutResult(status -> {
-			final var organization = organizationRepository.findByOrganizationNumber(3).orElseThrow();
+			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(3, MUNCIPALITY_ID).orElseThrow();
 			assertThat(organization.getChecklists()).hasSize(2)
 				.anySatisfy(ch -> {
 					assertThat(ch.getVersion()).isEqualTo(1);
@@ -166,7 +166,7 @@ class PortingIT extends AbstractAppTest {
 	void test05_importAsNewVersionWhenNoChecklistsExists() {
 		// Assert organization before import
 		transactionTemplate.executeWithoutResult(status -> {
-			final var organization = organizationRepository.findByOrganizationNumber(4).orElseThrow();
+			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(4, MUNCIPALITY_ID).orElseThrow();
 			assertThat(organization.getChecklists()).isEmpty();
 		});
 
@@ -181,7 +181,7 @@ class PortingIT extends AbstractAppTest {
 
 		// Assert organization after import
 		transactionTemplate.executeWithoutResult(status -> {
-			final var organization = organizationRepository.findByOrganizationNumber(4).orElseThrow();
+			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(4, MUNCIPALITY_ID).orElseThrow();
 			assertThat(organization.getChecklists()).hasSize(1)
 				.allSatisfy(ch -> {
 					assertThat(ch.getVersion()).isEqualTo(1);
@@ -199,7 +199,7 @@ class PortingIT extends AbstractAppTest {
 
 		// Assert organization before import
 		transactionTemplate.executeWithoutResult(status -> {
-			final var organization = organizationRepository.findByOrganizationNumber(5).orElseThrow();
+			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(5, MUNCIPALITY_ID).orElseThrow();
 			assertThat(organization.getChecklists()).hasSize(1)
 				.allSatisfy(ch -> {
 					assertThat(ch.getVersion()).isEqualTo(1);
@@ -222,7 +222,7 @@ class PortingIT extends AbstractAppTest {
 
 		// Assert organization after import
 		transactionTemplate.executeWithoutResult(status -> {
-			final var organization = organizationRepository.findByOrganizationNumber(5).orElseThrow();
+			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(5, MUNCIPALITY_ID).orElseThrow();
 			assertThat(organization.getChecklists()).hasSize(1)
 				.allSatisfy(ch -> {
 					assertThat(ch.getVersion()).isEqualTo(1);
@@ -241,7 +241,7 @@ class PortingIT extends AbstractAppTest {
 
 		// Assert organization before import
 		transactionTemplate.executeWithoutResult(status -> {
-			final var organization = organizationRepository.findByOrganizationNumber(6).orElseThrow();
+			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(6, MUNCIPALITY_ID).orElseThrow();
 			assertThat(organization.getChecklists()).hasSize(2)
 				.anySatisfy(ch -> {
 					assertThat(ch.getVersion()).isEqualTo(1);
@@ -271,7 +271,7 @@ class PortingIT extends AbstractAppTest {
 
 		// Assert organization after import
 		transactionTemplate.executeWithoutResult(status -> {
-			final var organization = organizationRepository.findByOrganizationNumber(6).orElseThrow();
+			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(6, MUNCIPALITY_ID).orElseThrow();
 			assertThat(organization.getChecklists()).hasSize(2)
 				.anySatisfy(ch -> {
 					assertThat(ch.getVersion()).isEqualTo(1);
@@ -295,7 +295,7 @@ class PortingIT extends AbstractAppTest {
 	void test08_importAndOverwriteWhenNoChecklistsExists() {
 		// Assert organization before import
 		transactionTemplate.executeWithoutResult(status -> {
-			final var organization = organizationRepository.findByOrganizationNumber(7).orElseThrow();
+			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(7, MUNCIPALITY_ID).orElseThrow();
 			assertThat(organization.getChecklists()).isEmpty();
 		});
 
@@ -310,7 +310,7 @@ class PortingIT extends AbstractAppTest {
 
 		// Assert organization after import
 		transactionTemplate.executeWithoutResult(status -> {
-			final var organization = organizationRepository.findByOrganizationNumber(7).orElseThrow();
+			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(7, MUNCIPALITY_ID).orElseThrow();
 			assertThat(organization.getChecklists()).hasSize(1)
 				.allSatisfy(ch -> {
 					assertThat(ch.getVersion()).isEqualTo(1);
@@ -326,7 +326,7 @@ class PortingIT extends AbstractAppTest {
 	void test09_importForNonExistingOrganization() {
 		// Assert organization before import
 		transactionTemplate.executeWithoutResult(status -> {
-			assertThat(organizationRepository.findByOrganizationNumber(8)).isEmpty();
+			assertThat(organizationRepository.findByOrganizationNumberAndMunicipalityId(8, MUNCIPALITY_ID)).isEmpty();
 		});
 
 		setupCall()
@@ -340,7 +340,7 @@ class PortingIT extends AbstractAppTest {
 
 		// Assert organization after import
 		transactionTemplate.executeWithoutResult(status -> {
-			final var organization = organizationRepository.findByOrganizationNumber(8).orElseThrow();
+			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(8, MUNCIPALITY_ID).orElseThrow();
 			assertThat(organization.getOrganizationNumber()).isEqualTo(8);
 			assertThat(organization.getOrganizationName()).isEqualTo("Organization_8");
 			assertThat(organization.getChecklists()).hasSize(1)

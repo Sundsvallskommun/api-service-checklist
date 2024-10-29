@@ -5,6 +5,7 @@
         updated datetime(6),
         display_name varchar(255),
         id varchar(255) not null,
+        municipality_id varchar(255),
         name varchar(255),
         organization_id varchar(255),
         life_cycle enum ('ACTIVE','CREATED','DEPRECATED','RETIRED'),
@@ -116,6 +117,7 @@
         created datetime(6),
         updated datetime(6),
         id varchar(255) not null,
+        municipality_id varchar(255),
         organization_name varchar(255),
         primary key (id)
     ) engine=InnoDB;
@@ -155,7 +157,7 @@
     ) engine=InnoDB;
 
     alter table if exists checklist 
-       add constraint uk_checklist_name_version unique (name, version);
+       add constraint uk_checklist_name_municipality_id_version unique (name, municipality_id, version);
 
     create index idx_delegate_username 
        on delegate (username);
@@ -184,11 +186,11 @@
     create index idx_manager_username 
        on manager (username);
 
-    create index organization_number_idx 
-       on organization (organization_number);
+    create index organization_number_municipality_id_idx 
+       on organization (organization_number, municipality_id);
 
     alter table if exists organization 
-       add constraint uk_organization_organization_number unique (organization_number);
+       add constraint uk_organization_organization_number_municipality_id unique (organization_number, municipality_id);
 
     alter table if exists checklist 
        add constraint fk_organization_checklist 

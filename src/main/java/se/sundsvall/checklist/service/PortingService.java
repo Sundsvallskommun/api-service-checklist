@@ -58,14 +58,15 @@ public class PortingService {
 	/**
 	 * Export a checklist matching the provided company, department and version as a json structure.
 	 *
+	 * @param municipalityId     The id of the municipality to which the company belongs
 	 * @param organizationNumber The organizationNumber for the unit owning the checklist to export
 	 * @param roleType           The roletype for the checklist to export
 	 * @param version            Version of the checklist to export. Parameter is optional, the latest version will be
 	 *                           exported if left out.
 	 * @return a json string representation of the full structure for the checklist.
 	 */
-	public String exportChecklist(int organizationNumber, RoleType roleType, Integer version) {
-		return organizationRepository.findByOrganizationNumber(organizationNumber)
+	public String exportChecklist(String municipalityId, int organizationNumber, RoleType roleType, Integer version) {
+		return organizationRepository.findByOrganizationNumberAndMunicipalityId(organizationNumber, municipalityId)
 			.map(OrganizationEntity::getChecklists)
 			.orElse(Collections.emptyList())
 			.stream()
@@ -81,6 +82,7 @@ public class PortingService {
 	/**
 	 * Import a checklist to the provided company id on root level
 	 *
+	 * @param municipalityId     The id of the municipality to which the company belongs
 	 * @param organizationNumber The organization number for the organizational unit where the checklist will be
 	 *                           imported to.
 	 * @param organizationName   The name of the company where the checklist will be imported to.
@@ -89,7 +91,7 @@ public class PortingService {
 	 *                           shall be created.
 	 */
 	@Transactional
-	public String importChecklist(int organizationNumber, String organizationName, String jsonStructure, boolean replaceVersion) {
+	public String importChecklist(String municipalityId, int organizationNumber, String organizationName, String jsonStructure, boolean replaceVersion) {
 		try {
 			LOGGER.info("Starting to import checklist");
 
@@ -97,8 +99,8 @@ public class PortingService {
 			final var checklist = objectMapper.readValue(jsonStructure, ChecklistEntity.class);
 
 			// Find (or create if it does not exist) the organization entity matching sent in organizationNumber
-			final var organization = organizationRepository.findByOrganizationNumber(organizationNumber)
-				.orElseGet(() -> organizationRepository.save(OrganizationMapper.toOrganizationEntity(organizationNumber, organizationName)));
+			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(organizationNumber, municipalityId)
+				.orElseGet(() -> organizationRepository.save(OrganizationMapper.toOrganizationEntity(organizationNumber, organizationName, municipalityId)));
 
 			final var hasActiveVersion = Optional.ofNullable(organization.getChecklists()).orElse(Collections.emptyList()).stream()
 				.map(ChecklistEntity::getLifeCycle)
@@ -216,6 +218,7 @@ public class PortingService {
 		checklistEntity.setLifeCycle(null);
 		checklistEntity.setCreated(null);
 		checklistEntity.setUpdated(null);
+		checklistEntity.setMunicipalityId(null);
 
 		return checklistEntity;
 	}

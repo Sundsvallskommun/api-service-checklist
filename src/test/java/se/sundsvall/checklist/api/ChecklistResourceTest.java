@@ -1,7 +1,6 @@
 package se.sundsvall.checklist.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -43,7 +42,7 @@ class ChecklistResourceTest {
 	@Test
 	void fetchAllChecklists() {
 		// Arrange
-		when(mockService.getAllChecklists()).thenReturn(List.of(TestObjectFactory.createChecklist(), TestObjectFactory.createChecklist()));
+		when(mockService.getChecklists(MUNICIPALITY_ID)).thenReturn(List.of(TestObjectFactory.createChecklist(), TestObjectFactory.createChecklist()));
 
 		// Act
 		final var response = webTestClient.get()
@@ -59,14 +58,14 @@ class ChecklistResourceTest {
 			assertThat(r).hasSize(2);
 		});
 
-		verify(mockService).getAllChecklists();
+		verify(mockService).getChecklists(MUNICIPALITY_ID);
 	}
 
 	@Test
 	void fetchChecklistById() {
 		// Arrange
 		final var mockedResponse = TestObjectFactory.createChecklist();
-		when(mockService.getChecklistById(ID)).thenReturn(mockedResponse);
+		when(mockService.getChecklist(MUNICIPALITY_ID, ID)).thenReturn(mockedResponse);
 
 		// Act
 		final var response = webTestClient.get()
@@ -80,7 +79,7 @@ class ChecklistResourceTest {
 		// Assert and verify
 		assertThat(response).isNotNull().isEqualTo(mockedResponse);
 
-		verify(mockService).getChecklistById(ID);
+		verify(mockService).getChecklist(MUNICIPALITY_ID, ID);
 	}
 
 	@Test
@@ -89,7 +88,7 @@ class ChecklistResourceTest {
 		final var body = createChecklistCreateRequest();
 		final var mockedResponse = TestObjectFactory.createChecklist();
 		mockedResponse.setId(ID);
-		when(mockService.createChecklist(body)).thenReturn(mockedResponse);
+		when(mockService.createChecklist(MUNICIPALITY_ID, body)).thenReturn(mockedResponse);
 
 		// Act
 		webTestClient.post()
@@ -101,13 +100,13 @@ class ChecklistResourceTest {
 			.expectHeader().location("/%s/checklists/%s".formatted(MUNICIPALITY_ID, ID));
 
 		// Assert and verify
-		verify(mockService).createChecklist(body);
+		verify(mockService).createChecklist(MUNICIPALITY_ID, body);
 	}
 
 	@Test
 	void createNewVersion() {
 		final var checklist = TestObjectFactory.createChecklist();
-		when(mockService.createNewVersion(anyString())).thenReturn(checklist);
+		when(mockService.createNewVersion(MUNICIPALITY_ID, ID)).thenReturn(checklist);
 
 		// Act
 		webTestClient.post()
@@ -119,13 +118,13 @@ class ChecklistResourceTest {
 			.expectHeader().valueEquals(LOCATION, "/%s/checklists/%s".formatted(MUNICIPALITY_ID, checklist.getId()));
 
 		// Assert and verify
-		verify(mockService).createNewVersion(ID);
+		verify(mockService).createNewVersion(MUNICIPALITY_ID, ID);
 	}
 
 	@Test
 	void activateChecklist() {
 		final var mockedResponse = TestObjectFactory.createChecklist();
-		when(mockService.activateChecklist(anyString())).thenReturn(mockedResponse);
+		when(mockService.activateChecklist(MUNICIPALITY_ID, ID)).thenReturn(mockedResponse);
 
 		// Act
 		final var response = webTestClient.patch()
@@ -139,7 +138,7 @@ class ChecklistResourceTest {
 		// Assert and verify
 		assertThat(response).isNotNull().isEqualTo(mockedResponse);
 
-		verify(mockService).activateChecklist(anyString());
+		verify(mockService).activateChecklist(MUNICIPALITY_ID, ID);
 	}
 
 	@Test
@@ -148,7 +147,7 @@ class ChecklistResourceTest {
 		final var request = createChecklistUpdateRequest();
 		final var mockedResponse = TestObjectFactory.createChecklist();
 		mockedResponse.setId(ID);
-		when(mockService.updateChecklist(ID, request)).thenReturn(mockedResponse);
+		when(mockService.updateChecklist(MUNICIPALITY_ID, ID, request)).thenReturn(mockedResponse);
 
 		// Act
 		final var response = webTestClient.patch()
@@ -164,7 +163,7 @@ class ChecklistResourceTest {
 		// Assert and verify
 		assertThat(response).isNotNull().isEqualTo(mockedResponse);
 
-		verify(mockService).updateChecklist(ID, request);
+		verify(mockService).updateChecklist(MUNICIPALITY_ID, ID, request);
 	}
 
 	@Test
@@ -177,6 +176,6 @@ class ChecklistResourceTest {
 			.expectBody().isEmpty();
 
 		// Assert and verify
-		verify(mockService).deleteChecklist(ID);
+		verify(mockService).deleteChecklist(MUNICIPALITY_ID, ID);
 	}
 }

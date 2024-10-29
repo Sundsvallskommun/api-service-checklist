@@ -50,7 +50,7 @@ class OrganizationResourceTest {
 			.withOrganizationNumber(1234)
 			.build();
 
-		when(serviceMock.createOrganization(body)).thenReturn(ID);
+		when(serviceMock.createOrganization(MUNICIPALITY_ID, body)).thenReturn(ID);
 
 		webTestClient.post()
 			.uri(builder -> builder.path(BASE_PATH).build(Map.of("municipalityId", MUNICIPALITY_ID)))
@@ -62,13 +62,13 @@ class OrganizationResourceTest {
 			.expectHeader().location("/%s/organizations/%s".formatted(MUNICIPALITY_ID, ID))
 			.expectBody().isEmpty();
 
-		verify(serviceMock).createOrganization(body);
+		verify(serviceMock).createOrganization(MUNICIPALITY_ID, body);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
 	@Test
 	void fetchOrganizations() {
-		when(serviceMock.fetchAllOrganizations()).thenReturn(List.of(TestObjectFactory.createOrganization(), TestObjectFactory.createOrganization()));
+		when(serviceMock.fetchAllOrganizations(MUNICIPALITY_ID)).thenReturn(List.of(TestObjectFactory.createOrganization(), TestObjectFactory.createOrganization()));
 		final var response = webTestClient.get()
 			.uri(builder -> builder.path(BASE_PATH).build(Map.of("municipalityId", MUNICIPALITY_ID)))
 			.exchange()
@@ -78,14 +78,14 @@ class OrganizationResourceTest {
 			.getResponseBody();
 
 		assertThat(response).hasSize(2);
-		verify(serviceMock).fetchAllOrganizations();
+		verify(serviceMock).fetchAllOrganizations(MUNICIPALITY_ID);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
 	@Test
 	void fetchOrganization() {
 		final var mockedResponse = TestObjectFactory.createOrganization();
-		when(serviceMock.fetchOrganizationById(ID)).thenReturn(mockedResponse);
+		when(serviceMock.fetchOrganization(MUNICIPALITY_ID, ID)).thenReturn(mockedResponse);
 
 		final var response = webTestClient.get()
 			.uri(builder -> builder.path(BASE_PATH + "/{id}").build(Map.of("municipalityId", MUNICIPALITY_ID, "id", ID)))
@@ -96,7 +96,7 @@ class OrganizationResourceTest {
 			.getResponseBody();
 
 		assertThat(response).isEqualTo(mockedResponse);
-		verify(serviceMock).fetchOrganizationById(ID);
+		verify(serviceMock).fetchOrganization(MUNICIPALITY_ID, ID);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
@@ -106,7 +106,7 @@ class OrganizationResourceTest {
 			.withCommunicationChannels(Set.of(CommunicationChannel.EMAIL))
 			.withOrganizationName("updatedName")
 			.build();
-		when(serviceMock.updateOrganization(ID, body)).thenReturn(TestObjectFactory.createOrganization());
+		when(serviceMock.updateOrganization(MUNICIPALITY_ID, ID, body)).thenReturn(TestObjectFactory.createOrganization());
 
 		final var response = webTestClient.patch()
 			.uri(builder -> builder.path(BASE_PATH + "/{id}").build(Map.of("municipalityId", MUNICIPALITY_ID, "id", ID)))
@@ -120,7 +120,7 @@ class OrganizationResourceTest {
 
 		assertThat(response).isNotNull();
 
-		verify(serviceMock).updateOrganization(ID, body);
+		verify(serviceMock).updateOrganization(MUNICIPALITY_ID, ID, body);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
@@ -132,7 +132,7 @@ class OrganizationResourceTest {
 			.expectStatus().isNoContent()
 			.expectBody().isEmpty();
 
-		verify(serviceMock).deleteOrganization(ID);
+		verify(serviceMock).deleteOrganization(MUNICIPALITY_ID, ID);
 		verifyNoMoreInteractions(serviceMock);
 	}
 }

@@ -77,28 +77,111 @@ class OrganizationRepositoryTest {
 	}
 
 	@Test
-	void findOneByExistingOrganizationNumber() {
+	void findByOrganizationNumberAndMunicipalityId() {
 		// Arrange
+		final var municipalityId = "2281";
 		final var organizationNumber = 1;
 
 		// Act
-		final var result = repository.findOneByOrganizationNumber(organizationNumber);
+		final var result = repository.findByOrganizationNumberAndMunicipalityId(organizationNumber, municipalityId);
 
 		// Assert
-		assertThat(result).isNotNull();
-		assertThat(UUID.fromString(result.getId())).isNotNull();
-		assertThat(result.getOrganizationNumber()).isEqualTo(organizationNumber);
+		assertThat(result).isPresent().hasValueSatisfying(entity -> {
+			assertThat(UUID.fromString(entity.getId())).isNotNull();
+			assertThat(entity.getOrganizationNumber()).isEqualTo(organizationNumber);
+		});
 	}
 
 	@Test
-	void findOneByNonExistingOrganizationNumber() {
+	void findByNonExistingOrganizationNumberAndMunicipalityId() {
 		// Arrange
+		final var municipalityId = "2281";
 		final var organizationNumber = 999;
 
+		// Act and assert
+		assertThat(repository.findByOrganizationNumberAndMunicipalityId(organizationNumber, municipalityId)).isEmpty();
+	}
+
+	@Test
+	void findByChecklistsIdAndChecklistsMunicipalityId() {
+		// Arrange
+		final var municipalityId = "2281";
+		final var checklistId = "35764278-50c8-4a19-af00-077bfc314fd2";
+
 		// Act
-		final var result = repository.findOneByOrganizationNumber(organizationNumber);
+		final var result = repository.findByChecklistsIdAndChecklistsMunicipalityId(checklistId, municipalityId);
 
 		// Assert
-		assertThat(result).isNull();
+		assertThat(result).isPresent().hasValueSatisfying(entity -> {
+			assertThat(UUID.fromString(entity.getId())).isNotNull();
+			assertThat(entity.getMunicipalityId()).isEqualTo(municipalityId);
+			assertThat(entity.getChecklists()).hasSize(3).satisfiesOnlyOnce(checklist -> {
+				assertThat(checklist.getId()).isEqualTo(checklistId);
+				assertThat(checklist.getName()).isEqualTo("Cheflista");
+			});
+		});
+	}
+
+	@Test
+	void findByNonExistingChecklistsIdAndChecklistsMunicipalityId() {
+		// Arrange
+		final var municipalityId = "2262";
+		final var checklistId = "35764278-50c8-4a19-af00-077bfc314fd2";
+
+		// Act and assert
+		assertThat(repository.findByChecklistsIdAndChecklistsMunicipalityId(checklistId, municipalityId)).isEmpty();
+	}
+
+	@Test
+	void findByIdAndMunicipalityId() {
+		// Arrange
+		final var municipalityId = "2281";
+		final var id = "bd49f474-303c-4a4e-aa54-5d4f58d9188b";
+
+		// Act
+		final var result = repository.findByIdAndMunicipalityId(id, municipalityId);
+
+		// Assert
+		assertThat(result).isPresent().hasValueSatisfying(entity -> {
+			assertThat(entity.getId()).isEqualTo(id);
+			assertThat(entity.getMunicipalityId()).isEqualTo(municipalityId);
+		});
+	}
+
+	@Test
+	void findByNonExistingIdAndMunicipalityId() {
+		// Arrange
+		final var municipalityId = "2281";
+		final var id = "00d4a6b7-ba3f-461a-ae97-cb32b539b7af";
+
+		// Act and assert
+		assertThat(repository.findByIdAndMunicipalityId(id, municipalityId)).isEmpty();
+	}
+
+	@Test
+	void findAllByMunicipalityId() {
+		// Arrange
+		final var municipalityId = "2281";
+
+		// Act
+		final var result = repository.findAllByMunicipalityId(municipalityId);
+
+		// Assert
+		assertThat(result).hasSize(2).satisfiesExactlyInAnyOrder(entity -> {
+			assertThat(entity.getOrganizationNumber()).isEqualTo(1);
+			assertThat(entity.getMunicipalityId()).isEqualTo(municipalityId);
+		}, entity -> {
+			assertThat(entity.getOrganizationNumber()).isEqualTo(5535);
+			assertThat(entity.getMunicipalityId()).isEqualTo(municipalityId);
+		});
+	}
+
+	@Test
+	void findAllByNonExistingMunicipalityId() {
+		// Arrange
+		final var municipalityId = "2262";
+
+		// Act and assert
+		assertThat(repository.findAllByMunicipalityId(municipalityId)).isEmpty();
 	}
 }

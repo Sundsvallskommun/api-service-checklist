@@ -4,11 +4,11 @@
 -- --------------------------------------------------------------------------------------
 -- Checklist for roletype employee for organizationNumber 5335 (Sub organization 5335)
 -- --------------------------------------------------------------------------------------
-insert into organization (organization_number, created, updated, organization_name, id)
-values (5535, now(), now(), 'Sub organization 5335', 'bd49f474-303c-4a4e-aa54-5d4f58d9188b');
+insert into organization (municipality_id, organization_number, created, updated, organization_name, id)
+values ('2281', 5535, now(), now(), 'Sub organization 5335', 'bd49f474-303c-4a4e-aa54-5d4f58d9188b');
 
-insert into checklist (version, created, updated, id, organization_id, life_cycle, name, role_type) -- setting role_type on checklist to employee means that checklist is aimed for new footpeople
-values (1, now(), now(), 'e20598a4-6b32-459e-8c15-febbd4c5868e', 'bd49f474-303c-4a4e-aa54-5d4f58d9188b', 'ACTIVE', 'Checklist for Sub organization 5335', 'EMPLOYEE');
+insert into checklist (municipality_id, version, created, updated, id, organization_id, life_cycle, name, role_type) -- setting role_type on checklist to employee means that checklist is aimed for new footpeople
+values ('2281', 1, now(), now(), 'e20598a4-6b32-459e-8c15-febbd4c5868e', 'bd49f474-303c-4a4e-aa54-5d4f58d9188b', 'ACTIVE', 'Checklist for Sub organization 5335', 'EMPLOYEE');
 
 insert into phase (sort_order, created, updated, body_text, role_type, checklist_id, id, name, time_to_complete) -- role_type on phase defines if it is the new employee or his/hers boss that the target for the phase
 values (1, now(), now(), 'Description of manager phase', 'MANAGER', 'e20598a4-6b32-459e-8c15-febbd4c5868e', '7272d1fc-540e-4394-afe2-e133ca642e91', 'Phasename', 'P1M');
@@ -31,11 +31,11 @@ values (3, 'YES_OR_NO', now(), now(), 'Description of manager task', '056423aa-0
 -- --------------------------------------------------------------------------------------
 -- Checklist for roletype employee for organizationNumber 1 (Root organization)
 -- --------------------------------------------------------------------------------------
-insert into organization (organization_number, created, updated, organization_name, id)
-values (1, now(), now(), null, 'cfcb03b1-7344-4352-9b72-7aebb1f235e1');
+insert into organization (municipality_id, organization_number, created, updated, organization_name, id)
+values ('2281', 1, now(), now(), null, 'cfcb03b1-7344-4352-9b72-7aebb1f235e1');
 
-insert into checklist (version, created, updated, id, organization_id, life_cycle, name, role_type) -- setting role_type on checklist to employee means that checklist is aimed for new footpeople
-values (1, now(), now(), '8c66e24b-3845-47ae-af74-c4611db8be7c', 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'ACTIVE', 'Checklist for Root organization', 'EMPLOYEE');
+insert into checklist (municipality_id, version, created, updated, id, organization_id, life_cycle, name, role_type) -- setting role_type on checklist to employee means that checklist is aimed for new footpeople
+values ('2281', 1, now(), now(), '8c66e24b-3845-47ae-af74-c4611db8be7c', 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'ACTIVE', 'Checklist for Root organization', 'EMPLOYEE');
 
 insert into phase (sort_order, created, updated, body_text, role_type, checklist_id, id, name, time_to_complete) -- role_type on phase defines if it is the new employee or his/hers boss that the target for the phase
 values (1, now(), now(), 'Description of manager phase', 'MANAGER', '8c66e24b-3845-47ae-af74-c4611db8be7c', '539b074d-d654-49ec-9dce-220f8a5ba7bb', 'Phasename', 'P1M');
@@ -52,8 +52,8 @@ values (1, 'COMPLETED_OR_NOT_RELEVANT_WITH_TEXT', now(), now(), 'Description of 
 -- --------------------------------------------------------------------------------------
 -- Checklist for roletype manager for organizationNumber 1 (Sundsvalls kommun)
 -- --------------------------------------------------------------------------------------
-insert into checklist (version, created, updated, id, organization_id, life_cycle, name, role_type) -- setting role_type on checklist to manager means that checklist is aimed for new managers
-values (1, now(), now(), '0ae36695-c575-4ec4-bd97-a25093c2021f', 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'ACTIVE', 'Checklist for Sundsvalls kommun (chefer)', 'MANAGER');
+insert into checklist (municipality_id, version, created, updated, id, organization_id, life_cycle, name, role_type) -- setting role_type on checklist to manager means that checklist is aimed for new managers
+values ('2281', 1, now(), now(), '0ae36695-c575-4ec4-bd97-a25093c2021f', 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'ACTIVE', 'Checklist for Sundsvalls kommun (chefer)', 'MANAGER');
 
 insert into phase (sort_order, created, updated, body_text, role_type, checklist_id, id, name, time_to_complete) -- role_type on phase defines if it is the new employee or his/hers boss that the target for the phase
 values (1, now(), now(), 'Description of phase', 'EMPLOYEE', '0ae36695-c575-4ec4-bd97-a25093c2021f', '638ad05e-3f90-4cb1-b26f-1f364469b386', 'Phasename', 'P1M');
@@ -113,8 +113,8 @@ VALUES('2024-01-03 12:00:00.000', '1b3bfe66-0e6c-4e92-a410-7c620a5461f4', 'a5d19
 -- manager checklist for root organization
 -- --------------------------------------------------------------------------------------
 
-insert into organization (organization_number, created, updated, organization_name, id)
-values (55351, now(), now(), 'Sub organization 55351', '176eb3d9-ebbc-4951-9c8a-e4503f003f79');
+insert into organization (municipality_id, organization_number, created, updated, organization_name, id)
+values ('2281', 55351, now(), now(), 'Sub organization 55351', '176eb3d9-ebbc-4951-9c8a-e4503f003f79');
 
 -- Employee
 insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name, manager_id, title, username, role_type)

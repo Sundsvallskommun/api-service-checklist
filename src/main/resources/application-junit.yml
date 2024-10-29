@@ -77,3 +77,9 @@ spring:
   # Driver
   datasource:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+
+checklist:
+  managed-municipality-ids:
+    - value_1
+    - value_2
+    

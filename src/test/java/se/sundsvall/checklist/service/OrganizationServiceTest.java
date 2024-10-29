@@ -3,7 +3,6 @@ package se.sundsvall.checklist.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -31,6 +30,7 @@ import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
 @ExtendWith(MockitoExtension.class)
 class OrganizationServiceTest {
 
+	private static final String MUNICIPALITY_ID = "municipalityId";
 	private static final String ORGANIZATION_NUMBER_ALREADY_EXISTS = "Organization with organization number %s already exists";
 	private static final String ORGANIZATION_HAS_CHECKLISTS = "Organization with id %s has non retired checklists and cannot be deleted";
 	private static final String ORGANIZATION_NOT_FOUND = "Organization with id %s does not exist";
@@ -42,54 +42,54 @@ class OrganizationServiceTest {
 	private OrganizationService organizationService;
 
 	@Test
-	void createOrganizationAlreadyExistsTest() {
-		var request = createOrganizationCreateRequest();
-		when(mockOrganizationRepository.findByOrganizationNumber(anyInt())).thenReturn(Optional.of(createOrganizationEntity()));
+	void createOrganizationAlreadyExists() {
+		final var request = createOrganizationCreateRequest();
+		when(mockOrganizationRepository.findByOrganizationNumberAndMunicipalityId(request.getOrganizationNumber(), MUNICIPALITY_ID)).thenReturn(Optional.of(createOrganizationEntity()));
 
-		assertThatThrownBy(() -> organizationService.createOrganization(request))
+		assertThatThrownBy(() -> organizationService.createOrganization(MUNICIPALITY_ID, request))
 			.isInstanceOf(Problem.class)
 			.hasFieldOrPropertyWithValue("status", CONFLICT)
 			.hasMessageContaining(ORGANIZATION_NUMBER_ALREADY_EXISTS.formatted(request.getOrganizationNumber()));
-		verify(mockOrganizationRepository).findByOrganizationNumber(request.getOrganizationNumber());
+		verify(mockOrganizationRepository).findByOrganizationNumberAndMunicipalityId(request.getOrganizationNumber(), MUNICIPALITY_ID);
 		verify(mockOrganizationRepository, never()).save(createOrganizationEntity());
 	}
 
 	@Test
-	void createOrganizationTest() {
-		var request = createOrganizationCreateRequest();
-		var entity = createOrganizationEntity();
+	void createOrganization() {
+		final var request = createOrganizationCreateRequest();
+		final var entity = createOrganizationEntity();
 
-		when(mockOrganizationRepository.findByOrganizationNumber(anyInt())).thenReturn(Optional.empty());
+		when(mockOrganizationRepository.findByOrganizationNumberAndMunicipalityId(request.getOrganizationNumber(), MUNICIPALITY_ID)).thenReturn(Optional.empty());
 		when(mockOrganizationRepository.save(any())).thenReturn(entity);
 
-		var result = organizationService.createOrganization(request);
+		final var result = organizationService.createOrganization(MUNICIPALITY_ID, request);
 
 		assertThat(result).isEqualTo(entity.getId());
 
-		verify(mockOrganizationRepository).findByOrganizationNumber(anyInt());
+		verify(mockOrganizationRepository).findByOrganizationNumberAndMunicipalityId(request.getOrganizationNumber(), MUNICIPALITY_ID);
 		verify(mockOrganizationRepository).save(any());
 		verifyNoMoreInteractions(mockOrganizationRepository);
 	}
 
 	@Test
-	void fetchAllOrganizationsTest() {
-		when(mockOrganizationRepository.findAll()).thenReturn(List.of(createOrganizationEntity()));
+	void fetchAllOrganizations() {
+		when(mockOrganizationRepository.findAllByMunicipalityId(MUNICIPALITY_ID)).thenReturn(List.of(createOrganizationEntity()));
 
-		var result = organizationService.fetchAllOrganizations();
+		final var result = organizationService.fetchAllOrganizations(MUNICIPALITY_ID);
 
 		assertThat(result).hasSize(1);
 		assertThat(result.getFirst()).isInstanceOf(Organization.class);
 
-		verify(mockOrganizationRepository).findAll();
+		verify(mockOrganizationRepository).findAllByMunicipalityId(MUNICIPALITY_ID);
 		verifyNoMoreInteractions(mockOrganizationRepository);
 	}
 
 	@Test
-	void fetchOrganizationByIdTest() {
-		var entity = createOrganizationEntity();
-		when(mockOrganizationRepository.findById(any())).thenReturn(Optional.of(entity));
+	void fetchOrganization() {
+		final var entity = createOrganizationEntity();
+		when(mockOrganizationRepository.findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(entity));
 
-		var result = organizationService.fetchOrganizationById(entity.getId());
+		final var result = organizationService.fetchOrganization(MUNICIPALITY_ID, entity.getId());
 
 		assertThat(result).satisfies(organization -> {
 			assertThat(organization).isInstanceOf(Organization.class);
@@ -100,95 +100,90 @@ class OrganizationServiceTest {
 			assertThat(organization.getUpdated()).isEqualTo(entity.getUpdated());
 		});
 
-		verify(mockOrganizationRepository).findById(entity.getId());
+		verify(mockOrganizationRepository).findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID);
 		verifyNoMoreInteractions(mockOrganizationRepository);
 	}
 
 	@Test
-	void fetchOrganizationsByIdNotFoundTest() {
-		when(mockOrganizationRepository.findById(any())).thenReturn(Optional.empty());
-
-		assertThatThrownBy(() -> organizationService.fetchOrganizationById("id"))
+	void fetchOrganizationsByIdNotFound() {
+		assertThatThrownBy(() -> organizationService.fetchOrganization(MUNICIPALITY_ID, "id"))
 			.isInstanceOf(Problem.class)
 			.hasFieldOrPropertyWithValue("status", NOT_FOUND)
 			.hasMessageContaining(ORGANIZATION_NOT_FOUND.formatted("id"));
 
-		verify(mockOrganizationRepository).findById("id");
+		verify(mockOrganizationRepository).findByIdAndMunicipalityId("id", MUNICIPALITY_ID);
 		verifyNoMoreInteractions(mockOrganizationRepository);
 	}
 
 	@Test
-	void updateOrganizationTest() {
-		var entity = createOrganizationEntity();
-		var request = createOrganizationUpdateRequest();
-		when(mockOrganizationRepository.findById(any())).thenReturn(Optional.of(entity));
+	void updateOrganization() {
+		final var entity = createOrganizationEntity();
+		final var request = createOrganizationUpdateRequest();
+		when(mockOrganizationRepository.findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(entity));
 		when(mockOrganizationRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-		var result = organizationService.updateOrganization(entity.getId(), request);
+		final var result = organizationService.updateOrganization(MUNICIPALITY_ID, entity.getId(), request);
 
 		assertThat(result).satisfies(organization -> {
 			assertThat(organization.getOrganizationName()).isEqualTo(request.getOrganizationName());
 			assertThat(organization.getCommunicationChannels()).isEqualTo(request.getCommunicationChannels());
 		});
 
-		verify(mockOrganizationRepository).findById(entity.getId());
+		verify(mockOrganizationRepository).findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID);
 		verify(mockOrganizationRepository).save(any());
 		verifyNoMoreInteractions(mockOrganizationRepository);
 	}
 
 	@Test
-	void updateOrganizationNotFoundTest() {
-		var request = createOrganizationUpdateRequest();
-		when(mockOrganizationRepository.findById(any())).thenReturn(Optional.empty());
+	void updateOrganizationNotFound() {
+		final var request = createOrganizationUpdateRequest();
 
-		assertThatThrownBy(() -> organizationService.updateOrganization("id", request))
+		assertThatThrownBy(() -> organizationService.updateOrganization(MUNICIPALITY_ID, "id", request))
 			.isInstanceOf(Problem.class)
 			.hasFieldOrPropertyWithValue("status", NOT_FOUND)
 			.hasMessageContaining(ORGANIZATION_NOT_FOUND.formatted("id"));
 
-		verify(mockOrganizationRepository).findById("id");
+		verify(mockOrganizationRepository).findByIdAndMunicipalityId("id", MUNICIPALITY_ID);
 		verify(mockOrganizationRepository, never()).save(any());
 		verifyNoMoreInteractions(mockOrganizationRepository);
 	}
 
 	@Test
-	void deleteOrganizationTest() {
-		var entity = createOrganizationEntity();
-		when(mockOrganizationRepository.findById(any())).thenReturn(Optional.of(entity));
+	void deleteOrganization() {
+		final var entity = createOrganizationEntity();
+		when(mockOrganizationRepository.findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(entity));
 
-		organizationService.deleteOrganization(entity.getId());
+		organizationService.deleteOrganization(MUNICIPALITY_ID, entity.getId());
 
-		verify(mockOrganizationRepository).findById(entity.getId());
+		verify(mockOrganizationRepository).findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID);
 		verify(mockOrganizationRepository).delete(entity);
 		verifyNoMoreInteractions(mockOrganizationRepository);
 	}
 
 	@Test
-	void deleteOrganizationNotFoundTest() {
-		when(mockOrganizationRepository.findById(any())).thenReturn(Optional.empty());
-
-		assertThatThrownBy(() -> organizationService.deleteOrganization("id"))
+	void deleteOrganizationNotFound() {
+		assertThatThrownBy(() -> organizationService.deleteOrganization(MUNICIPALITY_ID, "id"))
 			.isInstanceOf(Problem.class)
 			.hasFieldOrPropertyWithValue("status", NOT_FOUND)
 			.hasMessageContaining(ORGANIZATION_NOT_FOUND.formatted("id"));
 
-		verify(mockOrganizationRepository).findById("id");
+		verify(mockOrganizationRepository).findByIdAndMunicipalityId("id", MUNICIPALITY_ID);
 		verify(mockOrganizationRepository, never()).delete(any());
 		verifyNoMoreInteractions(mockOrganizationRepository);
 	}
 
 	@Test
-	void deleteOrganizationConflictTest() {
-		var entity = createOrganizationEntity();
+	void deleteOrganizationConflict() {
+		final var entity = createOrganizationEntity();
 		entity.setChecklists(List.of(createChecklistEntity()));
-		when(mockOrganizationRepository.findById(any())).thenReturn(Optional.of(entity));
+		when(mockOrganizationRepository.findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(entity));
 
-		assertThatThrownBy(() -> organizationService.deleteOrganization("id"))
+		assertThatThrownBy(() -> organizationService.deleteOrganization(MUNICIPALITY_ID, entity.getId()))
 			.isInstanceOf(Problem.class)
 			.hasFieldOrPropertyWithValue("status", CONFLICT)
-			.hasMessageContaining(ORGANIZATION_HAS_CHECKLISTS.formatted("id"));
+			.hasMessageContaining(ORGANIZATION_HAS_CHECKLISTS.formatted(entity.getId()));
 
-		verify(mockOrganizationRepository).findById("id");
+		verify(mockOrganizationRepository).findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID);
 		verify(mockOrganizationRepository, never()).delete(any());
 		verifyNoMoreInteractions(mockOrganizationRepository);
 	}

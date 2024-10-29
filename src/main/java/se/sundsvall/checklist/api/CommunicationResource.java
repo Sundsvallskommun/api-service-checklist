@@ -55,7 +55,7 @@ class CommunicationResource {
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId) {
 
-		communicationService.sendEmail(employeeChecklistId);
+		communicationService.sendEmail(municipalityId, employeeChecklistId);
 		return status(CREATED).header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 
@@ -67,6 +67,6 @@ class CommunicationResource {
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId) {
 
-		return ok(communicationService.fetchCorrespondence(employeeChecklistId));
+		return ok(communicationService.fetchCorrespondence(municipalityId, employeeChecklistId));
 	}
 }

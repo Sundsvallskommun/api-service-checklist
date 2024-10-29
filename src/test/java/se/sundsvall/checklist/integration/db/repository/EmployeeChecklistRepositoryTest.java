@@ -62,16 +62,16 @@ class EmployeeChecklistRepositoryTest {
 	}
 
 	@Test
-	void findByEmployeeUserName() {
-		final var result = repository.findByEmployeeUsername("aemp0loyee");
+	void findByChecklistMunicipalityIdAndEmployeeUsername() {
+		final var result = repository.findByChecklistMunicipalityIdAndEmployeeUsername("2281", "aemp0loyee");
 
 		assertThat(result).isNotNull();
 		assertThat(result.getId()).isEqualTo("f853e2b1-a144-4305-b05e-ee8d6dc6d005");
 	}
 
 	@Test
-	void findAllByEmployeeManagerUserName() {
-		final var result = repository.findAllByEmployeeManagerUsername("aman0agr");
+	void findAllByChecklistMunicipalityIdAndEmployeeManagerUsername() {
+		final var result = repository.findAllByChecklistMunicipalityIdAndEmployeeManagerUsername("2281", "aman0agr");
 
 		assertThat(result)
 			.hasSize(3)
@@ -83,13 +83,13 @@ class EmployeeChecklistRepositoryTest {
 	}
 
 	@Test
-	void findAllByExpirationDateIsBeforeAndLockedIsFalse() {
-		assertThat(repository.findAllByExpirationDateIsBeforeAndLockedIsFalse(LocalDate.of(2024, 10, 01)))
+	void findAllByChecklistMunicipalityIdAndExpirationDateIsBeforeAndLockedIsFalse() {
+		assertThat(repository.findAllByChecklistMunicipalityIdAndExpirationDateIsBeforeAndLockedIsFalse("2281", LocalDate.of(2024, 10, 01)))
 			.hasSize(1)
 			.extracting(EmployeeChecklistEntity::getId).containsExactly(
 				"f5960058-fad8-4825-85f3-b0fdb518adc5");
 
-		assertThat(repository.findAllByExpirationDateIsBeforeAndLockedIsFalse(LocalDate.of(2024, 10, 02)))
+		assertThat(repository.findAllByChecklistMunicipalityIdAndExpirationDateIsBeforeAndLockedIsFalse("2281", LocalDate.of(2024, 10, 02)))
 			.hasSize(2)
 			.extracting(EmployeeChecklistEntity::getId).containsExactlyInAnyOrder(
 				"f5960058-fad8-4825-85f3-b0fdb518adc5",
@@ -97,8 +97,8 @@ class EmployeeChecklistRepositoryTest {
 	}
 
 	@Test
-	void findAllByCorrespondenceIsNull() {
-		final var result = repository.findAllByCorrespondenceIsNull();
+	void findAllByChecklistMunicipalityIdAndCorrespondenceIsNull() {
+		final var result = repository.findAllByChecklistMunicipalityIdAndCorrespondenceIsNull("2281");
 
 		assertThat(result).hasSize(2)
 			.extracting(EmployeeChecklistEntity::getId)
@@ -109,8 +109,8 @@ class EmployeeChecklistRepositoryTest {
 
 	@ParameterizedTest
 	@EnumSource(value = CorrespondenceStatus.class)
-	void findAllByCorrespondenceCorrespondenceStatus(CorrespondenceStatus status) {
-		final var result = repository.findAllByCorrespondenceCorrespondenceStatus(status);
+	void findAllByChecklistMunicipalityIdAndCorrespondenceCorrespondenceStatus(CorrespondenceStatus status) {
+		final var result = repository.findAllByChecklistMunicipalityIdAndCorrespondenceCorrespondenceStatus("2281", status);
 
 		if (CorrespondenceStatus.SENT == status) {
 			assertThat(result).hasSize(1);
@@ -118,5 +118,12 @@ class EmployeeChecklistRepositoryTest {
 		} else {
 			assertThat(result).isEmpty();
 		}
+	}
+
+	@Test
+	void findByIdAndChecklistMunicipalityId() {
+		assertThat(repository.findByIdAndChecklistMunicipalityId("223a076f-441d-4a30-b5d0-f2bfd5ab250b", "2281")).isPresent();
+		assertThat(repository.findByIdAndChecklistMunicipalityId("4bcdbe73-fff5-4f19-bb34-0c755423e473", "2281")).isEmpty();
+		assertThat(repository.findByIdAndChecklistMunicipalityId("223a076f-441d-4a30-b5d0-f2bfd5ab250b", "2262")).isEmpty();
 	}
 }
