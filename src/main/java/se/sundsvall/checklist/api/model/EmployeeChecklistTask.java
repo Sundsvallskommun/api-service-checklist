@@ -53,4 +53,7 @@ public class EmployeeChecklistTask {
 	@Schema(description = "The date and time the task was last updated", example = "2023-11-22T15:30:00+03:00", accessMode = READ_ONLY)
 	@DateTimeFormat(iso = DATE_TIME)
 	private OffsetDateTime updated;
+
+	@Schema(description = "Identifier for the person that last updated the task", example = "joe01doe", accessMode = READ_ONLY)
+	private String updatedBy;
 }

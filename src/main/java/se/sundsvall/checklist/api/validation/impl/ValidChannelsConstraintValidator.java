@@ -4,6 +4,8 @@ import static java.util.Objects.isNull;
 
 import java.util.Set;
 
+import com.nimbusds.oauth2.sdk.util.CollectionUtils;
+
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import se.sundsvall.checklist.api.validation.ValidChannels;
@@ -23,10 +25,19 @@ public class ValidChannelsConstraintValidator implements ConstraintValidator<Val
 		if (isNull(value) && nullable) {
 			return true;
 		}
-		return isValid(value);
-	}
 
-	public boolean isValid(final Set<CommunicationChannel> value) {
-		return !value.contains(CommunicationChannel.NO_COMMUNICATION) || value.size() == 1;
+		if (CollectionUtils.isEmpty(value)) {
+			context.disableDefaultConstraintViolation();
+			context.buildConstraintViolationWithTemplate("must not be empty").addConstraintViolation();
+			return false;
+		}
+
+		if (value.contains(CommunicationChannel.NO_COMMUNICATION) && value.size() > 1) { // NOSONAR
+			context.disableDefaultConstraintViolation();
+			context.buildConstraintViolationWithTemplate("Can not have NO_COMMUNICATION in combination with other values").addConstraintViolation();
+			return false;
+		}
+
+		return true;
 	}
 }

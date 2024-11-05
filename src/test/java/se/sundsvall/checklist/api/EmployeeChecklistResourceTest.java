@@ -253,6 +253,7 @@ class EmployeeChecklistResourceTest {
 		final var path = "/{employeeChecklistId}/phases/{phaseId}";
 		final var request = EmployeeChecklistPhaseUpdateRequest.builder()
 			.withTasksFulfilmentStatus(FulfilmentStatus.TRUE)
+			.withUpdatedBy(USER_ID)
 			.build();
 
 		when(serviceMock.updateAllTasksInPhase(MUNICIPALITY_ID, ID, SUB_ID, request)).thenReturn(employeeChecklistPhase);
@@ -281,6 +282,7 @@ class EmployeeChecklistResourceTest {
 		final var path = "/{employeeChecklistId}/tasks/{taskId}";
 		final var request = EmployeeChecklistTaskUpdateRequest.builder()
 			.withFulfilmentStatus(FulfilmentStatus.FALSE)
+			.withUpdatedBy(USER_ID)
 			.withResponseText("responseText")
 			.build();
 

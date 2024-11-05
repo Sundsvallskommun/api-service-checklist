@@ -7,7 +7,6 @@ import java.util.Set;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -33,7 +32,6 @@ public class OrganizationCreateRequest {
 	private Integer organizationNumber;
 
 	@ArraySchema(minContains = 1, schema = @Schema(description = "Valid channels to use when communicating with the organization", accessMode = WRITE_ONLY))
-	@NotEmpty
 	@ValidChannels
 	private Set<CommunicationChannel> communicationChannels;
 
