@@ -56,9 +56,6 @@ public class EmployeeChecklist {
 	@DateTimeFormat(iso = DATE_TIME)
 	private OffsetDateTime updated;
 
-	@Schema(description = "The id of the user that last modified the checklist")
-	private String lastSavedBy;
-
 	@Schema(description = "The date when the fulfilment of the checklist was started", example = "2023-11-22", accessMode = READ_ONLY)
 	@DateTimeFormat(iso = DATE)
 	private LocalDate startDate;

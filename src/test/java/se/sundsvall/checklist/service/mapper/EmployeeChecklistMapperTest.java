@@ -65,7 +65,6 @@ class EmployeeChecklistMapperTest {
 		assertThat(entity.getId()).isNull();
 		assertThat(entity.getStartDate()).isEqualTo(startDate);
 		assertThat(entity.getUpdated()).isNull();
-		assertThat(entity.getLastSavedBy()).isNull();
 	}
 
 	@ParameterizedTest
@@ -94,7 +93,6 @@ class EmployeeChecklistMapperTest {
 		assertThat(entity.getId()).isNull();
 		assertThat(entity.getStartDate()).isEqualTo(LocalDate.now());
 		assertThat(entity.getUpdated()).isNull();
-		assertThat(entity.getLastSavedBy()).isNull();
 	}
 
 	@Test
@@ -143,7 +141,6 @@ class EmployeeChecklistMapperTest {
 			assertThat(r.getEndDate()).isEqualTo(entity.getEndDate());
 			assertThat(r.getExpirationDate()).isEqualTo(entity.getExpirationDate());
 			assertThat(r.isLocked()).isEqualTo(entity.isLocked());
-			assertThat(r.getLastSavedBy()).isEqualTo(entity.getLastSavedBy());
 		});
 	}
 

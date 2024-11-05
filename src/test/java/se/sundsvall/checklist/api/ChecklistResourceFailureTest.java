@@ -9,6 +9,7 @@ import static se.sundsvall.checklist.TestObjectFactory.createChecklistUpdateRequ
 import static se.sundsvall.checklist.integration.db.model.enums.RoleType.EMPLOYEE;
 
 import java.util.Map;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import org.zalando.problem.violations.Violation;
 import se.sundsvall.checklist.Application;
 import se.sundsvall.checklist.TestObjectFactory;
 import se.sundsvall.checklist.api.model.ChecklistCreateRequest;
+import se.sundsvall.checklist.api.model.ChecklistUpdateRequest;
 import se.sundsvall.checklist.service.ChecklistService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
@@ -162,6 +164,32 @@ class ChecklistResourceFailureTest {
 			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
 				.containsExactlyInAnyOrder(tuple("createdBy", "must not be blank"));
 		});
+		verifyNoInteractions(mockChecklistService);
+	}
+
+	@Test
+	void updateChecklistWithBlankUpdatedBy() {
+		final var body = ChecklistUpdateRequest.builder()
+			.withRoleType(EMPLOYEE)
+			.withDisplayName("displayName")
+			.build();
+
+		final var response = webTestClient.patch()
+			.uri(builder -> builder.path("/{municipalityId}/checklists/{checklistId}").build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", UUID.randomUUID().toString())))
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		assertThat(response).isNotNull().satisfies(r -> {
+			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
+			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
+			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+				.containsExactlyInAnyOrder(tuple("updatedBy", "must not be blank"));
+		});
+
 		verifyNoInteractions(mockChecklistService);
 	}
 

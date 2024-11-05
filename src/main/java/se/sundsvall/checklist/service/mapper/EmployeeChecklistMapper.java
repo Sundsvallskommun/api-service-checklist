@@ -124,7 +124,6 @@ public final class EmployeeChecklistMapper {
 				.withPhases(toEmployeeChecklistPhases(entity.getChecklist().getPhases()))
 				.withCreated(entity.getCreated())
 				.withUpdated(entity.getUpdated())
-				.withLastSavedBy(entity.getLastSavedBy())
 				.withStartDate(entity.getStartDate())
 				.withEndDate(entity.getEndDate())
 				.withExpirationDate(entity.getExpirationDate())

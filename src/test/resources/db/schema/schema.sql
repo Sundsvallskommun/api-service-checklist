@@ -89,7 +89,6 @@ create table employee_checklist (
     correspondence_id varchar(255),
     employee_id varchar(255),
     id varchar(255) not null,
-    last_saved_by varchar(255),
     primary key (id)
 ) engine=InnoDB;
 

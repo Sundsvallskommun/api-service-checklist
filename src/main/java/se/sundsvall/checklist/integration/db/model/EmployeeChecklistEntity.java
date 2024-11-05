@@ -59,9 +59,6 @@ public class EmployeeChecklistEntity {
 	@TimeZoneStorage(NORMALIZE)
 	private OffsetDateTime updated;
 
-	@Column(name = "last_saved_by")
-	private String lastSavedBy;
-
 	@Column(name = "start_date")
 	private LocalDate startDate;
 

@@ -70,7 +70,6 @@ public final class TestObjectFactory {
 			.withLocked(locked)
 			.withCreated(OffsetDateTime.now().minusWeeks(1))
 			.withUpdated(OffsetDateTime.now())
-			.withLastSavedBy("someUser")
 			.build();
 	}
 
