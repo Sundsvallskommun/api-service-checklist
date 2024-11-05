@@ -1,4 +1,5 @@
 {
 	"displayName": "New display name",
-	"roleType": "MANAGER"
+	"roleType": "MANAGER",
+	"updatedBy": "someUser"
 }

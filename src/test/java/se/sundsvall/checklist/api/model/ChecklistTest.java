@@ -45,6 +45,7 @@ class ChecklistTest {
 		final var displayName = "displayName";
 		final var version = 1;
 		final var lifeCycle = LifeCycle.ACTIVE;
+		final var lastSavedBy = "someUser";
 
 		final var checklist = Checklist.builder()
 			.withId(id)
@@ -55,6 +56,7 @@ class ChecklistTest {
 			.withDisplayName(displayName)
 			.withUpdated(OffsetDateTime.now())
 			.withCreated(OffsetDateTime.now())
+			.withLastSavedBy(lastSavedBy)
 			.withPhases(List.of())
 			.build();
 

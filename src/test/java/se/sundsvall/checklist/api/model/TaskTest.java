@@ -45,6 +45,7 @@ class TaskTest {
 		final var roleType = RoleType.EMPLOYEE;
 		final var questionType = QuestionType.YES_OR_NO;
 		final var sortOrder = 1;
+		final var lastSavedBy = "someUser";
 
 		final var task = Task.builder()
 			.withId(id)
@@ -56,6 +57,7 @@ class TaskTest {
 			.withSortOrder(sortOrder)
 			.withUpdated(OffsetDateTime.now())
 			.withCreated(OffsetDateTime.now())
+			.withLastSavedBy(lastSavedBy)
 			.build();
 
 		assertThat(task).isNotNull().hasNoNullFieldsOrProperties();

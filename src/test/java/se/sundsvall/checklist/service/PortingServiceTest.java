@@ -10,6 +10,7 @@ import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.ACTIVE
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATED;
 import static se.sundsvall.checklist.integration.db.model.enums.RoleType.EMPLOYEE;
 import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER;
+import static se.sundsvall.checklist.service.PortingService.SYSTEM;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +59,7 @@ class PortingServiceTest {
 
 	@ParameterizedTest
 	@EnumSource(value = RoleType.class)
-	void exportLatestVersionOfChecklist(RoleType roleType) throws Exception {
+	void exportLatestVersionOfChecklist(RoleType roleType) {
 		// Arrange
 		final var organizationNumber = 123;
 		final var organizationEntity = OrganizationEntity.builder()
@@ -175,6 +176,7 @@ class PortingServiceTest {
 				assertThat(ch.getName()).isEqualTo("activeVersionName");
 				assertThat(ch.getRoleType()).isEqualTo(EMPLOYEE);
 				assertThat(ch.getVersion()).isEqualTo(2);
+				assertThat(ch.getLastSavedBy()).isEqualTo(SYSTEM);
 			});
 
 		assertThat(checklistEntityCaptor.getValue().getName()).isEqualTo("activeVersionName");
@@ -251,6 +253,7 @@ class PortingServiceTest {
 				assertThat(ch.getName()).isEqualTo("name");
 				assertThat(ch.getRoleType()).isEqualTo(MANAGER);
 				assertThat(ch.getVersion()).isEqualTo(1);
+				assertThat(ch.getLastSavedBy()).isEqualTo(SYSTEM);
 			});
 
 		assertThat(checklistEntityCaptor.getValue().getName()).isEqualTo("name");
@@ -288,6 +291,7 @@ class PortingServiceTest {
 				assertThat(ch.getName()).isEqualTo("name");
 				assertThat(ch.getRoleType()).isEqualTo(MANAGER);
 				assertThat(ch.getVersion()).isEqualTo(1);
+				assertThat(ch.getLastSavedBy()).isEqualTo(SYSTEM);
 			});
 
 		assertThat(organizationEntityCaptor.getValue().getOrganizationName()).isEqualTo(organizationName);
@@ -339,6 +343,7 @@ class PortingServiceTest {
 				assertThat(ch.getName()).isEqualTo(activeVersionName);
 				assertThat(ch.getRoleType()).isEqualTo(MANAGER);
 				assertThat(ch.getVersion()).isEqualTo(1);
+				assertThat(ch.getLastSavedBy()).isEqualTo(SYSTEM);
 			});
 
 		assertThat(checklistEntityCaptor.getValue().getName()).isEqualTo(activeVersionName);
@@ -392,6 +397,7 @@ class PortingServiceTest {
 				assertThat(ch.getName()).isEqualTo(createdVersionName);
 				assertThat(ch.getRoleType()).isEqualTo(MANAGER);
 				assertThat(ch.getVersion()).isEqualTo(2);
+				assertThat(ch.getLastSavedBy()).isEqualTo(SYSTEM);
 			});
 
 		assertThat(checklistEntityCaptor.getValue().getName()).isEqualTo(createdVersionName);
@@ -428,6 +434,7 @@ class PortingServiceTest {
 				assertThat(ch.getName()).isEqualTo("name");
 				assertThat(ch.getRoleType()).isEqualTo(MANAGER);
 				assertThat(ch.getVersion()).isEqualTo(1);
+				assertThat(ch.getLastSavedBy()).isEqualTo(SYSTEM);
 			});
 
 		assertThat(checklistEntityCaptor.getValue().getName()).isEqualTo("name");
@@ -465,6 +472,7 @@ class PortingServiceTest {
 				assertThat(ch.getName()).isEqualTo("name");
 				assertThat(ch.getRoleType()).isEqualTo(MANAGER);
 				assertThat(ch.getVersion()).isEqualTo(1);
+				assertThat(ch.getLastSavedBy()).isEqualTo(SYSTEM);
 			});
 
 		assertThat(organizationEntityCaptor.getValue().getOrganizationName()).isEqualTo(organizationName);

@@ -4,5 +4,6 @@
 	"sortOrder": 1,
 	"permission": "SUPERADMIN",
 	"questionType": "YES_OR_NO",
-	"roleType": "EMPLOYEE"
+	"roleType": "EMPLOYEE",
+	"createdBy": "someUser"
 }

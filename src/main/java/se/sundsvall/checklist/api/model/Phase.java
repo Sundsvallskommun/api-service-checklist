@@ -8,6 +8,9 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import se.sundsvall.checklist.integration.db.model.enums.Permission;
+import se.sundsvall.checklist.integration.db.model.enums.RoleType;
+
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -15,8 +18,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import se.sundsvall.checklist.integration.db.model.enums.Permission;
-import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 
 @Data
 @NoArgsConstructor
@@ -57,4 +58,6 @@ public class Phase {
 	@DateTimeFormat(iso = DATE_TIME)
 	private OffsetDateTime updated;
 
+	@Schema(description = "The id of the user that last modified the phase")
+	private String lastSavedBy;
 }

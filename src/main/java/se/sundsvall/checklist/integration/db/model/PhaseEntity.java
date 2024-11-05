@@ -6,8 +6,6 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.annotations.TimeZoneStorage;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,14 +20,18 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+
+import org.hibernate.annotations.TimeZoneStorage;
+
+import se.sundsvall.checklist.integration.db.model.enums.Permission;
+import se.sundsvall.checklist.integration.db.model.enums.RoleType;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import se.sundsvall.checklist.integration.db.model.enums.Permission;
-import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 
 @Getter
 @Setter
@@ -72,6 +74,9 @@ public class PhaseEntity {
 	@TimeZoneStorage(NORMALIZE)
 	private OffsetDateTime updated;
 
+	@Column(name = "last_saved_by")
+	private String lastSavedBy;
+
 	@Builder.Default
 	@OneToMany(cascade = { CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
 	@JoinColumn(name = "phase_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_phase_task"))
@@ -86,5 +91,4 @@ public class PhaseEntity {
 	void preUpdate() {
 		this.updated = OffsetDateTime.now();
 	}
-
 }

@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
 import org.zalando.problem.ThrowableProblem;
-
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
@@ -40,7 +39,10 @@ import se.sundsvall.checklist.service.mapper.OrganizationMapper;
  */
 @Service
 public class PortingService {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(PortingService.class);
+
+	static final String SYSTEM = "SYSTEM";
 
 	private final ChecklistRepository checklistRepository;
 	private final OrganizationRepository organizationRepository;
@@ -154,15 +156,25 @@ public class PortingService {
 
 		// Update existingEntity with values from incoming structure
 		updateExistingChecklist(existingEntity, entity);
+		// Update "last-saved-by" on the existing entity
+		updateLastSavedBy(existingEntity);
+
 		checklistRepository.save(existingEntity);
 
 		return existingEntity.getId();
 	}
 
+	private void updateLastSavedBy(final ChecklistEntity checklistEntity) {
+		checklistEntity.setLastSavedBy(SYSTEM);
+		checklistEntity.getPhases().forEach(phaseEntity -> {
+			phaseEntity.setLastSavedBy(SYSTEM);
+			phaseEntity.getTasks().forEach(taskEntity -> taskEntity.setLastSavedBy(SYSTEM));
+		});
+	}
+
 	private void updateExistingChecklist(final ChecklistEntity existingEntity, final ChecklistEntity entity) {
 		// Clear current tasks and phases from checklist
-		existingEntity.getPhases().stream()
-			.forEach(ph -> ph.getTasks().clear());
+		existingEntity.getPhases().forEach(ph -> ph.getTasks().clear());
 		existingEntity.getPhases().clear();
 
 		// Update existing checklist with values from incoming structure
@@ -180,6 +192,9 @@ public class PortingService {
 				.map(ChecklistEntity::getName)
 				.findAny()
 				.orElse(entity.getName()));
+
+		// Update "last-saved-by" on the existing entity
+		updateLastSavedBy(entity);
 
 		// Create new active checklist based on incoming values
 		initializeChecklist(entity, calculateVersion(organization), CREATED);

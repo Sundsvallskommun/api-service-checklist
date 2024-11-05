@@ -2,15 +2,18 @@ package se.sundsvall.checklist.api.model;
 
 import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.WRITE_ONLY;
 
+import jakarta.validation.constraints.NotBlank;
+
+import se.sundsvall.checklist.api.validation.ValidPeriod;
+import se.sundsvall.checklist.integration.db.model.enums.Permission;
+import se.sundsvall.checklist.integration.db.model.enums.RoleType;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import se.sundsvall.checklist.api.validation.ValidPeriod;
-import se.sundsvall.checklist.integration.db.model.enums.Permission;
-import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 
 @Data
 @NoArgsConstructor
@@ -38,4 +41,7 @@ public class PhaseUpdateRequest {
 	@Schema(description = "The sort order of the phase", example = "1", accessMode = WRITE_ONLY)
 	private Integer sortOrder;
 
+	@Schema(description = "The id of the user updating the phase")
+	@NotBlank
+	private String updatedBy;
 }

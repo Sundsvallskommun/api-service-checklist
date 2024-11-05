@@ -18,10 +18,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.Employment;
-import generated.se.sundsvall.employee.Manager;
-import generated.se.sundsvall.employee.PortalPersonData;
 import se.sundsvall.checklist.api.model.Checklist;
 import se.sundsvall.checklist.api.model.ChecklistCreateRequest;
 import se.sundsvall.checklist.api.model.ChecklistUpdateRequest;
@@ -47,6 +43,11 @@ import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 
+import generated.se.sundsvall.employee.Employee;
+import generated.se.sundsvall.employee.Employment;
+import generated.se.sundsvall.employee.Manager;
+import generated.se.sundsvall.employee.PortalPersonData;
+
 public final class TestObjectFactory {
 
 	private TestObjectFactory() {}
@@ -69,6 +70,7 @@ public final class TestObjectFactory {
 			.withLocked(locked)
 			.withCreated(OffsetDateTime.now().minusWeeks(1))
 			.withUpdated(OffsetDateTime.now())
+			.withLastSavedBy("someUser")
 			.build();
 	}
 
@@ -90,6 +92,7 @@ public final class TestObjectFactory {
 			.withId(UUID.randomUUID().toString())
 			.withCreated(OffsetDateTime.now())
 			.withUpdated(OffsetDateTime.now())
+			.withLastSavedBy("someUser")
 			.withBodyText("Test body text")
 			.withName("Test name")
 			.withSortOrder(1)
@@ -105,6 +108,7 @@ public final class TestObjectFactory {
 			.withId(UUID.randomUUID().toString())
 			.withCreated(OffsetDateTime.now().minusWeeks(1))
 			.withUpdated(OffsetDateTime.now())
+			.withLastSavedBy("someUser")
 			.withRoleType(EMPLOYEE)
 			.withPermission(ADMIN)
 			.withQuestionType(YES_OR_NO)
@@ -145,6 +149,7 @@ public final class TestObjectFactory {
 			.withText("Test text")
 			.withUpdated(OffsetDateTime.now())
 			.withCreated(OffsetDateTime.now().minusWeeks(1))
+			.withLastSavedBy("someUser")
 			.withRoleType(EMPLOYEE)
 			.withSortOrder(1)
 			.build();
@@ -243,6 +248,7 @@ public final class TestObjectFactory {
 			.withRoleType(EMPLOYEE)
 			.withPermission(ADMIN)
 			.withSortOrder(1)
+			.withCreatedBy("someUser")
 			.build();
 
 		if (modifier != null) {
@@ -263,6 +269,7 @@ public final class TestObjectFactory {
 			.withRoleType(MANAGER)
 			.withPermission(ADMIN)
 			.withSortOrder(1)
+			.withUpdatedBy("someUser")
 			.build();
 	}
 
@@ -272,12 +279,14 @@ public final class TestObjectFactory {
 			.withOrganizationNumber(1)
 			.withRoleType(EMPLOYEE)
 			.withDisplayName("Test display name")
+			.withCreatedBy("someUser")
 			.build();
 	}
 
 	public static ChecklistUpdateRequest createChecklistUpdateRequest() {
 		return ChecklistUpdateRequest.builder()
 			.withRoleType(MANAGER)
+			.withUpdatedBy("someUser")
 			.build();
 	}
 
@@ -289,6 +298,7 @@ public final class TestObjectFactory {
 			.withPermission(ADMIN)
 			.withQuestionType(YES_OR_NO)
 			.withSortOrder(1)
+			.withCreatedBy("someUser")
 			.build();
 
 		if (modifier != null) {
@@ -309,6 +319,7 @@ public final class TestObjectFactory {
 			.withPermission(ADMIN)
 			.withQuestionType(YES_OR_NO_WITH_TEXT)
 			.withSortOrder(1)
+			.withUpdatedBy("someUser")
 			.build();
 	}
 

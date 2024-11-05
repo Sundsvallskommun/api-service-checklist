@@ -89,6 +89,7 @@ class ChecklistResourceFailureTest {
 			.withOrganizationNumber(11)
 			.withRoleType(null)
 			.withDisplayName("displayName")
+			.withCreatedBy("someUser")
 			.build();
 
 		final var response = webTestClient.post()
@@ -111,8 +112,36 @@ class ChecklistResourceFailureTest {
 
 	@Test
 	void createChecklistWithBlankName() {
-		final var body = ChecklistCreateRequest.builder()
+		var body = ChecklistCreateRequest.builder()
 			.withName("")
+			.withRoleType(EMPLOYEE)
+			.withOrganizationNumber(11)
+			.withDisplayName("displayName")
+			.withCreatedBy("someUser")
+			.build();
+
+		var response = webTestClient.post()
+			.uri(builder -> builder.path("/{municipalityId}/checklists").build(Map.of("municipalityId", MUNICIPALITY_ID)))
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		assertThat(response).isNotNull().satisfies(r -> {
+			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
+			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
+			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+				.containsExactlyInAnyOrder(tuple("name", "must not be blank"));
+		});
+		verifyNoInteractions(mockChecklistService);
+	}
+
+	@Test
+	void createChecklistWithBlankCreatedBy() {
+		final var body = ChecklistCreateRequest.builder()
+			.withName("Test checklist template")
 			.withRoleType(EMPLOYEE)
 			.withOrganizationNumber(11)
 			.withDisplayName("displayName")
@@ -131,7 +160,7 @@ class ChecklistResourceFailureTest {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
-				.containsExactlyInAnyOrder(tuple("name", "must not be blank"));
+				.containsExactlyInAnyOrder(tuple("createdBy", "must not be blank"));
 		});
 		verifyNoInteractions(mockChecklistService);
 	}

@@ -8,6 +8,9 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import se.sundsvall.checklist.integration.db.model.enums.LifeCycle;
+import se.sundsvall.checklist.integration.db.model.enums.RoleType;
+
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -15,8 +18,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import se.sundsvall.checklist.integration.db.model.enums.LifeCycle;
-import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 
 @Data
 @NoArgsConstructor
@@ -50,6 +51,9 @@ public class Checklist {
 	@Schema(description = "The last update date and time of the checklist", example = "2023-11-22T15:30:00+03:00", accessMode = READ_ONLY)
 	@DateTimeFormat(iso = DATE_TIME)
 	private OffsetDateTime updated;
+
+	@Schema(description = "The id of the user that last modified the checklist")
+	private String lastSavedBy;
 
 	@ArraySchema(arraySchema = @Schema(implementation = Task.class, description = "Phases in the checklist", accessMode = READ_ONLY))
 	private List<Phase> phases;
