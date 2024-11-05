@@ -2,5 +2,6 @@
 	"heading": "Updated second custom employee task heading",
 	"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
 	"text": "Updated descriptive text for second custom task",
-	"sortOrder": 15
+	"sortOrder": 15,
+	"updatedBy": "someUser"
 }

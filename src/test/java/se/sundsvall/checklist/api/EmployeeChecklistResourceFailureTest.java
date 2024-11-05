@@ -88,6 +88,7 @@ class EmployeeChecklistResourceFailureTest {
 			.withQuestionType(QuestionType.YES_OR_NO_WITH_TEXT)
 			.withText("text")
 			.withSortOrder(1)
+			.withCreatedBy("someUser")
 			.build();
 
 		// Act
@@ -166,7 +167,8 @@ class EmployeeChecklistResourceFailureTest {
 				.containsExactlyInAnyOrder(
 					tuple("heading", "must not be blank"),
 					tuple("questionType", "must not be null"),
-					tuple("sortOrder", "must not be null"));
+					tuple("sortOrder", "must not be null"),
+					tuple("createdBy", "must not be blank"));
 		});
 	}
 
@@ -202,7 +204,7 @@ class EmployeeChecklistResourceFailureTest {
 	void updateCustomTaskInvalidPathValues() {
 		// Arrange
 		final var path = "/{employeeChecklistId}/customtasks/{taskId}";
-		final var body = CustomTaskUpdateRequest.builder().build();
+		final var body = CustomTaskUpdateRequest.builder().withUpdatedBy("someUser").build();
 
 		// Act
 		final var response = webTestClient.patch()

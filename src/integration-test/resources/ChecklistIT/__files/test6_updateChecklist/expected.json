@@ -7,6 +7,7 @@
 	"lifeCycle": "CREATED",
 	"created": "2019-01-01T00:00:00+01:00",
 	"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,10}(Z|[+-]\\d{2}:\\d{2})?$",
+	"lastSavedBy": "someUser",
 	"phases": [
 		{
 			"id": "1455a5d4-1db8-4a25-a49f-92fdd0c60a14",
@@ -24,7 +25,8 @@
 					"roleType": "EMPLOYEE",
 					"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
 					"created": "2019-01-01T00:00:00+01:00",
-					"updated": "2019-01-01T00:00:00+01:00"
+					"updated": "2019-01-01T00:00:00+01:00",
+					"lastSavedBy": "someUser"
 				},
 				{
 					"id": "aba82aca-f841-4257-baec-d745e3ab78bf",
@@ -34,7 +36,8 @@
 					"roleType": "EMPLOYEE",
 					"questionType": "YES_OR_NO",
 					"created": "2019-01-01T00:00:00+01:00",
-					"updated": "2019-01-01T00:00:00+01:00"
+					"updated": "2019-01-01T00:00:00+01:00",
+					"lastSavedBy": "someUser"
 				},
 				{
 					"id": "bba82aca-f841-4257-baec-d745e3ab78bf",
@@ -44,11 +47,13 @@
 					"roleType": "EMPLOYEE",
 					"questionType": "YES_OR_NO_WITH_TEXT",
 					"created": "2019-01-01T00:00:00+01:00",
-					"updated": "2019-01-01T00:00:00+01:00"
+					"updated": "2019-01-01T00:00:00+01:00",
+					"lastSavedBy": "someUser"
 				}
 			],
 			"created": "2019-01-01T00:00:00+01:00",
-			"updated": "2019-01-01T00:00:00+01:00"
+			"updated": "2019-01-01T00:00:00+01:00",
+			"lastSavedBy": "someUser"
 		},
 		{
 			"id": "3455a5d4-1db8-4a25-a49f-92fdd0c60a14",
@@ -59,7 +64,8 @@
 			"sortOrder": 2,
 			"tasks": [],
 			"created": "2019-01-01T00:00:00+01:00",
-			"updated": "2019-01-01T00:00:00+01:00"
+			"updated": "2019-01-01T00:00:00+01:00",
+			"lastSavedBy": "someUser"
 		},
 		{
 			"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
@@ -70,7 +76,8 @@
 			"sortOrder": 3,
 			"tasks": [],
 			"created": "2019-01-01T00:00:00+01:00",
-			"updated": "2019-01-01T00:00:00+01:00"
+			"updated": "2019-01-01T00:00:00+01:00",
+			"lastSavedBy": "someUser"
 		}
 	]
 }

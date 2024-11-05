@@ -1,12 +1,15 @@
 package se.sundsvall.checklist.api.model;
 
+import jakarta.validation.constraints.NotBlank;
+
+import se.sundsvall.checklist.integration.db.model.enums.RoleType;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 
 @Data
 @NoArgsConstructor
@@ -21,4 +24,7 @@ public class ChecklistUpdateRequest {
 	@Schema(description = "The role type of the checklist")
 	private RoleType roleType;
 
+	@Schema(description = "The id of the user updating the checklist")
+	@NotBlank
+	private String updatedBy;
 }

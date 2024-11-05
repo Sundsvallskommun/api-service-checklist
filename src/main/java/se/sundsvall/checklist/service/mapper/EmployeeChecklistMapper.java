@@ -96,6 +96,7 @@ public final class EmployeeChecklistMapper {
 				.withRoleType(EMPLOYEE) // Hardcoded as custom tasks only can exist for the employee, never for the manager
 				.withSortOrder(r.getSortOrder())
 				.withText(r.getText())
+				.withLastSavedBy(request.getCreatedBy())
 				.build())
 			.orElse(null);
 	}
@@ -105,6 +106,7 @@ public final class EmployeeChecklistMapper {
 		ofNullable(request.getQuestionType()).ifPresent(entity::setQuestionType);
 		ofNullable(request.getSortOrder()).ifPresent(entity::setSortOrder);
 		ofNullable(request.getText()).ifPresent(entity::setText);
+		entity.setLastSavedBy(request.getUpdatedBy());
 
 		return entity;
 	}
@@ -196,6 +198,7 @@ public final class EmployeeChecklistMapper {
 				.withQuestionType(entity.getQuestionType())
 				.withCreated(customTaskEntity.getCreated())
 				.withUpdated(entity.getUpdated())
+				.withLastSavedBy(entity.getLastSavedBy())
 				.build())
 			.orElse(null);
 	}

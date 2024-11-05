@@ -20,7 +20,7 @@ public enum RoleType {
 	private final TemporalAmount timeToComplete;
 	private final TemporalAmount timeToExpiration;
 
-	private RoleType(final TemporalAmount timeToComplete, final TemporalAmount timeToExpiration) {
+	RoleType(final TemporalAmount timeToComplete, final TemporalAmount timeToExpiration) {
 		this.timeToComplete = timeToComplete;
 		this.timeToExpiration = timeToExpiration;
 	}

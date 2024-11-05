@@ -38,6 +38,7 @@ public final class ChecklistMapper {
 				.withVersion(1)
 				.withLifeCycle(CREATED)
 				.withMunicipalityId(municipalityId)
+				.withLastSavedBy(checklistCreateRequest.getCreatedBy())
 				.build())
 			.orElse(null);
 	}
@@ -45,6 +46,7 @@ public final class ChecklistMapper {
 	public static ChecklistEntity updateChecklistEntity(final ChecklistEntity entity, final ChecklistUpdateRequest request) {
 		ofNullable(request.getRoleType()).ifPresent(entity::setRoleType);
 		ofNullable(request.getDisplayName()).ifPresent(entity::setDisplayName);
+		entity.setLastSavedBy(request.getUpdatedBy());
 		return entity;
 	}
 
@@ -57,6 +59,7 @@ public final class ChecklistMapper {
 				.withSortOrder(request.getSortOrder())
 				.withPermission(request.getPermission())
 				.withTimeToComplete(request.getTimeToComplete())
+				.withLastSavedBy(phaseCreateRequest.getCreatedBy())
 				.build())
 			.orElse(null);
 	}
@@ -68,6 +71,7 @@ public final class ChecklistMapper {
 		ofNullable(request.getRoleType()).ifPresent(entity::setRoleType);
 		ofNullable(request.getPermission()).ifPresent(entity::setPermission);
 		ofNullable(request.getSortOrder()).ifPresent(entity::setSortOrder);
+		entity.setLastSavedBy(request.getUpdatedBy());
 		return entity;
 	}
 
@@ -80,6 +84,7 @@ public final class ChecklistMapper {
 				.withRoleType(request.getRoleType())
 				.withSortOrder(request.getSortOrder())
 				.withQuestionType(request.getQuestionType())
+				.withLastSavedBy(taskCreateRequest.getCreatedBy())
 				.build())
 			.orElse(null);
 	}
@@ -91,6 +96,7 @@ public final class ChecklistMapper {
 		ofNullable(request.getPermission()).ifPresent(entity::setPermission);
 		ofNullable(request.getSortOrder()).ifPresent(entity::setSortOrder);
 		ofNullable(request.getQuestionType()).ifPresent(entity::setQuestionType);
+		entity.setLastSavedBy(request.getUpdatedBy());
 		return entity;
 	}
 
@@ -118,6 +124,7 @@ public final class ChecklistMapper {
 				.withPhases(toPhases(entity.getPhases()))
 				.withCreated(entity.getCreated())
 				.withUpdated(entity.getUpdated())
+				.withLastSavedBy(entity.getLastSavedBy())
 				.build())
 			.orElse(null);
 	}
@@ -142,6 +149,7 @@ public final class ChecklistMapper {
 				.withTimeToComplete(entity.getTimeToComplete())
 				.withCreated(entity.getCreated())
 				.withUpdated(entity.getUpdated())
+				.withLastSavedBy(entity.getLastSavedBy())
 				.withTasks(toTasks(entity.getTasks()))
 				.build())
 			.orElse(null);
@@ -166,6 +174,7 @@ public final class ChecklistMapper {
 				.withSortOrder(entity.getSortOrder())
 				.withCreated(entity.getCreated())
 				.withUpdated(entity.getUpdated())
+				.withLastSavedBy(entity.getLastSavedBy())
 				.build())
 			.orElse(null);
 	}

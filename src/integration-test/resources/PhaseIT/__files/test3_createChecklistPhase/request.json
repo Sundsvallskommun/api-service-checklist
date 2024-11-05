@@ -4,5 +4,6 @@
 	"timeToComplete": "P1M",
 	"permission": "SUPERADMIN",
 	"sortOrder": 5,
-	"roleType": "MANAGER"
+	"roleType": "MANAGER",
+	"createdBy": "someUser"
 }

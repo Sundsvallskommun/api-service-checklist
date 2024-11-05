@@ -150,6 +150,7 @@ class EmployeeChecklistResourceTest {
 			.withQuestionType(QuestionType.YES_OR_NO_WITH_TEXT)
 			.withText("text")
 			.withSortOrder(1)
+			.withCreatedBy("someUser")
 			.build();
 
 		when(serviceMock.createCustomTask(MUNICIPALITY_ID, ID, SUB_ID, request)).thenReturn(mockedResponse);
@@ -206,6 +207,7 @@ class EmployeeChecklistResourceTest {
 			.withQuestionType(QuestionType.YES_OR_NO)
 			.withText("text")
 			.withSortOrder(1)
+			.withUpdatedBy("someUser")
 			.build();
 
 		when(serviceMock.updateCustomTask(MUNICIPALITY_ID, ID, SUB_ID, request)).thenReturn(mockedResponse);

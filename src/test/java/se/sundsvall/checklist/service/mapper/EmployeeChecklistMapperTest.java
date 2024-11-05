@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import generated.se.sundsvall.employee.Manager;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhase;
@@ -33,6 +32,8 @@ import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 import se.sundsvall.checklist.integration.db.model.enums.RoleType;
+
+import generated.se.sundsvall.employee.Manager;
 
 class EmployeeChecklistMapperTest {
 
@@ -351,12 +352,14 @@ class EmployeeChecklistMapperTest {
 		final var questionType = QuestionType.COMPLETED_OR_NOT_RELEVANT;
 		final var sortOrder = 654;
 		final var text = "text";
+		final var createdBy = "someUSer";
 
 		final var customTaskRequest = CustomTaskCreateRequest.builder()
 			.withHeading(heading)
 			.withQuestionType(questionType)
 			.withSortOrder(sortOrder)
 			.withText(text)
+			.withCreatedBy(createdBy)
 			.build();
 
 		final var entity = EmployeeChecklistMapper.toCustomTaskEntity(employeeChecklistEntity, phaseEntity, customTaskRequest);
@@ -371,6 +374,7 @@ class EmployeeChecklistMapperTest {
 		assertThat(entity.getSortOrder()).isEqualTo(sortOrder);
 		assertThat(entity.getText()).isEqualTo(text);
 		assertThat(entity.getUpdated()).isNull();
+		assertThat(entity.getLastSavedBy()).isEqualTo(createdBy);
 	}
 
 	@Test
@@ -387,11 +391,14 @@ class EmployeeChecklistMapperTest {
 		final var questionType = QuestionType.COMPLETED_OR_NOT_RELEVANT;
 		final var sortOrder = 654;
 		final var text = "text";
+		final var updatedBy = "someUser";
+
 		final var request = CustomTaskUpdateRequest.builder()
 			.withHeading(heading)
 			.withQuestionType(questionType)
 			.withSortOrder(sortOrder)
 			.withText(text)
+			.withUpdatedBy(updatedBy)
 			.build();
 
 		final var entity = CustomTaskEntity.builder().build();
@@ -409,6 +416,7 @@ class EmployeeChecklistMapperTest {
 		assertThat(entity.getSortOrder()).isEqualTo(sortOrder);
 		assertThat(entity.getText()).isEqualTo(text);
 		assertThat(entity.getUpdated()).isNull();
+		assertThat(entity.getLastSavedBy()).isEqualTo(updatedBy);
 	}
 
 	@Test
@@ -436,6 +444,7 @@ class EmployeeChecklistMapperTest {
 			assertThat(r.getSortOrder()).isEqualTo(entity.getSortOrder());
 			assertThat(r.getText()).isEqualTo(entity.getText());
 			assertThat(r.getUpdated()).isEqualTo(entity.getUpdated());
+			assertThat(r.getLastSavedBy()).isEqualTo(entity.getLastSavedBy());
 		});
 	}
 

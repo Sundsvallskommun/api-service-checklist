@@ -45,6 +45,7 @@ class PhaseTest {
 		final var timeToComplete = "timeToComplete";
 		final var roleType = RoleType.EMPLOYEE;
 		final var sortOrder = 1;
+		final var lastSavedBy = "someUser";
 
 		final var phase = Phase.builder()
 			.withId(id)
@@ -56,6 +57,7 @@ class PhaseTest {
 			.withPermission(ADMIN)
 			.withUpdated(OffsetDateTime.now())
 			.withCreated(OffsetDateTime.now())
+			.withLastSavedBy(lastSavedBy)
 			.withTasks(List.of())
 			.build();
 

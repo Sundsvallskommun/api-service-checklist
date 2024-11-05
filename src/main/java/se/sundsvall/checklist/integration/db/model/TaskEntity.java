@@ -4,8 +4,6 @@ import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
 
 import java.time.OffsetDateTime;
 
-import org.hibernate.annotations.TimeZoneStorage;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,15 +14,19 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+
+import org.hibernate.annotations.TimeZoneStorage;
+
+import se.sundsvall.checklist.integration.db.model.enums.Permission;
+import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
+import se.sundsvall.checklist.integration.db.model.enums.RoleType;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import se.sundsvall.checklist.integration.db.model.enums.Permission;
-import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
-import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 
 @Getter
 @Setter
@@ -68,6 +70,9 @@ public class TaskEntity {
 	@TimeZoneStorage(NORMALIZE)
 	private OffsetDateTime updated;
 
+	@Column(name = "last_saved_by")
+	private String lastSavedBy;
+
 	@PrePersist
 	void prePersist() {
 		this.created = OffsetDateTime.now();
@@ -77,5 +82,4 @@ public class TaskEntity {
 	void preUpdate() {
 		this.updated = OffsetDateTime.now();
 	}
-
 }

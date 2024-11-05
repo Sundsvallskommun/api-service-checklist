@@ -45,6 +45,7 @@
 				"lifeCycle": "RETIRED",
 				"created": "2019-01-01T00:00:00+01:00",
 				"updated": "2019-01-01T00:00:00+01:00",
+				"lastSavedBy": "someUser",
 				"phases": []
 			}
 		],

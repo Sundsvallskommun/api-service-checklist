@@ -6,5 +6,6 @@
 	"roleType": "EMPLOYEE",
 	"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
 	"created": "2024-01-03T12:00:00+01:00",
-	"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,10}(Z|[+-]\\d{2}:\\d{2})?$"
+	"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,10}(Z|[+-]\\d{2}:\\d{2})?$",
+	"lastSavedBy": "someUser"
 }

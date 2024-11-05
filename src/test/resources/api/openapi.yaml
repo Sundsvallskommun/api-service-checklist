@@ -170,14 +170,14 @@ paths:
               style: simple
               schema:
                 type: string
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -242,14 +242,14 @@ paths:
               style: simple
               schema:
                 type: string
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -307,14 +307,14 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/CustomTask"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -359,12 +359,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -373,6 +367,12 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/employee-checklists/{employeeChecklistId}/delegate-to/{email}:
     post:
       tags:
@@ -457,14 +457,14 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/EmployeeChecklistResponse"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -510,14 +510,14 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/EmployeeChecklistResponse"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -678,14 +678,14 @@ paths:
           type: string
         example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       responses:
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -738,14 +738,14 @@ paths:
               $ref: "#/components/schemas/PhaseCreateRequest"
         required: true
       responses:
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -794,14 +794,14 @@ paths:
           type: string
         example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       responses:
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -861,14 +861,14 @@ paths:
               $ref: "#/components/schemas/TaskCreateRequest"
         required: true
       responses:
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -1085,14 +1085,14 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/EmployeeChecklistTask"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -1150,14 +1150,14 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/EmployeeChecklistPhase"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -1209,14 +1209,14 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/CustomTask"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -1260,14 +1260,14 @@ paths:
       responses:
         "204":
           description: Successful Operation
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -1324,14 +1324,14 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/CustomTask"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -1523,14 +1523,14 @@ paths:
           type: string
         example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       responses:
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -1582,14 +1582,14 @@ paths:
       responses:
         "204":
           description: Successful Operation
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -1636,14 +1636,14 @@ paths:
               $ref: "#/components/schemas/PhaseUpdateRequest"
         required: true
       responses:
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -1701,14 +1701,14 @@ paths:
           type: string
         example: 55904052-0db0-4622-850c-3273ee60def4
       responses:
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -1765,20 +1765,18 @@ paths:
           type: string
         example: 55904052-0db0-4622-850c-3273ee60def4
       responses:
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "404":
           description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "204":
-          description: No Content
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -1787,6 +1785,8 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "204":
+          description: No Content
     patch:
       tags:
       - Task resources
@@ -1828,14 +1828,14 @@ paths:
               $ref: "#/components/schemas/TaskUpdateRequest"
         required: true
       responses:
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -1955,14 +1955,14 @@ paths:
             application/json:
               schema:
                 type: string
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -2013,12 +2013,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -2027,6 +2021,12 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/employee-checklists/manager/{username}:
     get:
       tags:
@@ -2063,14 +2063,14 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/EmployeeChecklist"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -2124,14 +2124,14 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/EmployeeChecklist"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -2232,14 +2232,14 @@ paths:
       responses:
         "204":
           description: Successful Operation
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
@@ -2310,30 +2310,30 @@ components:
     Problem:
       type: object
       properties:
+        parameters:
+          type: object
+          additionalProperties:
+            type: object
         instance:
           type: string
           format: uri
         type:
           type: string
           format: uri
-        parameters:
-          type: object
-          additionalProperties:
-            type: object
-        status:
-          $ref: "#/components/schemas/StatusType"
         title:
           type: string
         detail:
           type: string
+        status:
+          $ref: "#/components/schemas/StatusType"
     StatusType:
       type: object
       properties:
+        reasonPhrase:
+          type: string
         statusCode:
           type: integer
           format: int32
-        reasonPhrase:
-          type: string
     CommunicationChannel:
       type: string
       description: Valid channels to use when communicating with the organization
@@ -2389,10 +2389,10 @@ components:
               lineNumber:
                 type: integer
                 format: int32
-              className:
-                type: string
               nativeMethod:
                 type: boolean
+              className:
+                type: string
         type:
           type: string
           format: uri
@@ -2406,13 +2406,13 @@ components:
           type: string
         message:
           type: string
-        instance:
-          type: string
-          format: uri
         parameters:
           type: object
           additionalProperties:
             type: object
+        instance:
+          type: string
+          format: uri
         detail:
           type: string
         suppressed:
@@ -2438,10 +2438,10 @@ components:
                     lineNumber:
                       type: integer
                       format: int32
-                    className:
-                      type: string
                     nativeMethod:
                       type: boolean
+                    className:
+                      type: string
               message:
                 type: string
               localizedMessage:
@@ -2471,28 +2471,28 @@ components:
               lineNumber:
                 type: integer
                 format: int32
-              className:
-                type: string
               nativeMethod:
                 type: boolean
+              className:
+                type: string
         message:
           type: string
+        parameters:
+          type: object
+          additionalProperties:
+            type: object
         instance:
           type: string
           format: uri
         type:
           type: string
           format: uri
-        parameters:
-          type: object
-          additionalProperties:
-            type: object
-        status:
-          $ref: "#/components/schemas/StatusType"
         title:
           type: string
         detail:
           type: string
+        status:
+          $ref: "#/components/schemas/StatusType"
         suppressed:
           type: array
           items:
@@ -2516,10 +2516,10 @@ components:
                     lineNumber:
                       type: integer
                       format: int32
-                    className:
-                      type: string
                     nativeMethod:
                       type: boolean
+                    className:
+                      type: string
               message:
                 type: string
               localizedMessage:
@@ -2535,6 +2535,7 @@ components:
           type: string
     CustomTaskCreateRequest:
       required:
+      - createdBy
       - heading
       - questionType
       - sortOrder
@@ -2557,6 +2558,9 @@ components:
           description: The sort order for the task
           format: int32
           writeOnly: true
+        createdBy:
+          type: string
+          description: The id of the user creating the custom task
       description: Model for custom task create request
     QuestionType:
       type: string
@@ -2606,6 +2610,9 @@ components:
           format: date-time
           readOnly: true
           example: 2023-11-22T15:30:00+03:00
+        lastSavedBy:
+          type: string
+          description: The id of the user that last modified the custom task
       description: Model for custom task
     RoleType:
       type: string
@@ -2642,6 +2649,7 @@ components:
       description: Model for employee checklist triggering response
     ChecklistCreateRequest:
       required:
+      - createdBy
       - displayName
       - name
       - organizationNumber
@@ -2663,6 +2671,9 @@ components:
           example: 11
         roleType:
           $ref: "#/components/schemas/RoleType"
+        createdBy:
+          type: string
+          description: The id of the user creating the checklist
       description: Model for checklist create request
     Permission:
       type: string
@@ -2673,6 +2684,7 @@ components:
       - ADMIN
     PhaseCreateRequest:
       required:
+      - createdBy
       - name
       - permission
       - roleType
@@ -2704,9 +2716,13 @@ components:
           format: int32
           writeOnly: true
           example: 1
+        createdBy:
+          type: string
+          description: The id of the user creating the phase
       description: Model for phase create request
     TaskCreateRequest:
       required:
+      - createdBy
       - heading
       - permission
       - questionType
@@ -2736,6 +2752,9 @@ components:
           $ref: "#/components/schemas/Permission"
         questionType:
           $ref: "#/components/schemas/QuestionType"
+        createdBy:
+          type: string
+          description: The id of the user creating the task
       description: Model for task create request
     OrganizationUpdateRequest:
       type: object
@@ -2793,6 +2812,9 @@ components:
           format: date-time
           readOnly: true
           example: 2023-11-22T15:30:00+03:00
+        lastSavedBy:
+          type: string
+          description: The id of the user that last modified the checklist
         phases:
           type: array
           description: Phases in the checklist
@@ -2904,6 +2926,9 @@ components:
           format: date-time
           readOnly: true
           example: 2023-11-22T15:30:00+03:00
+        lastSavedBy:
+          type: string
+          description: The id of the user that last modified the phase
       description: Model for a phase
     Task:
       type: object
@@ -2947,6 +2972,9 @@ components:
           format: date-time
           readOnly: true
           example: 2023-11-22T15:30:00+03:00
+        lastSavedBy:
+          type: string
+          description: The id of the user that last modified the task
       description: Task model
     EmployeeChecklistTaskUpdateRequest:
       type: object
@@ -3060,6 +3088,8 @@ components:
             $ref: "#/components/schemas/EmployeeChecklistTask"
       description: Model for a employee checklist phase
     CustomTaskUpdateRequest:
+      required:
+      - updatedBy
       type: object
       properties:
         heading:
@@ -3077,8 +3107,13 @@ components:
           description: The sort order for the task
           format: int32
           writeOnly: true
+        updatedBy:
+          type: string
+          description: The id of the user updating the custom task
       description: Model for custom task update request
     ChecklistUpdateRequest:
+      required:
+      - updatedBy
       type: object
       properties:
         displayName:
@@ -3087,8 +3122,13 @@ components:
           example: New display name
         roleType:
           $ref: "#/components/schemas/RoleType"
+        updatedBy:
+          type: string
+          description: The id of the user updating the checklist
       description: Model for checklist update request
     PhaseUpdateRequest:
+      required:
+      - updatedBy
       type: object
       properties:
         name:
@@ -3116,8 +3156,13 @@ components:
           format: int32
           writeOnly: true
           example: 1
+        updatedBy:
+          type: string
+          description: The id of the user updating the phase
       description: Model for phase update request
     TaskUpdateRequest:
+      required:
+      - updatedBy
       type: object
       properties:
         heading:
@@ -3140,6 +3185,9 @@ components:
           $ref: "#/components/schemas/Permission"
         questionType:
           $ref: "#/components/schemas/QuestionType"
+        updatedBy:
+          type: string
+          description: The id of the user updating the task
       description: Model for task update request
     Correspondence:
       type: object

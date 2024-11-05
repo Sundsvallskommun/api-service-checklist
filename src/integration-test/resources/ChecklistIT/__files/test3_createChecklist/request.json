@@ -2,5 +2,6 @@
 	"name": "CHECKLIST",
 	"displayName": "Display name",
 	"organizationNumber": 1,
-	"roleType": "EMPLOYEE"
+	"roleType": "EMPLOYEE",
+	"createdBy": "someUser"
 }
