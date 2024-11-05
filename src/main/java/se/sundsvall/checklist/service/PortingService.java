@@ -60,12 +60,12 @@ public class PortingService {
 	/**
 	 * Export a checklist matching the provided company, department and version as a json structure.
 	 *
-	 * @param municipalityId     The id of the municipality to which the company belongs
-	 * @param organizationNumber The organizationNumber for the unit owning the checklist to export
-	 * @param roleType           The roletype for the checklist to export
-	 * @param version            Version of the checklist to export. Parameter is optional, the latest version will be
-	 *                           exported if left out.
-	 * @return a json string representation of the full structure for the checklist.
+	 * @param  municipalityId     The id of the municipality to which the company belongs
+	 * @param  organizationNumber The organizationNumber for the unit owning the checklist to export
+	 * @param  roleType           The roletype for the checklist to export
+	 * @param  version            Version of the checklist to export. Parameter is optional, the latest version will be
+	 *                            exported if left out.
+	 * @return                    a json string representation of the full structure for the checklist.
 	 */
 	public String exportChecklist(String municipalityId, int organizationNumber, RoleType roleType, Integer version) {
 		return organizationRepository.findByOrganizationNumberAndMunicipalityId(organizationNumber, municipalityId)

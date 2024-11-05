@@ -18,8 +18,8 @@ public interface MessagingClient {
 	/**
 	 * Send a single e-mail
 	 *
-	 * @param emailRequest containing email information
-	 * @return response containing id and delivery results for sent message
+	 * @param  emailRequest containing email information
+	 * @return              response containing id and delivery results for sent message
 	 */
 	@PostMapping(path = "/{municipalityId}/email", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 	MessageResult sendEmail(

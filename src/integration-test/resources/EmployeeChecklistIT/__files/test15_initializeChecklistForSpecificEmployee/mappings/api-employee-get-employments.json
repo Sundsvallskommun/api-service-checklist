@@ -1,24 +1,14 @@
 {
-	"name": "api-employee-get-employments",
 	"request": {
+		"headers": {"Authorization": {"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI4"}},
 		"method": "GET",
-		"urlPath": "/api-employee/employments",
-		"headers": {
-			"Authorization": {
-				"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI4"
-			}
-        },
-        "queryParameters": {
-            "filter": {
-                "equalTo": "{\"ShowOnlyNewEmployees\":false,\"PersonId\":\"af920bfe-630a-44e9-b2e7-53f092cd0225\",\"EventInfo\":[\"Mover\",\"Corporate\",\"Company\",\"Rehire,Corporate\"]}"
-            }
-        }
+		"queryParameters": {"filter": {"equalTo": "{\"ShowOnlyNewEmployees\":false,\"PersonId\":\"af920bfe-630a-44e9-b2e7-53f092cd0225\",\"EventInfo\":[\"Mover\",\"Corporate\",\"Company\",\"Rehire,Corporate\"]}"}},
+		"urlPath": "/api-employee/employments"
 	},
 	"response": {
-		"headers": {
-			"Content-Type": "application/json"
-		},
-		"status": 200,
-		"bodyFileName": "test15_initializeChecklistForSpecificEmployee/responses/api-employee-get-employments-response.json"
-	}
+		"headers": {"Content-Type": "application/json"},
+		"bodyFileName": "test15_initializeChecklistForSpecificEmployee/responses/api-employee-get-employments-response.json",
+		"status": 200
+	},
+	"name": "api-employee-get-employments"
 }

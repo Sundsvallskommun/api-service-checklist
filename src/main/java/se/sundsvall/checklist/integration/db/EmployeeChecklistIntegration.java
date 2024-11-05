@@ -253,10 +253,10 @@ public class EmployeeChecklistIntegration {
 	/**
 	 * Method for creating an employee checklist based on nearest organizational checklist.
 	 *
-	 * @param municipalityId the id of the municipality where the employee belongs
-	 * @param employee       the employee to onboard
-	 * @param orgTree        the organization tree for the employee
-	 * @return status of the process of creating the employee checklist
+	 * @param  municipalityId   the id of the municipality where the employee belongs
+	 * @param  employee         the employee to onboard
+	 * @param  orgTree          the organization tree for the employee
+	 * @return                  status of the process of creating the employee checklist
 	 * @throws ThrowableProblem if error occurs when processing employee
 	 */
 	@Transactional

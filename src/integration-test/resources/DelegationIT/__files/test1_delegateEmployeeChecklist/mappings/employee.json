@@ -1,18 +1,12 @@
 {
 	"request": {
+		"headers": {"Authorization": {"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI4"}},
 		"method": "GET",
-		"url": "/api-employee/portalpersondata/test%40test.com",
-		"headers": {
-			"Authorization": {
-				"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI4"
-			}
-		}
+		"url": "/api-employee/portalpersondata/test%40test.com"
 	},
 	"response": {
+		"headers": {"Content-Type": "application/json; charset=utf-8"},
 		"bodyFileName": "test1_delegateEmployeeChecklist/responses/employee.json",
-		"headers": {
-			"Content-Type": "application/json; charset=utf-8"
-		},
 		"status": "200"
 	}
 }

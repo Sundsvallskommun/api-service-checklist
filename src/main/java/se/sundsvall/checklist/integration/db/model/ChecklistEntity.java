@@ -39,7 +39,9 @@ import lombok.Setter;
 @Builder(setterPrefix = "with")
 @Entity
 @Table(name = "checklist", uniqueConstraints = {
-	@UniqueConstraint(name = "uk_checklist_name_municipality_id_version", columnNames = { "name", "municipality_id", "version" })
+	@UniqueConstraint(name = "uk_checklist_name_municipality_id_version", columnNames = {
+		"name", "municipality_id", "version"
+	})
 })
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -81,7 +83,9 @@ public class ChecklistEntity {
 	private String lastSavedBy;
 
 	@Builder.Default
-	@OneToMany(cascade = { CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST }, orphanRemoval = true)
+	@OneToMany(cascade = {
+		CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST
+	}, orphanRemoval = true)
 	@JoinColumn(name = "checklist_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_checklist_phase"))
 	private List<PhaseEntity> phases = new ArrayList<>();
 

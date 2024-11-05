@@ -70,9 +70,10 @@ public final class VerificationUtils {
 	}
 
 	private static String buildErrorString(Employee employee, List<String> errors) {
-		final var prefix = isBlank(employee.getLoginname()) ? "Creation of checklist not possible for employee with personid %s as ".formatted(employee.getPersonId()) : "Creation of checklist not possible for employee with loginname %s as "
-			.formatted(employee
-				.getLoginname());
+		final var prefix = isBlank(employee.getLoginname()) ? "Creation of checklist not possible for employee with personid %s as ".formatted(employee.getPersonId())
+			: "Creation of checklist not possible for employee with loginname %s as "
+				.formatted(employee
+					.getLoginname());
 
 		return prefix + toReadableString(errors) + ".";
 	}

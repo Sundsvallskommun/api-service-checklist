@@ -74,18 +74,26 @@ public class EmployeeEntity {
 	@TimeZoneStorage(NORMALIZE)
 	private OffsetDateTime updated;
 
-	@OneToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH }, mappedBy = "employee", orphanRemoval = true)
+	@OneToOne(cascade = {
+		CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH
+	}, mappedBy = "employee", orphanRemoval = true)
 	private EmployeeChecklistEntity employeeChecklist;
 
-	@ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH })
+	@ManyToOne(cascade = {
+		CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH
+	})
 	@JoinColumn(name = "organization_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_employee_company"))
 	private OrganizationEntity company;
 
-	@ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH })
+	@ManyToOne(cascade = {
+		CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH
+	})
 	@JoinColumn(name = "department_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_employee_department"))
 	private OrganizationEntity department;
 
-	@ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH })
+	@ManyToOne(cascade = {
+		CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH
+	})
 	@JoinColumn(name = "manager_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_employee_manager"))
 	private ManagerEntity manager;
 

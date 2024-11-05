@@ -135,8 +135,8 @@ public class EmployeeFilterBuilder {
 	 * Filter for fetching a specific employee by uuid regardless if the employee is new
 	 * or employed since the beginning of time.
 	 * 
-	 * @param uuid the unique id of the employee to fetch
-	 * @return a filter string for provided uuid
+	 * @param  uuid the unique id of the employee to fetch
+	 * @return      a filter string for provided uuid
 	 */
 	public static String buildUuidEmployeeFilter(String uuid) {
 		return getDefaultNewEmployeeFilterBuilder()

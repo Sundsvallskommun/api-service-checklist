@@ -1,9 +1,9 @@
 {
-	"name": "Första veckan",
 	"bodyText": "Detta är en beskrivning av vad som ska göras under första veckan",
-	"timeToComplete": "P1M",
-	"permission": "SUPERADMIN",
+	"createdBy": "someUser",
 	"sortOrder": 5,
+	"name": "Första veckan",
+	"permission": "SUPERADMIN",
 	"roleType": "MANAGER",
-	"createdBy": "someUser"
+	"timeToComplete": "P1M"
 }

@@ -61,11 +61,15 @@ public class CustomTaskEntity {
 	@Column(name = "sort_order")
 	private int sortOrder;
 
-	@ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH })
+	@ManyToOne(cascade = {
+		CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH
+	})
 	@JoinColumn(name = "employee_checklist_id", foreignKey = @ForeignKey(name = "fk_custom_task_employee_checklist"))
 	private EmployeeChecklistEntity employeeChecklist;
 
-	@ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH })
+	@ManyToOne(cascade = {
+		CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH
+	})
 	@JoinColumn(name = "phase_id", foreignKey = @ForeignKey(name = "fk_custom_task_phase"))
 	private PhaseEntity phase;
 

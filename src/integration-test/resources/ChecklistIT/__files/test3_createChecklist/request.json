@@ -1,7 +1,7 @@
 {
-	"name": "CHECKLIST",
+	"createdBy": "someUser",
 	"displayName": "Display name",
 	"organizationNumber": 1,
-	"roleType": "EMPLOYEE",
-	"createdBy": "someUser"
+	"name": "CHECKLIST",
+	"roleType": "EMPLOYEE"
 }

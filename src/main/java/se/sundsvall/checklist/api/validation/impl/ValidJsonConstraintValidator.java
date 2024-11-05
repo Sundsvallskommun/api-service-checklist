@@ -2,15 +2,14 @@ package se.sundsvall.checklist.api.validation.impl;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.endsWithAny;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.startsWithAny;
 
-import java.util.Objects;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.micrometer.common.util.StringUtils;
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
 import se.sundsvall.checklist.api.validation.ValidJson;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 
@@ -21,15 +20,16 @@ public class ValidJsonConstraintValidator implements ConstraintValidator<ValidJs
 	@Override
 	public boolean isValid(final String request, final ConstraintValidatorContext context) {
 		try {
-			if (nonNull(request) && startsWithAny(request, "[", "{") && endsWithAny(request, "]", "}")) {
+			if (nonNull(request) && startsWithAny(request.trim(), "[", "{") && endsWithAny(request.trim(), "]", "}")) {
 				// Deserialize json string into checklist entity (and sub ordinates)
 				final var structure = MAPPER.readValue(request, ChecklistEntity.class);
 
 				// Validate that required attributes are present
-				return Objects.nonNull(structure.getRoleType()) &&
-					StringUtils.isNotBlank(structure.getName()) &&
-					StringUtils.isNotBlank(structure.getDisplayName());
+				return nonNull(structure.getRoleType()) &&
+					isNotBlank(structure.getName()) &&
+					isNotBlank(structure.getDisplayName());
 			}
+
 			return false;
 		} catch (Exception e) {
 			return false;

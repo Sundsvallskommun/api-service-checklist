@@ -1,5 +1,5 @@
 {
+	"updatedBy": "someUser",
 	"displayName": "New display name",
-	"roleType": "MANAGER",
-	"updatedBy": "someUser"
+	"roleType": "MANAGER"
 }

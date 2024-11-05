@@ -1,12 +1,12 @@
 {
-	"id": "677a9efd-55bf-468d-81e8-efc913b9f956",
+	"fulfilmentStatus": "EMPTY",
 	"heading": "First custom employee task",
-	"text": "Descriptive text for first custom task",
+	"responseText": "Assignment is resetted. Will be prosponed to ZERO TWO HUNDRED.",
 	"sortOrder": 0,
+	"id": "677a9efd-55bf-468d-81e8-efc913b9f956",
+	"text": "Descriptive text for first custom task",
 	"roleType": "EMPLOYEE",
 	"questionType": "YES_OR_NO",
-	"customTask": true,
-	"responseText": "Assignment is resetted. Will be prosponed to ZERO TWO HUNDRED.",
-	"fulfilmentStatus": "EMPTY",
-	"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,10}(Z|[+-]\\d{2}:\\d{2})?$"
+	"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,10}(Z|[+-]\\d{2}:\\d{2})?$",
+	"customTask": true
 }

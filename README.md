@@ -20,7 +20,6 @@ _The service provides administration of the checklists that new employees and th
    git clone https://github.com/Sundsvallskommun/api-service-checklist.git
    cd api-service-checklist
    ```
-
 2. **Configure the application:**
 
    Before running the application, you need to set up configuration settings.
@@ -39,7 +38,6 @@ _The service provides administration of the checklists that new employees and th
      ```bash
      mvn spring-boot:run
      ```
-
    - Using Gradle:
 
      ```bash
@@ -51,17 +49,12 @@ _The service provides administration of the checklists that new employees and th
 This microservice depends on the following services:
 
 - **Employee**
-
   - **Purpose:** Used for reading employee information.
-
 - **Messaging**
-
   - **Purpose:** Used for sending emails to employees and managers.
   - **Repository:** [https://github.com/Sundsvallskommun/api-service-messaging](https://github.com/Sundsvallskommun/api-service-messaging)
   - **Setup Instructions:** See documentation in repository above for installation and configuration steps.
-
 - **Templating**
-
   - **Purpose:** Provides html templates when sending emails.
   - **Repository:** [https://github.com/Sundsvallskommun/api-service-templating](https://github.com/Sundsvallskommun/api-service-templating)
   - **Setup Instructions:** See documentation in repository above for installation and configuration steps.
@@ -98,7 +91,6 @@ Configuration is crucial for the application to run successfully. Ensure all nec
   server:
     port: 8080
   ```
-
 - **Database Settings:**
 
   ```yaml
@@ -108,7 +100,6 @@ Configuration is crucial for the application to run successfully. Ensure all nec
       username: your_db_username
       password: your_db_password
   ```
-
 - **External Service URLs:**
 
   ```yaml

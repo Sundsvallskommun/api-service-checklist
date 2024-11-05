@@ -4,10 +4,8 @@
 		"url": "/api-messaging/2281/email"
 	},
 	"response": {
+		"headers": {"Content-Type": "application/json; charset=utf-8"},
 		"bodyFileName": "test2_sendEmail/responses/messaging.json",
-		"headers": {
-			"Content-Type": "application/json; charset=utf-8"
-		},
 		"status": "200"
 	}
 }

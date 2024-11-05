@@ -26,13 +26,17 @@ class ValidPeriodConstraintValidatorTest {
 	private final ValidPeriodConstraintValidator validator = new ValidPeriodConstraintValidator();
 
 	@ParameterizedTest
-	@ValueSource(strings = { "P1D", "P1M", "P1Y", "P1Y2M3D", "P1Y2M3W4D", "P-1Y2M" })
+	@ValueSource(strings = {
+		"P1D", "P1M", "P1Y", "P1Y2M3D", "P1Y2M3W4D", "P-1Y2M"
+	})
 	void validPeriodTest(final String value) {
 		assertThat(validator.isValid(value, mockContext)).isTrue();
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "", "ABC123", "A5M", "TEST" })
+	@ValueSource(strings = {
+		"", "ABC123", "A5M", "TEST"
+	})
 	void invalidPeriodTest(final String value) {
 		assertThat(validator.isValid(value, mockContext)).isFalse();
 	}

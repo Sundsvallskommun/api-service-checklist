@@ -71,7 +71,8 @@ class PortingResourceFailureTest {
 		"{}",
 		"{\"name\": \"value\", \"roleType\": \"EMPLOYEE\", \"displayName\":\"\"}",
 		"{\"name\": \"value\", \"displayName\":\"value\"}",
-		"{\"name\": \"\", \"roleType\": \"EMPLOYEE\", \"displayName\":\"value\"}" })
+		"{\"name\": \"\", \"roleType\": \"EMPLOYEE\", \"displayName\":\"value\"}"
+	})
 	void importChecklistAsNewVersionWithFaultyJsonStructures(String jsonStructure) {
 		final var response = webTestClient.post()
 			.uri(builder -> builder.path(BASE_PATH + "/import/add/{orgNbr}/{orgName}").build(Map.of("municipalityId", MUNICIPALITY_ID, "orgNbr", ORGANIZATION_NUMBER, "orgName", ORGANIZATION_NAME)))
@@ -157,7 +158,8 @@ class PortingResourceFailureTest {
 		"{}",
 		"{\"name\": \"value\", \"roleType\": \"EMPLOYEE\", \"displayName\":\"\"}",
 		"{\"name\": \"value\", \"displayName\":\"value\"}",
-		"{\"name\": \"\", \"roleType\": \"EMPLOYEE\", \"displayName\":\"value\"}" })
+		"{\"name\": \"\", \"roleType\": \"EMPLOYEE\", \"displayName\":\"value\"}"
+	})
 	void importAndOverwriteExistingChecklistWithFaultyJsonStructures(String jsonStructure) {
 		final var response = webTestClient.post()
 			.uri(builder -> builder.path(BASE_PATH + "/import/replace/{orgNbr}/{orgName}").build(Map.of("municipalityId", MUNICIPALITY_ID, "orgNbr", ORGANIZATION_NUMBER, "orgName", ORGANIZATION_NAME)))

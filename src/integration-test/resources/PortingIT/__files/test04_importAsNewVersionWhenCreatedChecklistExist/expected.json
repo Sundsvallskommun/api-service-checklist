@@ -1,5 +1,5 @@
 {
+	"detail": "The organization has an existing checklist with lifecycle status CREATED present, operation aborted.",
 	"title": "Conflict",
-	"status": 409,
-	"detail": "The organization has an existing checklist with lifecycle status CREATED present, operation aborted."
+	"status": 409
 }

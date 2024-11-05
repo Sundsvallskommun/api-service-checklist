@@ -78,7 +78,9 @@ public class PhaseEntity {
 	private String lastSavedBy;
 
 	@Builder.Default
-	@OneToMany(cascade = { CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
+	@OneToMany(cascade = {
+		CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE
+	}, orphanRemoval = true)
 	@JoinColumn(name = "phase_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_phase_task"))
 	private List<TaskEntity> tasks = new ArrayList<>();
 

@@ -39,7 +39,8 @@ import lombok.Setter;
 	@Index(name = "employee_checklist_expiration_date_locked_idx", columnList = "expiration_date, locked")
 }, uniqueConstraints = {
 	@UniqueConstraint(name = "uk_correspondence_id", columnNames = "correspondence_id"),
-	@UniqueConstraint(name = "uk_employee_id", columnNames = "employee_id") })
+	@UniqueConstraint(name = "uk_employee_id", columnNames = "employee_id")
+})
 @Getter
 @Setter
 @Builder(setterPrefix = "with")
@@ -71,15 +72,21 @@ public class EmployeeChecklistEntity {
 	@Column(name = "locked")
 	private boolean locked;
 
-	@OneToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
+	@OneToOne(cascade = {
+		CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH
+	}, fetch = FetchType.LAZY)
 	@JoinColumn(name = "employee_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_employee_checklist_employee"))
 	private EmployeeEntity employee;
 
-	@OneToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH }, orphanRemoval = true)
+	@OneToOne(cascade = {
+		CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH
+	}, orphanRemoval = true)
 	@JoinColumn(name = "correspondence_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_employee_checklist_correspondence"))
 	private CorrespondenceEntity correspondence;
 
-	@ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
+	@ManyToOne(cascade = {
+		CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH
+	}, fetch = FetchType.LAZY)
 	@JoinColumn(name = "checklist_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_employee_checklist_checklist"))
 	private ChecklistEntity checklist;
 

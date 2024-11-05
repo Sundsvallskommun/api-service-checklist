@@ -50,9 +50,9 @@ public class OrganizationTree {
 	 * We map all 6 levels but we're (currently) only interested in level 2 and 3.
 	 * </pre>
 	 *
-	 * @param companyId          The companyId of the organization, not part of the org-string
-	 * @param organizationString The org-string to parse
-	 * @return An {@link OrganizationTree} object
+	 * @param  companyId          The companyId of the organization, not part of the org-string
+	 * @param  organizationString The org-string to parse
+	 * @return                    An {@link OrganizationTree} object
 	 */
 	public static OrganizationTree map(int companyId, String organizationString) {
 

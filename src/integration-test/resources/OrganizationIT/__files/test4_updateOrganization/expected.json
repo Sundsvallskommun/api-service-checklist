@@ -1,11 +1,9 @@
 {
-	"id": "15764278-50c8-4a19-af00-077bfc314fd2",
+	"checklists": [],
 	"organizationName": "NEW NAME",
 	"organizationNumber": 1,
-	"checklists": [],
-	"communicationChannels": [
-		"NO_COMMUNICATION"
-	],
 	"created": "2019-01-01T00:00:00+01:00",
+	"communicationChannels": ["NO_COMMUNICATION"],
+	"id": "15764278-50c8-4a19-af00-077bfc314fd2",
 	"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,10}(Z|[+-]\\d{2}:\\d{2})?$"
 }

@@ -1,7 +1,7 @@
 {
 	"heading": "Second custom employee task",
-	"questionType": "YES_OR_NO_WITH_TEXT",
-	"text": "Descriptive text for second custom task",
+	"createdBy": "someUser",
 	"sortOrder": 5,
-	"createdBy": "someUser"
+	"text": "Descriptive text for second custom task",
+	"questionType": "YES_OR_NO_WITH_TEXT"
 }
