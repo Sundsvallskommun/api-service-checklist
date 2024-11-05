@@ -1,32 +1,32 @@
 {
-	"id": "7272d1fc-540e-4394-afe2-e133ca642e91",
-	"name": "Phasename",
 	"bodyText": "Description of manager phase",
-	"timeToComplete": "P1M",
-	"roleType": "MANAGER",
 	"sortOrder": 1,
+	"name": "Phasename",
+	"id": "7272d1fc-540e-4394-afe2-e133ca642e91",
+	"roleType": "MANAGER",
+	"timeToComplete": "P1M",
 	"tasks": [
 		{
-			"id": "0ef2b968-2b65-41d5-9865-e3e0d0f37e00",
+			"fulfilmentStatus": "TRUE",
 			"heading": "First custom manager task",
-			"text": "Descriptive text for custom task",
 			"sortOrder": 0,
+			"id": "0ef2b968-2b65-41d5-9865-e3e0d0f37e00",
+			"text": "Descriptive text for custom task",
 			"roleType": "MANAGER",
 			"questionType": "YES_OR_NO",
-			"customTask": true,
-			"fulfilmentStatus": "TRUE",
-			"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,10}(Z|[+-]\\d{2}:\\d{2})?$"
+			"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,10}(Z|[+-]\\d{2}:\\d{2})?$",
+			"customTask": true
 		},
 		{
-			"id": "e43fdac2-331e-4808-8d83-753a59e329cd",
+			"fulfilmentStatus": "TRUE",
 			"heading": "Description of manager task",
-			"text": "Text for manager task",
 			"sortOrder": 1,
+			"id": "e43fdac2-331e-4808-8d83-753a59e329cd",
+			"text": "Text for manager task",
 			"roleType": "MANAGER",
 			"questionType": "YES_OR_NO",
-			"customTask": false,
-			"fulfilmentStatus": "TRUE",
-			"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,10}(Z|[+-]\\d{2}:\\d{2})?$"
+			"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,10}(Z|[+-]\\d{2}:\\d{2})?$",
+			"customTask": false
 		}
 	]
 }

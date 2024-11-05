@@ -1,7 +1,5 @@
 {
 	"organizationName": "Sundsvall Test Fabrik AB",
 	"organizationNumber": 1234,
-	"communicationChannels": [
-		"EMAIL"
-	]
+	"communicationChannels": ["EMAIL"]
 }

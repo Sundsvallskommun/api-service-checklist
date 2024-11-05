@@ -14,7 +14,9 @@ import se.sundsvall.checklist.api.validation.impl.ValidPeriodConstraintValidator
  * Annotation for validating that a string can be parsed to a {@link java.time.Period}.
  */
 @Documented
-@Target({ ElementType.FIELD, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE })
+@Target({
+	ElementType.FIELD, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE
+})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = ValidPeriodConstraintValidator.class)
 public @interface ValidPeriod {

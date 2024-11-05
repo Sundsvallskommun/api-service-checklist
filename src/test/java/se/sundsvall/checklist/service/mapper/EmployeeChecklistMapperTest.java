@@ -197,8 +197,8 @@ class EmployeeChecklistMapperTest {
 		assertThat(EmployeeChecklistMapper.toEmployeeChecklistPhases(List.of(
 			PhaseEntity.builder().withSortOrder(2).build(),
 			PhaseEntity.builder().withSortOrder(1).build())))
-				.hasSize(2)
-				.extracting(EmployeeChecklistPhase::getSortOrder).containsExactly(1, 2);
+			.hasSize(2)
+			.extracting(EmployeeChecklistPhase::getSortOrder).containsExactly(1, 2);
 	}
 
 	@Test
@@ -211,7 +211,7 @@ class EmployeeChecklistMapperTest {
 		assertThat(EmployeeChecklistMapper.toEmployeeChecklistTasks(List.of(
 			TaskEntity.builder().withSortOrder(2).build(),
 			TaskEntity.builder().withSortOrder(1).build()))).hasSize(2)
-				.extracting(EmployeeChecklistTask::getSortOrder).containsExactly(1, 2);
+			.extracting(EmployeeChecklistTask::getSortOrder).containsExactly(1, 2);
 	}
 
 	@Test

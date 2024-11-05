@@ -60,7 +60,9 @@ public class ManagerEntity {
 	private OffsetDateTime updated;
 
 	@Builder.Default
-	@OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH }, mappedBy = "manager")
+	@OneToMany(cascade = {
+		CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH
+	}, mappedBy = "manager")
 	private List<EmployeeEntity> employees = new ArrayList<>();
 
 	@PrePersist

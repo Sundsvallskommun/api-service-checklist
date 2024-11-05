@@ -1,9 +1,9 @@
 {
+	"updatedBy": "someUser",
 	"heading": "string",
-	"text": "string",
 	"sortOrder": 3,
 	"permission": "SUPERADMIN",
-	"questionType": "COMPLETED_OR_NOT_RELEVANT",
+	"text": "string",
 	"roleType": "MANAGER",
-	"updatedBy": "someUser"
+	"questionType": "COMPLETED_OR_NOT_RELEVANT"
 }

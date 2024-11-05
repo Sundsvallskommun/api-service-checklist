@@ -15,7 +15,9 @@ import se.sundsvall.checklist.api.validation.impl.ValidChannelsConstraintValidat
  * other values.
  */
 @Documented
-@Target({ ElementType.FIELD, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE })
+@Target({
+	ElementType.FIELD, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE
+})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = ValidChannelsConstraintValidator.class)
 public @interface ValidChannels {

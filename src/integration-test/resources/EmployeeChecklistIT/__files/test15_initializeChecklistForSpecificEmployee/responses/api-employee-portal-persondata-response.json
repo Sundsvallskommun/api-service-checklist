@@ -1,16 +1,16 @@
 {
-	"personid": "7ad3ce90-4113-4ac6-93d9-cf574a4a21b0",
-	"givenname": "Jargon",
-	"lastname": "Jedi",
-	"fullname": "Jargon Jedi",
 	"address": "",
-	"postalCode": "",
 	"city": "",
-	"email": "jargon.jedi@noreply.com",
-	"mailNickname": "jargon.jedi",
-	"company": "Root company",
-	"companyId": 1,
+	"postalCode": "",
 	"orgTree": "2|24|Top organization¤3|553|Sub organization 553",
+	"lastname": "Jedi",
+	"companyId": 1,
+	"givenname": "Jargon",
+	"loginName": "PERSONAL\\jar31jed",
 	"isManager": true,
-	"loginName": "PERSONAL\\jar31jed"
+	"personid": "7ad3ce90-4113-4ac6-93d9-cf574a4a21b0",
+	"company": "Root company",
+	"fullname": "Jargon Jedi",
+	"email": "jargon.jedi@noreply.com",
+	"mailNickname": "jargon.jedi"
 }

@@ -35,7 +35,9 @@ class OrganizationMapperTest {
 	private EmployeeEntity employeeEntityMock;
 
 	@ParameterizedTest
-	@ValueSource(booleans = { true, false })
+	@ValueSource(booleans = {
+		true, false
+	})
 	void toEmployeeEntity(boolean manager) {
 		// Arrange
 		final var emailAddress = "emailAddress";
@@ -124,7 +126,9 @@ class OrganizationMapperTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(booleans = { true, false })
+	@ValueSource(booleans = {
+		true, false
+	})
 	void updateEmployee(boolean manager) {
 		// Arrange
 		final var emailAddress = "emailAddress";

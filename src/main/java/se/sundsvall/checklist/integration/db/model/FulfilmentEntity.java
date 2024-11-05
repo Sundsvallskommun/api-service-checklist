@@ -52,11 +52,15 @@ public class FulfilmentEntity {
 	@TimeZoneStorage(NORMALIZE)
 	private OffsetDateTime updated;
 
-	@ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH })
+	@ManyToOne(cascade = {
+		CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH
+	})
 	@JoinColumn(name = "employee_checklist_id", foreignKey = @ForeignKey(name = "fk_fulfilment_employee_checklist"))
 	private EmployeeChecklistEntity employeeChecklist;
 
-	@ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH })
+	@ManyToOne(cascade = {
+		CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH
+	})
 	@JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_fulfilment_task"))
 	private TaskEntity task;
 

@@ -45,7 +45,9 @@ import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
 @RequestMapping("/{municipalityId}/checklists/{checklistId}/phases/{phaseId}/tasks")
 @Tag(name = "Task resources", description = "Resources for managing tasks in a phase")
 @ApiResponses(value = {
-	@ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = { Problem.class, ConstraintViolationProblem.class }))),
+	@ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {
+		Problem.class, ConstraintViolationProblem.class
+	}))),
 	@ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class))),
 	@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 })
@@ -60,7 +62,9 @@ class TaskResource {
 
 	@Operation(summary = "Fetch all tasks in a checklist phase")
 	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
-	@GetMapping(produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
+	@GetMapping(produces = {
+		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
+	})
 	ResponseEntity<List<Task>> fetchChecklistPhaseTasks(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,
@@ -71,7 +75,9 @@ class TaskResource {
 
 	@Operation(summary = "Fetch task in a checklist phase")
 	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
-	@GetMapping(value = "/{taskId}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE })
+	@GetMapping(value = "/{taskId}", produces = {
+		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
+	})
 	ResponseEntity<Task> fetchChecklistPhaseTask(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,
@@ -83,7 +89,11 @@ class TaskResource {
 
 	@Operation(summary = "Create task in checklist phase")
 	@ApiResponse(responseCode = "201", description = "Successful Operation", useReturnTypeSchema = true, headers = @Header(name = LOCATION, schema = @Schema(type = "string")))
-	@PostMapping(produces = { ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE }, consumes = { APPLICATION_JSON_VALUE })
+	@PostMapping(produces = {
+		ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE
+	}, consumes = {
+		APPLICATION_JSON_VALUE
+	})
 	ResponseEntity<Void> createChecklistPhaseTask(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,
@@ -98,7 +108,11 @@ class TaskResource {
 
 	@Operation(summary = "Update task in checklist phase")
 	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
-	@PatchMapping(value = "/{taskId}", produces = { APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE }, consumes = { APPLICATION_JSON_VALUE })
+	@PatchMapping(value = "/{taskId}", produces = {
+		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
+	}, consumes = {
+		APPLICATION_JSON_VALUE
+	})
 	ResponseEntity<Task> updateChecklistPhaseTask(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,

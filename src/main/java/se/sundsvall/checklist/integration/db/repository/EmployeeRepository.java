@@ -6,4 +6,5 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
 
 @CircuitBreaker(name = "employeeRepository")
-public interface EmployeeRepository extends JpaRepository<EmployeeEntity, String> {}
+public interface EmployeeRepository extends JpaRepository<EmployeeEntity, String> {
+}

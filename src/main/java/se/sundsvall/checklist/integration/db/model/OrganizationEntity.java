@@ -42,7 +42,9 @@ import se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel;
 @Table(name = "organization", indexes = {
 	@Index(name = "organization_number_municipality_id_idx", columnList = "organization_number, municipality_id")
 }, uniqueConstraints = {
-	@UniqueConstraint(name = "uk_organization_organization_number_municipality_id", columnNames = { "organization_number", "municipality_id" })
+	@UniqueConstraint(name = "uk_organization_organization_number_municipality_id", columnNames = {
+		"organization_number", "municipality_id"
+	})
 })
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -70,7 +72,9 @@ public class OrganizationEntity {
 	private OffsetDateTime updated;
 
 	@Builder.Default
-	@OneToMany(cascade = { CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
+	@OneToMany(cascade = {
+		CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE
+	}, orphanRemoval = true)
 	@JoinColumn(name = "organization_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_organization_checklist"))
 	private List<ChecklistEntity> checklists = new ArrayList<>();
 

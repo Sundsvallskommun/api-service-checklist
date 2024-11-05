@@ -1,32 +1,26 @@
-{
-  "employeeChecklists": [
-    {
-      "id": "1fb37edc-eb16-4ac3-a436-02971f020b28",
-      "employee": {
-        "id": "1f183588-48ef-4287-9725-4963997c817d",
-        "firstName": "John",
-        "lastName": "Dear",
-        "email": "john.doe@email.com",
-        "username": "johndoe"
-      },
-      "manager": {
-        "id": "1273fadb-0455-455e-a5e6-0eebda329867",
-        "firstName": "Kalle",
-        "lastName": "Anka",
-        "email": "kalleanka@email.com",
-        "username": "kalleanka"
-      },
-      "completed": true,
-      "locked": false,
-      "delegatedTo": [
-        "test@test5.com"
-      ],
-      "phases": [],
-      "created": "2019-01-01T00:00:00+01:00",
-      "updated": "2024-01-01T00:00:00+01:00",
-      "startDate": "2024-02-01",
-      "endDate": "2025-01-01",
-      "expirationDate": "2024-10-01"
-    }
-  ]
-}
+{"employeeChecklists": [{
+	"manager": {
+		"firstName": "Kalle",
+		"lastName": "Anka",
+		"id": "1273fadb-0455-455e-a5e6-0eebda329867",
+		"email": "kalleanka@email.com",
+		"username": "kalleanka"
+	},
+	"delegatedTo": ["test@test5.com"],
+	"endDate": "2025-01-01",
+	"created": "2019-01-01T00:00:00+01:00",
+	"id": "1fb37edc-eb16-4ac3-a436-02971f020b28",
+	"completed": true,
+	"employee": {
+		"firstName": "John",
+		"lastName": "Dear",
+		"id": "1f183588-48ef-4287-9725-4963997c817d",
+		"email": "john.doe@email.com",
+		"username": "johndoe"
+	},
+	"locked": false,
+	"updated": "2024-01-01T00:00:00+01:00",
+	"phases": [],
+	"startDate": "2024-02-01",
+	"expirationDate": "2024-10-01"
+}]}

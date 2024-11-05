@@ -1,9 +1,9 @@
 {
 	"heading": "Name of the task",
-	"text": "Body text of the task",
+	"createdBy": "someUser",
 	"sortOrder": 1,
 	"permission": "SUPERADMIN",
-	"questionType": "YES_OR_NO",
+	"text": "Body text of the task",
 	"roleType": "EMPLOYEE",
-	"createdBy": "someUser"
+	"questionType": "YES_OR_NO"
 }

@@ -14,9 +14,9 @@ public final class TemplatingMapper {
 	/**
 	 * Creates the request that is used to render templates.
 	 *
-	 * @param employee   the employee to use in rendering
-	 * @param identifier the template identifier that is stored in templating-api
-	 * @return RenderRequest that is used in templating integration.
+	 * @param  employee   the employee to use in rendering
+	 * @param  identifier the template identifier that is stored in templating-api
+	 * @return            RenderRequest that is used in templating integration.
 	 */
 
 	public static RenderRequest toRenderRequest(final EmployeeEntity employee, final String identifier) {

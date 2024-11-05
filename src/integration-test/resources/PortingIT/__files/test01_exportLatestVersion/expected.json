@@ -1,27 +1,23 @@
 {
-  "displayName": "Checklist for employee",
-  "lastSavedBy": "someUser",
-  "name": "TEST01_02_EMPLOYEE_CHECKLIST",
-  "phases": [
-    {
-      "bodyText": "Phase description of active phase for employee",
-      "lastSavedBy": "someUser",
-      "name": "Phase name",
-      "roleType": "EMPLOYEE",
-      "sortOrder": 1,
-      "tasks": [
-        {
-          "heading": "Task name",
-          "lastSavedBy": "someUser",
-          "questionType": "YES_OR_NO",
-          "roleType": "EMPLOYEE",
-          "sortOrder": 1,
-          "text": "Task description of active task for employee"
-        }
-      ],
-      "timeToComplete": "P1W"
-    }
-  ],
-  "roleType": "EMPLOYEE",
-  "version": 2
+	"displayName": "Checklist for employee",
+	"lastSavedBy": "someUser",
+	"name": "TEST01_02_EMPLOYEE_CHECKLIST",
+	"roleType": "EMPLOYEE",
+	"version": 2,
+	"phases": [{
+		"bodyText": "Phase description of active phase for employee",
+		"lastSavedBy": "someUser",
+		"sortOrder": 1,
+		"name": "Phase name",
+		"roleType": "EMPLOYEE",
+		"tasks": [{
+			"heading": "Task name",
+			"lastSavedBy": "someUser",
+			"sortOrder": 1,
+			"text": "Task description of active task for employee",
+			"roleType": "EMPLOYEE",
+			"questionType": "YES_OR_NO"
+		}],
+		"timeToComplete": "P1W"
+	}]
 }

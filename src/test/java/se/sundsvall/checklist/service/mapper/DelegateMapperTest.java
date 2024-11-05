@@ -33,7 +33,9 @@ class DelegateMapperTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "MEDBORGARE\\abc10def", "PERSONAL\\abc10def", "TEST\\abc10def" })
+	@ValueSource(strings = {
+		"MEDBORGARE\\abc10def", "PERSONAL\\abc10def", "TEST\\abc10def"
+	})
 	void getUserNameFromLoginNameTest(final String value) {
 
 		final var result = getUsernameFromLoginName(value);

@@ -37,11 +37,13 @@ class ValidJsonConstraintValidatorTest {
 
 	@ParameterizedTest
 	@NullSource
-	@ValueSource(strings = { "", "{", "}", "{]", "[}",
+	@ValueSource(strings = {
+		"", "{", "}", "{]", "[}",
 		"{}",
 		"{\"name\": \"value\", \"roleType\": \"EMPLOYEE\", \"displayName\":\"\"}",
 		"{\"name\": \"value\", \"displayName\":\"value\"}",
-		"{\"name\": \"\", \"roleType\": \"EMPLOYEE\", \"displayName\":\"value\"}" })
+		"{\"name\": \"\", \"roleType\": \"EMPLOYEE\", \"displayName\":\"value\"}"
+	})
 	void invalidJsonTest(final String value) {
 		assertThat(validator.isValid(value, mockContext)).isFalse();
 	}

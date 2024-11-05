@@ -26,7 +26,8 @@ import lombok.Setter;
 	@Index(name = "idx_delegate_username", columnList = "username"),
 	@Index(name = "idx_delegate_first_name", columnList = "first_name"),
 	@Index(name = "idx_delegate_last_name", columnList = "last_name"),
-	@Index(name = "idx_delegate_email", columnList = "email") })
+	@Index(name = "idx_delegate_email", columnList = "email")
+})
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class DelegateEntity {
@@ -50,11 +51,15 @@ public class DelegateEntity {
 	@Column(name = "email", nullable = false)
 	private String email;
 
-	@ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH })
+	@ManyToOne(cascade = {
+		CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH
+	})
 	@JoinColumn(name = "manager_id", foreignKey = @ForeignKey(name = "fk_delegate_manager"))
 	private ManagerEntity delegatedBy;
 
-	@ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH })
+	@ManyToOne(cascade = {
+		CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH
+	})
 	@JoinColumn(name = "employee_checklist_id", foreignKey = @ForeignKey(name = "fk_delegate_employee_checklist"))
 	private EmployeeChecklistEntity employeeChecklist;
 

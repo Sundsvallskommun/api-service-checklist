@@ -1,18 +1,12 @@
 {
-	"name": "api-employee-get-portal-persondata-hen22snu",
 	"request": {
+		"headers": {"Authorization": {"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI4"}},
 		"method": "GET",
-		"urlPath": "/api-employee/portalpersondata/henrietta.snuggles%40noreply.com",
-		"headers": {
-			"Authorization": {
-				"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI4"
-			}
-        }
+		"urlPath": "/api-employee/portalpersondata/henrietta.snuggles%40noreply.com"
 	},
 	"response": {
-		"headers": {
-			"Content-Type": "application/json"
-		},
+		"headers": {"Content-Type": "application/json"},
 		"status": 404
-	}
+	},
+	"name": "api-employee-get-portal-persondata-hen22snu"
 }
