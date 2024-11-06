@@ -110,7 +110,7 @@ public class EmployeeChecklistService {
 	}
 
 	private EmployeeChecklistEntity handleUpdatedEmployeeInformation(EmployeeChecklistEntity employeeChecklist) {
-		if (employeeChecklist.getEmployee().getUpdated().isBefore(OffsetDateTime.now().minus(employeeInformationUpdateInterval))) {
+		if (ofNullable(employeeChecklist.getEmployee().getUpdated()).orElse(OffsetDateTime.MIN).isBefore(OffsetDateTime.now().minus(employeeInformationUpdateInterval))) {
 			final var filter = buildUuidEmployeeFilter(employeeChecklist.getEmployee().getId());
 			employeeIntegration.getEmployeeInformation(filter).stream()
 				.findFirst()

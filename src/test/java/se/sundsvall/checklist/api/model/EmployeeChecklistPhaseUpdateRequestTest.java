@@ -6,6 +6,7 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToString;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
 import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 
 import java.util.Random;
@@ -31,5 +32,26 @@ class EmployeeChecklistPhaseUpdateRequestTest {
 			hasValidBeanToString(),
 			hasValidBeanEquals(),
 			hasValidBeanHashCode()));
+	}
+
+	@Test
+	void testBuilderMethods() {
+		final var updatedBy = "updatedBy";
+		final var fulfilmentStatus = FulfilmentStatus.TRUE;
+
+		final var bean = EmployeeChecklistPhaseUpdateRequest.builder()
+			.withUpdatedBy(updatedBy)
+			.withTasksFulfilmentStatus(fulfilmentStatus)
+			.build();
+
+		assertThat(bean).hasNoNullFieldsOrProperties();
+		assertThat(bean.getUpdatedBy()).isEqualTo(updatedBy);
+		assertThat(bean.getTasksFulfilmentStatus()).isEqualTo(fulfilmentStatus);
+	}
+
+	@Test
+	void testNoDirtOnCreatedBean() {
+		assertThat(EmployeeChecklistPhaseUpdateRequest.builder().build()).hasAllNullFieldsOrProperties();
+		assertThat(new EmployeeChecklistPhaseUpdateRequest()).hasAllNullFieldsOrProperties();
 	}
 }

@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -42,6 +44,7 @@ class EmployeeChecklistResourceFailureTest {
 	private static final String ID = UUID.randomUUID().toString();
 	private static final String MUNICIPALITY_ID = "2281";
 	private static final String BASE_PATH = "/{municipalityId}/employee-checklists";
+	private static final String USER_ID = "userId";
 
 	@MockBean
 	private EmployeeChecklistService serviceMock;
@@ -264,6 +267,7 @@ class EmployeeChecklistResourceFailureTest {
 		final var path = "/{employeeChecklistId}/phases/{phaseId}";
 		final var body = EmployeeChecklistPhaseUpdateRequest.builder()
 			.withTasksFulfilmentStatus(FulfilmentStatus.EMPTY)
+			.withUpdatedBy(USER_ID)
 			.build();
 
 		// Act
@@ -287,6 +291,41 @@ class EmployeeChecklistResourceFailureTest {
 					tuple("updateAllTasksInPhase.municipalityId", "not a valid municipality ID"),
 					tuple("updateAllTasksInPhase.employeeChecklistId", "not a valid UUID"),
 					tuple("updateAllTasksInPhase.phaseId", "not a valid UUID"));
+		});
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {
+		"", " "
+	})
+	@NullSource
+	void updateAllTasksFulfilmentInPhaseNoPerformedBy(String performedBy) {
+		// Arrange
+		final var path = "/{employeeChecklistId}/phases/{phaseId}";
+		final var body = EmployeeChecklistPhaseUpdateRequest.builder()
+			.withTasksFulfilmentStatus(FulfilmentStatus.EMPTY)
+			.withUpdatedBy(performedBy)
+			.build();
+
+		// Act
+		final var response = webTestClient.patch()
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID, "phaseId", ID)))
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert and verify
+		assertThat(response).isNotNull().satisfies(r -> {
+			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
+			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
+			assertThat(r.getViolations())
+				.extracting(
+					Violation::getField, Violation::getMessage)
+				.containsExactlyInAnyOrder(
+					tuple("updatedBy", "must not be blank"));
 		});
 	}
 
@@ -334,6 +373,7 @@ class EmployeeChecklistResourceFailureTest {
 		final var path = "/{employeeChecklistId}/tasks/{taskId}";
 		final var body = EmployeeChecklistTaskUpdateRequest.builder()
 			.withFulfilmentStatus(FulfilmentStatus.TRUE)
+			.withUpdatedBy(USER_ID)
 			.build();
 
 		// Act
@@ -357,6 +397,41 @@ class EmployeeChecklistResourceFailureTest {
 					tuple("updateTaskFulfilment.municipalityId", "not a valid municipality ID"),
 					tuple("updateTaskFulfilment.employeeChecklistId", "not a valid UUID"),
 					tuple("updateTaskFulfilment.taskId", "not a valid UUID"));
+		});
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {
+		"", " "
+	})
+	@NullSource
+	void updateTaskFulfilmentNoPerformedBy(String performedBy) {
+		// Arrange
+		final var path = "/{employeeChecklistId}/tasks/{taskId}";
+		final var body = EmployeeChecklistTaskUpdateRequest.builder()
+			.withFulfilmentStatus(FulfilmentStatus.TRUE)
+			.withUpdatedBy(performedBy)
+			.build();
+
+		// Act
+		final var response = webTestClient.patch()
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID, "taskId", ID)))
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert and verify
+		assertThat(response).isNotNull().satisfies(r -> {
+			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
+			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
+			assertThat(r.getViolations())
+				.extracting(
+					Violation::getField, Violation::getMessage)
+				.containsExactlyInAnyOrder(
+					tuple("updatedBy", "must not be blank"));
 		});
 	}
 

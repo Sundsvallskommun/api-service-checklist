@@ -10,10 +10,6 @@ import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 import se.sundsvall.checklist.api.validation.impl.ValidChannelsConstraintValidator;
 
-/**
- * Annotation for validating that a List<CommunicationChannel> does not contain NO_COMMUNICATION in combination with
- * other values.
- */
 @Documented
 @Target({
 	ElementType.FIELD, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE
@@ -22,7 +18,7 @@ import se.sundsvall.checklist.api.validation.impl.ValidChannelsConstraintValidat
 @Constraint(validatedBy = ValidChannelsConstraintValidator.class)
 public @interface ValidChannels {
 
-	String message() default "Cannot have NO_COMMUNICATION in combination with other values";
+	String message() default "channel attribute has errors";
 
 	/**
 	 * Controls whether the value can be null or not.

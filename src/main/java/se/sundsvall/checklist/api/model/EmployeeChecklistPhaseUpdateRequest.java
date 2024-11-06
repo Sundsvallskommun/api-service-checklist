@@ -3,6 +3,7 @@ package se.sundsvall.checklist.api.model;
 import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.WRITE_ONLY;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,4 +20,8 @@ public class EmployeeChecklistPhaseUpdateRequest {
 
 	@Schema(description = "The value to be set on all tasks in the phase", accessMode = WRITE_ONLY, nullable = true)
 	private FulfilmentStatus tasksFulfilmentStatus;
+
+	@Schema(description = "Identifier for the person that is performing the update", example = "joe01doe", accessMode = WRITE_ONLY)
+	@NotBlank
+	private String updatedBy;
 }

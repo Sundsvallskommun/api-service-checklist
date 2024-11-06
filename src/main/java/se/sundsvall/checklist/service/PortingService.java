@@ -193,6 +193,8 @@ public class PortingService {
 				.findAny()
 				.orElse(entity.getName()));
 
+		entity.setMunicipalityId(organization.getMunicipalityId());
+
 		// Update "last-saved-by" on the existing entity
 		updateLastSavedBy(entity);
 
