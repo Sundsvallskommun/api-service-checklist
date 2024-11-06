@@ -64,7 +64,7 @@ public class CustomFulfilmentEntity {
 	@JoinColumn(name = "custom_task_id", foreignKey = @ForeignKey(name = "fk_custom_task_fulfilment_task"))
 	private CustomTaskEntity customTask;
 
-	@Column(name = "last_saved_by")
+	@Column(name = "last_saved_by", nullable = false)
 	private String lastSavedBy;
 
 	@PrePersist

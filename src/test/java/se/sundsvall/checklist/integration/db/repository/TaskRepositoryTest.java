@@ -29,7 +29,7 @@ class TaskRepositoryTest {
 
 	@Test
 	void saveTest() {
-		final var result = repository.save(TaskEntity.builder().build());
+		final var result = repository.save(TaskEntity.builder().withLastSavedBy("lastSavedBy").build());
 		assertThat(result).isNotNull();
 		assertThat(result.getId()).hasSize(36);
 		assertThat(result.getCreated()).isCloseTo(now(), within(2, SECONDS));
@@ -39,7 +39,7 @@ class TaskRepositoryTest {
 	@Test
 	void updateTest() {
 		// Act
-		var result = repository.save(TaskEntity.builder().build());
+		var result = repository.save(TaskEntity.builder().withLastSavedBy("lastSavedBy").build());
 		result.setText("modified");
 		result = repository.saveAndFlush(result);
 

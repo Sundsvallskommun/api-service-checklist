@@ -25,7 +25,7 @@ class PhaseRepositoryTest {
 	@Test
 	void saveTest() {
 		// Act
-		final var result = repository.save(PhaseEntity.builder().build());
+		final var result = repository.save(PhaseEntity.builder().withLastSavedBy("lastSavedBy").build());
 
 		// Assert
 		assertThat(result).isNotNull();
@@ -37,7 +37,7 @@ class PhaseRepositoryTest {
 	@Test
 	void updateTest() {
 		// Act
-		var result = repository.save(PhaseEntity.builder().build());
+		var result = repository.save(PhaseEntity.builder().withLastSavedBy("lastSavedBy").build());
 		result.setName("modified");
 		result = repository.saveAndFlush(result);
 
