@@ -224,7 +224,7 @@ class EmployeeChecklistIntegrationTest {
 		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		// Act
-		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request));
+		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateAllFulfilmentForAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request));
 
 		// Assert and verify
 		assertThat(e.getStatus()).isEqualTo(Status.BAD_REQUEST);
@@ -262,7 +262,7 @@ class EmployeeChecklistIntegrationTest {
 		when(employeeChecklistsRepositoryMock.save(entity)).thenReturn(entity);
 
 		// Act
-		final var result = integration.updateAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request);
+		final var result = integration.updateAllFulfilmentForAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request);
 
 		// Verify and assert
 		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
@@ -316,7 +316,7 @@ class EmployeeChecklistIntegrationTest {
 		when(employeeChecklistsRepositoryMock.save(entity)).thenReturn(entity);
 
 		// Act
-		final var result = integration.updateAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request);
+		final var result = integration.updateAllFulfilmentForAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request);
 
 		// Verify and assert
 		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
@@ -344,7 +344,7 @@ class EmployeeChecklistIntegrationTest {
 		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		// Act
-		final var result = integration.updateAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request);
+		final var result = integration.updateAllFulfilmentForAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request);
 
 		// Verify and assert
 		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
@@ -360,7 +360,7 @@ class EmployeeChecklistIntegrationTest {
 		final var request = EmployeeChecklistPhaseUpdateRequest.builder().build();
 
 		// Act
-		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request));
+		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateAllFulfilmentForAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request));
 
 		// Verify and assert
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);

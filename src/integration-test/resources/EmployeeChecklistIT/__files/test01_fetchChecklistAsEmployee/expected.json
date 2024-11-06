@@ -29,6 +29,7 @@
 		"tasks": [
 			{
 				"fulfilmentStatus": "TRUE",
+				"updatedBy": "aemp0loyee",
 				"heading": "Description of first employee task",
 				"responseText": "Response for employee task",
 				"sortOrder": 1,
@@ -40,6 +41,7 @@
 				"customTask": false
 			},
 			{
+				"fulfilmentStatus": "EMPTY",
 				"heading": "Description of second employee task",
 				"sortOrder": 2,
 				"id": "0c8b99e9-718b-4c92-9ba3-a49dc29d48b5",

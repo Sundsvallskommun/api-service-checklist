@@ -85,8 +85,8 @@ insert into employee_checklist (end_date, expiration_date, start_date, locked, c
 values ('2024-07-01', '2024-10-01', '2024-01-01', false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', 'e20598a4-6b32-459e-8c15-febbd4c5868e', NULL, '1810c9c4-7281-44de-9930-426d9f065f4d', 'f853e2b1-a144-4305-b05e-ee8d6dc6d005');
 
 -- Fulfilment
-insert into fulfilment (updated, id, employee_checklist_id, response_text, task_id, completed)
-values ('2024-01-02 12:00:00.000', '34e076da-8694-4cb9-be1a-814212801686', 'f853e2b1-a144-4305-b05e-ee8d6dc6d005', 'Response for employee task', 'd250a20c-a616-4147-bfe0-19a0d12f3df0', 'TRUE');
+insert into fulfilment (updated, last_saved_by, id, employee_checklist_id, response_text, task_id, completed)
+values ('2024-01-02 12:00:00.000', 'aemp0loyee', '34e076da-8694-4cb9-be1a-814212801686', 'f853e2b1-a144-4305-b05e-ee8d6dc6d005', 'Response for employee task', 'd250a20c-a616-4147-bfe0-19a0d12f3df0', 'TRUE');
 
 -- --------------------------------------------------------------------------------------
 -- Checklist for employee B working for sub organization 5535
@@ -105,8 +105,8 @@ insert into custom_task (sort_order, created, updated, last_saved_by, heading, i
 values (0, '2024-01-03 12:00:00.000', '2024-01-03 12:00:00.000', 'someUser', 'Custom employee task', '1b3bfe66-0e6c-4e92-a410-7c620a5461f4', 'f5960058-fad8-4825-85f3-b0fdb518adc5', '3e9780a7-96f3-4d07-80ee-a9634b786a38', 'Descriptive text for custom task', 'YES_OR_NO', 'EMPLOYEE');
 
 -- Custom fulfilment
-insert into custom_fulfilment (updated, custom_task_id, id, employee_checklist_id, response_text, completed)
-VALUES('2024-01-03 12:00:00.000', '1b3bfe66-0e6c-4e92-a410-7c620a5461f4', 'a5d19134-d21f-4965-bd25-44a123e94ee1', 'f5960058-fad8-4825-85f3-b0fdb518adc5', NULL, 'FALSE');
+insert into custom_fulfilment (updated, last_saved_by, custom_task_id, id, employee_checklist_id, response_text, completed)
+VALUES('2024-01-03 12:00:00.000', 'aman0agr', '1b3bfe66-0e6c-4e92-a410-7c620a5461f4', 'a5d19134-d21f-4965-bd25-44a123e94ee1', 'f5960058-fad8-4825-85f3-b0fdb518adc5', NULL, 'FALSE');
 
 -- --------------------------------------------------------------------------------------
 -- Checklist for manager C working for sub organization 55351 hence getting
@@ -125,9 +125,9 @@ insert into employee_checklist (end_date, expiration_date, start_date, locked, c
 values ('2024-07-06', '2024-10-06', '2024-01-06', false, '2024-01-06 12:00:00.000', '2024-01-06 12:00:00.000', '0ae36695-c575-4ec4-bd97-a25093c2021f', NULL, 'ae93a63e-d975-4cd9-8e28-4cc9ea8b4d96', '2e2bb099-560c-450e-8f20-764498a37983');
 
 -- Fulfilments
-insert into fulfilment (updated, id, employee_checklist_id, response_text, task_id, completed)
-values ('2024-01-07 12:00:00.000', '6b17e790-f22c-46fe-8bff-f58af8cbab6a', '2e2bb099-560c-450e-8f20-764498a37983', 'Response for new manager task', '0da1dfa2-5196-45c2-b605-162a323b9b5e', 'TRUE'),
-       ('2024-01-07 12:00:00.000', 'c44c6fac-2875-468c-9112-e0a5a2646cb6', '2e2bb099-560c-450e-8f20-764498a37983', 'Response for managers manager task', 'e930c70d-a961-4b71-89b4-935d47db982f', 'TRUE');
+insert into fulfilment (updated, last_saved_by, id, employee_checklist_id, response_text, task_id, completed)
+values ('2024-01-07 12:00:00.000', 'aman0agr', '6b17e790-f22c-46fe-8bff-f58af8cbab6a', '2e2bb099-560c-450e-8f20-764498a37983', 'Response for new manager task', '0da1dfa2-5196-45c2-b605-162a323b9b5e', 'TRUE'),
+       ('2024-01-07 12:00:00.000', 'cman1agr', 'c44c6fac-2875-468c-9112-e0a5a2646cb6', '2e2bb099-560c-450e-8f20-764498a37983', 'Response for managers manager task', 'e930c70d-a961-4b71-89b4-935d47db982f', 'TRUE');
 
 -- ======================================================================================
 -- Employee C, Manager C and D are used in testcase test02

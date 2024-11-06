@@ -1,5 +1,6 @@
 {
 	"fulfilmentStatus": "FALSE",
+	"updatedBy": "joe01doe",
 	"heading": "Description of first employee task",
 	"responseText": "Failed to fulfil assignment. The oven is still hot. I repeat. The oven is still hot.",
 	"sortOrder": 1,
