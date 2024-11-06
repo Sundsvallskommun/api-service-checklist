@@ -64,6 +64,9 @@ public class FulfilmentEntity {
 	@JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_fulfilment_task"))
 	private TaskEntity task;
 
+	@Column(name = "last_saved_by", nullable = false)
+	private String lastSavedBy;
+
 	@PrePersist
 	@PreUpdate
 	void preUpdate() {

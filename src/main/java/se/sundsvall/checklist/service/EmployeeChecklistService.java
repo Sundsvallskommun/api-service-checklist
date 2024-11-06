@@ -7,6 +7,7 @@ import static org.apache.commons.lang3.ObjectUtils.notEqual;
 import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static org.zalando.problem.Status.OK;
+import static se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus.EMPTY;
 import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER;
 import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.buildDefaultNewEmployeeFilter;
 import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.buildUuidEmployeeFilter;
@@ -88,6 +89,7 @@ public class EmployeeChecklistService {
 			.map(this::handleUpdatedEmployeeInformation)
 			.map(EmployeeChecklistMapper::toEmployeeChecklist)
 			.map(ob -> decorateWithCustomTasks(ob, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(ob.getId(), municipalityId)))
+			.map(this::initializeWithEmptyFulfilment)
 			.map(ob -> decorateWithFulfilment(ob, employeeChecklist))
 			.map(this::decorateWithDelegateInformation)
 			.map(ServiceUtils::calculateCompleted)
@@ -103,10 +105,20 @@ public class EmployeeChecklistService {
 			.filter(ob -> Objects.equals(username, ob.getEmployee().getManager().getUsername())) // After possible update, the checklist might not be handled by sent in username anymore
 			.map(EmployeeChecklistMapper::toEmployeeChecklist)
 			.map(ob -> decorateWithCustomTasks(ob, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(ob.getId(), municipalityId)))
+			.map(this::initializeWithEmptyFulfilment)
 			.map(ob -> decorateWithFulfilment(ob, fetchEntity(employeeChecklists, ob.getId())))
 			.map(this::decorateWithDelegateInformation)
 			.map(ServiceUtils::calculateCompleted)
 			.toList();
+	}
+
+	private EmployeeChecklist initializeWithEmptyFulfilment(EmployeeChecklist employeeChecklist) {
+		ofNullable(employeeChecklist.getPhases()).orElse(emptyList()).stream()
+			.map(EmployeeChecklistPhase::getTasks)
+			.flatMap(List::stream)
+			.forEach(task -> task.setFulfilmentStatus(EMPTY));
+
+		return employeeChecklist;
 	}
 
 	private EmployeeChecklistEntity handleUpdatedEmployeeInformation(EmployeeChecklistEntity employeeChecklist) {
@@ -178,7 +190,7 @@ public class EmployeeChecklistService {
 	}
 
 	public EmployeeChecklistPhase updateAllTasksInPhase(String municipalityId, String employeeChecklistId, String phaseId, EmployeeChecklistPhaseUpdateRequest request) {
-		final var employeeChecklist = employeeChecklistIntegration.updateAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request);
+		final var employeeChecklist = employeeChecklistIntegration.updateAllFulfilmentForAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request);
 
 		return employeeChecklist.getChecklist().getPhases().stream()
 			.filter(phase -> Objects.equals(phase.getId(), phaseId))

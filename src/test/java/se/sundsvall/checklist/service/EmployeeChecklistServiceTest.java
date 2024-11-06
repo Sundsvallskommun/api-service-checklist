@@ -51,6 +51,7 @@ import se.sundsvall.checklist.integration.db.model.FulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.ManagerEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
+import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
@@ -127,6 +128,7 @@ class EmployeeChecklistServiceTest {
 			assertThat(ph.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
 			assertThat(ph.getTasks()).hasSize(2).allSatisfy(t -> {
 				assertThat(t.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
+				assertThat(t.getFulfilmentStatus()).isEqualTo(FulfilmentStatus.EMPTY);
 			});
 		});
 		verify(employeeChecklistIntegrationMock).fetchOptionalEmployeeChecklist(MUNICIPALITY_ID, username);
@@ -198,24 +200,69 @@ class EmployeeChecklistServiceTest {
 			.withManager(manager)
 			.withUpdated(OffsetDateTime.now())
 			.build();
-		final var checklist = ChecklistEntity.builder().build();
+
+		final var managerTask = TaskEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.MANAGER).build();
+		final var employeeTask = TaskEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.EMPLOYEE).build();
+		final var managerPhase = PhaseEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.MANAGER).withTasks(List.of(managerTask)).build();
+		final var employeePhase = PhaseEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.EMPLOYEE).withTasks(List.of(managerTask, employeeTask)).build();
+
+		final var checklist = ChecklistEntity.builder()
+			.withPhases(List.of(managerPhase, employeePhase))
+			.build();
+
+		final var customEmployeeTask = CustomTaskEntity.builder()
+			.withId(customTaskId)
+			.withRoleType(RoleType.EMPLOYEE)
+			.withPhase(employeePhase)
+			.build();
+		final var customManagerTask = CustomTaskEntity.builder()
+			.withId(customTaskId)
+			.withRoleType(RoleType.MANAGER)
+			.withPhase(managerPhase)
+			.build();
+
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
 			.withId(employeeChecklistId)
 			.withEmployee(employee)
 			.withChecklist(checklist)
 			.build();
-		final var customTask = CustomTaskEntity.builder()
-			.withId(customTaskId)
-			.build();
 
 		when(employeeChecklistIntegrationMock.fetchEmployeeChecklistsForManager(MUNICIPALITY_ID, username)).thenReturn(List.of(employeeChecklistEntity));
-		when(customTaskRepositoryMock.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(employeeChecklistId, MUNICIPALITY_ID)).thenReturn(List.of(customTask));
+		when(customTaskRepositoryMock.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(employeeChecklistId, MUNICIPALITY_ID)).thenReturn(List.of(customEmployeeTask, customManagerTask));
 
 		// Act
 		final var employeeChecklists = service.fetchChecklistsForManager(MUNICIPALITY_ID, username);
 
 		// Assert and verify
 		assertThat(employeeChecklists).hasSize(1);
+		assertThat(employeeChecklists.getFirst().getPhases()).hasSize(2).satisfiesExactlyInAnyOrder(ph -> {
+			assertThat(ph.getRoleType()).isEqualTo(RoleType.MANAGER);
+			assertThat(ph.getTasks()).hasSize(2).satisfiesExactlyInAnyOrder(t -> {
+				assertThat(t.isCustomTask()).isTrue();
+				assertThat(t.getRoleType()).isEqualTo(RoleType.MANAGER);
+				assertThat(t.getFulfilmentStatus()).isEqualTo(FulfilmentStatus.EMPTY);
+			}, t -> {
+				assertThat(t.isCustomTask()).isFalse();
+				assertThat(t.getRoleType()).isEqualTo(RoleType.MANAGER);
+				assertThat(t.getFulfilmentStatus()).isEqualTo(FulfilmentStatus.EMPTY);
+			});
+		}, ph -> {
+			assertThat(ph.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
+			assertThat(ph.getTasks()).hasSize(3).satisfiesExactlyInAnyOrder(t -> {
+				assertThat(t.isCustomTask()).isTrue();
+				assertThat(t.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
+				assertThat(t.getFulfilmentStatus()).isEqualTo(FulfilmentStatus.EMPTY);
+			}, t -> {
+				assertThat(t.isCustomTask()).isFalse();
+				assertThat(t.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
+				assertThat(t.getFulfilmentStatus()).isEqualTo(FulfilmentStatus.EMPTY);
+			}, t -> {
+				assertThat(t.isCustomTask()).isFalse();
+				assertThat(t.getRoleType()).isEqualTo(RoleType.MANAGER);
+				assertThat(t.getFulfilmentStatus()).isEqualTo(FulfilmentStatus.EMPTY);
+			});
+		});
+
 		verify(employeeChecklistIntegrationMock).fetchEmployeeChecklistsForManager(MUNICIPALITY_ID, username);
 		verify(customTaskRepositoryMock).findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(employeeChecklistId, MUNICIPALITY_ID);
 		verify(employeeChecklistIntegrationMock).fetchDelegateEmails(employeeChecklistId);
@@ -590,7 +637,7 @@ class EmployeeChecklistServiceTest {
 				.build())
 			.build();
 
-		when(employeeChecklistIntegrationMock.updateAllTasksInPhase(MUNICIPALITY_ID, employeeChecklistId, phaseId, request)).thenReturn(entity);
+		when(employeeChecklistIntegrationMock.updateAllFulfilmentForAllTasksInPhase(MUNICIPALITY_ID, employeeChecklistId, phaseId, request)).thenReturn(entity);
 
 		// Act
 		final var result = service.updateAllTasksInPhase(MUNICIPALITY_ID, employeeChecklistId, phaseId, request);
@@ -599,7 +646,7 @@ class EmployeeChecklistServiceTest {
 		assertThat(result).isNotNull().isInstanceOf(EmployeeChecklistPhase.class);
 		assertThat(result.getId()).isEqualTo(phaseId);
 
-		verify(employeeChecklistIntegrationMock).updateAllTasksInPhase(MUNICIPALITY_ID, employeeChecklistId, phaseId, request);
+		verify(employeeChecklistIntegrationMock).updateAllFulfilmentForAllTasksInPhase(MUNICIPALITY_ID, employeeChecklistId, phaseId, request);
 		verify(customTaskRepositoryMock).findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(employeeChecklistId, MUNICIPALITY_ID);
 	}
 
@@ -617,7 +664,7 @@ class EmployeeChecklistServiceTest {
 				.build())
 			.build();
 
-		when(employeeChecklistIntegrationMock.updateAllTasksInPhase(MUNICIPALITY_ID, employeeChecklistId, phaseId, request)).thenReturn(entity);
+		when(employeeChecklistIntegrationMock.updateAllFulfilmentForAllTasksInPhase(MUNICIPALITY_ID, employeeChecklistId, phaseId, request)).thenReturn(entity);
 
 		// Act
 		final var e = assertThrows(ThrowableProblem.class, () -> service.updateAllTasksInPhase(MUNICIPALITY_ID, employeeChecklistId, phaseId, request));
@@ -626,7 +673,7 @@ class EmployeeChecklistServiceTest {
 		assertThat(e.getStatus()).isEqualTo(Status.INTERNAL_SERVER_ERROR);
 		assertThat(e.getMessage()).isEqualTo("Internal Server Error: Could not read phase with id %s from employee checklist with id %s.".formatted(phaseId, employeeChecklistId));
 
-		verify(employeeChecklistIntegrationMock).updateAllTasksInPhase(MUNICIPALITY_ID, employeeChecklistId, phaseId, request);
+		verify(employeeChecklistIntegrationMock).updateAllFulfilmentForAllTasksInPhase(MUNICIPALITY_ID, employeeChecklistId, phaseId, request);
 	}
 
 	@Test

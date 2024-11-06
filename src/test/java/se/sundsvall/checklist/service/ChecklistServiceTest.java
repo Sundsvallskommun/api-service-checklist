@@ -23,6 +23,9 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.EnumSource.Mode;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
@@ -33,6 +36,7 @@ import org.zalando.problem.Problem;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
+import se.sundsvall.checklist.integration.db.model.enums.LifeCycle;
 import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
 
@@ -123,9 +127,13 @@ class ChecklistServiceTest {
 		verifyNoMoreInteractions(mockChecklistRepository);
 	}
 
-	@Test
-	void deleteUnattachedChecklist() {
+	@ParameterizedTest
+	@EnumSource(value = LifeCycle.class, names = {
+		"ACTIVE", "DEPRECATED"
+	}, mode = Mode.EXCLUDE)
+	void deleteUnattachedChecklist(LifeCycle lifeCycle) {
 		final var entity = createChecklistEntity();
+		entity.setLifeCycle(lifeCycle);
 		when(mockChecklistRepository.findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(entity));
 
 		checklistService.deleteChecklist(MUNICIPALITY_ID, entity.getId());
@@ -136,11 +144,15 @@ class ChecklistServiceTest {
 		verify(mockOrganizationRepository, never()).save(any());
 	}
 
-	@Test
-	void deleteAttachedChecklist() {
+	@ParameterizedTest
+	@EnumSource(value = LifeCycle.class, names = {
+		"ACTIVE", "DEPRECATED"
+	}, mode = Mode.EXCLUDE)
+	void deleteAttachedChecklist(LifeCycle lifeCycle) {
 		final var checklistEntity = createChecklistEntity();
 		final var organizationEntity = createOrganizationEntity();
 		organizationEntity.getChecklists().add(checklistEntity);
+		checklistEntity.setLifeCycle(lifeCycle);
 
 		when(mockChecklistRepository.findByIdAndMunicipalityId(checklistEntity.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(checklistEntity));
 		when(mockOrganizationRepository.findByChecklistsIdAndChecklistsMunicipalityId(checklistEntity.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(organizationEntity));
@@ -165,15 +177,18 @@ class ChecklistServiceTest {
 		verifyNoMoreInteractions(mockChecklistRepository);
 	}
 
-	@Test
-	void deleteChecklistWrongLifecycle() {
+	@ParameterizedTest
+	@EnumSource(value = LifeCycle.class, names = {
+		"ACTIVE", "DEPRECATED"
+	})
+	void deleteChecklistWrongLifecycle(LifeCycle lifeCycle) {
 		final var entity = createChecklistEntity();
-		entity.setLifeCycle(ACTIVE);
+		entity.setLifeCycle(lifeCycle);
 		when(mockChecklistRepository.findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(entity));
 
 		assertThatThrownBy(() -> checklistService.deleteChecklist(MUNICIPALITY_ID, entity.getId()))
 			.isInstanceOfAny(Problem.class)
-			.hasMessageContaining("Cannot delete checklist with lifecycle ACTIVE");
+			.hasMessageContaining("Cannot delete checklist with lifecycle %s".formatted(lifeCycle));
 
 		verify(mockChecklistRepository).findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID);
 		verifyNoMoreInteractions(mockChecklistRepository);

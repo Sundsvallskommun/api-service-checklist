@@ -116,7 +116,7 @@ public class EmployeeChecklistIntegration {
 	}
 
 	@Transactional
-	public EmployeeChecklistEntity updateAllTasksInPhase(String municipalityId, String employeeChecklistId, String phaseId, EmployeeChecklistPhaseUpdateRequest request) {
+	public EmployeeChecklistEntity updateAllFulfilmentForAllTasksInPhase(String municipalityId, String employeeChecklistId, String phaseId, EmployeeChecklistPhaseUpdateRequest request) {
 		final var employeeChecklist = employeeChecklistRepository.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NO_MATCHING_EMPLOYEE_CHECKLIST_FOUND.formatted(employeeChecklistId, municipalityId)));
 
@@ -131,32 +131,32 @@ public class EmployeeChecklistIntegration {
 			.filter(phase -> Objects.equals(phase.getId(), phaseId))
 			.findAny()
 			.map(PhaseEntity::getTasks)
-			.ifPresent(tasks -> tasks.forEach(task -> updateCommonTask(employeeChecklist, task, request.getTasksFulfilmentStatus())));
+			.ifPresent(tasks -> tasks.forEach(task -> updateCommonTask(employeeChecklist, task, request.getTasksFulfilmentStatus(), request.getUpdatedBy())));
 
 		// Update of all custom tasks (if such exists) in phase
 		employeeChecklist.getCustomTasks().stream()
 			.filter(task -> Objects.equals(task.getPhase().getId(), phaseId))
-			.forEach(task -> updateCustomTask(employeeChecklist, task, request.getTasksFulfilmentStatus()));
+			.forEach(task -> updateCustomTask(employeeChecklist, task, request.getTasksFulfilmentStatus(), request.getUpdatedBy()));
 
 		return employeeChecklistRepository.save(employeeChecklist);
 	}
 
-	private void updateCommonTask(EmployeeChecklistEntity employeeChecklist, TaskEntity task, FulfilmentStatus fulfilmentStatus) {
+	private void updateCommonTask(EmployeeChecklistEntity employeeChecklist, TaskEntity task, FulfilmentStatus fulfilmentStatus, String updatedBy) {
 		employeeChecklist.getFulfilments().stream()
 			.filter(fulfilment -> Objects.equals(task, fulfilment.getTask()))
 			.findAny()
 			.ifPresentOrElse(
 				fulfilment -> fulfilment.setCompleted(fulfilmentStatus),
-				() -> employeeChecklist.getFulfilments().add(toFulfilmentEntity(employeeChecklist, task, fulfilmentStatus)));
+				() -> employeeChecklist.getFulfilments().add(toFulfilmentEntity(employeeChecklist, task, fulfilmentStatus, null, updatedBy)));
 	}
 
-	private void updateCustomTask(EmployeeChecklistEntity employeeChecklist, CustomTaskEntity customTask, FulfilmentStatus fulfilmentStatus) {
+	private void updateCustomTask(EmployeeChecklistEntity employeeChecklist, CustomTaskEntity customTask, FulfilmentStatus fulfilmentStatus, String updatedBy) {
 		employeeChecklist.getCustomFulfilments().stream()
 			.filter(fulfilment -> Objects.equals(customTask, fulfilment.getCustomTask()))
 			.findAny()
 			.ifPresentOrElse(
 				fulfilment -> fulfilment.setCompleted(fulfilmentStatus),
-				() -> employeeChecklist.getCustomFulfilments().add(toCustomFulfilmentEntity(employeeChecklist, customTask, fulfilmentStatus)));
+				() -> employeeChecklist.getCustomFulfilments().add(toCustomFulfilmentEntity(employeeChecklist, customTask, fulfilmentStatus, null, updatedBy)));
 	}
 
 	public EmployeeChecklistEntity fetchEmployeeChecklist(String municipalityId, String employeeChecklistId) {
@@ -192,7 +192,7 @@ public class EmployeeChecklistIntegration {
 				fulfilment -> {
 					ofNullable(request.getFulfilmentStatus()).ifPresent(fulfilment::setCompleted);
 					ofNullable(request.getResponseText()).ifPresent(fulfilment::setResponseText);
-				}, () -> employeeChecklist.getFulfilments().add(toFulfilmentEntity(employeeChecklist, task, request.getFulfilmentStatus(), request.getResponseText())));
+				}, () -> employeeChecklist.getFulfilments().add(toFulfilmentEntity(employeeChecklist, task, request.getFulfilmentStatus(), request.getResponseText(), request.getUpdatedBy())));
 	}
 
 	@Transactional
@@ -221,7 +221,7 @@ public class EmployeeChecklistIntegration {
 				fulfilment -> {
 					ofNullable(request.getFulfilmentStatus()).ifPresent(fulfilment::setCompleted);
 					ofNullable(request.getResponseText()).ifPresent(fulfilment::setResponseText);
-				}, () -> employeeChecklist.getCustomFulfilments().add(toCustomFulfilmentEntity(employeeChecklist, customTask, request.getFulfilmentStatus(), request.getResponseText())));
+				}, () -> employeeChecklist.getCustomFulfilments().add(toCustomFulfilmentEntity(employeeChecklist, customTask, request.getFulfilmentStatus(), request.getResponseText(), request.getUpdatedBy())));
 	}
 
 	@Transactional

@@ -17,6 +17,8 @@ import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
+
 class CustomFulfilmentEntityTest {
 
 	@BeforeAll
@@ -32,8 +34,45 @@ class CustomFulfilmentEntityTest {
 	}
 
 	@Test
+	void testBuilder() {
+
+		final var completed = FulfilmentStatus.TRUE;
+		final var customTask = CustomTaskEntity.builder().build();
+		final var employeeChecklist = EmployeeChecklistEntity.builder().build();
+		final var id = "id";
+		final var lastSavedBy = "lastSavedBy";
+		final var responseText = "responseText";
+		final var updated = OffsetDateTime.now();
+
+		final var bean = CustomFulfilmentEntity.builder()
+			.withCompleted(completed)
+			.withCustomTask(customTask)
+			.withEmployeeChecklist(employeeChecklist)
+			.withId(id)
+			.withLastSavedBy(lastSavedBy)
+			.withResponseText(responseText)
+			.withUpdated(updated)
+			.build();
+
+		assertThat(bean).hasNoNullFieldsOrProperties();
+		assertThat(bean.getCompleted()).isEqualTo(completed);
+		assertThat(bean.getCustomTask()).isEqualTo(customTask);
+		assertThat(bean.getEmployeeChecklist()).isEqualTo(employeeChecklist);
+		assertThat(bean.getId()).isEqualTo(id);
+		assertThat(bean.getLastSavedBy()).isEqualTo(lastSavedBy);
+		assertThat(bean.getResponseText()).isEqualTo(responseText);
+		assertThat(bean.getUpdated()).isEqualTo(updated);
+	}
+
+	@Test
+	void testNoDirtOnCreatedBean() {
+		assertThat(CustomFulfilmentEntity.builder().build()).hasAllNullFieldsOrProperties();
+		assertThat(new CustomFulfilmentEntity()).hasAllNullFieldsOrProperties();
+	}
+
+	@Test
 	void preUpdateTest() {
-		var entity = CustomFulfilmentEntity.builder().build();
+		final var entity = CustomFulfilmentEntity.builder().build();
 
 		entity.preUpdate();
 

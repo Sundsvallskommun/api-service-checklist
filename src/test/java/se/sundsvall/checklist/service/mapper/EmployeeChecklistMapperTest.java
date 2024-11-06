@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
+import generated.se.sundsvall.employee.Manager;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhase;
@@ -32,8 +33,6 @@ import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 import se.sundsvall.checklist.integration.db.model.enums.RoleType;
-
-import generated.se.sundsvall.employee.Manager;
 
 class EmployeeChecklistMapperTest {
 
@@ -242,8 +241,9 @@ class EmployeeChecklistMapperTest {
 		final var taskEntity = TaskEntity.builder().build();
 		final var fulfilmentStatus = FulfilmentStatus.TRUE;
 		final var responseText = "responseText";
+		final var updatedBy = "updatedBy";
 
-		final var entity = EmployeeChecklistMapper.toFulfilmentEntity(employeeChecklistEntity, taskEntity, fulfilmentStatus, responseText);
+		final var entity = EmployeeChecklistMapper.toFulfilmentEntity(employeeChecklistEntity, taskEntity, fulfilmentStatus, responseText, updatedBy);
 
 		assertThat(entity.getEmployeeChecklist()).isEqualTo(employeeChecklistEntity);
 		assertThat(entity.getTask()).isEqualTo(taskEntity);
@@ -251,6 +251,7 @@ class EmployeeChecklistMapperTest {
 		assertThat(entity.getId()).isNull();
 		assertThat(entity.getResponseText()).isEqualTo(responseText);
 		assertThat(entity.getUpdated()).isNull();
+		assertThat(entity.getLastSavedBy()).isEqualTo(updatedBy);
 	}
 
 	@Test
@@ -258,8 +259,9 @@ class EmployeeChecklistMapperTest {
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder().build();
 		final var taskEntity = TaskEntity.builder().build();
 		final var fulfilmentStatus = FulfilmentStatus.TRUE;
+		final var updatedBy = "updatedBy";
 
-		final var entity = EmployeeChecklistMapper.toFulfilmentEntity(employeeChecklistEntity, taskEntity, fulfilmentStatus);
+		final var entity = EmployeeChecklistMapper.toFulfilmentEntity(employeeChecklistEntity, taskEntity, fulfilmentStatus, null, updatedBy);
 
 		assertThat(entity.getEmployeeChecklist()).isEqualTo(employeeChecklistEntity);
 		assertThat(entity.getTask()).isEqualTo(taskEntity);
@@ -267,6 +269,7 @@ class EmployeeChecklistMapperTest {
 		assertThat(entity.getId()).isNull();
 		assertThat(entity.getResponseText()).isNull();
 		assertThat(entity.getUpdated()).isNull();
+		assertThat(entity.getLastSavedBy()).isEqualTo(updatedBy);
 	}
 
 	@Test
@@ -274,20 +277,17 @@ class EmployeeChecklistMapperTest {
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder().build();
 		final var taskEntity = TaskEntity.builder().build();
 
-		final var entity = EmployeeChecklistMapper.toFulfilmentEntity(employeeChecklistEntity, taskEntity, null, null);
+		final var entity = EmployeeChecklistMapper.toFulfilmentEntity(employeeChecklistEntity, taskEntity, null, null, null);
 
+		assertThat(entity).hasAllNullFieldsOrPropertiesExcept("employeeChecklist", "task");
 		assertThat(entity.getEmployeeChecklist()).isEqualTo(employeeChecklistEntity);
 		assertThat(entity.getTask()).isEqualTo(taskEntity);
-		assertThat(entity.getCompleted()).isNull();
-		assertThat(entity.getId()).isNull();
-		assertThat(entity.getResponseText()).isNull();
-		assertThat(entity.getUpdated()).isNull();
 	}
 
 	@Test
 	void toFulfilmentEntityFromNulls() {
-		assertThat(EmployeeChecklistMapper.toFulfilmentEntity(null, TaskEntity.builder().build(), null, null)).isNull();
-		assertThat(EmployeeChecklistMapper.toFulfilmentEntity(EmployeeChecklistEntity.builder().build(), null, null, null)).isNull();
+		assertThat(EmployeeChecklistMapper.toFulfilmentEntity(null, TaskEntity.builder().build(), null, null, null)).isNull();
+		assertThat(EmployeeChecklistMapper.toFulfilmentEntity(EmployeeChecklistEntity.builder().build(), null, null, null, null)).isNull();
 	}
 
 	@Test
@@ -296,8 +296,9 @@ class EmployeeChecklistMapperTest {
 		final var taskEntity = CustomTaskEntity.builder().build();
 		final var fulfilmentStatus = FulfilmentStatus.TRUE;
 		final var responseText = "responseText";
+		final var updatedBy = "updatedBy";
 
-		final var entity = EmployeeChecklistMapper.toCustomFulfilmentEntity(employeeChecklistEntity, taskEntity, fulfilmentStatus, responseText);
+		final var entity = EmployeeChecklistMapper.toCustomFulfilmentEntity(employeeChecklistEntity, taskEntity, fulfilmentStatus, responseText, updatedBy);
 
 		assertThat(entity.getEmployeeChecklist()).isEqualTo(employeeChecklistEntity);
 		assertThat(entity.getCustomTask()).isEqualTo(taskEntity);
@@ -305,6 +306,7 @@ class EmployeeChecklistMapperTest {
 		assertThat(entity.getId()).isNull();
 		assertThat(entity.getResponseText()).isEqualTo(responseText);
 		assertThat(entity.getUpdated()).isNull();
+		assertThat(entity.getLastSavedBy()).isEqualTo(updatedBy);
 	}
 
 	@Test
@@ -312,8 +314,9 @@ class EmployeeChecklistMapperTest {
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder().build();
 		final var taskEntity = CustomTaskEntity.builder().build();
 		final var fulfilmentStatus = FulfilmentStatus.TRUE;
+		final var updatedBy = "updatedBy";
 
-		final var entity = EmployeeChecklistMapper.toCustomFulfilmentEntity(employeeChecklistEntity, taskEntity, fulfilmentStatus);
+		final var entity = EmployeeChecklistMapper.toCustomFulfilmentEntity(employeeChecklistEntity, taskEntity, fulfilmentStatus, null, updatedBy);
 
 		assertThat(entity.getEmployeeChecklist()).isEqualTo(employeeChecklistEntity);
 		assertThat(entity.getCustomTask()).isEqualTo(taskEntity);
@@ -321,6 +324,7 @@ class EmployeeChecklistMapperTest {
 		assertThat(entity.getId()).isNull();
 		assertThat(entity.getResponseText()).isNull();
 		assertThat(entity.getUpdated()).isNull();
+		assertThat(entity.getLastSavedBy()).isEqualTo(updatedBy);
 	}
 
 	@Test
@@ -328,20 +332,17 @@ class EmployeeChecklistMapperTest {
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder().build();
 		final var taskEntity = CustomTaskEntity.builder().build();
 
-		final var entity = EmployeeChecklistMapper.toCustomFulfilmentEntity(employeeChecklistEntity, taskEntity, null, null);
+		final var entity = EmployeeChecklistMapper.toCustomFulfilmentEntity(employeeChecklistEntity, taskEntity, null, null, null);
 
+		assertThat(entity).hasAllNullFieldsOrPropertiesExcept("employeeChecklist", "customTask");
 		assertThat(entity.getEmployeeChecklist()).isEqualTo(employeeChecklistEntity);
 		assertThat(entity.getCustomTask()).isEqualTo(taskEntity);
-		assertThat(entity.getCompleted()).isNull();
-		assertThat(entity.getId()).isNull();
-		assertThat(entity.getResponseText()).isNull();
-		assertThat(entity.getUpdated()).isNull();
 	}
 
 	@Test
 	void toCustomFulfilmentEntityFromNulls() {
-		assertThat(EmployeeChecklistMapper.toCustomFulfilmentEntity(null, CustomTaskEntity.builder().build(), null, null)).isNull();
-		assertThat(EmployeeChecklistMapper.toCustomFulfilmentEntity(EmployeeChecklistEntity.builder().build(), null, null, null)).isNull();
+		assertThat(EmployeeChecklistMapper.toCustomFulfilmentEntity(null, CustomTaskEntity.builder().build(), null, null, null)).isNull();
+		assertThat(EmployeeChecklistMapper.toCustomFulfilmentEntity(EmployeeChecklistEntity.builder().build(), null, null, null, null)).isNull();
 	}
 
 	@Test

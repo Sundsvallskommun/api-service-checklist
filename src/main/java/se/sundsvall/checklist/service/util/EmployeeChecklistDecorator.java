@@ -14,8 +14,8 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistPhase;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
-import se.sundsvall.checklist.integration.db.model.FulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
+import se.sundsvall.checklist.integration.db.model.FulfilmentEntity;
 
 public final class EmployeeChecklistDecorator {
 	private EmployeeChecklistDecorator() {}
@@ -111,6 +111,7 @@ public final class EmployeeChecklistDecorator {
 		task.setFulfilmentStatus(fulfilment.getCompleted());
 		task.setResponseText(fulfilment.getResponseText());
 		task.setUpdated(fulfilment.getUpdated());
+		task.setUpdatedBy(fulfilment.getLastSavedBy());
 
 		return task;
 	}
@@ -120,6 +121,7 @@ public final class EmployeeChecklistDecorator {
 		task.setFulfilmentStatus(fulfilment.getCompleted());
 		task.setResponseText(fulfilment.getResponseText());
 		task.setUpdated(fulfilment.getUpdated());
+		task.setUpdatedBy(fulfilment.getLastSavedBy());
 
 		return task;
 	}

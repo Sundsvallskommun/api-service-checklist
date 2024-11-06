@@ -8,6 +8,7 @@
 	"tasks": [
 		{
 			"fulfilmentStatus": "TRUE",
+			"updatedBy": "joe01doe",
 			"heading": "First custom manager task",
 			"sortOrder": 0,
 			"id": "0ef2b968-2b65-41d5-9865-e3e0d0f37e00",
@@ -19,6 +20,7 @@
 		},
 		{
 			"fulfilmentStatus": "TRUE",
+			"updatedBy": "joe01doe",
 			"heading": "Description of manager task",
 			"sortOrder": 1,
 			"id": "e43fdac2-331e-4808-8d83-753a59e329cd",

@@ -36,11 +36,7 @@ public final class EmployeeChecklistMapper {
 	// Entity mappings
 	// -----------------------------
 
-	public static FulfilmentEntity toFulfilmentEntity(EmployeeChecklistEntity employeeChecklistEntity, TaskEntity taskEntity, FulfilmentStatus status) {
-		return toFulfilmentEntity(employeeChecklistEntity, taskEntity, status, null);
-	}
-
-	public static FulfilmentEntity toFulfilmentEntity(EmployeeChecklistEntity employeeChecklistEntity, TaskEntity taskEntity, FulfilmentStatus status, String responseText) {
+	public static FulfilmentEntity toFulfilmentEntity(EmployeeChecklistEntity employeeChecklistEntity, TaskEntity taskEntity, FulfilmentStatus status, String responseText, String lastSavedBy) {
 		if (anyNull(employeeChecklistEntity, taskEntity)) {
 			return null;
 		}
@@ -48,16 +44,13 @@ public final class EmployeeChecklistMapper {
 		return FulfilmentEntity.builder()
 			.withCompleted(status)
 			.withEmployeeChecklist(employeeChecklistEntity)
+			.withLastSavedBy(lastSavedBy)
 			.withResponseText(responseText)
 			.withTask(taskEntity)
 			.build();
 	}
 
-	public static CustomFulfilmentEntity toCustomFulfilmentEntity(EmployeeChecklistEntity employeeChecklistEntity, CustomTaskEntity customTaskEntity, FulfilmentStatus status) {
-		return toCustomFulfilmentEntity(employeeChecklistEntity, customTaskEntity, status, null);
-	}
-
-	public static CustomFulfilmentEntity toCustomFulfilmentEntity(EmployeeChecklistEntity employeeChecklistEntity, CustomTaskEntity customTaskEntity, FulfilmentStatus status, String responseText) {
+	public static CustomFulfilmentEntity toCustomFulfilmentEntity(EmployeeChecklistEntity employeeChecklistEntity, CustomTaskEntity customTaskEntity, FulfilmentStatus status, String responseText, String lastSavedBy) {
 		if (anyNull(employeeChecklistEntity, customTaskEntity)) {
 			return null;
 		}
@@ -66,6 +59,7 @@ public final class EmployeeChecklistMapper {
 			.withCompleted(status)
 			.withCustomTask(customTaskEntity)
 			.withEmployeeChecklist(employeeChecklistEntity)
+			.withLastSavedBy(lastSavedBy)
 			.withResponseText(responseText)
 			.build();
 	}

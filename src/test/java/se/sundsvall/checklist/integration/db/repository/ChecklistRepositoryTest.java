@@ -31,7 +31,7 @@ class ChecklistRepositoryTest {
 
 	@Test
 	void saveTest() {
-		final var result = checklistRepository.save(ChecklistEntity.builder().build());
+		final var result = checklistRepository.save(ChecklistEntity.builder().withLastSavedBy("lastSavedBy").build());
 
 		assertThat(result).isNotNull();
 		assertThat(result.getId()).hasSize(36);
@@ -44,7 +44,7 @@ class ChecklistRepositoryTest {
 
 	@Test
 	void updateTest() {
-		final var result = checklistRepository.save(ChecklistEntity.builder().build());
+		final var result = checklistRepository.save(ChecklistEntity.builder().withLastSavedBy("lastSavedBy").build());
 		result.setName("updated");
 		checklistRepository.saveAndFlush(result);
 

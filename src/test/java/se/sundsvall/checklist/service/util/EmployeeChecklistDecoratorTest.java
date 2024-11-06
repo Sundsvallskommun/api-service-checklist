@@ -91,10 +91,12 @@ class EmployeeChecklistDecoratorTest {
 		final var commonFulfilmentStatus = FulfilmentStatus.FALSE;
 		final var commonResponseText = "commonResponseText";
 		final var commonUpdated = OffsetDateTime.now();
+		final var commonLastSavedBy = "commonLastSavedBy";
 		final var customTaskId = UUID.randomUUID().toString();
 		final var customFulfilmentStatus = FulfilmentStatus.TRUE;
 		final var customResponseText = "customResponseText";
 		final var customUpdated = OffsetDateTime.now().minusDays(1);
+		final var customLastSavedBy = "commonLastSavedBy";
 		final var entity = EmployeeChecklistEntity.builder()
 			.withFulfilments(List.of(FulfilmentEntity.builder()
 				.withTask(TaskEntity.builder()
@@ -103,6 +105,7 @@ class EmployeeChecklistDecoratorTest {
 				.withCompleted(commonFulfilmentStatus)
 				.withResponseText(commonResponseText)
 				.withUpdated(commonUpdated)
+				.withLastSavedBy(commonLastSavedBy)
 				.build()))
 			.withCustomFulfilments(List.of(CustomFulfilmentEntity.builder()
 				.withCustomTask(CustomTaskEntity.builder()
@@ -111,6 +114,7 @@ class EmployeeChecklistDecoratorTest {
 				.withCompleted(customFulfilmentStatus)
 				.withResponseText(customResponseText)
 				.withUpdated(customUpdated)
+				.withLastSavedBy(customLastSavedBy)
 				.build()))
 			.build();
 
@@ -136,18 +140,21 @@ class EmployeeChecklistDecoratorTest {
 				EmployeeChecklistTask::getId,
 				EmployeeChecklistTask::getFulfilmentStatus,
 				EmployeeChecklistTask::getResponseText,
-				EmployeeChecklistTask::getUpdated)
+				EmployeeChecklistTask::getUpdated,
+				EmployeeChecklistTask::getUpdatedBy)
 			.containsExactlyInAnyOrder(
 				tuple(
 					commonTaskId,
 					commonFulfilmentStatus,
 					commonResponseText,
-					commonUpdated),
+					commonUpdated,
+					commonLastSavedBy),
 				tuple(
 					customTaskId,
 					customFulfilmentStatus,
 					customResponseText,
-					customUpdated));
+					customUpdated,
+					customLastSavedBy));
 	}
 
 	@Test

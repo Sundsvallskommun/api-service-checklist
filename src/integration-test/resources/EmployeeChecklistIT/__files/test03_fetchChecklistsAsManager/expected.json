@@ -29,6 +29,7 @@
 				"roleType": "MANAGER",
 				"timeToComplete": "P1M",
 				"tasks": [{
+					"fulfilmentStatus": "EMPTY",
 					"heading": "Description of manager task",
 					"sortOrder": 1,
 					"id": "e43fdac2-331e-4808-8d83-753a59e329cd",
@@ -48,6 +49,7 @@
 				"tasks": [
 					{
 						"fulfilmentStatus": "TRUE",
+						"updatedBy": "aemp0loyee",
 						"heading": "Description of first employee task",
 						"responseText": "Response for employee task",
 						"sortOrder": 1,
@@ -59,6 +61,7 @@
 						"customTask": false
 					},
 					{
+						"fulfilmentStatus": "EMPTY",
 						"heading": "Description of second employee task",
 						"sortOrder": 2,
 						"id": "0c8b99e9-718b-4c92-9ba3-a49dc29d48b5",
@@ -68,6 +71,7 @@
 						"customTask": false
 					},
 					{
+						"fulfilmentStatus": "EMPTY",
 						"heading": "Description of manager task",
 						"sortOrder": 3,
 						"id": "056423aa-01a4-4243-ace4-561a6e4cd25f",
@@ -112,6 +116,7 @@
 				"roleType": "MANAGER",
 				"timeToComplete": "P1M",
 				"tasks": [{
+					"fulfilmentStatus": "EMPTY",
 					"heading": "Description of manager task",
 					"sortOrder": 1,
 					"id": "e43fdac2-331e-4808-8d83-753a59e329cd",
@@ -131,6 +136,7 @@
 				"tasks": [
 					{
 						"fulfilmentStatus": "FALSE",
+						"updatedBy": "aman0agr",
 						"heading": "Custom employee task",
 						"sortOrder": 0,
 						"id": "1b3bfe66-0e6c-4e92-a410-7c620a5461f4",
@@ -141,6 +147,7 @@
 						"customTask": true
 					},
 					{
+						"fulfilmentStatus": "EMPTY",
 						"heading": "Description of first employee task",
 						"sortOrder": 1,
 						"id": "d250a20c-a616-4147-bfe0-19a0d12f3df0",
@@ -150,6 +157,7 @@
 						"customTask": false
 					},
 					{
+						"fulfilmentStatus": "EMPTY",
 						"heading": "Description of second employee task",
 						"sortOrder": 2,
 						"id": "0c8b99e9-718b-4c92-9ba3-a49dc29d48b5",
@@ -159,6 +167,7 @@
 						"customTask": false
 					},
 					{
+						"fulfilmentStatus": "EMPTY",
 						"heading": "Description of manager task",
 						"sortOrder": 3,
 						"id": "056423aa-01a4-4243-ace4-561a6e4cd25f",
@@ -204,6 +213,7 @@
 			"tasks": [
 				{
 					"fulfilmentStatus": "TRUE",
+					"updatedBy": "aman0agr",
 					"heading": "Description of new manager task",
 					"responseText": "Response for new manager task",
 					"sortOrder": 1,
@@ -216,6 +226,7 @@
 				},
 				{
 					"fulfilmentStatus": "TRUE",
+					"updatedBy": "cman1agr",
 					"heading": "Description of managers manager task",
 					"responseText": "Response for managers manager task",
 					"sortOrder": 2,
