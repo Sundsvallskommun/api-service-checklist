@@ -697,7 +697,6 @@ class EmployeeChecklistIntegrationTest {
 		var municipalityId = "municipalityId";
 		var employeeChecklistId = UUID.randomUUID().toString();
 		var entity = EmployeeChecklistEntity.builder().build();
-		var mentor = Mentor.builder().build();
 
 		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
