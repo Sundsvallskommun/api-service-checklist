@@ -41,6 +41,9 @@ public class EmployeeChecklist {
 	@Schema(description = "Signal if the checklist is locked or not", accessMode = READ_ONLY)
 	private boolean locked;
 
+	@Schema(description = "The mentor on the checklist", accessMode = READ_ONLY)
+	private Mentor mentor;
+
 	@Schema(description = "Contains the email to the delegate(s) if the checklist is delegated", accessMode = READ_ONLY)
 	private List<String> delegatedTo;
 

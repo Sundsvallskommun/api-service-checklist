@@ -9,6 +9,7 @@ import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
@@ -105,6 +106,9 @@ public class EmployeeChecklistEntity {
 	@Builder.Default
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "employeeChecklist")
 	private List<DelegateEntity> delegates = new ArrayList<>();
+
+	@Embedded
+	private MentorEntity mentor;
 
 	@PrePersist
 	void prePersist() {

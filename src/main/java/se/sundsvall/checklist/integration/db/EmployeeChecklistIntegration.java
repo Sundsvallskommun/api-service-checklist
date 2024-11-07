@@ -29,12 +29,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
 import org.zalando.problem.ThrowableProblem;
 
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.Employment;
-import generated.se.sundsvall.employee.Manager;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
+import se.sundsvall.checklist.api.model.Mentor;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
@@ -43,6 +41,7 @@ import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
 import se.sundsvall.checklist.integration.db.model.FulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.ManagerEntity;
+import se.sundsvall.checklist.integration.db.model.MentorEntity;
 import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
@@ -56,6 +55,10 @@ import se.sundsvall.checklist.integration.db.repository.ManagerRepository;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
 import se.sundsvall.checklist.service.OrganizationTree;
 import se.sundsvall.checklist.service.OrganizationTree.OrganizationLine;
+
+import generated.se.sundsvall.employee.Employee;
+import generated.se.sundsvall.employee.Employment;
+import generated.se.sundsvall.employee.Manager;
 
 @Component
 public class EmployeeChecklistIntegration {
@@ -230,6 +233,23 @@ public class EmployeeChecklistIntegration {
 
 		delegateRepository.deleteByEmployeeChecklist(employeeChecklist);
 		employeeChecklistRepository.deleteById(employeeChecklistId);
+	}
+
+	@Transactional
+	public EmployeeChecklistEntity setMentor(final String municipalityId, final String employeeChecklistId, final Mentor mentor) {
+		var employeeChecklist = fetchEmployeeChecklist(municipalityId, employeeChecklistId);
+		employeeChecklist.setMentor(MentorEntity.builder()
+			.withUserId(mentor.getUserId())
+			.withName(mentor.getName())
+			.build());
+		return employeeChecklistRepository.save(employeeChecklist);
+	}
+
+	@Transactional
+	public void deleteMentor(final String municipalityId, final String employeeChecklistId) {
+		var employeeChecklist = fetchEmployeeChecklist(municipalityId, employeeChecklistId);
+		employeeChecklist.setMentor(null);
+		employeeChecklistRepository.save(employeeChecklist);
 	}
 
 	@Transactional

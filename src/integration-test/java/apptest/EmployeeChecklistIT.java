@@ -267,4 +267,47 @@ class EmployeeChecklistIT extends AbstractAppTest {
 			.withExpectedResponse(EXPECTED_FILE)
 			.sendRequestAndVerifyResponse();
 	}
+
+	@Test
+	void test16_fetchChecklistWithMentorSetAsEmployee() {
+		setupCall()
+			.withServicePath(PATH_PREFIX + "/employee/jemp7loyee")
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(EXPECTED_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test17_setMentor() {
+		var employeeChecklistId = "cca064da-ab15-4276-8fbb-e8ba07b28718";
+
+		setupCall()
+			.withServicePath(PATH_PREFIX + "/" + employeeChecklistId + "/mentor")
+			.withHttpMethod(POST)
+			.withRequest(REQUEST_FILE)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(EXPECTED_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test18_deleteMentor() {
+		var employeeChecklistId = "cca064da-ab15-4276-8fbb-e8ba07b28718";
+
+		var checklist = employeeChecklistRepository.findById(employeeChecklistId);
+		assertThat(checklist).hasValueSatisfying(employeeChecklistEntity -> assertThat(employeeChecklistEntity.getMentor()).isNotNull());
+
+		setupCall()
+			.withServicePath(PATH_PREFIX + "/" + employeeChecklistId + "/mentor")
+			.withHttpMethod(DELETE)
+			.withExpectedResponseStatus(NO_CONTENT)
+			.withExpectedResponseBodyIsNull()
+			.sendRequestAndVerifyResponse();
+
+		checklist = employeeChecklistRepository.findById(employeeChecklistId);
+		assertThat(checklist).hasValueSatisfying(employeeChecklistEntity -> assertThat(employeeChecklistEntity.getMentor()).isNull());
+	}
 }

@@ -25,12 +25,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
 
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.Employment;
-import generated.se.sundsvall.employee.Manager;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
+import se.sundsvall.checklist.api.model.Mentor;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
@@ -53,6 +51,10 @@ import se.sundsvall.checklist.integration.db.repository.ManagerRepository;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
 import se.sundsvall.checklist.service.OrganizationTree;
 import se.sundsvall.checklist.service.mapper.OrganizationMapper;
+
+import generated.se.sundsvall.employee.Employee;
+import generated.se.sundsvall.employee.Employment;
+import generated.se.sundsvall.employee.Manager;
 
 @ExtendWith(MockitoExtension.class)
 class EmployeeChecklistIntegrationTest {
@@ -673,6 +675,36 @@ class EmployeeChecklistIntegrationTest {
 		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
 		verify(delegateRepositoryMock).deleteByEmployeeChecklist(entity);
 		verify(employeeChecklistsRepositoryMock).deleteById(employeeChecklistId);
+	}
+
+	@Test
+	void setMentor() {
+		var municipalityId = "municipalityId";
+		var employeeChecklistId = UUID.randomUUID().toString();
+		var entity = EmployeeChecklistEntity.builder().build();
+		var mentor = Mentor.builder().build();
+
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
+
+		integration.setMentor(municipalityId, employeeChecklistId, mentor);
+
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
+		verify(employeeChecklistsRepositoryMock).save(entity);
+	}
+
+	@Test
+	void deleteMentor() {
+		var municipalityId = "municipalityId";
+		var employeeChecklistId = UUID.randomUUID().toString();
+		var entity = EmployeeChecklistEntity.builder().build();
+		var mentor = Mentor.builder().build();
+
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
+
+		integration.deleteMentor(municipalityId, employeeChecklistId);
+
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
+		verify(employeeChecklistsRepositoryMock).save(entity);
 	}
 
 	@Test
