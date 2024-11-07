@@ -27,6 +27,108 @@ tags:
 - name: Employee checklist resources
   description: Resources for managing employee checklists
 paths:
+  /{municipalityId}/employee-checklists/{employeeChecklistId}/mentor:
+    put:
+      tags:
+      - Employee checklist resources
+      summary: Set the mentor
+      description: Set the mentor on a specific employee checklist
+      operationId: setMentor
+      parameters:
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: employeeChecklistId
+        in: path
+        description: Employee checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Mentor"
+        required: true
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployeeChecklist"
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/EmployeeChecklist"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+    delete:
+      tags:
+      - Employee checklist resources
+      summary: Delete the mentor
+      description: Delete the mentor on a specific employee checklist
+      operationId: deleteMentor
+      parameters:
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: employeeChecklistId
+        in: path
+        description: Employee checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/organizations:
     get:
       tags:
@@ -43,12 +145,6 @@ paths:
           type: string
         example: 2281
       responses:
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -57,6 +153,12 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "200":
           description: Successful Operation
           content:
@@ -104,12 +206,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -118,6 +214,12 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/import/replace/{organizationNumber}/{organizationName}:
     post:
       tags:
@@ -170,18 +272,6 @@ paths:
               style: simple
               schema:
                 type: string
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -190,6 +280,18 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/import/add/{organizationNumber}/{organizationName}:
     post:
       tags:
@@ -242,18 +344,6 @@ paths:
               style: simple
               schema:
                 type: string
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -262,6 +352,18 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/employee-checklists/{employeeChecklistId}/phases/{phaseId}/customtasks:
     post:
       tags:
@@ -307,18 +409,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/CustomTask"
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -327,108 +417,18 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
-  /{municipalityId}/employee-checklists/{employeeChecklistId}/mentor:
-    post:
-      tags:
-      - Employee checklist resources
-      summary: Set the mentor
-      description: Set the mentor on a specific employee checklist
-      operationId: setMentor
-      parameters:
-      - name: municipalityId
-        in: path
-        description: Municipality id
-        required: true
-        schema:
-          type: string
-        example: 2281
-      - name: employeeChecklistId
-        in: path
-        description: Employee checklist id
-        required: true
-        schema:
-          type: string
-        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Mentor"
-        required: true
-      responses:
-        "200":
-          description: Successful Operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/EmployeeChecklist"
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/EmployeeChecklist"
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "500":
           description: Internal Server Error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "400":
-          description: Bad Request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: "#/components/schemas/Problem"
-                - $ref: "#/components/schemas/ConstraintViolationProblem"
-    delete:
-      tags:
-      - Employee checklist resources
-      summary: Delete the mentor
-      description: Delete the mentor on a specific employee checklist
-      operationId: deleteMentor
-      parameters:
-      - name: municipalityId
-        in: path
-        description: Municipality id
-        required: true
-        schema:
-          type: string
-        example: 2281
-      - name: employeeChecklistId
-        in: path
-        description: Employee checklist id
-        required: true
-        schema:
-          type: string
-        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
-      responses:
-        "204":
-          description: No Content
         "404":
           description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "400":
-          description: Bad Request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: "#/components/schemas/Problem"
-                - $ref: "#/components/schemas/ConstraintViolationProblem"
   /{municipalityId}/employee-checklists/{employeeChecklistId}/email:
     post:
       tags:
@@ -455,18 +455,6 @@ paths:
       responses:
         "201":
           description: Successful Operation
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -475,6 +463,18 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/employee-checklists/{employeeChecklistId}/delegate-to/{email}:
     post:
       tags:
@@ -520,12 +520,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -534,6 +528,12 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/employee-checklists/initialize:
     post:
       tags:
@@ -559,18 +559,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/EmployeeChecklistResponse"
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -579,6 +567,18 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/employee-checklists/initialize/{personId}:
     post:
       tags:
@@ -612,18 +612,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/EmployeeChecklistResponse"
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -632,6 +620,18 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/checklists:
     get:
       tags:
@@ -660,12 +660,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Checklist"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -674,6 +668,12 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
     post:
       tags:
       - Checklist resources
@@ -701,12 +701,6 @@ paths:
               style: simple
               schema:
                 type: string
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -715,6 +709,12 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/checklists/{checklistId}/version:
     post:
       tags:
@@ -744,12 +744,6 @@ paths:
               style: simple
               schema:
                 type: string
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -758,6 +752,12 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/checklists/{checklistId}/phases:
     get:
       tags:
@@ -780,18 +780,6 @@ paths:
           type: string
         example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       responses:
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -800,6 +788,18 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "200":
           description: Successful Operation
           content:
@@ -840,6 +840,20 @@ paths:
               $ref: "#/components/schemas/PhaseCreateRequest"
         required: true
       responses:
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "404":
           description: Not Found
           content:
@@ -853,20 +867,6 @@ paths:
               style: simple
               schema:
                 type: string
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "400":
-          description: Bad Request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: "#/components/schemas/Problem"
-                - $ref: "#/components/schemas/ConstraintViolationProblem"
   /{municipalityId}/checklists/{checklistId}/phases/{phaseId}/tasks:
     get:
       tags:
@@ -896,18 +896,6 @@ paths:
           type: string
         example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       responses:
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -916,6 +904,18 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "200":
           description: Successful Operation
           content:
@@ -963,6 +963,20 @@ paths:
               $ref: "#/components/schemas/TaskCreateRequest"
         required: true
       responses:
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "404":
           description: Not Found
           content:
@@ -976,20 +990,6 @@ paths:
               style: simple
               schema:
                 type: string
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "400":
-          description: Bad Request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                - $ref: "#/components/schemas/Problem"
-                - $ref: "#/components/schemas/ConstraintViolationProblem"
   /{municipalityId}/organizations/{organizationId}:
     get:
       tags:
@@ -1013,12 +1013,6 @@ paths:
           type: string
         example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       responses:
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -1027,6 +1021,12 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "200":
           description: Successful Operation
           content:
@@ -1072,12 +1072,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -1086,6 +1080,12 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
     patch:
       tags:
       - Organization resources
@@ -1129,12 +1129,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -1143,6 +1137,12 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/employee-checklists/{employeeChecklistId}/tasks/{taskId}:
     patch:
       tags:
@@ -1187,18 +1187,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/EmployeeChecklistTask"
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -1207,6 +1195,18 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/employee-checklists/{employeeChecklistId}/phases/{phaseId}:
     patch:
       tags:
@@ -1252,18 +1252,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/EmployeeChecklistPhase"
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -1272,6 +1260,18 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/employee-checklists/{employeeChecklistId}/customtasks/{taskId}:
     get:
       tags:
@@ -1311,18 +1311,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/CustomTask"
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -1331,6 +1319,18 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
     delete:
       tags:
       - Employee checklist resources
@@ -1362,18 +1362,6 @@ paths:
       responses:
         "204":
           description: Successful Operation
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -1382,6 +1370,18 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
     patch:
       tags:
       - Employee checklist resources
@@ -1426,18 +1426,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/CustomTask"
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -1446,6 +1434,18 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/checklists/{checklistId}:
     get:
       tags:
@@ -1483,12 +1483,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -1497,6 +1491,12 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
     delete:
       tags:
       - Checklist resources
@@ -1526,12 +1526,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -1540,6 +1534,12 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
     patch:
       tags:
       - Checklist resources
@@ -1582,12 +1582,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -1596,6 +1590,12 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/checklists/{checklistId}/phases/{phaseId}:
     get:
       tags:
@@ -1625,18 +1625,6 @@ paths:
           type: string
         example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       responses:
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -1645,6 +1633,18 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "200":
           description: Successful Operation
           content:
@@ -1682,20 +1682,6 @@ paths:
           type: string
         example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       responses:
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "204":
-          description: Successful Operation
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -1704,6 +1690,20 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "204":
+          description: Successful Operation
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
     patch:
       tags:
       - Phase resources
@@ -1738,18 +1738,6 @@ paths:
               $ref: "#/components/schemas/PhaseUpdateRequest"
         required: true
       responses:
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -1758,6 +1746,18 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "200":
           description: Successful Operation
           content:
@@ -1803,18 +1803,6 @@ paths:
           type: string
         example: 55904052-0db0-4622-850c-3273ee60def4
       responses:
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -1823,6 +1811,18 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "200":
           description: Successful Operation
           content:
@@ -1867,18 +1867,6 @@ paths:
           type: string
         example: 55904052-0db0-4622-850c-3273ee60def4
       responses:
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -1887,8 +1875,20 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "204":
           description: No Content
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
     patch:
       tags:
       - Task resources
@@ -1930,18 +1930,6 @@ paths:
               $ref: "#/components/schemas/TaskUpdateRequest"
         required: true
       responses:
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -1950,6 +1938,18 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "200":
           description: Successful Operation
           content:
@@ -1996,12 +1996,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -2010,6 +2004,12 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/export/{organizationNumber}/{roleType}:
     get:
       tags:
@@ -2057,18 +2057,6 @@ paths:
             application/json:
               schema:
                 type: string
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -2077,6 +2065,18 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/employee-checklists/{employeeChecklistId}/correspondence:
     get:
       tags:
@@ -2109,18 +2109,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Correspondence"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -2129,6 +2117,18 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/employee-checklists/manager/{username}:
     get:
       tags:
@@ -2165,18 +2165,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/EmployeeChecklist"
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -2185,6 +2173,18 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/employee-checklists/employee/{username}:
     get:
       tags:
@@ -2226,18 +2226,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/EmployeeChecklist"
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -2246,6 +2234,18 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/employee-checklists/delegated-to/{username}:
     get:
       tags:
@@ -2279,12 +2279,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/DelegatedEmployeeChecklistResponse"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -2293,6 +2287,12 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /api-docs:
     get:
       tags:
@@ -2334,18 +2334,6 @@ paths:
       responses:
         "204":
           description: Successful Operation
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -2354,6 +2342,18 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/employee-checklists/{employeeChecklistId}/delegated-to/{email}:
     delete:
       tags:
@@ -2393,12 +2393,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -2407,8 +2401,22 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
 components:
   schemas:
+    Mentor:
+      type: object
+      properties:
+        userId:
+          type: string
+        name:
+          type: string
+      description: Model for a mentor on an employee checklist
     Problem:
       type: object
       properties:
@@ -2422,51 +2430,20 @@ components:
         type:
           type: string
           format: uri
-        status:
-          $ref: "#/components/schemas/StatusType"
         title:
           type: string
         detail:
           type: string
+        status:
+          $ref: "#/components/schemas/StatusType"
     StatusType:
       type: object
       properties:
-        reasonPhrase:
-          type: string
         statusCode:
           type: integer
           format: int32
-    CommunicationChannel:
-      type: string
-      description: Valid channels to use when communicating with the organization
-      writeOnly: true
-      enum:
-      - EMAIL
-      - NO_COMMUNICATION
-    OrganizationCreateRequest:
-      required:
-      - organizationName
-      - organizationNumber
-      type: object
-      properties:
-        organizationName:
+        reasonPhrase:
           type: string
-          description: The name of the unit
-          writeOnly: true
-          example: Sundsvall Energi
-        organizationNumber:
-          type: integer
-          description: The organization number of the unit
-          format: int32
-          writeOnly: true
-          example: 5345
-        communicationChannels:
-          uniqueItems: true
-          type: array
-          writeOnly: true
-          items:
-            $ref: "#/components/schemas/CommunicationChannel"
-      description: Model for organizational unit create request
     ConstraintViolationProblem:
       type: object
       properties:
@@ -2490,10 +2467,10 @@ components:
               lineNumber:
                 type: integer
                 format: int32
-              className:
-                type: string
               nativeMethod:
                 type: boolean
+              className:
+                type: string
         type:
           type: string
           format: uri
@@ -2539,10 +2516,10 @@ components:
                     lineNumber:
                       type: integer
                       format: int32
-                    className:
-                      type: string
                     nativeMethod:
                       type: boolean
+                    className:
+                      type: string
               message:
                 type: string
               localizedMessage:
@@ -2572,10 +2549,10 @@ components:
               lineNumber:
                 type: integer
                 format: int32
-              className:
-                type: string
               nativeMethod:
                 type: boolean
+              className:
+                type: string
         message:
           type: string
         parameters:
@@ -2588,12 +2565,12 @@ components:
         type:
           type: string
           format: uri
-        status:
-          $ref: "#/components/schemas/StatusType"
         title:
           type: string
         detail:
           type: string
+        status:
+          $ref: "#/components/schemas/StatusType"
         suppressed:
           type: array
           items:
@@ -2617,10 +2594,10 @@ components:
                     lineNumber:
                       type: integer
                       format: int32
-                    className:
-                      type: string
                     nativeMethod:
                       type: boolean
+                    className:
+                      type: string
               message:
                 type: string
               localizedMessage:
@@ -2634,102 +2611,6 @@ components:
           type: string
         message:
           type: string
-    CustomTaskCreateRequest:
-      required:
-      - createdBy
-      - heading
-      - questionType
-      - sortOrder
-      type: object
-      properties:
-        heading:
-          type: string
-          description: The heading of the task
-          writeOnly: true
-          example: Bjud på fika
-        text:
-          type: string
-          description: The body text of the task
-          writeOnly: true
-          example: Detta är en beskrivning av ett uppdrag
-        questionType:
-          $ref: "#/components/schemas/QuestionType"
-        sortOrder:
-          type: integer
-          description: The sort order for the task
-          format: int32
-          writeOnly: true
-        createdBy:
-          type: string
-          description: The id of the user creating the custom task
-      description: Model for custom task create request
-    QuestionType:
-      type: string
-      description: The question type of the task
-      writeOnly: true
-      enum:
-      - YES_OR_NO
-      - YES_OR_NO_WITH_TEXT
-      - COMPLETED_OR_NOT_RELEVANT
-      - COMPLETED_OR_NOT_RELEVANT_WITH_TEXT
-    CustomTask:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The id of the task
-          readOnly: true
-          example: 5a6c3e4e-c320-4006-b448-1fd4121df828
-        heading:
-          type: string
-          description: The heading of the task
-          readOnly: true
-          example: Bjud på fika
-        text:
-          type: string
-          description: The body text of the task
-          readOnly: true
-          example: Detta är en beskrivning av ett uppdrag
-        sortOrder:
-          type: integer
-          description: The sort order for the task
-          format: int32
-          readOnly: true
-        roleType:
-          $ref: "#/components/schemas/RoleType"
-        questionType:
-          $ref: "#/components/schemas/QuestionType"
-        created:
-          type: string
-          description: The date and time the task was created
-          format: date-time
-          readOnly: true
-          example: 2023-11-22T15:30:00+03:00
-        updated:
-          type: string
-          description: The date and time the task was last updated
-          format: date-time
-          readOnly: true
-          example: 2023-11-22T15:30:00+03:00
-        lastSavedBy:
-          type: string
-          description: The id of the user that last modified the custom task
-      description: Model for custom task
-    RoleType:
-      type: string
-      description: The role type of the task
-      readOnly: true
-      enum:
-      - EMPLOYEE
-      - MANAGER
-    Mentor:
-      type: object
-      properties:
-        userId:
-          type: string
-        name:
-          type: string
-      description: Model for a mentor on an employee checklist
     EmployeeChecklist:
       type: object
       properties:
@@ -2896,6 +2777,22 @@ components:
       - EMPTY
       - "TRUE"
       - "FALSE"
+    QuestionType:
+      type: string
+      description: The question type of the task
+      readOnly: true
+      enum:
+      - YES_OR_NO
+      - YES_OR_NO_WITH_TEXT
+      - COMPLETED_OR_NOT_RELEVANT
+      - COMPLETED_OR_NOT_RELEVANT_WITH_TEXT
+    RoleType:
+      type: string
+      description: The role type of the task
+      readOnly: true
+      enum:
+      - EMPLOYEE
+      - MANAGER
     Stakeholder:
       type: object
       properties:
@@ -2926,6 +2823,109 @@ components:
           example: abc12def
       description: Model for a stakeholder (employee or manager) to an employee checklist
       readOnly: true
+    CommunicationChannel:
+      type: string
+      description: Valid channels to use when communicating with the organization
+      writeOnly: true
+      enum:
+      - EMAIL
+      - NO_COMMUNICATION
+    OrganizationCreateRequest:
+      required:
+      - organizationName
+      - organizationNumber
+      type: object
+      properties:
+        organizationName:
+          type: string
+          description: The name of the unit
+          writeOnly: true
+          example: Sundsvall Energi
+        organizationNumber:
+          type: integer
+          description: The organization number of the unit
+          format: int32
+          writeOnly: true
+          example: 5345
+        communicationChannels:
+          uniqueItems: true
+          type: array
+          writeOnly: true
+          items:
+            $ref: "#/components/schemas/CommunicationChannel"
+      description: Model for organizational unit create request
+    CustomTaskCreateRequest:
+      required:
+      - createdBy
+      - heading
+      - questionType
+      - sortOrder
+      type: object
+      properties:
+        heading:
+          type: string
+          description: The heading of the task
+          writeOnly: true
+          example: Bjud på fika
+        text:
+          type: string
+          description: The body text of the task
+          writeOnly: true
+          example: Detta är en beskrivning av ett uppdrag
+        questionType:
+          $ref: "#/components/schemas/QuestionType"
+        sortOrder:
+          type: integer
+          description: The sort order for the task
+          format: int32
+          writeOnly: true
+        createdBy:
+          type: string
+          description: The id of the user creating the custom task
+      description: Model for custom task create request
+    CustomTask:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The id of the task
+          readOnly: true
+          example: 5a6c3e4e-c320-4006-b448-1fd4121df828
+        heading:
+          type: string
+          description: The heading of the task
+          readOnly: true
+          example: Bjud på fika
+        text:
+          type: string
+          description: The body text of the task
+          readOnly: true
+          example: Detta är en beskrivning av ett uppdrag
+        sortOrder:
+          type: integer
+          description: The sort order for the task
+          format: int32
+          readOnly: true
+        roleType:
+          $ref: "#/components/schemas/RoleType"
+        questionType:
+          $ref: "#/components/schemas/QuestionType"
+        created:
+          type: string
+          description: The date and time the task was created
+          format: date-time
+          readOnly: true
+          example: 2023-11-22T15:30:00+03:00
+        updated:
+          type: string
+          description: The date and time the task was last updated
+          format: date-time
+          readOnly: true
+          example: 2023-11-22T15:30:00+03:00
+        lastSavedBy:
+          type: string
+          description: The id of the user that last modified the custom task
+      description: Model for custom task
     Detail:
       type: object
       properties:

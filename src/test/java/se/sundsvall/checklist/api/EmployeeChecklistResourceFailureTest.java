@@ -88,7 +88,7 @@ class EmployeeChecklistResourceFailureTest {
 		var path = "/{employeeChecklistId}/mentor";
 		var body = Mentor.builder().build();
 
-		var response = webTestClient.post()
+		var response = webTestClient.put()
 			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", INVALID, "employeeChecklistId", INVALID)))
 			.bodyValue(body)
 			.exchange()
@@ -114,7 +114,7 @@ class EmployeeChecklistResourceFailureTest {
 	void setMentorNullRequest() {
 		var path = "/{employeeChecklistId}/mentor";
 
-		var response = webTestClient.post()
+		var response = webTestClient.put()
 			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID)))
 			.contentType(APPLICATION_JSON)
 			.exchange()

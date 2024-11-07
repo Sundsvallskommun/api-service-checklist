@@ -186,7 +186,7 @@ class EmployeeChecklistResourceTest {
 		when(serviceMock.setMentor(MUNICIPALITY_ID, ID, request)).thenReturn(mockedResponse);
 
 		// Act
-		var response = webTestClient.post()
+		var response = webTestClient.put()
 			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID)))
 			.bodyValue(request)
 			.exchange()

@@ -7,6 +7,7 @@ import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
@@ -285,7 +286,7 @@ class EmployeeChecklistIT extends AbstractAppTest {
 
 		setupCall()
 			.withServicePath(PATH_PREFIX + "/" + employeeChecklistId + "/mentor")
-			.withHttpMethod(POST)
+			.withHttpMethod(PUT)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
