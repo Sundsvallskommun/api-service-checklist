@@ -37,6 +37,7 @@ import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
 import se.sundsvall.checklist.integration.db.model.FulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.ManagerEntity;
+import se.sundsvall.checklist.integration.db.model.MentorEntity;
 import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
@@ -85,6 +86,9 @@ class EmployeeChecklistIntegrationTest {
 
 	@Captor
 	private ArgumentCaptor<EmployeeChecklistEntity> employeeChecklistEntityCaptor;
+
+	@Captor
+	private ArgumentCaptor<MentorEntity> mentorEntityCaptor;
 
 	@Test
 	void fetchOptionalEmployeeChecklist() {
@@ -682,14 +686,22 @@ class EmployeeChecklistIntegrationTest {
 		var municipalityId = "municipalityId";
 		var employeeChecklistId = UUID.randomUUID().toString();
 		var entity = EmployeeChecklistEntity.builder().build();
-		var mentor = Mentor.builder().build();
+		var mentor = Mentor.builder()
+			.withUserId("someUserId")
+			.withName("someName")
+			.build();
 
 		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		integration.setMentor(municipalityId, employeeChecklistId, mentor);
 
 		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
-		verify(employeeChecklistsRepositoryMock).save(entity);
+		verify(employeeChecklistsRepositoryMock).save(employeeChecklistEntityCaptor.capture());
+
+		assertThat(employeeChecklistEntityCaptor.getValue()).satisfies(savedEmployeeChecklistEntity -> assertThat(savedEmployeeChecklistEntity.getMentor()).satisfies(mentorEntity -> {
+			assertThat(mentorEntity.getUserId()).isEqualTo(mentor.getUserId());
+			assertThat(mentorEntity.getName()).isEqualTo(mentor.getName());
+		}));
 	}
 
 	@Test
@@ -703,7 +715,9 @@ class EmployeeChecklistIntegrationTest {
 		integration.deleteMentor(municipalityId, employeeChecklistId);
 
 		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
-		verify(employeeChecklistsRepositoryMock).save(entity);
+		verify(employeeChecklistsRepositoryMock).save(employeeChecklistEntityCaptor.capture());
+
+		assertThat(employeeChecklistEntityCaptor.getValue()).satisfies(savedEmployeeChecklistEntity -> assertThat(savedEmployeeChecklistEntity.getMentor()).isNull());
 	}
 
 	@Test
