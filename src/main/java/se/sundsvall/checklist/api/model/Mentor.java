@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Model for a mentor on an employee checklist")
 public class Mentor {
 
+	@Schema(description = "The user-id of the mentor")
 	private String userId;
+	@Schema(description = "The name of the mentor")
 	private String name;
 }
