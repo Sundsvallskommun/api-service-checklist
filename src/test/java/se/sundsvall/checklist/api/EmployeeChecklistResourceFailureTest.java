@@ -86,7 +86,10 @@ class EmployeeChecklistResourceFailureTest {
 	@Test
 	void setMentorInvalidPathValues() {
 		var path = "/{employeeChecklistId}/mentor";
-		var body = Mentor.builder().build();
+		var body = Mentor.builder()
+			.withUserId("someUserId")
+			.withName("someName")
+			.build();
 
 		var response = webTestClient.put()
 			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", INVALID, "employeeChecklistId", INVALID)))
@@ -131,6 +134,34 @@ class EmployeeChecklistResourceFailureTest {
 				Required request body is missing: org.springframework.http.ResponseEntity<se.sundsvall.checklist.api.model.EmployeeChecklist> \
 				se.sundsvall.checklist.api.EmployeeChecklistResource.setMentor(java.lang.String,java.lang.String,se.sundsvall.checklist.api.model.Mentor)\
 				""");
+		});
+	}
+
+	@Test
+	void setMentorEmptyRequest() {
+		var path = "/{employeeChecklistId}/mentor";
+		final var body = Mentor.builder().build();
+
+		// Act
+		final var response = webTestClient.put()
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID)))
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert and verify
+		assertThat(response).isNotNull().satisfies(r -> {
+			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
+			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
+			assertThat(r.getViolations())
+				.extracting(
+					Violation::getField, Violation::getMessage)
+				.containsExactlyInAnyOrder(
+					tuple("userId", "must not be blank"),
+					tuple("name", "must not be blank"));
 		});
 	}
 
