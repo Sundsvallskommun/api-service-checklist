@@ -31,6 +31,7 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistResponse;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse.Detail;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
+import se.sundsvall.checklist.api.model.Mentor;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 import se.sundsvall.checklist.service.EmployeeChecklistService;
@@ -170,6 +171,48 @@ class EmployeeChecklistResourceTest {
 		assertThat(response).isEqualTo(mockedResponse);
 
 		verify(serviceMock).createCustomTask(MUNICIPALITY_ID, ID, SUB_ID, request);
+		verifyNoMoreInteractions(serviceMock);
+	}
+
+	@Test
+	void setMentor() {
+		var mockedResponse = EmployeeChecklist.builder().withId(UUID.randomUUID().toString()).build();
+		var path = "/{employeeChecklistId}/mentor";
+		var request = Mentor.builder()
+			.withUserId("someUserId")
+			.withName("someName")
+			.build();
+
+		when(serviceMock.setMentor(MUNICIPALITY_ID, ID, request)).thenReturn(mockedResponse);
+
+		// Act
+		var response = webTestClient.put()
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID)))
+			.bodyValue(request)
+			.exchange()
+			.expectStatus().isOk()
+			.expectBody(EmployeeChecklist.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert and verify
+		assertThat(response).isEqualTo(mockedResponse);
+
+		verify(serviceMock).setMentor(MUNICIPALITY_ID, ID, request);
+		verifyNoMoreInteractions(serviceMock);
+	}
+
+	@Test
+	void deleteMentor() {
+		var path = "/{employeeChecklistId}/mentor";
+
+		webTestClient.delete()
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID)))
+			.exchange()
+			.expectStatus().isNoContent()
+			.expectBody().isEmpty();
+
+		verify(serviceMock).deleteMentor(MUNICIPALITY_ID, ID);
 		verifyNoMoreInteractions(serviceMock);
 	}
 

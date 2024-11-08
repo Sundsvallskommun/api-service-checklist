@@ -10,6 +10,8 @@ import static org.springframework.http.ResponseEntity.ok;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,14 +27,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import se.sundsvall.checklist.api.model.CustomTask;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
@@ -41,9 +36,18 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
+import se.sundsvall.checklist.api.model.Mentor;
 import se.sundsvall.checklist.service.EmployeeChecklistService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/{municipalityId}/employee-checklists")
@@ -223,5 +227,43 @@ class EmployeeChecklistResource {
 		@Parameter(name = "personId", description = "Person id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String personId) {
 
 		return ok().body(employeeChecklistService.initiateSpecificEmployeeChecklist(municipalityId, personId));
+	}
+
+	@Operation(
+		summary = "Set the mentor",
+		description = "Set the mentor on a specific employee checklist",
+		responses = {
+			@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
+		})
+	@PutMapping(
+		value = "/{employeeChecklistId}/mentor",
+		consumes = APPLICATION_JSON_VALUE,
+		produces = {
+			APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
+		})
+	ResponseEntity<EmployeeChecklist> setMentor(
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId,
+		@RequestBody @Valid final Mentor mentor) {
+		var checklist = employeeChecklistService.setMentor(municipalityId, employeeChecklistId, mentor);
+
+		return ok(checklist);
+	}
+
+	@Operation(
+		summary = "Delete the mentor",
+		description = "Delete the mentor on a specific employee checklist",
+		responses = {
+			@ApiResponse(responseCode = "204", description = "No Content", useReturnTypeSchema = true)
+		})
+	@DeleteMapping(
+		value = "/{employeeChecklistId}/mentor",
+		produces = APPLICATION_JSON_VALUE)
+	ResponseEntity<Void> deleteMentor(
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId) {
+		employeeChecklistService.deleteMentor(municipalityId, employeeChecklistId);
+
+		return noContent().build();
 	}
 }

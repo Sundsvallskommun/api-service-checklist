@@ -12,6 +12,7 @@ import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER
 import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.buildDefaultNewEmployeeFilter;
 import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.buildUuidEmployeeFilter;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toCustomTask;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEmployeeChecklist;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.updateCustomTaskEntity;
 import static se.sundsvall.checklist.service.util.EmployeeChecklistDecorator.decorateWithCustomTasks;
 import static se.sundsvall.checklist.service.util.EmployeeChecklistDecorator.decorateWithFulfilment;
@@ -35,7 +36,6 @@ import org.zalando.problem.Problem;
 import org.zalando.problem.StatusType;
 import org.zalando.problem.ThrowableProblem;
 
-import generated.se.sundsvall.employee.Employee;
 import se.sundsvall.checklist.api.model.CustomTask;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
@@ -46,6 +46,7 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistResponse;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse.Detail;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
+import se.sundsvall.checklist.api.model.Mentor;
 import se.sundsvall.checklist.integration.db.EmployeeChecklistIntegration;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
@@ -57,6 +58,8 @@ import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
 import se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper;
 import se.sundsvall.checklist.service.util.ServiceUtils;
 import se.sundsvall.checklist.service.util.TaskType;
+
+import generated.se.sundsvall.employee.Employee;
 
 @Service
 public class EmployeeChecklistService {
@@ -146,6 +149,14 @@ public class EmployeeChecklistService {
 
 	public void deleteEmployeChecklist(String municipalityId, String employeeChecklistId) {
 		employeeChecklistIntegration.deleteEmployeeChecklist(municipalityId, employeeChecklistId);
+	}
+
+	public EmployeeChecklist setMentor(final String municipalityId, final String employeeChecklistId, final Mentor mentor) {
+		return toEmployeeChecklist(employeeChecklistIntegration.setMentor(municipalityId, employeeChecklistId, mentor));
+	}
+
+	public void deleteMentor(final String municipalityId, final String employeeChecklistId) {
+		employeeChecklistIntegration.deleteMentor(municipalityId, employeeChecklistId);
 	}
 
 	public CustomTask createCustomTask(String municipalityId, String employeeChecklistId, String phaseId, CustomTaskCreateRequest request) {

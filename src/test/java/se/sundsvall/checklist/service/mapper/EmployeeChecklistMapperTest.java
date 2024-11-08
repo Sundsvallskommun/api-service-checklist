@@ -140,6 +140,10 @@ class EmployeeChecklistMapperTest {
 			assertThat(r.getEndDate()).isEqualTo(entity.getEndDate());
 			assertThat(r.getExpirationDate()).isEqualTo(entity.getExpirationDate());
 			assertThat(r.isLocked()).isEqualTo(entity.isLocked());
+			assertThat(r.getMentor()).isNotNull().satisfies(mentor -> {
+				assertThat(mentor.getUserId()).isEqualTo(entity.getMentor().getUserId());
+				assertThat(mentor.getName()).isEqualTo(entity.getMentor().getName());
+			});
 		});
 	}
 

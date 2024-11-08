@@ -91,6 +91,8 @@
         correspondence_id varchar(255),
         employee_id varchar(255),
         id varchar(255) not null,
+        mentor_name varchar(255),
+        mentor_user_id varchar(255),
         primary key (id)
     ) engine=InnoDB;
 
@@ -162,128 +164,128 @@
         primary key (id)
     ) engine=InnoDB;
 
-    alter table if exists checklist 
+    alter table if exists checklist
        add constraint uk_checklist_name_municipality_id_version unique (name, municipality_id, version);
 
-    create index idx_delegate_username 
+    create index idx_delegate_username
        on delegate (username);
 
-    create index idx_delegate_first_name 
+    create index idx_delegate_first_name
        on delegate (first_name);
 
-    create index idx_delegate_last_name 
+    create index idx_delegate_last_name
        on delegate (last_name);
 
-    create index idx_delegate_email 
+    create index idx_delegate_email
        on delegate (email);
 
-    create index idx_employee_username 
+    create index idx_employee_username
        on employee (username);
 
-    create index employee_checklist_expiration_date_locked_idx 
+    create index employee_checklist_expiration_date_locked_idx
        on employee_checklist (expiration_date, locked);
 
-    alter table if exists employee_checklist 
+    alter table if exists employee_checklist
        add constraint uk_correspondence_id unique (correspondence_id);
 
-    alter table if exists employee_checklist 
+    alter table if exists employee_checklist
        add constraint uk_employee_id unique (employee_id);
 
-    create index idx_manager_username 
+    create index idx_manager_username
        on manager (username);
 
-    create index organization_number_municipality_id_idx 
+    create index organization_number_municipality_id_idx
        on organization (organization_number, municipality_id);
 
-    alter table if exists organization 
+    alter table if exists organization
        add constraint uk_organization_organization_number_municipality_id unique (organization_number, municipality_id);
 
-    alter table if exists checklist 
-       add constraint fk_organization_checklist 
-       foreign key (organization_id) 
+    alter table if exists checklist
+       add constraint fk_organization_checklist
+       foreign key (organization_id)
        references organization (id);
 
-    alter table if exists custom_fulfilment 
-       add constraint fk_custom_task_fulfilment_task 
-       foreign key (custom_task_id) 
+    alter table if exists custom_fulfilment
+       add constraint fk_custom_task_fulfilment_task
+       foreign key (custom_task_id)
        references custom_task (id);
 
-    alter table if exists custom_fulfilment 
-       add constraint fk_custom_fulfilment_employee_checklist 
-       foreign key (employee_checklist_id) 
+    alter table if exists custom_fulfilment
+       add constraint fk_custom_fulfilment_employee_checklist
+       foreign key (employee_checklist_id)
        references employee_checklist (id);
 
-    alter table if exists custom_task 
-       add constraint fk_custom_task_employee_checklist 
-       foreign key (employee_checklist_id) 
+    alter table if exists custom_task
+       add constraint fk_custom_task_employee_checklist
+       foreign key (employee_checklist_id)
        references employee_checklist (id);
 
-    alter table if exists custom_task 
-       add constraint fk_custom_task_phase 
-       foreign key (phase_id) 
+    alter table if exists custom_task
+       add constraint fk_custom_task_phase
+       foreign key (phase_id)
        references phase (id);
 
-    alter table if exists delegate 
-       add constraint fk_delegate_manager 
-       foreign key (manager_id) 
+    alter table if exists delegate
+       add constraint fk_delegate_manager
+       foreign key (manager_id)
        references manager (id);
 
-    alter table if exists delegate 
-       add constraint fk_delegate_employee_checklist 
-       foreign key (employee_checklist_id) 
+    alter table if exists delegate
+       add constraint fk_delegate_employee_checklist
+       foreign key (employee_checklist_id)
        references employee_checklist (id);
 
-    alter table if exists employee 
-       add constraint fk_employee_company 
-       foreign key (organization_id) 
+    alter table if exists employee
+       add constraint fk_employee_company
+       foreign key (organization_id)
        references organization (id);
 
-    alter table if exists employee 
-       add constraint fk_employee_department 
-       foreign key (department_id) 
+    alter table if exists employee
+       add constraint fk_employee_department
+       foreign key (department_id)
        references organization (id);
 
-    alter table if exists employee 
-       add constraint fk_employee_manager 
-       foreign key (manager_id) 
+    alter table if exists employee
+       add constraint fk_employee_manager
+       foreign key (manager_id)
        references manager (id);
 
-    alter table if exists employee_checklist 
-       add constraint fk_employee_checklist_checklist 
-       foreign key (checklist_id) 
+    alter table if exists employee_checklist
+       add constraint fk_employee_checklist_checklist
+       foreign key (checklist_id)
        references checklist (id);
 
-    alter table if exists employee_checklist 
-       add constraint fk_employee_checklist_correspondence 
-       foreign key (correspondence_id) 
+    alter table if exists employee_checklist
+       add constraint fk_employee_checklist_correspondence
+       foreign key (correspondence_id)
        references correspondence (id);
 
-    alter table if exists employee_checklist 
-       add constraint fk_employee_checklist_employee 
-       foreign key (employee_id) 
+    alter table if exists employee_checklist
+       add constraint fk_employee_checklist_employee
+       foreign key (employee_id)
        references employee (id);
 
-    alter table if exists fulfilment 
-       add constraint fk_fulfilment_employee_checklist 
-       foreign key (employee_checklist_id) 
+    alter table if exists fulfilment
+       add constraint fk_fulfilment_employee_checklist
+       foreign key (employee_checklist_id)
        references employee_checklist (id);
 
-    alter table if exists fulfilment 
-       add constraint fk_fulfilment_task 
-       foreign key (task_id) 
+    alter table if exists fulfilment
+       add constraint fk_fulfilment_task
+       foreign key (task_id)
        references task (id);
 
-    alter table if exists organization_communication_channel 
-       add constraint fk_organization_communication_channel_organization 
-       foreign key (organization_id) 
+    alter table if exists organization_communication_channel
+       add constraint fk_organization_communication_channel_organization
+       foreign key (organization_id)
        references organization (id);
 
-    alter table if exists phase 
-       add constraint fk_checklist_phase 
-       foreign key (checklist_id) 
+    alter table if exists phase
+       add constraint fk_checklist_phase
+       foreign key (checklist_id)
        references checklist (id);
 
-    alter table if exists task 
-       add constraint fk_phase_task 
-       foreign key (phase_id) 
+    alter table if exists task
+       add constraint fk_phase_task
+       foreign key (phase_id)
        references phase (id);

@@ -32,6 +32,7 @@ import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
+import se.sundsvall.checklist.api.model.Mentor;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 import se.sundsvall.checklist.service.EmployeeChecklistService;
@@ -79,6 +80,113 @@ class EmployeeChecklistResourceFailureTest {
 				.containsExactlyInAnyOrder(
 					tuple("deleteEmployeeChecklist.municipalityId", "not a valid municipality ID"),
 					tuple("deleteEmployeeChecklist.employeeChecklistId", "not a valid UUID"));
+		});
+	}
+
+	@Test
+	void setMentorInvalidPathValues() {
+		var path = "/{employeeChecklistId}/mentor";
+		var body = Mentor.builder()
+			.withUserId("someUserId")
+			.withName("someName")
+			.build();
+
+		var response = webTestClient.put()
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", INVALID, "employeeChecklistId", INVALID)))
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert and verify
+		assertThat(response).isNotNull().satisfies(r -> {
+			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
+			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
+			assertThat(r.getViolations())
+				.extracting(
+					Violation::getField, Violation::getMessage)
+				.containsExactlyInAnyOrder(
+					tuple("setMentor.municipalityId", "not a valid municipality ID"),
+					tuple("setMentor.employeeChecklistId", "not a valid UUID"));
+		});
+	}
+
+	@Test
+	void setMentorNullRequest() {
+		var path = "/{employeeChecklistId}/mentor";
+
+		var response = webTestClient.put()
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID)))
+			.contentType(APPLICATION_JSON)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(Problem.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert and verify
+		assertThat(response).isNotNull().satisfies(r -> {
+			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
+			assertThat(r.getTitle()).isEqualTo("Bad Request");
+			assertThat(r.getDetail()).isEqualTo("""
+				Required request body is missing: org.springframework.http.ResponseEntity<se.sundsvall.checklist.api.model.EmployeeChecklist> \
+				se.sundsvall.checklist.api.EmployeeChecklistResource.setMentor(java.lang.String,java.lang.String,se.sundsvall.checklist.api.model.Mentor)\
+				""");
+		});
+	}
+
+	@Test
+	void setMentorEmptyRequest() {
+		var path = "/{employeeChecklistId}/mentor";
+		final var body = Mentor.builder().build();
+
+		// Act
+		final var response = webTestClient.put()
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID)))
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert and verify
+		assertThat(response).isNotNull().satisfies(r -> {
+			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
+			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
+			assertThat(r.getViolations())
+				.extracting(
+					Violation::getField, Violation::getMessage)
+				.containsExactlyInAnyOrder(
+					tuple("userId", "must not be blank"),
+					tuple("name", "must not be blank"));
+		});
+	}
+
+	@Test
+	void deleteMentorInvalidPathValues() {
+		var path = "/{employeeChecklistId}/mentor";
+
+		var response = webTestClient.delete()
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", INVALID, "employeeChecklistId", INVALID)))
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert and verify
+		assertThat(response).isNotNull().satisfies(r -> {
+			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
+			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
+			assertThat(r.getViolations())
+				.extracting(
+					Violation::getField, Violation::getMessage)
+				.containsExactlyInAnyOrder(
+					tuple("deleteMentor.municipalityId", "not a valid municipality ID"),
+					tuple("deleteMentor.employeeChecklistId", "not a valid UUID"));
 		});
 	}
 

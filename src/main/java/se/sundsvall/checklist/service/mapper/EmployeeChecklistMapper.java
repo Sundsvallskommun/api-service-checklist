@@ -18,6 +18,7 @@ import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklist;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhase;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
+import se.sundsvall.checklist.api.model.Mentor;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
@@ -122,6 +123,12 @@ public final class EmployeeChecklistMapper {
 				.withEndDate(entity.getEndDate())
 				.withExpirationDate(entity.getExpirationDate())
 				.withLocked(entity.isLocked())
+				.withMentor(ofNullable(employeeChecklistEntity.getMentor())
+					.map(mentorEntity -> Mentor.builder()
+						.withUserId(mentorEntity.getUserId())
+						.withName(mentorEntity.getName())
+						.build())
+					.orElse(null))
 				.build())
 			.orElse(null);
 	}

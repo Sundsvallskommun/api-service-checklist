@@ -232,3 +232,11 @@ values ('2024-07-01', '2024-10-01', '2024-01-01', false, '2024-01-01 12:00:00.00
 -- Custom task
 insert into custom_task (sort_order, created, updated, last_saved_by, heading, id, employee_checklist_id, phase_id, `text`, question_type, role_type)
 values (0, '2024-01-03 12:00:00.000', '2024-01-03 12:00:00.000', 'someUser', 'First custom employee task', '8b4eafc8-46ec-4fe3-9c2e-11625f144b10', '51ca9112-001b-4f12-b866-8d59ef1c25c4', '3e9780a7-96f3-4d07-80ee-a9634b786a38', 'Descriptive text for first custom task', 'YES_OR_NO', 'EMPLOYEE');
+
+-- Employee J
+insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name, manager_id, title, username, role_type)
+values ('2024-01-01', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'bd49f474-303c-4a4e-aa54-5d4f58d9188b', 'j.employee@55351.com', 'J Emp', '619d40cd-025f-4c13-a8f2-e08715f70d56', 'Loyee', '9dcffa46-c500-4696-a862-04867df207d0', 'Snuggler', 'jemp7loyee', 'EMPLOYEE');
+
+-- Employee checklist
+insert into employee_checklist (end_date, expiration_date, start_date, locked, created, updated, checklist_id, correspondence_id, employee_id, id, mentor_name, mentor_user_id)
+values ('2024-07-01', '2024-10-01', '2024-01-01', false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', 'e20598a4-6b32-459e-8c15-febbd4c5868e', NULL, '619d40cd-025f-4c13-a8f2-e08715f70d56', 'cca064da-ab15-4276-8fbb-e8ba07b28718', 'someMentorName', 'someMentorUserId');

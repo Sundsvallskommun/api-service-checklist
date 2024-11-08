@@ -29,10 +29,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
 
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.Employment;
-import generated.se.sundsvall.employee.Manager;
-import generated.se.sundsvall.employee.PortalPersonData;
 import se.sundsvall.checklist.api.model.CustomTask;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
@@ -41,6 +37,7 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse.Detail;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
+import se.sundsvall.checklist.api.model.Mentor;
 import se.sundsvall.checklist.integration.db.EmployeeChecklistIntegration;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
@@ -56,6 +53,11 @@ import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
 import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
+
+import generated.se.sundsvall.employee.Employee;
+import generated.se.sundsvall.employee.Employment;
+import generated.se.sundsvall.employee.Manager;
+import generated.se.sundsvall.employee.PortalPersonData;
 
 @ExtendWith(MockitoExtension.class)
 class EmployeeChecklistServiceTest {
@@ -320,6 +322,29 @@ class EmployeeChecklistServiceTest {
 
 		// Assert and verify
 		verify(employeeChecklistIntegrationMock).deleteEmployeeChecklist(MUNICIPALITY_ID, employeeChecklistId);
+	}
+
+	@Test
+	void setMentor() {
+		var employeeChecklistId = UUID.randomUUID().toString();
+		var mentor = Mentor.builder().build();
+
+		// Act
+		service.setMentor(MUNICIPALITY_ID, employeeChecklistId, mentor);
+
+		// Assert and verify
+		verify(employeeChecklistIntegrationMock).setMentor(MUNICIPALITY_ID, employeeChecklistId, mentor);
+	}
+
+	@Test
+	void deleteMentor() {
+		var employeeChecklistId = UUID.randomUUID().toString();
+
+		// Act
+		service.deleteMentor(MUNICIPALITY_ID, employeeChecklistId);
+
+		// Assert and verify
+		verify(employeeChecklistIntegrationMock).deleteMentor(MUNICIPALITY_ID, employeeChecklistId);
 	}
 
 	@Test

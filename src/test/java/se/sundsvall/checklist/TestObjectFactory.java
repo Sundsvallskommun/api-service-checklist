@@ -38,6 +38,7 @@ import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
 import se.sundsvall.checklist.integration.db.model.FulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.ManagerEntity;
+import se.sundsvall.checklist.integration.db.model.MentorEntity;
 import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
@@ -70,6 +71,10 @@ public final class TestObjectFactory {
 			.withLocked(locked)
 			.withCreated(OffsetDateTime.now().minusWeeks(1))
 			.withUpdated(OffsetDateTime.now())
+			.withMentor(MentorEntity.builder()
+				.withUserId("someUserId")
+				.withName("someName")
+				.build())
 			.build();
 	}
 
