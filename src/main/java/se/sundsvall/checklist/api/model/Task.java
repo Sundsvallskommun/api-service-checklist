@@ -7,16 +7,15 @@ import java.time.OffsetDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import se.sundsvall.checklist.integration.db.model.enums.Permission;
-import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
-import se.sundsvall.checklist.integration.db.model.enums.RoleType;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import se.sundsvall.checklist.integration.db.model.enums.Permission;
+import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
+import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 
 @Data
 @NoArgsConstructor
@@ -37,7 +36,7 @@ public class Task {
 	@Schema(description = "The sort order of the task", example = "1", accessMode = READ_ONLY)
 	private int sortOrder;
 
-	@Schema(description = "The role type eligable for the task", accessMode = READ_ONLY)
+	@Schema(description = "The role type eligable for the task", example = "EMPLOYEE", accessMode = READ_ONLY)
 	private RoleType roleType;
 
 	@Schema(description = "The question type of the task", accessMode = READ_ONLY)

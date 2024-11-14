@@ -42,30 +42,43 @@ class TaskTest {
 		final var id = "id";
 		final var heading = "heading";
 		final var text = "text";
-		final var roleType = RoleType.EMPLOYEE;
+		final var roleType = RoleType.NEW_EMPLOYEE;
 		final var questionType = QuestionType.YES_OR_NO;
-		final var sortOrder = 1;
+		final var sortOrder = 911;
 		final var lastSavedBy = "someUser";
+		final var created = OffsetDateTime.now();
+		final var updated = OffsetDateTime.now().plusDays(10);
+		final var permission = SUPERADMIN;
 
-		final var task = Task.builder()
+		final var bean = Task.builder()
 			.withId(id)
 			.withHeading(heading)
 			.withText(text)
 			.withRoleType(roleType)
 			.withQuestionType(questionType)
-			.withPermission(SUPERADMIN)
+			.withPermission(permission)
 			.withSortOrder(sortOrder)
-			.withUpdated(OffsetDateTime.now())
-			.withCreated(OffsetDateTime.now())
+			.withUpdated(updated)
+			.withCreated(created)
 			.withLastSavedBy(lastSavedBy)
 			.build();
 
-		assertThat(task).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(task.getId()).isEqualTo(id);
+		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
+		assertThat(bean.getCreated()).isEqualTo(created);
+		assertThat(bean.getHeading()).isEqualTo(heading);
+		assertThat(bean.getId()).isEqualTo(id);
+		assertThat(bean.getLastSavedBy()).isEqualTo(lastSavedBy);
+		assertThat(bean.getPermission()).isEqualTo(permission);
+		assertThat(bean.getQuestionType()).isEqualTo(questionType);
+		assertThat(bean.getRoleType()).isEqualTo(roleType);
+		assertThat(bean.getSortOrder()).isEqualTo(sortOrder);
+		assertThat(bean.getText()).isEqualTo(text);
+		assertThat(bean.getUpdated()).isEqualTo(updated);
 	}
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(Task.builder().build()).hasAllNullFieldsOrPropertiesExcept("sortOrder");
+		assertThat(Task.builder().build()).hasAllNullFieldsOrPropertiesExcept("sortOrder").hasFieldOrPropertyWithValue("sortOrder", 0);
+		assertThat(new Task()).hasAllNullFieldsOrPropertiesExcept("sortOrder").hasFieldOrPropertyWithValue("sortOrder", 0);
 	}
 }

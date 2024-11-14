@@ -19,7 +19,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import se.sundsvall.checklist.Application;
 import se.sundsvall.checklist.integration.db.model.enums.LifeCycle;
-import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
@@ -50,7 +49,7 @@ class PortingIT extends AbstractAppTest {
 	@Test
 	void test01_exportLatestVersion() {
 		setupCall()
-			.withServicePath("/2281/export/1/EMPLOYEE")
+			.withServicePath("/2281/export/1")
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(EXPECTED_FILE)
@@ -60,7 +59,7 @@ class PortingIT extends AbstractAppTest {
 	@Test
 	void test02_exportExplicitVersion() {
 		setupCall()
-			.withServicePath("/2281/export/1/EMPLOYEE?version=1")
+			.withServicePath("/2281/export/1?version=1")
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(EXPECTED_FILE)
@@ -72,11 +71,10 @@ class PortingIT extends AbstractAppTest {
 		// Assert organization before import
 		transactionTemplate.executeWithoutResult(status -> {
 			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(2, MUNCIPALITY_ID).orElseThrow();
-			assertThat(organization.getChecklists()).hasSize(1).allSatisfy(ch -> {
+			assertThat(organization.getChecklists()).hasSize(1).satisfiesExactly(ch -> {
 				assertThat(ch.getVersion()).isEqualTo(1);
-				assertThat(ch.getName()).isEqualTo("TEST03_EMPLOYEE_CHECKLIST");
-				assertThat(ch.getDisplayName()).isEqualTo("Active checklist for employee");
-				assertThat(ch.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
+				assertThat(ch.getName()).isEqualTo("TEST03_CHECKLIST");
+				assertThat(ch.getDisplayName()).isEqualTo("Active checklist");
 				assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.ACTIVE);
 			});
 		});
@@ -93,21 +91,17 @@ class PortingIT extends AbstractAppTest {
 		// Assert organization after import
 		transactionTemplate.executeWithoutResult(status -> {
 			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(2, MUNCIPALITY_ID).orElseThrow();
-			assertThat(organization.getChecklists()).hasSize(2)
-				.anySatisfy(ch -> {
-					assertThat(ch.getVersion()).isEqualTo(1);
-					assertThat(ch.getName()).isEqualTo("TEST03_EMPLOYEE_CHECKLIST");
-					assertThat(ch.getDisplayName()).isEqualTo("Active checklist for employee");
-					assertThat(ch.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
-					assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.ACTIVE);
-				})
-				.anySatisfy(ch -> {
-					assertThat(ch.getVersion()).isEqualTo(2);
-					assertThat(ch.getName()).isEqualTo("TEST03_EMPLOYEE_CHECKLIST");
-					assertThat(ch.getDisplayName()).isEqualTo("Imported checklist for employee");
-					assertThat(ch.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
-					assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.CREATED);
-				});
+			assertThat(organization.getChecklists()).hasSize(2).satisfiesExactlyInAnyOrder(ch -> {
+				assertThat(ch.getVersion()).isEqualTo(1);
+				assertThat(ch.getName()).isEqualTo("TEST03_CHECKLIST");
+				assertThat(ch.getDisplayName()).isEqualTo("Active checklist");
+				assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.ACTIVE);
+			}, ch -> {
+				assertThat(ch.getVersion()).isEqualTo(2);
+				assertThat(ch.getName()).isEqualTo("TEST03_CHECKLIST");
+				assertThat(ch.getDisplayName()).isEqualTo("Imported checklist");
+				assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.CREATED);
+			});
 		});
 	}
 
@@ -116,21 +110,17 @@ class PortingIT extends AbstractAppTest {
 		// Assert organization before import
 		transactionTemplate.executeWithoutResult(status -> {
 			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(3, MUNCIPALITY_ID).orElseThrow();
-			assertThat(organization.getChecklists()).hasSize(2)
-				.anySatisfy(ch -> {
-					assertThat(ch.getVersion()).isEqualTo(1);
-					assertThat(ch.getName()).isEqualTo("TEST04_EMPLOYEE_CHECKLIST");
-					assertThat(ch.getDisplayName()).isEqualTo("Active checklist for employee");
-					assertThat(ch.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
-					assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.ACTIVE);
-				})
-				.anySatisfy(ch -> {
-					assertThat(ch.getVersion()).isEqualTo(2);
-					assertThat(ch.getName()).isEqualTo("TEST04_EMPLOYEE_CHECKLIST");
-					assertThat(ch.getDisplayName()).isEqualTo("Draft checklist for employee");
-					assertThat(ch.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
-					assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.CREATED);
-				});
+			assertThat(organization.getChecklists()).hasSize(2).satisfiesExactlyInAnyOrder(ch -> {
+				assertThat(ch.getVersion()).isEqualTo(1);
+				assertThat(ch.getName()).isEqualTo("TEST04_CHECKLIST");
+				assertThat(ch.getDisplayName()).isEqualTo("Active checklist");
+				assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.ACTIVE);
+			}, ch -> {
+				assertThat(ch.getVersion()).isEqualTo(2);
+				assertThat(ch.getName()).isEqualTo("TEST04_CHECKLIST");
+				assertThat(ch.getDisplayName()).isEqualTo("Draft checklist");
+				assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.CREATED);
+			});
 		});
 
 		setupCall()
@@ -144,21 +134,17 @@ class PortingIT extends AbstractAppTest {
 		// Assert organization after import
 		transactionTemplate.executeWithoutResult(status -> {
 			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(3, MUNCIPALITY_ID).orElseThrow();
-			assertThat(organization.getChecklists()).hasSize(2)
-				.anySatisfy(ch -> {
-					assertThat(ch.getVersion()).isEqualTo(1);
-					assertThat(ch.getName()).isEqualTo("TEST04_EMPLOYEE_CHECKLIST");
-					assertThat(ch.getDisplayName()).isEqualTo("Active checklist for employee");
-					assertThat(ch.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
-					assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.ACTIVE);
-				})
-				.anySatisfy(ch -> {
-					assertThat(ch.getVersion()).isEqualTo(2);
-					assertThat(ch.getName()).isEqualTo("TEST04_EMPLOYEE_CHECKLIST");
-					assertThat(ch.getDisplayName()).isEqualTo("Draft checklist for employee");
-					assertThat(ch.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
-					assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.CREATED);
-				});
+			assertThat(organization.getChecklists()).hasSize(2).satisfiesExactlyInAnyOrder(ch -> {
+				assertThat(ch.getVersion()).isEqualTo(1);
+				assertThat(ch.getName()).isEqualTo("TEST04_CHECKLIST");
+				assertThat(ch.getDisplayName()).isEqualTo("Active checklist");
+				assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.ACTIVE);
+			}, ch -> {
+				assertThat(ch.getVersion()).isEqualTo(2);
+				assertThat(ch.getName()).isEqualTo("TEST04_CHECKLIST");
+				assertThat(ch.getDisplayName()).isEqualTo("Draft checklist");
+				assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.CREATED);
+			});
 		});
 	}
 
@@ -182,14 +168,12 @@ class PortingIT extends AbstractAppTest {
 		// Assert organization after import
 		transactionTemplate.executeWithoutResult(status -> {
 			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(4, MUNCIPALITY_ID).orElseThrow();
-			assertThat(organization.getChecklists()).hasSize(1)
-				.allSatisfy(ch -> {
-					assertThat(ch.getVersion()).isEqualTo(1);
-					assertThat(ch.getName()).isEqualTo("TEST05_EMPLOYEE_CHECKLIST");
-					assertThat(ch.getDisplayName()).isEqualTo("Imported checklist for employee");
-					assertThat(ch.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
-					assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.CREATED);
-				});
+			assertThat(organization.getChecklists()).hasSize(1).satisfiesExactly(ch -> {
+				assertThat(ch.getVersion()).isEqualTo(1);
+				assertThat(ch.getName()).isEqualTo("TEST05_CHECKLIST");
+				assertThat(ch.getDisplayName()).isEqualTo("Imported checklist");
+				assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.CREATED);
+			});
 		});
 	}
 
@@ -200,15 +184,13 @@ class PortingIT extends AbstractAppTest {
 		// Assert organization before import
 		transactionTemplate.executeWithoutResult(status -> {
 			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(5, MUNCIPALITY_ID).orElseThrow();
-			assertThat(organization.getChecklists()).hasSize(1)
-				.allSatisfy(ch -> {
-					assertThat(ch.getVersion()).isEqualTo(1);
-					assertThat(ch.getName()).isEqualTo("TEST06_EMPLOYEE_CHECKLIST");
-					assertThat(ch.getDisplayName()).isEqualTo("Active checklist for employee");
-					assertThat(ch.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
-					assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.ACTIVE);
-					assertThat(ch.getId()).isEqualTo(checklistIdWithCreatedStatus);
-				});
+			assertThat(organization.getChecklists()).hasSize(1).satisfiesExactly(ch -> {
+				assertThat(ch.getVersion()).isEqualTo(1);
+				assertThat(ch.getName()).isEqualTo("TEST06_CHECKLIST");
+				assertThat(ch.getDisplayName()).isEqualTo("Active checklist");
+				assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.ACTIVE);
+				assertThat(ch.getId()).isEqualTo(checklistIdWithCreatedStatus);
+			});
 		});
 
 		setupCall()
@@ -223,15 +205,13 @@ class PortingIT extends AbstractAppTest {
 		// Assert organization after import
 		transactionTemplate.executeWithoutResult(status -> {
 			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(5, MUNCIPALITY_ID).orElseThrow();
-			assertThat(organization.getChecklists()).hasSize(1)
-				.allSatisfy(ch -> {
-					assertThat(ch.getVersion()).isEqualTo(1);
-					assertThat(ch.getName()).isEqualTo("TEST06_EMPLOYEE_CHECKLIST");
-					assertThat(ch.getDisplayName()).isEqualTo("Imported checklist for employee");
-					assertThat(ch.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
-					assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.ACTIVE);
-					assertThat(ch.getId()).isEqualTo(checklistIdWithCreatedStatus);
-				});
+			assertThat(organization.getChecklists()).hasSize(1).satisfiesExactly(ch -> {
+				assertThat(ch.getVersion()).isEqualTo(1);
+				assertThat(ch.getName()).isEqualTo("TEST06_CHECKLIST");
+				assertThat(ch.getDisplayName()).isEqualTo("Imported checklist");
+				assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.ACTIVE);
+				assertThat(ch.getId()).isEqualTo(checklistIdWithCreatedStatus);
+			});
 		});
 	}
 
@@ -242,22 +222,18 @@ class PortingIT extends AbstractAppTest {
 		// Assert organization before import
 		transactionTemplate.executeWithoutResult(status -> {
 			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(6, MUNCIPALITY_ID).orElseThrow();
-			assertThat(organization.getChecklists()).hasSize(2)
-				.anySatisfy(ch -> {
-					assertThat(ch.getVersion()).isEqualTo(1);
-					assertThat(ch.getName()).isEqualTo("TEST07_EMPLOYEE_CHECKLIST");
-					assertThat(ch.getDisplayName()).isEqualTo("Active checklist for employee");
-					assertThat(ch.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
-					assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.ACTIVE);
-				})
-				.anySatisfy(ch -> {
-					assertThat(ch.getVersion()).isEqualTo(2);
-					assertThat(ch.getName()).isEqualTo("TEST07_EMPLOYEE_CHECKLIST");
-					assertThat(ch.getDisplayName()).isEqualTo("Draft checklist for employee");
-					assertThat(ch.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
-					assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.CREATED);
-					assertThat(ch.getId()).isEqualTo(checklistIdWithCreatedStatus);
-				});
+			assertThat(organization.getChecklists()).hasSize(2).satisfiesExactlyInAnyOrder(ch -> {
+				assertThat(ch.getVersion()).isEqualTo(1);
+				assertThat(ch.getName()).isEqualTo("TEST07_CHECKLIST");
+				assertThat(ch.getDisplayName()).isEqualTo("Active checklist");
+				assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.ACTIVE);
+			}, ch -> {
+				assertThat(ch.getVersion()).isEqualTo(2);
+				assertThat(ch.getName()).isEqualTo("TEST07_CHECKLIST");
+				assertThat(ch.getDisplayName()).isEqualTo("Draft checklist");
+				assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.CREATED);
+				assertThat(ch.getId()).isEqualTo(checklistIdWithCreatedStatus);
+			});
 		});
 
 		setupCall()
@@ -272,22 +248,18 @@ class PortingIT extends AbstractAppTest {
 		// Assert organization after import
 		transactionTemplate.executeWithoutResult(status -> {
 			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(6, MUNCIPALITY_ID).orElseThrow();
-			assertThat(organization.getChecklists()).hasSize(2)
-				.anySatisfy(ch -> {
-					assertThat(ch.getVersion()).isEqualTo(1);
-					assertThat(ch.getName()).isEqualTo("TEST07_EMPLOYEE_CHECKLIST");
-					assertThat(ch.getDisplayName()).isEqualTo("Active checklist for employee");
-					assertThat(ch.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
-					assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.ACTIVE);
-				})
-				.anySatisfy(ch -> {
-					assertThat(ch.getVersion()).isEqualTo(2);
-					assertThat(ch.getName()).isEqualTo("TEST07_EMPLOYEE_CHECKLIST");
-					assertThat(ch.getDisplayName()).isEqualTo("Imported checklist for employee");
-					assertThat(ch.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
-					assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.CREATED);
-					assertThat(ch.getId()).isEqualTo(checklistIdWithCreatedStatus);
-				});
+			assertThat(organization.getChecklists()).hasSize(2).satisfiesExactlyInAnyOrder(ch -> {
+				assertThat(ch.getVersion()).isEqualTo(1);
+				assertThat(ch.getName()).isEqualTo("TEST07_CHECKLIST");
+				assertThat(ch.getDisplayName()).isEqualTo("Active checklist");
+				assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.ACTIVE);
+			}, ch -> {
+				assertThat(ch.getVersion()).isEqualTo(2);
+				assertThat(ch.getName()).isEqualTo("TEST07_CHECKLIST");
+				assertThat(ch.getDisplayName()).isEqualTo("Imported checklist");
+				assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.CREATED);
+				assertThat(ch.getId()).isEqualTo(checklistIdWithCreatedStatus);
+			});
 		});
 	}
 
@@ -311,14 +283,12 @@ class PortingIT extends AbstractAppTest {
 		// Assert organization after import
 		transactionTemplate.executeWithoutResult(status -> {
 			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(7, MUNCIPALITY_ID).orElseThrow();
-			assertThat(organization.getChecklists()).hasSize(1)
-				.allSatisfy(ch -> {
-					assertThat(ch.getVersion()).isEqualTo(1);
-					assertThat(ch.getName()).isEqualTo("TEST08_EMPLOYEE_CHECKLIST");
-					assertThat(ch.getDisplayName()).isEqualTo("Imported checklist for employee");
-					assertThat(ch.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
-					assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.CREATED);
-				});
+			assertThat(organization.getChecklists()).hasSize(1).satisfiesExactly(ch -> {
+				assertThat(ch.getVersion()).isEqualTo(1);
+				assertThat(ch.getName()).isEqualTo("TEST08_CHECKLIST");
+				assertThat(ch.getDisplayName()).isEqualTo("Imported checklist");
+				assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.CREATED);
+			});
 		});
 	}
 
@@ -343,14 +313,12 @@ class PortingIT extends AbstractAppTest {
 			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(8, MUNCIPALITY_ID).orElseThrow();
 			assertThat(organization.getOrganizationNumber()).isEqualTo(8);
 			assertThat(organization.getOrganizationName()).isEqualTo("Organization_8");
-			assertThat(organization.getChecklists()).hasSize(1)
-				.allSatisfy(ch -> {
-					assertThat(ch.getVersion()).isEqualTo(1);
-					assertThat(ch.getName()).isEqualTo("TEST09_EMPLOYEE_CHECKLIST");
-					assertThat(ch.getDisplayName()).isEqualTo("Imported checklist for employee");
-					assertThat(ch.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
-					assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.CREATED);
-				});
+			assertThat(organization.getChecklists()).hasSize(1).satisfiesExactly(ch -> {
+				assertThat(ch.getVersion()).isEqualTo(1);
+				assertThat(ch.getName()).isEqualTo("TEST09_CHECKLIST");
+				assertThat(ch.getDisplayName()).isEqualTo("Imported checklist");
+				assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.CREATED);
+			});
 		});
 	}
 }

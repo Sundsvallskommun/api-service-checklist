@@ -106,7 +106,6 @@ class ChecklistServiceTest {
 
 		assertThat(result).isNotNull().satisfies(checklist -> {
 			assertThat(checklist.getName()).isEqualTo(body.getName());
-			assertThat(checklist.getRoleType()).isEqualTo(body.getRoleType());
 			assertThat(checklist.getLifeCycle()).isEqualTo(CREATED);
 		});
 
@@ -220,7 +219,7 @@ class ChecklistServiceTest {
 
 		assertThat(result).isNotNull().satisfies(checklistEntity -> {
 			assertThat(checklistEntity.getLifeCycle()).isEqualTo(ACTIVE);
-			assertThat(checklistEntity.getRoleType()).isEqualTo(checklist.getRoleType());
+			assertThat(checklistEntity.getDisplayName()).isEqualTo(checklist.getDisplayName());
 		});
 
 		verify(mockChecklistRepository).findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID);

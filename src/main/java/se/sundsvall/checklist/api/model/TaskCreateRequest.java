@@ -2,19 +2,17 @@ package se.sundsvall.checklist.api.model;
 
 import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.WRITE_ONLY;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
-import se.sundsvall.checklist.integration.db.model.enums.Permission;
-import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
-import se.sundsvall.checklist.integration.db.model.enums.RoleType;
-
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import se.sundsvall.checklist.integration.db.model.enums.Permission;
+import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
+import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 
 @Data
 @NoArgsConstructor
@@ -34,7 +32,7 @@ public class TaskCreateRequest {
 	@NotNull
 	private Integer sortOrder;
 
-	@Schema(description = "The role type of the task", accessMode = WRITE_ONLY)
+	@Schema(description = "The role type of the task", example = "EMPLOYEE", accessMode = WRITE_ONLY)
 	@NotNull
 	private RoleType roleType;
 

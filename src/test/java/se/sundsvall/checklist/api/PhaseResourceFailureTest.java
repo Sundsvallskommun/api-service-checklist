@@ -57,7 +57,6 @@ class PhaseResourceFailureTest {
 		return Stream.of(
 			Arguments.of(createPhaseCreateRequest(r -> r.setTimeToComplete("Not valid")), "timeToComplete", "text is not in ISO-8601 period format"),
 			Arguments.of(createPhaseCreateRequest(r -> r.setName(null)), "name", "must not be blank"),
-			Arguments.of(createPhaseCreateRequest(r -> r.setRoleType(null)), "roleType", "must not be null"),
 			Arguments.of(createPhaseCreateRequest(r -> r.setSortOrder(null)), "sortOrder", "must not be null"),
 			Arguments.of(createPhaseCreateRequest(r -> r.setPermission(null)), "permission", "must not be null"),
 			Arguments.of(createPhaseCreateRequest(r -> r.setCreatedBy("")), "createdBy", "must not be blank"));
@@ -116,7 +115,6 @@ class PhaseResourceFailureTest {
 			.withName(null)
 			.withBodyText(null)
 			.withTimeToComplete("THIS IS INVALID")
-			.withRoleType(null)
 			.withSortOrder(null)
 			.withUpdatedBy("someUser")
 			.build();

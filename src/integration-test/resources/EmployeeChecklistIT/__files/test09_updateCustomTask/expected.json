@@ -5,7 +5,7 @@
 	"lastSavedBy": "someUser",
 	"id": "677a9efd-55bf-468d-81e8-efc913b9f956",
 	"text": "Updated descriptive text for second custom task",
-	"roleType": "EMPLOYEE",
+	"roleType": "NEW_EMPLOYEE",
 	"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
 	"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,10}(Z|[+-]\\d{2}:\\d{2})?$"
 }

@@ -1,22 +1,20 @@
 {
-	"displayName": "Checklist for employee",
+	"displayName": "Deprecated checklist",
 	"lastSavedBy": "someUser",
-	"name": "TEST01_02_EMPLOYEE_CHECKLIST",
-	"roleType": "EMPLOYEE",
+	"name": "TEST01_02_CHECKLIST",
 	"version": 1,
 	"phases": [{
-		"bodyText": "Phase description of deprecated phase for employee",
+		"bodyText": "Phase description of deprecated phase",
 		"sortOrder": 1,
 		"lastSavedBy": "someUser",
 		"name": "Phase name",
-		"roleType": "EMPLOYEE",
 		"timeToComplete": "P1W",
 		"tasks": [{
 			"heading": "Task name",
 			"sortOrder": 1,
 			"lastSavedBy": "someUser",
 			"text": "Task description of deprecated task for employee",
-			"roleType": "EMPLOYEE",
+			"roleType": "NEW_EMPLOYEE",
 			"questionType": "YES_OR_NO"
 		}]
 	}]

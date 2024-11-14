@@ -119,7 +119,6 @@ class PhaseServiceTest {
 			assertThat(entity.getId()).isNull();
 			assertThat(entity.getName()).isEqualTo(request.getName());
 			assertThat(entity.getPermission()).isEqualTo(request.getPermission());
-			assertThat(entity.getRoleType()).isEqualTo(createChecklistEntity().getRoleType());
 			assertThat(entity.getSortOrder()).isEqualTo(request.getSortOrder());
 			assertThat(entity.getTasks()).isNullOrEmpty();
 			assertThat(entity.getTimeToComplete()).isEqualTo(request.getTimeToComplete());
@@ -156,7 +155,6 @@ class PhaseServiceTest {
 			assertThat(entity.getId()).isEqualTo(phaseEntity.getId());
 			assertThat(entity.getName()).isEqualTo(request.getName());
 			assertThat(entity.getBodyText()).isEqualTo(request.getBodyText());
-			assertThat(entity.getRoleType()).isEqualTo(request.getRoleType());
 			assertThat(entity.getSortOrder()).isEqualTo(request.getSortOrder());
 			assertThat(entity.getPermission()).isEqualTo(request.getPermission());
 			assertThat(entity.getTimeToComplete()).isEqualTo(request.getTimeToComplete());

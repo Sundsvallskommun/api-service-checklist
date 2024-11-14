@@ -6,7 +6,7 @@
 	"permission": "SUPERADMIN",
 	"id": "414803ef-0074-4f24-b5e5-54c48f7c6ea9",
 	"text": "string",
-	"roleType": "MANAGER",
+	"roleType": "NEW_MANAGER",
 	"questionType": "COMPLETED_OR_NOT_RELEVANT",
 	"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,10}(Z|[+-]\\d{2}:\\d{2})?$"
 }

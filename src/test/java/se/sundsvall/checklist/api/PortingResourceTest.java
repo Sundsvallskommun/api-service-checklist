@@ -19,7 +19,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import se.sundsvall.checklist.Application;
-import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 import se.sundsvall.checklist.service.PortingService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
@@ -40,10 +39,10 @@ class PortingResourceTest {
 	void exportLatestChecklistVersion() {
 		final var jsonStructure = "{\"key\": \"value\"}";
 
-		when(mockPortingService.exportChecklist(MUNICIPALITY_ID, ORGANIZATION_NUMBER, RoleType.EMPLOYEE, null)).thenReturn(jsonStructure);
+		when(mockPortingService.exportChecklist(MUNICIPALITY_ID, ORGANIZATION_NUMBER, null)).thenReturn(jsonStructure);
 
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(BASE_PATH + "/export/{orgNbr}/{roleType}").build(Map.of("municipalityId", MUNICIPALITY_ID, "orgNbr", ORGANIZATION_NUMBER, "roleType", RoleType.EMPLOYEE)))
+			.uri(builder -> builder.path(BASE_PATH + "/export/{orgNbr}").build(Map.of("municipalityId", MUNICIPALITY_ID, "orgNbr", ORGANIZATION_NUMBER)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody(String.class)
@@ -52,7 +51,7 @@ class PortingResourceTest {
 
 		assertThat(response).isEqualTo(jsonStructure);
 
-		verify(mockPortingService).exportChecklist(MUNICIPALITY_ID, ORGANIZATION_NUMBER, RoleType.EMPLOYEE, null);
+		verify(mockPortingService).exportChecklist(MUNICIPALITY_ID, ORGANIZATION_NUMBER, null);
 		verifyNoMoreInteractions(mockPortingService);
 	}
 
@@ -61,12 +60,12 @@ class PortingResourceTest {
 		final var version = 321;
 		final var jsonStructure = "{\"key\": \"value\"}";
 
-		when(mockPortingService.exportChecklist(MUNICIPALITY_ID, ORGANIZATION_NUMBER, RoleType.EMPLOYEE, version)).thenReturn(jsonStructure);
+		when(mockPortingService.exportChecklist(MUNICIPALITY_ID, ORGANIZATION_NUMBER, version)).thenReturn(jsonStructure);
 
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(BASE_PATH + "/export/{orgNbr}/{roleType}")
+			.uri(builder -> builder.path(BASE_PATH + "/export/{orgNbr}")
 				.queryParam("version", version)
-				.build(Map.of("municipalityId", MUNICIPALITY_ID, "orgNbr", ORGANIZATION_NUMBER, "roleType", RoleType.EMPLOYEE)))
+				.build(Map.of("municipalityId", MUNICIPALITY_ID, "orgNbr", ORGANIZATION_NUMBER)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody(String.class)
@@ -75,7 +74,7 @@ class PortingResourceTest {
 
 		assertThat(response).isEqualTo(jsonStructure);
 
-		verify(mockPortingService).exportChecklist(MUNICIPALITY_ID, ORGANIZATION_NUMBER, RoleType.EMPLOYEE, version);
+		verify(mockPortingService).exportChecklist(MUNICIPALITY_ID, ORGANIZATION_NUMBER, version);
 		verifyNoMoreInteractions(mockPortingService);
 	}
 
@@ -85,7 +84,6 @@ class PortingResourceTest {
 		final var jsonStructure = """
 			{
 				"name": "name",
-				"roleType": "EMPLOYEE",
 				"displayName": "displayName"
 			}""";
 
@@ -113,7 +111,6 @@ class PortingResourceTest {
 		final var jsonStructure = """
 			{
 				"name": "name",
-				"roleType": "EMPLOYEE",
 				"displayName": "displayName"
 			}""";
 

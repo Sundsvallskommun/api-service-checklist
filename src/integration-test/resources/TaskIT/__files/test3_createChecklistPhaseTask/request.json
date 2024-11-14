@@ -4,6 +4,6 @@
 	"sortOrder": 1,
 	"permission": "SUPERADMIN",
 	"text": "Body text of the task",
-	"roleType": "EMPLOYEE",
+	"roleType": "NEW_EMPLOYEE",
 	"questionType": "YES_OR_NO"
 }

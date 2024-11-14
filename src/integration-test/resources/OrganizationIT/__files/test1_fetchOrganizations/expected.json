@@ -32,7 +32,6 @@
 			"lastSavedBy": "someUser",
 			"name": "CHECKLIST_SHOULD_BE_DELETED",
 			"id": "4bc85739-cf6d-4223-b9dc-09218f044db7",
-			"roleType": "EMPLOYEE",
 			"version": 1,
 			"lifeCycle": "RETIRED",
 			"updated": "2019-01-01T00:00:00+01:00",

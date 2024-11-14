@@ -6,7 +6,6 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.zalando.problem.Status.BAD_REQUEST;
 import static se.sundsvall.checklist.TestObjectFactory.createChecklistUpdateRequest;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.EMPLOYEE;
 
 import java.util.Map;
 import java.util.UUID;
@@ -85,44 +84,15 @@ class ChecklistResourceFailureTest {
 	}
 
 	@Test
-	void createChecklistWithNullRoleType() {
+	void createChecklistWithBlankName() {
 		final var body = ChecklistCreateRequest.builder()
-			.withName("Name")
+			.withName("")
 			.withOrganizationNumber(11)
-			.withRoleType(null)
 			.withDisplayName("displayName")
 			.withCreatedBy("someUser")
 			.build();
 
 		final var response = webTestClient.post()
-			.uri(builder -> builder.path("/{municipalityId}/checklists").build(Map.of("municipalityId", MUNICIPALITY_ID)))
-			.bodyValue(body)
-			.exchange()
-			.expectStatus().isBadRequest()
-			.expectBody(ConstraintViolationProblem.class)
-			.returnResult()
-			.getResponseBody();
-
-		assertThat(response).isNotNull().satisfies(r -> {
-			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
-			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
-				.containsExactlyInAnyOrder(tuple("roleType", "must not be null"));
-		});
-		verifyNoInteractions(mockChecklistService);
-	}
-
-	@Test
-	void createChecklistWithBlankName() {
-		var body = ChecklistCreateRequest.builder()
-			.withName("")
-			.withRoleType(EMPLOYEE)
-			.withOrganizationNumber(11)
-			.withDisplayName("displayName")
-			.withCreatedBy("someUser")
-			.build();
-
-		var response = webTestClient.post()
 			.uri(builder -> builder.path("/{municipalityId}/checklists").build(Map.of("municipalityId", MUNICIPALITY_ID)))
 			.bodyValue(body)
 			.exchange()
@@ -144,7 +114,6 @@ class ChecklistResourceFailureTest {
 	void createChecklistWithBlankCreatedBy() {
 		final var body = ChecklistCreateRequest.builder()
 			.withName("Test checklist template")
-			.withRoleType(EMPLOYEE)
 			.withOrganizationNumber(11)
 			.withDisplayName("displayName")
 			.build();
@@ -170,7 +139,6 @@ class ChecklistResourceFailureTest {
 	@Test
 	void updateChecklistWithBlankUpdatedBy() {
 		final var body = ChecklistUpdateRequest.builder()
-			.withRoleType(EMPLOYEE)
 			.withDisplayName("displayName")
 			.build();
 

@@ -12,7 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 
 @Data
 @NoArgsConstructor
@@ -32,9 +31,6 @@ public class EmployeeChecklistPhase {
 
 	@Schema(description = "The time to complete the phase", example = "P1M", accessMode = READ_ONLY)
 	private String timeToComplete;
-
-	@Schema(description = "The role type of the phase", accessMode = READ_ONLY)
-	private RoleType roleType;
 
 	@Schema(description = "The sort order for the phase", example = "1", accessMode = READ_ONLY)
 	private int sortOrder;

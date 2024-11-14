@@ -23,7 +23,6 @@ import org.zalando.problem.violations.ConstraintViolationProblem;
 import org.zalando.problem.violations.Violation;
 
 import se.sundsvall.checklist.Application;
-import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 import se.sundsvall.checklist.service.PortingService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
@@ -45,7 +44,7 @@ class PortingResourceFailureTest {
 	@Test
 	void exportChecklistInvalidPathValue() {
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(BASE_PATH + "/export/{organizationNumber}/{roleType}").build(Map.of("municipalityId", INVALID, "organizationNumber", ORGANIZATION_NUMBER, "roleType", RoleType.EMPLOYEE)))
+			.uri(builder -> builder.path(BASE_PATH + "/export/{organizationNumber}").build(Map.of("municipalityId", INVALID, "organizationNumber", ORGANIZATION_NUMBER)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectHeader().contentType(APPLICATION_PROBLEM_JSON)
@@ -69,9 +68,9 @@ class PortingResourceFailureTest {
 	@ValueSource(strings = {
 		"[]",
 		"{}",
-		"{\"name\": \"value\", \"roleType\": \"EMPLOYEE\", \"displayName\":\"\"}",
-		"{\"name\": \"value\", \"displayName\":\"value\"}",
-		"{\"name\": \"\", \"roleType\": \"EMPLOYEE\", \"displayName\":\"value\"}"
+		"{\"name\": \"value\", \"roleType\": \"INVALID\", \"displayName\":\"value\"}",
+		"{\"name\": \"\", \"displayName\":\"value\"}",
+		"{\"name\": \"value\", \"displayName\":\"\"}",
 	})
 	void importChecklistAsNewVersionWithFaultyJsonStructures(String jsonStructure) {
 		final var response = webTestClient.post()
@@ -125,7 +124,6 @@ class PortingResourceFailureTest {
 		final var jsonStructure = """
 			{
 				"name": "name",
-				"roleType": "EMPLOYEE",
 				"displayName": "displayName"
 			}""";
 
@@ -156,9 +154,8 @@ class PortingResourceFailureTest {
 	@ValueSource(strings = {
 		"[]",
 		"{}",
-		"{\"name\": \"value\", \"roleType\": \"EMPLOYEE\", \"displayName\":\"\"}",
-		"{\"name\": \"value\", \"displayName\":\"value\"}",
-		"{\"name\": \"\", \"roleType\": \"EMPLOYEE\", \"displayName\":\"value\"}"
+		"{\"name\": \"value\", \"displayName\":\"\"}",
+		"{\"name\": \"\", \"displayName\":\"value\"}"
 	})
 	void importAndOverwriteExistingChecklistWithFaultyJsonStructures(String jsonStructure) {
 		final var response = webTestClient.post()
@@ -212,7 +209,6 @@ class PortingResourceFailureTest {
 		final var jsonStructure = """
 			{
 				"name": "name",
-				"roleType": "EMPLOYEE",
 				"displayName": "displayName"
 			}""";
 

@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.ACTIVE;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.EMPLOYEE;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +73,6 @@ class ChecklistRepositoryTest {
 			assertThat(r.get().getId()).isEqualTo("15764278-50c8-4a19-af00-077bfc314fd2");
 			assertThat(r.get().getName()).isEqualTo("Checklista Elnät");
 			assertThat(r.get().getVersion()).isEqualTo(1);
-			assertThat(r.get().getRoleType()).isEqualTo(EMPLOYEE);
 		});
 	}
 
@@ -111,7 +109,6 @@ class ChecklistRepositoryTest {
 			assertThat(r.get().getId()).isEqualTo("25764278-50c8-4a19-af00-077bfc314fd2");
 			assertThat(r.get().getName()).isEqualTo("Checklista för Vård och omsorg");
 			assertThat(r.get().getVersion()).isEqualTo(1);
-			assertThat(r.get().getRoleType()).isEqualTo(EMPLOYEE);
 		});
 	}
 

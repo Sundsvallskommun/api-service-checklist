@@ -28,7 +28,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import se.sundsvall.checklist.api.validation.ValidJson;
-import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 import se.sundsvall.checklist.service.PortingService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
@@ -51,21 +50,20 @@ class PortingResource {
 	}
 
 	@Operation(summary = "Export checklist structure",
-		description = "Returns complete structure for the checklist matching provided organizationNumber and roletype. If version if prodvided it will be matched, otherwise the latest version will be returned",
+		description = "Returns complete structure for the checklist matching provided organizationNumber. If version if prodvided it will be matched, otherwise the latest version will be returned",
 		responses = {
 			@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 		})
 
-	@GetMapping(path = "/{municipalityId}/export/{organizationNumber}/{roleType}", produces = {
+	@GetMapping(path = "/{municipalityId}/export/{organizationNumber}", produces = {
 		APPLICATION_JSON_VALUE
 	})
 	ResponseEntity<String> exportChecklist(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId String municipalityId,
 		@Parameter(name = "organizationNumber", description = "Organization number", example = "53") @PathVariable Integer organizationNumber,
-		@Parameter(name = "roleType", description = "Role type", example = "EMPLOYEE") @PathVariable RoleType roleType,
 		@Parameter(name = "version", description = "Version", example = "2") @RequestParam(required = false) Integer version) {
 
-		return ResponseEntity.ok(portingService.exportChecklist(municipalityId, organizationNumber, roleType, version));
+		return ResponseEntity.ok(portingService.exportChecklist(municipalityId, organizationNumber, version));
 	}
 
 	@Operation(summary = "Import checklist structure for a organization as a new version with lifecycle status CREATED",

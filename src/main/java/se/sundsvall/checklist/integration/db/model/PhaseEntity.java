@@ -29,7 +29,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import se.sundsvall.checklist.integration.db.model.enums.Permission;
-import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 
 @Getter
 @Setter
@@ -52,10 +51,6 @@ public class PhaseEntity {
 
 	@Column(name = "time_to_complete")
 	private String timeToComplete;
-
-	@Enumerated(EnumType.STRING)
-	@Column(name = "role_type")
-	private RoleType roleType;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "permission")

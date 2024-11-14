@@ -51,7 +51,7 @@ class EmployeeChecklistTaskTest {
 		final var updatedBy = "updatedBy";
 		final var questionType = QuestionType.YES_OR_NO_WITH_TEXT;
 		final var responseText = "responseText";
-		final var roleType = RoleType.MANAGER;
+		final var roleType = RoleType.MANAGER_FOR_NEW_EMPLOYEE;
 		final var sortOrder = 123;
 		final var text = "text";
 		final var updated = OffsetDateTime.now();

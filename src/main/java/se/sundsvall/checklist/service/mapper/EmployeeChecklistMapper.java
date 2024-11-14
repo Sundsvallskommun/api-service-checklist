@@ -5,7 +5,7 @@ import static java.util.Comparator.comparing;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toCollection;
 import static org.apache.commons.lang3.ObjectUtils.anyNull;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.EMPLOYEE;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.NEW_EMPLOYEE;
 import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toStakeholder;
 
 import java.time.LocalDate;
@@ -75,8 +75,8 @@ public final class EmployeeChecklistMapper {
 		return EmployeeChecklistEntity.builder()
 			.withChecklist(checklistEntity)
 			.withEmployee(employeeEntity)
-			.withEndDate(startDate.plus(employeeEntity.getRoleType().getTimeToComplete()))
-			.withExpirationDate(startDate.plus(employeeEntity.getRoleType().getTimeToExpiration()))
+			.withEndDate(startDate.plus(employeeEntity.getEmploymentPosition().getTimeToComplete()))
+			.withExpirationDate(startDate.plus(employeeEntity.getEmploymentPosition().getTimeToExpiration()))
 			.withStartDate(startDate)
 			.build();
 	}
@@ -88,7 +88,7 @@ public final class EmployeeChecklistMapper {
 				.withEmployeeChecklist(employeeChecklistEntity)
 				.withPhase(phaseEntity)
 				.withQuestionType(r.getQuestionType())
-				.withRoleType(EMPLOYEE) // Hardcoded as custom tasks only can exist for the employee, never for the manager
+				.withRoleType(NEW_EMPLOYEE) // Hardcoded as custom tasks only can exist for the employee, never for the manager
 				.withSortOrder(r.getSortOrder())
 				.withText(r.getText())
 				.withLastSavedBy(request.getCreatedBy())
@@ -146,7 +146,6 @@ public final class EmployeeChecklistMapper {
 				.withId(entity.getId())
 				.withName(entity.getName())
 				.withBodyText(entity.getBodyText())
-				.withRoleType(entity.getRoleType())
 				.withSortOrder(entity.getSortOrder())
 				.withTimeToComplete(entity.getTimeToComplete())
 				.withTasks(toEmployeeChecklistTasks(entity.getTasks()))

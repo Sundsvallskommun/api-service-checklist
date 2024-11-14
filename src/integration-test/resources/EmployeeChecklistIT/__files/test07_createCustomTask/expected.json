@@ -5,6 +5,6 @@
 	"lastSavedBy": "someUser",
 	"id": "${json-unit.regex}^[0-9a-fA-F]{8}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{12}$",
 	"text": "Descriptive text for second custom task",
-	"roleType": "EMPLOYEE",
+	"roleType": "NEW_EMPLOYEE",
 	"questionType": "YES_OR_NO_WITH_TEXT"
 }

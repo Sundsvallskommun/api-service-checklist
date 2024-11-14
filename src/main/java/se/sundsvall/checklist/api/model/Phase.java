@@ -8,9 +8,6 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import se.sundsvall.checklist.integration.db.model.enums.Permission;
-import se.sundsvall.checklist.integration.db.model.enums.RoleType;
-
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -18,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import se.sundsvall.checklist.integration.db.model.enums.Permission;
 
 @Data
 @NoArgsConstructor
@@ -37,9 +35,6 @@ public class Phase {
 
 	@Schema(description = "The time to complete the phase", example = "P1M", accessMode = READ_ONLY)
 	private String timeToComplete;
-
-	@Schema(description = "The role type of the phase", accessMode = READ_ONLY)
-	private RoleType roleType;
 
 	@Schema(description = "The permission needed to administrate the phase", accessMode = READ_ONLY)
 	private Permission permission;

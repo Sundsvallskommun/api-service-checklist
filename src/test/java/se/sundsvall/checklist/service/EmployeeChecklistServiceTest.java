@@ -29,6 +29,10 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
 
+import generated.se.sundsvall.employee.Employee;
+import generated.se.sundsvall.employee.Employment;
+import generated.se.sundsvall.employee.Manager;
+import generated.se.sundsvall.employee.PortalPersonData;
 import se.sundsvall.checklist.api.model.CustomTask;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
@@ -53,11 +57,6 @@ import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
 import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
-
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.Employment;
-import generated.se.sundsvall.employee.Manager;
-import generated.se.sundsvall.employee.PortalPersonData;
 
 @ExtendWith(MockitoExtension.class)
 class EmployeeChecklistServiceTest {
@@ -97,11 +96,10 @@ class EmployeeChecklistServiceTest {
 			.withManager(manager)
 			.withUpdated(OffsetDateTime.now())
 			.build();
-		final var managerTask = TaskEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.MANAGER).build();
-		final var employeeTask = TaskEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.EMPLOYEE).build();
-		final var managerPhase = PhaseEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.MANAGER).withTasks(List.of(managerTask, employeeTask)).build();
-		final var employeePhase = PhaseEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.EMPLOYEE).withTasks(List.of(managerTask, employeeTask)).build();
-		final var checklist = ChecklistEntity.builder().withPhases(List.of(managerPhase, employeePhase)).build();
+		final var managerTask = TaskEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.MANAGER_FOR_NEW_EMPLOYEE).build();
+		final var employeeTask = TaskEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.NEW_EMPLOYEE).build();
+		final var phase = PhaseEntity.builder().withId(UUID.randomUUID().toString()).withTasks(List.of(managerTask, employeeTask)).build();
+		final var checklist = ChecklistEntity.builder().withPhases(List.of(phase)).build();
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
 			.withId(employeeChecklistId)
 			.withEmployee(employee)
@@ -109,13 +107,13 @@ class EmployeeChecklistServiceTest {
 			.build();
 		final var customEmployeeTask = CustomTaskEntity.builder()
 			.withId(customTaskId)
-			.withRoleType(RoleType.EMPLOYEE)
-			.withPhase(employeePhase)
+			.withRoleType(RoleType.NEW_EMPLOYEE)
+			.withPhase(phase)
 			.build();
 		final var customManagerTask = CustomTaskEntity.builder()
 			.withId(customTaskId)
-			.withRoleType(RoleType.MANAGER)
-			.withPhase(managerPhase)
+			.withRoleType(RoleType.MANAGER_FOR_NEW_EMPLOYEE)
+			.withPhase(phase)
 			.build();
 
 		when(employeeChecklistIntegrationMock.fetchOptionalEmployeeChecklist(MUNICIPALITY_ID, username)).thenReturn(Optional.of(employeeChecklistEntity));
@@ -127,9 +125,8 @@ class EmployeeChecklistServiceTest {
 		// Assert and verify
 		assertThat(employeeChecklist).isPresent();
 		assertThat(employeeChecklist.get().getPhases()).hasSize(1).allSatisfy(ph -> {
-			assertThat(ph.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
 			assertThat(ph.getTasks()).hasSize(2).allSatisfy(t -> {
-				assertThat(t.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
+				assertThat(t.getRoleType()).isEqualTo(RoleType.NEW_EMPLOYEE);
 				assertThat(t.getFulfilmentStatus()).isEqualTo(FulfilmentStatus.EMPTY);
 			});
 		});
@@ -203,24 +200,24 @@ class EmployeeChecklistServiceTest {
 			.withUpdated(OffsetDateTime.now())
 			.build();
 
-		final var managerTask = TaskEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.MANAGER).build();
-		final var employeeTask = TaskEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.EMPLOYEE).build();
-		final var managerPhase = PhaseEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.MANAGER).withTasks(List.of(managerTask)).build();
-		final var employeePhase = PhaseEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.EMPLOYEE).withTasks(List.of(managerTask, employeeTask)).build();
+		final var managerTask = TaskEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.MANAGER_FOR_NEW_EMPLOYEE).build();
+		final var employeeTask = TaskEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.NEW_EMPLOYEE).build();
+		final var phase_1 = PhaseEntity.builder().withId(UUID.randomUUID().toString()).withTasks(List.of(managerTask)).build();
+		final var phase_2 = PhaseEntity.builder().withId(UUID.randomUUID().toString()).withTasks(List.of(managerTask, employeeTask)).build();
 
 		final var checklist = ChecklistEntity.builder()
-			.withPhases(List.of(managerPhase, employeePhase))
+			.withPhases(List.of(phase_1, phase_2))
 			.build();
 
 		final var customEmployeeTask = CustomTaskEntity.builder()
 			.withId(customTaskId)
-			.withRoleType(RoleType.EMPLOYEE)
-			.withPhase(employeePhase)
+			.withRoleType(RoleType.NEW_EMPLOYEE)
+			.withPhase(phase_1)
 			.build();
 		final var customManagerTask = CustomTaskEntity.builder()
 			.withId(customTaskId)
-			.withRoleType(RoleType.MANAGER)
-			.withPhase(managerPhase)
+			.withRoleType(RoleType.MANAGER_FOR_NEW_EMPLOYEE)
+			.withPhase(phase_2)
 			.build();
 
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
@@ -238,29 +235,27 @@ class EmployeeChecklistServiceTest {
 		// Assert and verify
 		assertThat(employeeChecklists).hasSize(1);
 		assertThat(employeeChecklists.getFirst().getPhases()).hasSize(2).satisfiesExactlyInAnyOrder(ph -> {
-			assertThat(ph.getRoleType()).isEqualTo(RoleType.MANAGER);
 			assertThat(ph.getTasks()).hasSize(2).satisfiesExactlyInAnyOrder(t -> {
 				assertThat(t.isCustomTask()).isTrue();
-				assertThat(t.getRoleType()).isEqualTo(RoleType.MANAGER);
+				assertThat(t.getRoleType()).isEqualTo(RoleType.NEW_EMPLOYEE);
 				assertThat(t.getFulfilmentStatus()).isEqualTo(FulfilmentStatus.EMPTY);
 			}, t -> {
 				assertThat(t.isCustomTask()).isFalse();
-				assertThat(t.getRoleType()).isEqualTo(RoleType.MANAGER);
+				assertThat(t.getRoleType()).isEqualTo(RoleType.MANAGER_FOR_NEW_EMPLOYEE);
 				assertThat(t.getFulfilmentStatus()).isEqualTo(FulfilmentStatus.EMPTY);
 			});
 		}, ph -> {
-			assertThat(ph.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
 			assertThat(ph.getTasks()).hasSize(3).satisfiesExactlyInAnyOrder(t -> {
 				assertThat(t.isCustomTask()).isTrue();
-				assertThat(t.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
+				assertThat(t.getRoleType()).isEqualTo(RoleType.MANAGER_FOR_NEW_EMPLOYEE);
 				assertThat(t.getFulfilmentStatus()).isEqualTo(FulfilmentStatus.EMPTY);
 			}, t -> {
 				assertThat(t.isCustomTask()).isFalse();
-				assertThat(t.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
+				assertThat(t.getRoleType()).isEqualTo(RoleType.NEW_EMPLOYEE);
 				assertThat(t.getFulfilmentStatus()).isEqualTo(FulfilmentStatus.EMPTY);
 			}, t -> {
 				assertThat(t.isCustomTask()).isFalse();
-				assertThat(t.getRoleType()).isEqualTo(RoleType.MANAGER);
+				assertThat(t.getRoleType()).isEqualTo(RoleType.MANAGER_FOR_NEW_EMPLOYEE);
 				assertThat(t.getFulfilmentStatus()).isEqualTo(FulfilmentStatus.EMPTY);
 			});
 		});
@@ -326,8 +321,8 @@ class EmployeeChecklistServiceTest {
 
 	@Test
 	void setMentor() {
-		var employeeChecklistId = UUID.randomUUID().toString();
-		var mentor = Mentor.builder().build();
+		final var employeeChecklistId = UUID.randomUUID().toString();
+		final var mentor = Mentor.builder().build();
 
 		// Act
 		service.setMentor(MUNICIPALITY_ID, employeeChecklistId, mentor);
@@ -338,7 +333,7 @@ class EmployeeChecklistServiceTest {
 
 	@Test
 	void deleteMentor() {
-		var employeeChecklistId = UUID.randomUUID().toString();
+		final var employeeChecklistId = UUID.randomUUID().toString();
 
 		// Act
 		service.deleteMentor(MUNICIPALITY_ID, employeeChecklistId);

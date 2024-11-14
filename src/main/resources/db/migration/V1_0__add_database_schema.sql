@@ -12,17 +12,19 @@
 	-- Shedlock table (this will not be created by schema file - i.e do not remove the section above when replacing the content in this file)
     -- --------------------------------------------------------------------------------------------------------------------------------------
 
+
+
     create table checklist (
         version integer,
         created datetime(6),
         updated datetime(6),
         display_name varchar(255),
         id varchar(255) not null,
+        last_saved_by varchar(255) not null,
         municipality_id varchar(255),
         name varchar(255),
         organization_id varchar(255),
         life_cycle enum ('ACTIVE','CREATED','DEPRECATED','RETIRED'),
-        role_type enum ('EMPLOYEE','MANAGER'),
         primary key (id)
     ) engine=InnoDB;
 
@@ -42,6 +44,7 @@
         custom_task_id varchar(255),
         employee_checklist_id varchar(255),
         id varchar(255) not null,
+        last_saved_by varchar(255) not null,
         response_text varchar(255),
         completed enum ('EMPTY','FALSE','TRUE'),
         primary key (id)
@@ -54,10 +57,11 @@
         employee_checklist_id varchar(255),
         heading varchar(255),
         id varchar(255) not null,
+        last_saved_by varchar(255) not null,
         phase_id varchar(255),
         text varchar(2048),
         question_type enum ('COMPLETED_OR_NOT_RELEVANT','COMPLETED_OR_NOT_RELEVANT_WITH_TEXT','YES_OR_NO','YES_OR_NO_WITH_TEXT'),
-        role_type enum ('EMPLOYEE','MANAGER'),
+        role_type enum ('MANAGER_FOR_NEW_EMPLOYEE','MANAGER_FOR_NEW_MANAGER','NEW_EMPLOYEE','NEW_MANAGER'),
         primary key (id)
     ) engine=InnoDB;
 
@@ -86,7 +90,7 @@
         organization_id varchar(255),
         title varchar(255),
         username varchar(255),
-        role_type enum ('EMPLOYEE','MANAGER'),
+        employment_position enum ('EMPLOYEE','MANAGER'),
         primary key (id)
     ) engine=InnoDB;
 
@@ -101,6 +105,8 @@
         correspondence_id varchar(255),
         employee_id varchar(255),
         id varchar(255) not null,
+        mentor_name varchar(255),
+        mentor_user_id varchar(255),
         primary key (id)
     ) engine=InnoDB;
 
@@ -108,6 +114,7 @@
         updated datetime(6),
         employee_checklist_id varchar(255),
         id varchar(255) not null,
+        last_saved_by varchar(255) not null,
         response_text varchar(255),
         task_id varchar(255),
         completed enum ('EMPTY','FALSE','TRUE'),
@@ -148,10 +155,10 @@
         body_text varchar(2048),
         checklist_id varchar(255),
         id varchar(255) not null,
+        last_saved_by varchar(255) not null,
         name varchar(255),
         time_to_complete varchar(255),
         permission enum ('ADMIN','SUPERADMIN'),
-        role_type enum ('EMPLOYEE','MANAGER'),
         primary key (id)
     ) engine=InnoDB;
 
@@ -161,11 +168,12 @@
         updated datetime(6),
         heading varchar(255),
         id varchar(255) not null,
+        last_saved_by varchar(255) not null,
         phase_id varchar(255),
         text varchar(2048),
         permission enum ('ADMIN','SUPERADMIN'),
         question_type enum ('COMPLETED_OR_NOT_RELEVANT','COMPLETED_OR_NOT_RELEVANT_WITH_TEXT','YES_OR_NO','YES_OR_NO_WITH_TEXT'),
-        role_type enum ('EMPLOYEE','MANAGER'),
+        role_type enum ('MANAGER_FOR_NEW_EMPLOYEE','MANAGER_FOR_NEW_MANAGER','NEW_EMPLOYEE','NEW_MANAGER'),
         primary key (id)
     ) engine=InnoDB;
 

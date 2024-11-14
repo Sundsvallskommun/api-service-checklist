@@ -18,8 +18,6 @@ import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import se.sundsvall.checklist.integration.db.model.enums.RoleType;
-
 class PhaseTest {
 
 	@BeforeAll
@@ -43,30 +41,42 @@ class PhaseTest {
 		final var name = "name";
 		final var bodyText = "bodyText";
 		final var timeToComplete = "timeToComplete";
-		final var roleType = RoleType.EMPLOYEE;
-		final var sortOrder = 1;
+		final var sortOrder = 321;
 		final var lastSavedBy = "someUser";
+		final var created = OffsetDateTime.now();
+		final var updated = OffsetDateTime.now().plusDays(10);
+		final var tasks = List.of(Task.builder().build());
+		final var permission = ADMIN;
 
-		final var phase = Phase.builder()
+		final var bean = Phase.builder()
 			.withId(id)
 			.withName(name)
 			.withBodyText(bodyText)
 			.withTimeToComplete(timeToComplete)
-			.withRoleType(roleType)
 			.withSortOrder(sortOrder)
-			.withPermission(ADMIN)
-			.withUpdated(OffsetDateTime.now())
-			.withCreated(OffsetDateTime.now())
+			.withPermission(permission)
+			.withUpdated(updated)
+			.withCreated(created)
 			.withLastSavedBy(lastSavedBy)
-			.withTasks(List.of())
+			.withTasks(tasks)
 			.build();
 
-		assertThat(phase).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(phase.getId()).isEqualTo(id);
+		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
+		assertThat(bean.getBodyText()).isEqualTo(bodyText);
+		assertThat(bean.getCreated()).isEqualTo(created);
+		assertThat(bean.getId()).isEqualTo(id);
+		assertThat(bean.getLastSavedBy()).isEqualTo(lastSavedBy);
+		assertThat(bean.getName()).isEqualTo(name);
+		assertThat(bean.getPermission()).isEqualTo(permission);
+		assertThat(bean.getSortOrder()).isEqualTo(sortOrder);
+		assertThat(bean.getTasks()).isEqualTo(tasks);
+		assertThat(bean.getTimeToComplete()).isEqualTo(timeToComplete);
+		assertThat(bean.getUpdated()).isEqualTo(updated);
 	}
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(Phase.builder().build()).hasAllNullFieldsOrPropertiesExcept("sortOrder");
+		assertThat(Phase.builder().build()).hasAllNullFieldsOrPropertiesExcept("sortOrder").hasFieldOrPropertyWithValue("sortOrder", 0);
+		assertThat(new Phase()).hasAllNullFieldsOrPropertiesExcept("sortOrder").hasFieldOrPropertyWithValue("sortOrder", 0);
 	}
 }
