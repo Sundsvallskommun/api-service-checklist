@@ -2,6 +2,7 @@ package se.sundsvall.checklist.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -21,6 +22,7 @@ import generated.se.sundsvall.messaging.DeliveryResult;
 import generated.se.sundsvall.messaging.MessageResult;
 import generated.se.sundsvall.messaging.MessageStatus;
 import generated.se.sundsvall.templating.RenderResponse;
+import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CorrespondenceEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
@@ -48,11 +50,15 @@ class MailHandlerTest {
 
 	@Test
 	void sendEmail() {
+		final var municipalityId = "municipalityId";
 		final var email = "some.email@noreply.com";
 		final var manager = ManagerEntity.builder().withEmail(email).build();
 		final var employee = EmployeeEntity.builder().withManager(manager).build();
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
 			.withEmployee(employee)
+			.withChecklist(ChecklistEntity.builder()
+				.withMunicipalityId(municipalityId)
+				.build())
 			.build();
 		final var output = "output";
 		final var renderReponse = new RenderResponse().output(output);
@@ -62,15 +68,15 @@ class MailHandlerTest {
 			.messageId(messageId)
 			.deliveries(List.of(deliveryResult));
 
-		when(templatingIntegrationMock.renderTemplate(any())).thenReturn(Optional.of(renderReponse));
-		when(messagingIntegrationMock.sendEmail(email, output)).thenReturn(Optional.of(messageResult));
+		when(templatingIntegrationMock.renderTemplate(eq(municipalityId), any())).thenReturn(Optional.of(renderReponse));
+		when(messagingIntegrationMock.sendEmail(municipalityId, email, output)).thenReturn(Optional.of(messageResult));
 
 		// Act
 		mailHandler.sendEmail(employeeChecklistEntity, "TEST");
 
 		// Assert and verify
-		verify(templatingIntegrationMock).renderTemplate(any());
-		verify(messagingIntegrationMock).sendEmail(email, output);
+		verify(templatingIntegrationMock).renderTemplate(eq(municipalityId), any());
+		verify(messagingIntegrationMock).sendEmail(municipalityId, email, output);
 		verify(employeeChecklistRepositoryMock).save(employeeChecklistEntity);
 		verifyNoMoreInteractions(employeeChecklistRepositoryMock, messagingIntegrationMock, templatingIntegrationMock);
 
@@ -91,6 +97,7 @@ class MailHandlerTest {
 
 	@Test
 	void resendEmail() {
+		final var municipalityId = "municipalityId";
 		final var email = "some.email@noreply.com";
 		final var attempts = 123;
 		final var correspondence = CorrespondenceEntity.builder().withAttempts(attempts).build();
@@ -98,6 +105,9 @@ class MailHandlerTest {
 		final var employee = EmployeeEntity.builder().withManager(manager).build();
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
 			.withEmployee(employee)
+			.withChecklist(ChecklistEntity.builder()
+				.withMunicipalityId(municipalityId)
+				.build())
 			.withCorrespondence(correspondence)
 			.build();
 		final var output = "output";
@@ -108,15 +118,15 @@ class MailHandlerTest {
 			.messageId(messageId)
 			.deliveries(List.of(deliveryResult));
 
-		when(templatingIntegrationMock.renderTemplate(any())).thenReturn(Optional.of(renderReponse));
-		when(messagingIntegrationMock.sendEmail(email, output)).thenReturn(Optional.of(messageResult));
+		when(templatingIntegrationMock.renderTemplate(eq(municipalityId), any())).thenReturn(Optional.of(renderReponse));
+		when(messagingIntegrationMock.sendEmail(municipalityId, email, output)).thenReturn(Optional.of(messageResult));
 
 		// Act
 		mailHandler.sendEmail(employeeChecklistEntity, "TEST");
 
 		// Assert and verify
-		verify(templatingIntegrationMock).renderTemplate(any());
-		verify(messagingIntegrationMock).sendEmail(email, output);
+		verify(templatingIntegrationMock).renderTemplate(eq(municipalityId), any());
+		verify(messagingIntegrationMock).sendEmail(municipalityId, email, output);
 		verify(employeeChecklistRepositoryMock).save(employeeChecklistEntity);
 		verifyNoMoreInteractions(employeeChecklistRepositoryMock, messagingIntegrationMock, templatingIntegrationMock);
 
@@ -138,18 +148,22 @@ class MailHandlerTest {
 	@Test
 	void sendEmailWhenTemplateDoesNotExist() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var email = "some.email@noreply.com";
 		final var manager = ManagerEntity.builder().withEmail(email).build();
 		final var employee = EmployeeEntity.builder().withManager(manager).build();
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
 			.withEmployee(employee)
+			.withChecklist(ChecklistEntity.builder()
+				.withMunicipalityId(municipalityId)
+				.build())
 			.build();
 
 		// Act
 		mailHandler.sendEmail(employeeChecklistEntity, "TEST");
 
 		// Assert and verify
-		verify(templatingIntegrationMock).renderTemplate(any());
+		verify(templatingIntegrationMock).renderTemplate(eq(municipalityId), any());
 		verify(employeeChecklistRepositoryMock).save(employeeChecklistEntity);
 		verifyNoMoreInteractions(employeeChecklistRepositoryMock, templatingIntegrationMock);
 		verifyNoInteractions(messagingIntegrationMock);
@@ -170,6 +184,7 @@ class MailHandlerTest {
 	@Test
 	void sendEmailWhenEmailReponseIsNotPresent() {
 		// Arrange
+		final var municipalityId = "municipalityId";
 		final var email = "some.email@noreply.com";
 		final var previousRetries = 123;
 		final var correspondence = CorrespondenceEntity.builder().withAttempts(previousRetries).build();
@@ -177,19 +192,22 @@ class MailHandlerTest {
 		final var employee = EmployeeEntity.builder().withManager(manager).build();
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
 			.withEmployee(employee)
+			.withChecklist(ChecklistEntity.builder()
+				.withMunicipalityId(municipalityId)
+				.build())
 			.withCorrespondence(correspondence)
 			.build();
 		final var output = "output";
 		final var renderReponse = new RenderResponse().output(output);
 
-		when(templatingIntegrationMock.renderTemplate(any())).thenReturn(Optional.of(renderReponse));
+		when(templatingIntegrationMock.renderTemplate(eq(municipalityId), any())).thenReturn(Optional.of(renderReponse));
 
 		// Act
 		mailHandler.sendEmail(employeeChecklistEntity, "TEST");
 
 		// Assert and verify
-		verify(templatingIntegrationMock).renderTemplate(any());
-		verify(messagingIntegrationMock).sendEmail(email, output);
+		verify(templatingIntegrationMock).renderTemplate(eq(municipalityId), any());
+		verify(messagingIntegrationMock).sendEmail(municipalityId, email, output);
 		verify(employeeChecklistRepositoryMock).save(employeeChecklistEntity);
 		verifyNoMoreInteractions(employeeChecklistRepositoryMock, messagingIntegrationMock, templatingIntegrationMock);
 

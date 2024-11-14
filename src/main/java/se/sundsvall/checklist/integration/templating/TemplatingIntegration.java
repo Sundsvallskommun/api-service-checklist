@@ -19,9 +19,9 @@ public class TemplatingIntegration {
 		this.templatingClient = templatingClient;
 	}
 
-	public Optional<RenderResponse> renderTemplate(final RenderRequest renderRequest) {
+	public Optional<RenderResponse> renderTemplate(final String municipalityId, final RenderRequest renderRequest) {
 		try {
-			return Optional.of(templatingClient.render("2281", renderRequest));
+			return Optional.of(templatingClient.render(municipalityId, renderRequest));
 		} catch (final Exception e) {
 			LOGGER.warn("Error while rendering template", e);
 			return Optional.empty();

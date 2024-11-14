@@ -120,8 +120,7 @@ public class EmployeeChecklistIntegration {
 
 	@Transactional
 	public EmployeeChecklistEntity updateAllFulfilmentForAllTasksInPhase(String municipalityId, String employeeChecklistId, String phaseId, EmployeeChecklistPhaseUpdateRequest request) {
-		final var employeeChecklist = employeeChecklistRepository.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NO_MATCHING_EMPLOYEE_CHECKLIST_FOUND.formatted(employeeChecklistId, municipalityId)));
+		final var employeeChecklist = fetchEmployeeChecklist(employeeChecklistId, municipalityId);
 
 		verifyUnlockedEmployeeChecklist(employeeChecklist);
 
