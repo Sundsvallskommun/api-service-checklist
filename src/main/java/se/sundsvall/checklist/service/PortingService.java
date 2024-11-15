@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,11 +23,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
 import org.zalando.problem.ThrowableProblem;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.enums.LifeCycle;
-import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
 import se.sundsvall.checklist.service.mapper.OrganizationMapper;
@@ -62,17 +62,15 @@ public class PortingService {
 	 *
 	 * @param  municipalityId     The id of the municipality to which the company belongs
 	 * @param  organizationNumber The organizationNumber for the unit owning the checklist to export
-	 * @param  roleType           The roletype for the checklist to export
 	 * @param  version            Version of the checklist to export. Parameter is optional, the latest version will be
 	 *                            exported if left out.
 	 * @return                    a json string representation of the full structure for the checklist.
 	 */
-	public String exportChecklist(String municipalityId, int organizationNumber, RoleType roleType, Integer version) {
+	public String exportChecklist(String municipalityId, int organizationNumber, Integer version) {
 		return organizationRepository.findByOrganizationNumberAndMunicipalityId(organizationNumber, municipalityId)
 			.map(OrganizationEntity::getChecklists)
 			.orElse(Collections.emptyList())
 			.stream()
-			.filter(ch -> Objects.equals(roleType, ch.getRoleType()))
 			.sorted(comparing(ChecklistEntity::getVersion).reversed())
 			.filter(ch -> Objects.isNull(version) || Objects.equals(version, ch.getVersion()))
 			.map(this::clearFields)
@@ -179,7 +177,6 @@ public class PortingService {
 
 		// Update existing checklist with values from incoming structure
 		existingEntity.setDisplayName(entity.getDisplayName());
-		existingEntity.setRoleType(entity.getRoleType());
 		existingEntity.getPhases().addAll(entity.getPhases());
 	}
 

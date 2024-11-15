@@ -2,19 +2,16 @@ package se.sundsvall.checklist.api.model;
 
 import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.WRITE_ONLY;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
-import se.sundsvall.checklist.api.validation.ValidPeriod;
-import se.sundsvall.checklist.integration.db.model.enums.Permission;
-import se.sundsvall.checklist.integration.db.model.enums.RoleType;
-
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import se.sundsvall.checklist.api.validation.ValidPeriod;
+import se.sundsvall.checklist.integration.db.model.enums.Permission;
 
 @Data
 @NoArgsConstructor
@@ -33,10 +30,6 @@ public class PhaseCreateRequest {
 	@Schema(description = "The time to complete the phase", example = "P1M", accessMode = WRITE_ONLY)
 	@ValidPeriod
 	private String timeToComplete;
-
-	@Schema(description = "The role type of the phase", accessMode = WRITE_ONLY)
-	@NotNull
-	private RoleType roleType;
 
 	@Schema(description = "The permission needed to administrate the phase", accessMode = WRITE_ONLY)
 	@NotNull

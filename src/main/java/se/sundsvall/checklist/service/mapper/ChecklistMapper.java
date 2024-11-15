@@ -34,7 +34,6 @@ public final class ChecklistMapper {
 			.map(request -> ChecklistEntity.builder()
 				.withName(request.getName())
 				.withDisplayName(request.getDisplayName())
-				.withRoleType(request.getRoleType())
 				.withVersion(1)
 				.withLifeCycle(CREATED)
 				.withMunicipalityId(municipalityId)
@@ -44,7 +43,6 @@ public final class ChecklistMapper {
 	}
 
 	public static ChecklistEntity updateChecklistEntity(final ChecklistEntity entity, final ChecklistUpdateRequest request) {
-		ofNullable(request.getRoleType()).ifPresent(entity::setRoleType);
 		ofNullable(request.getDisplayName()).ifPresent(entity::setDisplayName);
 		entity.setLastSavedBy(request.getUpdatedBy());
 		return entity;
@@ -55,7 +53,6 @@ public final class ChecklistMapper {
 			.map(request -> PhaseEntity.builder()
 				.withName(request.getName())
 				.withBodyText(request.getBodyText())
-				.withRoleType(request.getRoleType())
 				.withSortOrder(request.getSortOrder())
 				.withPermission(request.getPermission())
 				.withTimeToComplete(request.getTimeToComplete())
@@ -68,7 +65,6 @@ public final class ChecklistMapper {
 		ofNullable(request.getName()).ifPresent(entity::setName);
 		ofNullable(request.getBodyText()).ifPresent(entity::setBodyText);
 		ofNullable(request.getTimeToComplete()).ifPresent(entity::setTimeToComplete);
-		ofNullable(request.getRoleType()).ifPresent(entity::setRoleType);
 		ofNullable(request.getPermission()).ifPresent(entity::setPermission);
 		ofNullable(request.getSortOrder()).ifPresent(entity::setSortOrder);
 		entity.setLastSavedBy(request.getUpdatedBy());
@@ -120,7 +116,6 @@ public final class ChecklistMapper {
 				.withDisplayName(entity.getDisplayName())
 				.withVersion(entity.getVersion())
 				.withLifeCycle(entity.getLifeCycle())
-				.withRoleType(entity.getRoleType())
 				.withPhases(toPhases(entity.getPhases()))
 				.withCreated(entity.getCreated())
 				.withUpdated(entity.getUpdated())
@@ -143,7 +138,6 @@ public final class ChecklistMapper {
 				.withId(entity.getId())
 				.withName(entity.getName())
 				.withBodyText(entity.getBodyText())
-				.withRoleType(entity.getRoleType())
 				.withSortOrder(entity.getSortOrder())
 				.withPermission(entity.getPermission())
 				.withTimeToComplete(entity.getTimeToComplete())

@@ -30,7 +30,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import se.sundsvall.checklist.integration.db.model.enums.LifeCycle;
-import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 
 @Getter
 @Setter
@@ -60,10 +59,6 @@ public class ChecklistEntity {
 
 	@Column(name = "version")
 	private int version;
-
-	@Enumerated(EnumType.STRING)
-	@Column(name = "role_type")
-	private RoleType roleType;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "life_cycle")

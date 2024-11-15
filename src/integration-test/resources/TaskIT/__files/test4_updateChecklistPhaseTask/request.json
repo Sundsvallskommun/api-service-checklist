@@ -4,6 +4,6 @@
 	"sortOrder": 3,
 	"permission": "SUPERADMIN",
 	"text": "string",
-	"roleType": "MANAGER",
+	"roleType": "NEW_MANAGER",
 	"questionType": "COMPLETED_OR_NOT_RELEVANT"
 }

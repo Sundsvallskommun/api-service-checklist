@@ -20,11 +20,10 @@
 	"locked": false,
 	"updated": "2024-01-01T12:00:00+01:00",
 	"phases": [{
-		"bodyText": "Description of employee phase",
+		"bodyText": "Description of phase B",
 		"sortOrder": 2,
 		"name": "Phasename",
 		"id": "3e9780a7-96f3-4d07-80ee-a9634b786a38",
-		"roleType": "EMPLOYEE",
 		"timeToComplete": "P1M",
 		"tasks": [
 			{
@@ -33,7 +32,7 @@
 				"sortOrder": 1,
 				"id": "d250a20c-a616-4147-bfe0-19a0d12f3df0",
 				"text": "Text for first employee task",
-				"roleType": "EMPLOYEE",
+				"roleType": "NEW_EMPLOYEE",
 				"questionType": "YES_OR_NO_WITH_TEXT",
 				"customTask": false
 			},
@@ -43,7 +42,7 @@
 				"sortOrder": 2,
 				"id": "0c8b99e9-718b-4c92-9ba3-a49dc29d48b5",
 				"text": "Text for second employee task",
-				"roleType": "EMPLOYEE",
+				"roleType": "NEW_EMPLOYEE",
 				"questionType": "YES_OR_NO",
 				"customTask": false
 			}

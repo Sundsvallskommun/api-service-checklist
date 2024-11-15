@@ -7,8 +7,11 @@ import static org.apache.commons.lang3.ObjectUtils.notEqual;
 import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static org.zalando.problem.Status.OK;
+import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.EMPLOYEE;
 import static se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus.EMPTY;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_EMPLOYEE;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.NEW_MANAGER;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_MANAGER;
 import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.buildDefaultNewEmployeeFilter;
 import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.buildUuidEmployeeFilter;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toCustomTask;
@@ -32,10 +35,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.zalando.problem.Problem;
 import org.zalando.problem.StatusType;
 import org.zalando.problem.ThrowableProblem;
 
+import generated.se.sundsvall.employee.Employee;
 import se.sundsvall.checklist.api.model.CustomTask;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
@@ -58,8 +63,6 @@ import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
 import se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper;
 import se.sundsvall.checklist.service.util.ServiceUtils;
 import se.sundsvall.checklist.service.util.TaskType;
-
-import generated.se.sundsvall.employee.Employee;
 
 @Service
 public class EmployeeChecklistService {
@@ -91,12 +94,13 @@ public class EmployeeChecklistService {
 		return employeeChecklist
 			.map(this::handleUpdatedEmployeeInformation)
 			.map(EmployeeChecklistMapper::toEmployeeChecklist)
-			.map(ob -> decorateWithCustomTasks(ob, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(ob.getId(), municipalityId)))
+			.map(list -> decorateWithCustomTasks(list, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(list.getId(), municipalityId)))
+			.map(list -> removeObsoleteTasks(list, employeeChecklist))
 			.map(this::initializeWithEmptyFulfilment)
-			.map(ob -> decorateWithFulfilment(ob, employeeChecklist))
+			.map(list -> decorateWithFulfilment(list, employeeChecklist))
 			.map(this::decorateWithDelegateInformation)
 			.map(ServiceUtils::calculateCompleted)
-			.map(this::removeManagerObjects);
+			.map(this::removeManagerTasks);
 	}
 
 	public List<EmployeeChecklist> fetchChecklistsForManager(String municipalityId, String username) {
@@ -105,11 +109,12 @@ public class EmployeeChecklistService {
 		return employeeChecklists
 			.stream()
 			.map(this::handleUpdatedEmployeeInformation)
-			.filter(ob -> Objects.equals(username, ob.getEmployee().getManager().getUsername())) // After possible update, the checklist might not be handled by sent in username anymore
+			.filter(list -> Objects.equals(username, list.getEmployee().getManager().getUsername())) // After possible update, the checklist might not be handled by sent in username anymore
 			.map(EmployeeChecklistMapper::toEmployeeChecklist)
-			.map(ob -> decorateWithCustomTasks(ob, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(ob.getId(), municipalityId)))
+			.map(list -> decorateWithCustomTasks(list, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(list.getId(), municipalityId)))
+			.map(list -> removeObsoleteTasks(list, fetchEntity(employeeChecklists, list.getId())))
 			.map(this::initializeWithEmptyFulfilment)
-			.map(ob -> decorateWithFulfilment(ob, fetchEntity(employeeChecklists, ob.getId())))
+			.map(list -> decorateWithFulfilment(list, fetchEntity(employeeChecklists, list.getId())))
 			.map(this::decorateWithDelegateInformation)
 			.map(ServiceUtils::calculateCompleted)
 			.toList();
@@ -140,9 +145,22 @@ public class EmployeeChecklistService {
 		return employeeChecklist;
 	}
 
-	private EmployeeChecklist removeManagerObjects(EmployeeChecklist employeeChecklist) {
-		employeeChecklist.getPhases().removeIf(ph -> MANAGER == ph.getRoleType());
-		employeeChecklist.getPhases().forEach(ph -> ph.getTasks().removeIf(task -> MANAGER == task.getRoleType()));
+	private EmployeeChecklist removeManagerTasks(EmployeeChecklist employeeChecklist) {
+		employeeChecklist.getPhases().forEach(ph -> ph.getTasks().removeIf(
+			task -> MANAGER_FOR_NEW_EMPLOYEE == task.getRoleType() || MANAGER_FOR_NEW_MANAGER == task.getRoleType()));
+		employeeChecklist.getPhases().removeIf(ph -> CollectionUtils.isEmpty(ph.getTasks()));
+
+		return employeeChecklist;
+	}
+
+	private EmployeeChecklist removeObsoleteTasks(EmployeeChecklist employeeChecklist, Optional<EmployeeChecklistEntity> employeeChecklistEntity) {
+		employeeChecklistEntity
+			.filter(entity -> EMPLOYEE == entity.getEmployee().getEmploymentPosition())
+			.ifPresent(entity -> {
+				employeeChecklist.getPhases().forEach(ph -> ph.getTasks().removeIf(
+					task -> NEW_MANAGER == task.getRoleType() || MANAGER_FOR_NEW_MANAGER == task.getRoleType()));
+				employeeChecklist.getPhases().removeIf(ph -> CollectionUtils.isEmpty(ph.getTasks()));
+			});
 
 		return employeeChecklist;
 	}

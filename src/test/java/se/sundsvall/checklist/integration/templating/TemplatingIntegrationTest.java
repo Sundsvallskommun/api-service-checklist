@@ -22,7 +22,7 @@ import se.sundsvall.checklist.integration.db.model.ManagerEntity;
 @ExtendWith(MockitoExtension.class)
 class TemplatingIntegrationTest {
 
-	private static final String MUNICIPALITY_ID = "2281";
+	private static final String MUNICIPALITY_ID = "municipalityId";
 
 	@Mock
 	private TemplatingClient templatingClientMock;
@@ -47,7 +47,7 @@ class TemplatingIntegrationTest {
 
 		// Act
 		final var request = TemplatingMapper.toRenderRequest(employeeEntityMock, identifier);
-		final var response = templatingIntegration.renderTemplate(request);
+		final var response = templatingIntegration.renderTemplate(MUNICIPALITY_ID, request);
 
 		// Assert and verify
 		assertThat(response).isPresent();
@@ -71,7 +71,7 @@ class TemplatingIntegrationTest {
 
 		// Act
 		final var request = TemplatingMapper.toRenderRequest(employeeEntityMock, identifier);
-		final var response = templatingIntegration.renderTemplate(request);
+		final var response = templatingIntegration.renderTemplate(MUNICIPALITY_ID, request);
 
 		// Assert and verify
 		assertThat(response).isEmpty();

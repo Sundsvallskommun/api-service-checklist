@@ -8,8 +8,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.ACTIVE;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATED;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.EMPLOYEE;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER;
 import static se.sundsvall.checklist.service.PortingService.SYSTEM;
 
 import java.util.ArrayList;
@@ -20,8 +18,6 @@ import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
@@ -32,7 +28,6 @@ import org.zalando.problem.ThrowableProblem;
 
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
-import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
 import se.sundsvall.checklist.service.mapper.OrganizationMapper;
@@ -57,23 +52,19 @@ class PortingServiceTest {
 	@Captor
 	private ArgumentCaptor<OrganizationEntity> organizationEntityCaptor;
 
-	@ParameterizedTest
-	@EnumSource(value = RoleType.class)
-	void exportLatestVersionOfChecklist(RoleType roleType) {
+	@Test
+	void exportLatestVersionOfChecklist() {
 		// Arrange
 		final var organizationNumber = 123;
 		final var organizationEntity = OrganizationEntity.builder()
 			.withChecklists(List.of(
 				ChecklistEntity.builder()
-					.withRoleType(EMPLOYEE == roleType ? MANAGER : EMPLOYEE)
 					.withVersion(3)
 					.build(),
 				ChecklistEntity.builder()
-					.withRoleType(roleType)
 					.withVersion(2)
 					.build(),
 				ChecklistEntity.builder()
-					.withRoleType(roleType)
 					.withVersion(1)
 					.build()))
 			.build();
@@ -81,10 +72,10 @@ class PortingServiceTest {
 		when(organizationRepositoryMock.findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID)).thenReturn(Optional.of(organizationEntity));
 
 		// Act
-		final var response = service.exportChecklist(MUNICIPALITY_ID, organizationNumber, roleType, null);
+		final var response = service.exportChecklist(MUNICIPALITY_ID, organizationNumber, null);
 
 		// Assert and verify
-		assertThat(response).isEqualTo("{\"version\":2,\"roleType\":\"%s\",\"phases\":[]}".formatted(roleType));
+		assertThat(response).isEqualTo("{\"version\":3,\"phases\":[]}");
 
 		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID);
 	}
@@ -96,15 +87,12 @@ class PortingServiceTest {
 		final var organizationEntity = OrganizationEntity.builder()
 			.withChecklists(List.of(
 				ChecklistEntity.builder()
-					.withRoleType(EMPLOYEE)
 					.withVersion(3)
 					.build(),
 				ChecklistEntity.builder()
-					.withRoleType(EMPLOYEE)
 					.withVersion(2)
 					.build(),
 				ChecklistEntity.builder()
-					.withRoleType(EMPLOYEE)
 					.withVersion(1)
 					.build()))
 			.build();
@@ -112,10 +100,10 @@ class PortingServiceTest {
 		when(organizationRepositoryMock.findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID)).thenReturn(Optional.of(organizationEntity));
 
 		// Act
-		final var response = service.exportChecklist(MUNICIPALITY_ID, organizationNumber, EMPLOYEE, 1);
+		final var response = service.exportChecklist(MUNICIPALITY_ID, organizationNumber, 1);
 
 		// Assert and verify
-		assertThat(response).isEqualTo("{\"version\":1,\"roleType\":\"EMPLOYEE\",\"phases\":[]}");
+		assertThat(response).isEqualTo("{\"version\":1,\"phases\":[]}");
 
 		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID);
 	}
@@ -129,7 +117,7 @@ class PortingServiceTest {
 		when(organizationRepositoryMock.findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID)).thenReturn(Optional.of(organizationEntity));
 
 		// Act
-		final var e = assertThrows(ThrowableProblem.class, () -> service.exportChecklist(MUNICIPALITY_ID, organizationNumber, EMPLOYEE, null));
+		final var e = assertThrows(ThrowableProblem.class, () -> service.exportChecklist(MUNICIPALITY_ID, organizationNumber, null));
 
 		// Assert and verify
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
@@ -149,14 +137,12 @@ class PortingServiceTest {
 				ChecklistEntity.builder()
 					.withName(activeVersionName)
 					.withLifeCycle(ACTIVE)
-					.withRoleType(EMPLOYEE)
 					.withVersion(1)
 					.build())))
 			.build();
 		final var jsonStructure = """
 			{
 				"name": "name",
-				"roleType": "EMPLOYEE",
 				"displayName": "displayName"
 			}""";
 
@@ -174,14 +160,12 @@ class PortingServiceTest {
 			.allSatisfy(ch -> {
 				assertThat(ch.getDisplayName()).isEqualTo("displayName");
 				assertThat(ch.getName()).isEqualTo("activeVersionName");
-				assertThat(ch.getRoleType()).isEqualTo(EMPLOYEE);
 				assertThat(ch.getVersion()).isEqualTo(2);
 				assertThat(ch.getLastSavedBy()).isEqualTo(SYSTEM);
 			});
 
 		assertThat(checklistEntityCaptor.getValue().getName()).isEqualTo("activeVersionName");
 		assertThat(checklistEntityCaptor.getValue().getDisplayName()).isEqualTo("displayName");
-		assertThat(checklistEntityCaptor.getValue().getRoleType()).isEqualTo(EMPLOYEE);
 		assertThat(checklistEntityCaptor.getValue().getVersion()).isEqualTo(2);
 	}
 
@@ -193,12 +177,10 @@ class PortingServiceTest {
 		final var existingChecklistEntities = List.of(
 			ChecklistEntity.builder()
 				.withLifeCycle(ACTIVE)
-				.withRoleType(EMPLOYEE)
 				.withVersion(1)
 				.build(),
 			ChecklistEntity.builder()
 				.withLifeCycle(CREATED)
-				.withRoleType(EMPLOYEE)
 				.withVersion(2)
 				.build());
 		final var organizationEntity = OrganizationEntity.builder()
@@ -208,7 +190,6 @@ class PortingServiceTest {
 		final var jsonStructure = """
 			{
 				"name": "name",
-				"roleType": "EMPLOYEE",
 				"displayName": "displayName"
 			}""";
 
@@ -234,7 +215,6 @@ class PortingServiceTest {
 		final var jsonStructure = """
 			{
 				"name": "name",
-				"roleType": "MANAGER",
 				"displayName": "displayName"
 			}""";
 
@@ -251,14 +231,12 @@ class PortingServiceTest {
 			.allSatisfy(ch -> {
 				assertThat(ch.getDisplayName()).isEqualTo("displayName");
 				assertThat(ch.getName()).isEqualTo("name");
-				assertThat(ch.getRoleType()).isEqualTo(MANAGER);
 				assertThat(ch.getVersion()).isEqualTo(1);
 				assertThat(ch.getLastSavedBy()).isEqualTo(SYSTEM);
 			});
 
 		assertThat(checklistEntityCaptor.getValue().getName()).isEqualTo("name");
 		assertThat(checklistEntityCaptor.getValue().getDisplayName()).isEqualTo("displayName");
-		assertThat(checklistEntityCaptor.getValue().getRoleType()).isEqualTo(MANAGER);
 		assertThat(checklistEntityCaptor.getValue().getVersion()).isEqualTo(1);
 	}
 
@@ -271,7 +249,6 @@ class PortingServiceTest {
 		final var jsonStructure = """
 			{
 				"name": "name",
-				"roleType": "MANAGER",
 				"displayName": "displayName"
 			}""";
 
@@ -289,7 +266,6 @@ class PortingServiceTest {
 			.allSatisfy(ch -> {
 				assertThat(ch.getDisplayName()).isEqualTo("displayName");
 				assertThat(ch.getName()).isEqualTo("name");
-				assertThat(ch.getRoleType()).isEqualTo(MANAGER);
 				assertThat(ch.getVersion()).isEqualTo(1);
 				assertThat(ch.getLastSavedBy()).isEqualTo(SYSTEM);
 			});
@@ -299,7 +275,6 @@ class PortingServiceTest {
 
 		assertThat(checklistEntityCaptor.getValue().getName()).isEqualTo("name");
 		assertThat(checklistEntityCaptor.getValue().getDisplayName()).isEqualTo("displayName");
-		assertThat(checklistEntityCaptor.getValue().getRoleType()).isEqualTo(MANAGER);
 		assertThat(checklistEntityCaptor.getValue().getVersion()).isEqualTo(1);
 	}
 
@@ -316,14 +291,12 @@ class PortingServiceTest {
 					.withId(checklistId)
 					.withName(activeVersionName)
 					.withLifeCycle(ACTIVE)
-					.withRoleType(EMPLOYEE)
 					.withVersion(1)
 					.build())))
 			.build();
 		final var jsonStructure = """
 			{
 				"name": "name",
-				"roleType": "MANAGER",
 				"displayName": "displayName"
 			}""";
 
@@ -341,14 +314,12 @@ class PortingServiceTest {
 				assertThat(ch.getId()).isEqualTo(checklistId);
 				assertThat(ch.getDisplayName()).isEqualTo("displayName");
 				assertThat(ch.getName()).isEqualTo(activeVersionName);
-				assertThat(ch.getRoleType()).isEqualTo(MANAGER);
 				assertThat(ch.getVersion()).isEqualTo(1);
 				assertThat(ch.getLastSavedBy()).isEqualTo(SYSTEM);
 			});
 
 		assertThat(checklistEntityCaptor.getValue().getName()).isEqualTo(activeVersionName);
 		assertThat(checklistEntityCaptor.getValue().getDisplayName()).isEqualTo("displayName");
-		assertThat(checklistEntityCaptor.getValue().getRoleType()).isEqualTo(MANAGER);
 		assertThat(checklistEntityCaptor.getValue().getVersion()).isEqualTo(1);
 	}
 
@@ -363,21 +334,18 @@ class PortingServiceTest {
 			.withChecklists(new ArrayList<>(List.of(
 				ChecklistEntity.builder()
 					.withLifeCycle(ACTIVE)
-					.withRoleType(EMPLOYEE)
 					.withVersion(1)
 					.build(),
 				ChecklistEntity.builder()
 					.withId(checklistId)
 					.withName(createdVersionName)
 					.withLifeCycle(CREATED)
-					.withRoleType(EMPLOYEE)
 					.withVersion(2)
 					.build())))
 			.build();
 		final var jsonStructure = """
 			{
 				"name": "name",
-				"roleType": "MANAGER",
 				"displayName": "displayName"
 			}""";
 
@@ -395,14 +363,12 @@ class PortingServiceTest {
 			.allSatisfy(ch -> {
 				assertThat(ch.getDisplayName()).isEqualTo("displayName");
 				assertThat(ch.getName()).isEqualTo(createdVersionName);
-				assertThat(ch.getRoleType()).isEqualTo(MANAGER);
 				assertThat(ch.getVersion()).isEqualTo(2);
 				assertThat(ch.getLastSavedBy()).isEqualTo(SYSTEM);
 			});
 
 		assertThat(checklistEntityCaptor.getValue().getName()).isEqualTo(createdVersionName);
 		assertThat(checklistEntityCaptor.getValue().getDisplayName()).isEqualTo("displayName");
-		assertThat(checklistEntityCaptor.getValue().getRoleType()).isEqualTo(MANAGER);
 		assertThat(checklistEntityCaptor.getValue().getVersion()).isEqualTo(2);
 	}
 
@@ -415,7 +381,6 @@ class PortingServiceTest {
 		final var jsonStructure = """
 			{
 				"name": "name",
-				"roleType": "MANAGER",
 				"displayName": "displayName"
 			}""";
 
@@ -432,14 +397,12 @@ class PortingServiceTest {
 			.allSatisfy(ch -> {
 				assertThat(ch.getDisplayName()).isEqualTo("displayName");
 				assertThat(ch.getName()).isEqualTo("name");
-				assertThat(ch.getRoleType()).isEqualTo(MANAGER);
 				assertThat(ch.getVersion()).isEqualTo(1);
 				assertThat(ch.getLastSavedBy()).isEqualTo(SYSTEM);
 			});
 
 		assertThat(checklistEntityCaptor.getValue().getName()).isEqualTo("name");
 		assertThat(checklistEntityCaptor.getValue().getDisplayName()).isEqualTo("displayName");
-		assertThat(checklistEntityCaptor.getValue().getRoleType()).isEqualTo(MANAGER);
 		assertThat(checklistEntityCaptor.getValue().getVersion()).isEqualTo(1);
 	}
 
@@ -452,7 +415,6 @@ class PortingServiceTest {
 		final var jsonStructure = """
 			{
 				"name": "name",
-				"roleType": "MANAGER",
 				"displayName": "displayName"
 			}""";
 
@@ -470,7 +432,6 @@ class PortingServiceTest {
 			.allSatisfy(ch -> {
 				assertThat(ch.getDisplayName()).isEqualTo("displayName");
 				assertThat(ch.getName()).isEqualTo("name");
-				assertThat(ch.getRoleType()).isEqualTo(MANAGER);
 				assertThat(ch.getVersion()).isEqualTo(1);
 				assertThat(ch.getLastSavedBy()).isEqualTo(SYSTEM);
 			});
@@ -480,7 +441,6 @@ class PortingServiceTest {
 
 		assertThat(checklistEntityCaptor.getValue().getName()).isEqualTo("name");
 		assertThat(checklistEntityCaptor.getValue().getDisplayName()).isEqualTo("displayName");
-		assertThat(checklistEntityCaptor.getValue().getRoleType()).isEqualTo(MANAGER);
 		assertThat(checklistEntityCaptor.getValue().getVersion()).isEqualTo(1);
 	}
 

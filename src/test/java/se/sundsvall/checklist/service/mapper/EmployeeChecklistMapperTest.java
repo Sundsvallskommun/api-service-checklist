@@ -5,7 +5,8 @@ import static se.sundsvall.checklist.TestObjectFactory.createCustomTaskEntity;
 import static se.sundsvall.checklist.TestObjectFactory.createEmployeeChecklistEntity;
 import static se.sundsvall.checklist.TestObjectFactory.createPhaseEntity;
 import static se.sundsvall.checklist.TestObjectFactory.createTaskEntity;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.EMPLOYEE;
+import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.EMPLOYEE;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.NEW_EMPLOYEE;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEmployeeChecklist;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEmployeeChecklistPhase;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEmployeeChecklistTask;
@@ -30,19 +31,19 @@ import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
+import se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
-import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 
 class EmployeeChecklistMapperTest {
 
 	@ParameterizedTest
-	@EnumSource(RoleType.class)
-	void toEmployeeChecklistEntity(RoleType roleType) {
+	@EnumSource(EmploymentPosition.class)
+	void toEmployeeChecklistEntity(EmploymentPosition employmentPosition) {
 		// Arrange
 		final var startDate = LocalDate.of(2023, 12, 24);
 		final var employeeEntity = EmployeeEntity.builder()
-			.withRoleType(roleType)
+			.withEmploymentPosition(employmentPosition)
 			.withStartDate(startDate)
 			.build();
 		final var checklistEntity = ChecklistEntity.builder()
@@ -58,8 +59,8 @@ class EmployeeChecklistMapperTest {
 		assertThat(entity.getCustomFulfilments()).isNullOrEmpty();
 		assertThat(entity.getCustomTasks()).isNullOrEmpty();
 		assertThat(entity.getEmployee()).isEqualTo(employeeEntity);
-		assertThat(entity.getEndDate()).isEqualTo(startDate.plusMonths(roleType == EMPLOYEE ? 6 : 24));
-		assertThat(entity.getExpirationDate()).isEqualTo(startDate.plusMonths(roleType == EMPLOYEE ? 9 : 27));
+		assertThat(entity.getEndDate()).isEqualTo(startDate.plusMonths(employmentPosition == EMPLOYEE ? 6 : 24));
+		assertThat(entity.getExpirationDate()).isEqualTo(startDate.plusMonths(employmentPosition == EMPLOYEE ? 9 : 27));
 		assertThat(entity.getFulfilments()).isNullOrEmpty();
 		assertThat(entity.getId()).isNull();
 		assertThat(entity.getStartDate()).isEqualTo(startDate);
@@ -67,11 +68,11 @@ class EmployeeChecklistMapperTest {
 	}
 
 	@ParameterizedTest
-	@EnumSource(RoleType.class)
-	void toEmployeeChecklistEntityWhenNoStartDateInformation(RoleType roleType) {
+	@EnumSource(EmploymentPosition.class)
+	void toEmployeeChecklistEntityWhenNoStartDateInformation(EmploymentPosition employmentPosition) {
 		// Arrange
 		final var employeeEntity = EmployeeEntity.builder()
-			.withRoleType(roleType)
+			.withEmploymentPosition(employmentPosition)
 			.build();
 		final var checklistEntity = ChecklistEntity.builder()
 			.build();
@@ -86,8 +87,8 @@ class EmployeeChecklistMapperTest {
 		assertThat(entity.getCustomFulfilments()).isNullOrEmpty();
 		assertThat(entity.getCustomTasks()).isNullOrEmpty();
 		assertThat(entity.getEmployee()).isEqualTo(employeeEntity);
-		assertThat(entity.getEndDate()).isEqualTo(LocalDate.now().plusMonths(roleType == EMPLOYEE ? 6 : 24));
-		assertThat(entity.getExpirationDate()).isEqualTo(LocalDate.now().plusMonths(roleType == EMPLOYEE ? 9 : 27));
+		assertThat(entity.getEndDate()).isEqualTo(LocalDate.now().plusMonths(employmentPosition == EMPLOYEE ? 6 : 24));
+		assertThat(entity.getExpirationDate()).isEqualTo(LocalDate.now().plusMonths(employmentPosition == EMPLOYEE ? 9 : 27));
 		assertThat(entity.getFulfilments()).isNullOrEmpty();
 		assertThat(entity.getId()).isNull();
 		assertThat(entity.getStartDate()).isEqualTo(LocalDate.now());
@@ -158,7 +159,6 @@ class EmployeeChecklistMapperTest {
 			assertThat(r.getName()).isEqualTo(entity.getName());
 			assertThat(r.getBodyText()).isEqualTo(entity.getBodyText());
 			assertThat(r.getTimeToComplete()).isEqualTo(entity.getTimeToComplete());
-			assertThat(r.getRoleType()).isEqualTo(entity.getRoleType());
 			assertThat(r.getSortOrder()).isEqualTo(entity.getSortOrder());
 		});
 	}
@@ -375,7 +375,7 @@ class EmployeeChecklistMapperTest {
 		assertThat(entity.getEmployeeChecklist()).isEqualTo(employeeChecklistEntity);
 		assertThat(entity.getPhase()).isEqualTo(phaseEntity);
 		assertThat(entity.getQuestionType()).isEqualTo(questionType);
-		assertThat(entity.getRoleType()).isEqualTo(EMPLOYEE);
+		assertThat(entity.getRoleType()).isEqualTo(NEW_EMPLOYEE);
 		assertThat(entity.getSortOrder()).isEqualTo(sortOrder);
 		assertThat(entity.getText()).isEqualTo(text);
 		assertThat(entity.getUpdated()).isNull();

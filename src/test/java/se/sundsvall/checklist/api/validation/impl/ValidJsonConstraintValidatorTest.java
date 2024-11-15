@@ -28,7 +28,6 @@ class ValidJsonConstraintValidatorTest {
 		final var value = """
 			{
 				"name": "name",
-				"roleType": "EMPLOYEE",
 				"displayName": "displayName"
 			}""";
 
@@ -40,9 +39,9 @@ class ValidJsonConstraintValidatorTest {
 	@ValueSource(strings = {
 		"", "{", "}", "{]", "[}",
 		"{}",
-		"{\"name\": \"value\", \"roleType\": \"EMPLOYEE\", \"displayName\":\"\"}",
-		"{\"name\": \"value\", \"displayName\":\"value\"}",
-		"{\"name\": \"\", \"roleType\": \"EMPLOYEE\", \"displayName\":\"value\"}"
+		"{\"name\": \"value\", \"roleType\": \"INVALID\", \"displayName\":\"value\"}",
+		"{\"name\": \"value\", \"displayName\":\"\"}",
+		"{\"name\": \"\", \"displayName\":\"value\"}"
 	})
 	void invalidJsonTest(final String value) {
 		assertThat(validator.isValid(value, mockContext)).isFalse();

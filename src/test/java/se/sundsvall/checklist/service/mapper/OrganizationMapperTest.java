@@ -2,8 +2,8 @@ package se.sundsvall.checklist.service.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoInteractions;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.EMPLOYEE;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER;
+import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.EMPLOYEE;
+import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.MANAGER;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -72,7 +72,7 @@ class OrganizationMapperTest {
 		assertThat(entity.getLastName()).isEqualTo(lastName);
 		assertThat(entity.getManager()).isNull();
 		assertThat(entity.getEmployeeChecklist()).isNull();
-		assertThat(entity.getRoleType()).isEqualTo(manager ? MANAGER : EMPLOYEE);
+		assertThat(entity.getEmploymentPosition()).isEqualTo(manager ? MANAGER : EMPLOYEE);
 		assertThat(entity.getTitle()).isEqualTo(title);
 		assertThat(entity.getUpdated()).isNull();
 		assertThat(entity.getUsername()).isEqualTo(loginName);
@@ -108,7 +108,7 @@ class OrganizationMapperTest {
 		assertThat(entity.getLastName()).isEqualTo(lastName);
 		assertThat(entity.getManager()).isNull();
 		assertThat(entity.getEmployeeChecklist()).isNull();
-		assertThat(entity.getRoleType()).isEqualTo(EMPLOYEE);
+		assertThat(entity.getEmploymentPosition()).isEqualTo(EMPLOYEE);
 		assertThat(entity.getStartDate()).isToday();
 		assertThat(entity.getTitle()).isNull();
 		assertThat(entity.getUpdated()).isNull();
@@ -165,7 +165,7 @@ class OrganizationMapperTest {
 		assertThat(entity.getLastName()).isEqualTo(lastName);
 		assertThat(entity.getManager()).isNull();
 		assertThat(entity.getEmployeeChecklist()).isNull();
-		assertThat(entity.getRoleType()).isEqualTo(manager ? MANAGER : EMPLOYEE);
+		assertThat(entity.getEmploymentPosition()).isEqualTo(manager ? MANAGER : EMPLOYEE);
 		assertThat(entity.getTitle()).isEqualTo(title);
 		assertThat(entity.getUpdated()).isNull();
 		assertThat(entity.getUsername()).isEqualTo(loginName);

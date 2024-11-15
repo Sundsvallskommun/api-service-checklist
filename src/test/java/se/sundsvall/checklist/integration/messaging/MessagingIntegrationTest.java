@@ -24,7 +24,7 @@ import se.sundsvall.checklist.integration.messaging.configuration.MessagingPrope
 @ExtendWith(MockitoExtension.class)
 class MessagingIntegrationTest {
 
-	private static final String MUNICIPALITY_ID = "2281";
+	private static final String MUNICIPALITY_ID = "municipalityId";
 
 	@Mock
 	private MessagingClient messagingClientMock;
@@ -53,7 +53,7 @@ class MessagingIntegrationTest {
 		when(messagingProperties.managerEmail()).thenReturn(email);
 
 		// Act
-		final var result = messagingIntegration.sendEmail(correspondenceEntity.getRecipient(), htmlMessage);
+		final var result = messagingIntegration.sendEmail(MUNICIPALITY_ID, correspondenceEntity.getRecipient(), htmlMessage);
 
 		// Assert and verify
 		assertThat(result).isPresent();
@@ -73,7 +73,7 @@ class MessagingIntegrationTest {
 		when(messagingProperties.managerEmail()).thenReturn(email);
 
 		// Act
-		final var result = messagingIntegration.sendEmail(correspondenceEntity.getRecipient(), htmlMessage);
+		final var result = messagingIntegration.sendEmail(MUNICIPALITY_ID, correspondenceEntity.getRecipient(), htmlMessage);
 
 		// Assert and verify
 		assertThat(result).isEmpty();
@@ -96,7 +96,7 @@ class MessagingIntegrationTest {
 		when(messagingProperties.managerEmail()).thenReturn(email);
 
 		// Act
-		final var result = messagingIntegration.sendEmail(correspondenceEntity.getRecipient(), htmlMessage);
+		final var result = messagingIntegration.sendEmail(MUNICIPALITY_ID, correspondenceEntity.getRecipient(), htmlMessage);
 
 		// Assert and verify
 		assertThat(result).isEmpty();
@@ -119,7 +119,7 @@ class MessagingIntegrationTest {
 		when(messagingProperties.managerEmail()).thenReturn(email);
 
 		// Act
-		final var result = messagingIntegration.sendEmail(correspondenceEntity.getRecipient(), null);
+		final var result = messagingIntegration.sendEmail(MUNICIPALITY_ID, correspondenceEntity.getRecipient(), null);
 
 		// Assert and verify
 		assertThat(result).isEmpty();
@@ -144,7 +144,7 @@ class MessagingIntegrationTest {
 		when(messagingProperties.managerEmail()).thenReturn(email);
 
 		// Act
-		final var result = messagingIntegration.sendEmail(correspondenceEntity.getRecipient(), htmlMessage);
+		final var result = messagingIntegration.sendEmail(MUNICIPALITY_ID, correspondenceEntity.getRecipient(), htmlMessage);
 
 		// Assert and verify
 		assertThat(result).isEmpty();

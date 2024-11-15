@@ -4,6 +4,5 @@
 	"sortOrder": 1,
 	"name": "Första veckan",
 	"permission": "SUPERADMIN",
-	"roleType": "MANAGER",
 	"timeToComplete": "P1M"
 }

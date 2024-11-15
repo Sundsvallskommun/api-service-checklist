@@ -7,7 +7,6 @@
 		"name": "Phase 1",
 		"permission": "ADMIN",
 		"id": "18f2b2cc-1fc8-42ee-a752-fae751c1a858",
-		"roleType": "EMPLOYEE",
 		"updated": "2024-01-01T00:00:00+01:00",
 		"timeToComplete": "P1D",
 		"tasks": [
@@ -19,7 +18,7 @@
 				"permission": "ADMIN",
 				"id": "414803ef-0074-4f24-b5e5-54c48f7c6ea9",
 				"text": "Task 1",
-				"roleType": "EMPLOYEE",
+				"roleType": "NEW_EMPLOYEE",
 				"questionType": "YES_OR_NO",
 				"updated": "2024-01-01T00:00:00+01:00"
 			},
@@ -31,7 +30,7 @@
 				"permission": "ADMIN",
 				"id": "514803ef-0074-4f24-b5e5-54c48f7c6ea9",
 				"text": "Task 2",
-				"roleType": "EMPLOYEE",
+				"roleType": "NEW_EMPLOYEE",
 				"questionType": "YES_OR_NO",
 				"updated": "2024-01-01T00:00:00+01:00"
 			}
@@ -45,7 +44,6 @@
 		"name": "Phase 2",
 		"permission": "ADMIN",
 		"id": "28f2b2cc-1fc8-42ee-a752-fae751c1a858",
-		"roleType": "EMPLOYEE",
 		"updated": "2024-01-01T00:00:00+01:00",
 		"timeToComplete": "P5D",
 		"tasks": [
@@ -57,7 +55,7 @@
 				"permission": "ADMIN",
 				"id": "714803ef-0074-4f24-b5e5-54c48f7c6ea9",
 				"text": "Task 1",
-				"roleType": "EMPLOYEE",
+				"roleType": "NEW_EMPLOYEE",
 				"questionType": "YES_OR_NO",
 				"updated": "2024-01-01T00:00:00+01:00"
 			},
@@ -69,7 +67,7 @@
 				"permission": "ADMIN",
 				"id": "814803ef-0074-4f24-b5e5-54c48f7c6ea9",
 				"text": "Task 2",
-				"roleType": "EMPLOYEE",
+				"roleType": "NEW_EMPLOYEE",
 				"questionType": "YES_OR_NO",
 				"updated": "2024-01-01T00:00:00+01:00"
 			},
@@ -81,7 +79,7 @@
 				"permission": "ADMIN",
 				"id": "114803ef-0074-4f24-b5e5-54c48f7c6ea9",
 				"text": "Task 3",
-				"roleType": "EMPLOYEE",
+				"roleType": "NEW_EMPLOYEE",
 				"questionType": "YES_OR_NO",
 				"updated": "2024-01-01T00:00:00+01:00"
 			},
@@ -93,7 +91,7 @@
 				"permission": "ADMIN",
 				"id": "914803ef-0074-4f24-b5e5-54c48f7c6ea9",
 				"text": "Task 4",
-				"roleType": "EMPLOYEE",
+				"roleType": "NEW_EMPLOYEE",
 				"questionType": "YES_OR_NO",
 				"updated": "2024-01-01T00:00:00+01:00"
 			}

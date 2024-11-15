@@ -23,9 +23,9 @@ public class MessagingIntegration {
 		this.messagingClient = messagingClient;
 	}
 
-	public Optional<MessageResult> sendEmail(final String recipient, final String message) {
+	public Optional<MessageResult> sendEmail(final String municipalityId, final String recipient, final String message) {
 		try {
-			return Optional.of(messagingClient.sendEmail("2281", MessagingMapper.toEmail(
+			return Optional.of(messagingClient.sendEmail(municipalityId, MessagingMapper.toEmail(
 				recipient,
 				messagingProperties.managerEmail().subject(),
 				message,

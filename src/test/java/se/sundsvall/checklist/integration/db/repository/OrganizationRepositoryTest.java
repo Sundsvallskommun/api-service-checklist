@@ -106,7 +106,7 @@ class OrganizationRepositoryTest {
 	void findByChecklistsIdAndChecklistsMunicipalityId() {
 		// Arrange
 		final var municipalityId = "2281";
-		final var checklistId = "35764278-50c8-4a19-af00-077bfc314fd2";
+		final var checklistId = "25764278-50c8-4a19-af00-077bfc314fd2";
 
 		// Act
 		final var result = repository.findByChecklistsIdAndChecklistsMunicipalityId(checklistId, municipalityId);
@@ -117,7 +117,7 @@ class OrganizationRepositoryTest {
 			assertThat(entity.getMunicipalityId()).isEqualTo(municipalityId);
 			assertThat(entity.getChecklists()).hasSize(3).satisfiesOnlyOnce(checklist -> {
 				assertThat(checklist.getId()).isEqualTo(checklistId);
-				assertThat(checklist.getName()).isEqualTo("Cheflista");
+				assertThat(checklist.getName()).isEqualTo("Checklista för Vård och omsorg");
 			});
 		});
 	}

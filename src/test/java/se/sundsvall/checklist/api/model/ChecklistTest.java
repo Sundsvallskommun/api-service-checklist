@@ -18,7 +18,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import se.sundsvall.checklist.integration.db.model.enums.LifeCycle;
-import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 
 class ChecklistTest {
 
@@ -40,32 +39,42 @@ class ChecklistTest {
 	@Test
 	void testBuilderMethods() {
 		final var id = "id";
-		final var roleType = RoleType.EMPLOYEE;
 		final var name = "name";
 		final var displayName = "displayName";
-		final var version = 1;
+		final var version = 123;
 		final var lifeCycle = LifeCycle.ACTIVE;
 		final var lastSavedBy = "someUser";
+		final var created = OffsetDateTime.now();
+		final var updated = OffsetDateTime.now().plusDays(10);
+		final var phases = List.of(Phase.builder().build());
 
-		final var checklist = Checklist.builder()
+		final var bean = Checklist.builder()
 			.withId(id)
-			.withRoleType(roleType)
 			.withName(name)
 			.withVersion(version)
 			.withLifeCycle(lifeCycle)
 			.withDisplayName(displayName)
-			.withUpdated(OffsetDateTime.now())
-			.withCreated(OffsetDateTime.now())
+			.withUpdated(updated)
+			.withCreated(created)
 			.withLastSavedBy(lastSavedBy)
-			.withPhases(List.of())
+			.withPhases(phases)
 			.build();
 
-		assertThat(checklist).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(checklist.getId()).isEqualTo(id);
+		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
+		assertThat(bean.getCreated()).isEqualTo(created);
+		assertThat(bean.getDisplayName()).isEqualTo(displayName);
+		assertThat(bean.getId()).isEqualTo(id);
+		assertThat(bean.getLastSavedBy()).isEqualTo(lastSavedBy);
+		assertThat(bean.getLifeCycle()).isEqualByComparingTo(lifeCycle);
+		assertThat(bean.getName()).isEqualTo(name);
+		assertThat(bean.getPhases()).isEqualTo(phases);
+		assertThat(bean.getUpdated()).isEqualTo(updated);
+		assertThat(bean.getVersion()).isEqualTo(version);
 	}
 
 	@Test
 	void testNoDirtOnCreatedBean() {
 		assertThat(Checklist.builder().build()).hasAllNullFieldsOrProperties();
+		assertThat(new Checklist()).hasAllNullFieldsOrProperties();
 	}
 }

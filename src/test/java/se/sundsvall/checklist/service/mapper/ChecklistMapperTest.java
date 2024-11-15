@@ -5,7 +5,7 @@ import static se.sundsvall.checklist.TestObjectFactory.createPhaseEntity;
 import static se.sundsvall.checklist.TestObjectFactory.createTaskEntity;
 import static se.sundsvall.checklist.integration.db.model.enums.Permission.SUPERADMIN;
 import static se.sundsvall.checklist.integration.db.model.enums.QuestionType.YES_OR_NO_WITH_TEXT;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_EMPLOYEE;
 import static se.sundsvall.checklist.service.mapper.ChecklistMapper.updateChecklistEntity;
 import static se.sundsvall.checklist.service.mapper.ChecklistMapper.updatePhaseEntity;
 import static se.sundsvall.checklist.service.mapper.ChecklistMapper.updateTaskEntity;
@@ -37,7 +37,7 @@ class ChecklistMapperTest {
 		final var heading = "heading";
 		final var permission = Permission.SUPERADMIN;
 		final var questionType = QuestionType.COMPLETED_OR_NOT_RELEVANT;
-		final var roleType = RoleType.MANAGER;
+		final var roleType = RoleType.MANAGER_FOR_NEW_EMPLOYEE;
 		final var text = "text";
 		final var sortOrder = 5;
 		final var createdBy = "someUser";
@@ -75,7 +75,6 @@ class ChecklistMapperTest {
 		final var name = "name";
 		final var permission = Permission.SUPERADMIN;
 		final var sortOrder = 101;
-		final var roleType = RoleType.MANAGER;
 		final var timeToComplete = "timeToComplete";
 		final var createdBy = "someUser";
 
@@ -84,7 +83,6 @@ class ChecklistMapperTest {
 			.withName(name)
 			.withPermission(permission)
 			.withSortOrder(sortOrder)
-			.withRoleType(roleType)
 			.withTimeToComplete(timeToComplete)
 			.withCreatedBy(createdBy)
 			.build();
@@ -99,7 +97,6 @@ class ChecklistMapperTest {
 		assertThat(entity.getName()).isEqualTo(name);
 		assertThat(entity.getPermission()).isEqualTo(permission);
 		assertThat(entity.getSortOrder()).isEqualTo(sortOrder);
-		assertThat(entity.getRoleType()).isEqualTo(roleType);
 		assertThat(entity.getTasks()).isNullOrEmpty();
 		assertThat(entity.getTimeToComplete()).isEqualTo(timeToComplete);
 		assertThat(entity.getUpdated()).isNull();
@@ -113,14 +110,12 @@ class ChecklistMapperTest {
 		final var name = "name";
 		final var municipalityId = "municipalityId";
 		final var organizationNumber = 123456;
-		final var roleType = RoleType.MANAGER;
 		final var createdBy = "someUser";
 
 		final var request = ChecklistCreateRequest.builder()
 			.withDisplayName(displayName)
 			.withName(name)
 			.withOrganizationNumber(organizationNumber)
-			.withRoleType(roleType)
 			.withCreatedBy(createdBy)
 			.build();
 
@@ -128,11 +123,10 @@ class ChecklistMapperTest {
 		final var entity = ChecklistMapper.toChecklistEntity(request, municipalityId);
 
 		// Assert
-		assertThat(entity).hasAllNullFieldsOrPropertiesExcept("displayName", "municipalityId", "name", "organizationNumber", "roleType", "version", "lifeCycle", "phases", "lastSavedBy");
+		assertThat(entity).hasAllNullFieldsOrPropertiesExcept("displayName", "municipalityId", "name", "organizationNumber", "version", "lifeCycle", "phases", "lastSavedBy");
 		assertThat(entity.getDisplayName()).isEqualTo(displayName);
 		assertThat(entity.getName()).isEqualTo(name);
 		assertThat(entity.getMunicipalityId()).isEqualTo(municipalityId);
-		assertThat(entity.getRoleType()).isEqualTo(roleType);
 		assertThat(entity.getVersion()).isOne();
 		assertThat(entity.getPhases()).isEmpty();
 		assertThat(entity.getLastSavedBy()).isEqualTo(createdBy);
@@ -148,7 +142,6 @@ class ChecklistMapperTest {
 		final var name = "name";
 		final var displayName = "displayName";
 		final var phases = List.of(PhaseEntity.builder().build());
-		final var roleType = RoleType.MANAGER;
 		final var updated = OffsetDateTime.now();
 		final var version = 123;
 		final var lastSavedBy = "someUser";
@@ -161,7 +154,6 @@ class ChecklistMapperTest {
 			.withName(name)
 			.withDisplayName(displayName)
 			.withPhases(phases)
-			.withRoleType(roleType)
 			.withUpdated(updated)
 			.withLastSavedBy(lastSavedBy)
 			.withVersion(version)
@@ -178,7 +170,6 @@ class ChecklistMapperTest {
 			assertThat(bean.getName()).isEqualTo(name);
 			assertThat(bean.getDisplayName()).isEqualTo(displayName);
 			assertThat(bean.getPhases()).isNotEmpty().containsExactly(ChecklistMapper.toPhase(PhaseEntity.builder().build()));
-			assertThat(bean.getRoleType()).isEqualTo(roleType);
 			assertThat(bean.getUpdated()).isEqualTo(updated);
 			assertThat(bean.getVersion()).isEqualTo(version);
 			assertThat(bean.getLastSavedBy()).isEqualTo(lastSavedBy);
@@ -195,7 +186,6 @@ class ChecklistMapperTest {
 		final var municipalityId = "municipalityId";
 		final var displayName = "displayName";
 		final var phases = List.of(PhaseEntity.builder().build());
-		final var roleType = RoleType.MANAGER;
 		final var updated = OffsetDateTime.now();
 		final var version = 123;
 		final var lastSavedBy = "someUser";
@@ -208,7 +198,6 @@ class ChecklistMapperTest {
 			.withName(name)
 			.withDisplayName(displayName)
 			.withPhases(phases)
-			.withRoleType(roleType)
 			.withUpdated(updated)
 			.withLastSavedBy(lastSavedBy)
 			.withVersion(version)
@@ -224,7 +213,6 @@ class ChecklistMapperTest {
 		assertThat(bean.getName()).isEqualTo(name);
 		assertThat(bean.getDisplayName()).isEqualTo(displayName);
 		assertThat(bean.getPhases()).isNotEmpty().containsExactly(ChecklistMapper.toPhase(PhaseEntity.builder().build()));
-		assertThat(bean.getRoleType()).isEqualTo(roleType);
 		assertThat(bean.getUpdated()).isEqualTo(updated);
 		assertThat(bean.getVersion()).isEqualTo(version);
 		assertThat(bean.getLastSavedBy()).isEqualTo(lastSavedBy);
@@ -239,7 +227,6 @@ class ChecklistMapperTest {
 		final var name = "name";
 		final var permission = Permission.ADMIN;
 		final var sortOrder = 321;
-		final var roleType = RoleType.EMPLOYEE;
 		final var tasks = List.of(TaskEntity.builder().build());
 		final var timeToComplete = "timeToComplete";
 		final var updated = OffsetDateTime.now();
@@ -252,7 +239,6 @@ class ChecklistMapperTest {
 			.withName(name)
 			.withPermission(permission)
 			.withSortOrder(sortOrder)
-			.withRoleType(roleType)
 			.withTasks(tasks)
 			.withTimeToComplete(timeToComplete)
 			.withUpdated(updated)
@@ -269,7 +255,6 @@ class ChecklistMapperTest {
 		assertThat(bean.getName()).isEqualTo(name);
 		assertThat(bean.getPermission()).isEqualTo(permission);
 		assertThat(bean.getSortOrder()).isEqualTo(sortOrder);
-		assertThat(bean.getRoleType()).isEqualTo(roleType);
 		assertThat(bean.getTasks()).isNotEmpty().containsExactly(ChecklistMapper.toTask(TaskEntity.builder().build()));
 		assertThat(bean.getTimeToComplete()).isEqualTo(timeToComplete);
 		assertThat(bean.getUpdated()).isEqualTo(updated);
@@ -282,7 +267,7 @@ class ChecklistMapperTest {
 		final var request = TaskUpdateRequest.builder()
 			.withHeading("new heading")
 			.withText("new text")
-			.withRoleType(MANAGER)
+			.withRoleType(MANAGER_FOR_NEW_EMPLOYEE)
 			.withPermission(SUPERADMIN)
 			.withQuestionType(YES_OR_NO_WITH_TEXT)
 			.withUpdatedBy("someOtherUser")
@@ -291,7 +276,7 @@ class ChecklistMapperTest {
 		assertThat(entity).satisfies(e -> {
 			assertThat(e.getHeading()).isNotEqualTo("new heading");
 			assertThat(e.getText()).isNotEqualTo("new text");
-			assertThat(e.getRoleType()).isNotEqualTo(MANAGER);
+			assertThat(e.getRoleType()).isNotEqualTo(MANAGER_FOR_NEW_EMPLOYEE);
 			assertThat(e.getPermission()).isNotEqualTo(SUPERADMIN);
 			assertThat(e.getQuestionType()).isNotEqualTo(YES_OR_NO_WITH_TEXT);
 			assertThat(e.getLastSavedBy()).isEqualTo("someUser");
@@ -302,7 +287,7 @@ class ChecklistMapperTest {
 		assertThat(result).isEqualTo(entity).satisfies(r -> {
 			assertThat(r.getHeading()).isEqualTo("new heading");
 			assertThat(r.getText()).isEqualTo("new text");
-			assertThat(r.getRoleType()).isEqualTo(MANAGER);
+			assertThat(r.getRoleType()).isEqualTo(MANAGER_FOR_NEW_EMPLOYEE);
 			assertThat(r.getPermission()).isEqualTo(SUPERADMIN);
 			assertThat(r.getQuestionType()).isEqualTo(YES_OR_NO_WITH_TEXT);
 			assertThat(r.getLastSavedBy()).isEqualTo("someOtherUser");
@@ -316,7 +301,6 @@ class ChecklistMapperTest {
 			.withName("new name")
 			.withBodyText("new bodyText")
 			.withTimeToComplete("P2Y")
-			.withRoleType(MANAGER)
 			.withPermission(SUPERADMIN)
 			.withSortOrder(2)
 			.withUpdatedBy("someOtherUser")
@@ -326,7 +310,6 @@ class ChecklistMapperTest {
 			assertThat(e.getName()).isNotEqualTo("new name");
 			assertThat(e.getBodyText()).isNotEqualTo("new bodyText");
 			assertThat(e.getTimeToComplete()).isNotEqualTo("P2Y");
-			assertThat(e.getRoleType()).isNotEqualTo(MANAGER);
 			assertThat(e.getPermission()).isNotEqualTo(SUPERADMIN);
 			assertThat(e.getSortOrder()).isNotEqualTo(2);
 			assertThat(e.getLastSavedBy()).isEqualTo("someUser");
@@ -338,7 +321,6 @@ class ChecklistMapperTest {
 			assertThat(r.getName()).isEqualTo("new name");
 			assertThat(r.getBodyText()).isEqualTo("new bodyText");
 			assertThat(r.getTimeToComplete()).isEqualTo("P2Y");
-			assertThat(r.getRoleType()).isEqualTo(MANAGER);
 			assertThat(r.getPermission()).isEqualTo(SUPERADMIN);
 			assertThat(r.getSortOrder()).isEqualTo(2);
 			assertThat(r.getLastSavedBy()).isEqualTo("someOtherUser");
@@ -350,18 +332,15 @@ class ChecklistMapperTest {
 		final var entity = ChecklistEntity.builder()
 			.withVersion(123)
 			.withDisplayName("displayName")
-			.withRoleType(RoleType.EMPLOYEE)
 			.withLastSavedBy("someUser")
 			.build();
 		final var request = ChecklistUpdateRequest.builder()
 			.withDisplayName("newDisplayName")
-			.withRoleType(MANAGER)
 			.withUpdatedBy("someOtherUser")
 			.build();
 
 		assertThat(entity).satisfies(e -> {
 			assertThat(e.getDisplayName()).isEqualTo("displayName");
-			assertThat(e.getRoleType()).isEqualTo(RoleType.EMPLOYEE);
 			assertThat(e.getVersion()).isEqualTo(123);
 			assertThat(e.getPhases()).isEmpty();
 			assertThat(e.getLastSavedBy()).isEqualTo("someUser");
@@ -370,11 +349,10 @@ class ChecklistMapperTest {
 		final var result = updateChecklistEntity(entity, request);
 
 		assertThat(result)
-			.hasAllNullFieldsOrPropertiesExcept("displayName", "roleType", "version", "phases", "lastSavedBy")
+			.hasAllNullFieldsOrPropertiesExcept("displayName", "version", "phases", "lastSavedBy")
 			.isEqualTo(entity)
 			.satisfies(r -> {
 				assertThat(r.getDisplayName()).isEqualTo("newDisplayName");
-				assertThat(r.getRoleType()).isEqualTo(MANAGER);
 				assertThat(r.getVersion()).isEqualTo(123);
 				assertThat(r.getPhases()).isEmpty();
 				assertThat(r.getLastSavedBy()).isEqualTo("someOtherUser");

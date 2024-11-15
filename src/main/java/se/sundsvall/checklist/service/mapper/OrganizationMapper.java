@@ -3,8 +3,8 @@ package se.sundsvall.checklist.service.mapper;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.EMAIL;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.EMPLOYEE;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER;
+import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.EMPLOYEE;
+import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.MANAGER;
 import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toChecklists;
 
 import java.time.LocalDate;
@@ -40,7 +40,7 @@ public class OrganizationMapper {
 				.withFirstName(employee.getGivenname())
 				.withLastName(employee.getLastname())
 				.withId(employee.getPersonId().toString())
-				.withRoleType(ofNullable(employee.getIsManager()).orElse(false) ? MANAGER : EMPLOYEE)
+				.withEmploymentPosition(ofNullable(employee.getIsManager()).orElse(false) ? MANAGER : EMPLOYEE)
 				.withStartDate(getStartDate(employee))
 				.withTitle(getJobTitle(employee))
 				.withUsername(employee.getLoginname())
@@ -55,7 +55,7 @@ public class OrganizationMapper {
 			entity.setFirstName(employee.getGivenname());
 			entity.setUsername(employee.getLoginname());
 			entity.setTitle(getJobTitle(employee));
-			entity.setRoleType(ofNullable(employee.getIsManager()).orElse(false) ? MANAGER : EMPLOYEE);
+			entity.setEmploymentPosition(ofNullable(employee.getIsManager()).orElse(false) ? MANAGER : EMPLOYEE);
 		});
 	}
 

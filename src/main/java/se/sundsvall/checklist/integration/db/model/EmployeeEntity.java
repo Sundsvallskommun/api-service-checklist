@@ -27,7 +27,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import se.sundsvall.checklist.integration.db.model.enums.RoleType;
+import se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition;
 
 @Getter
 @Setter
@@ -60,8 +60,8 @@ public class EmployeeEntity {
 	private String title;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "role_type")
-	private RoleType roleType;
+	@Column(name = "employment_position")
+	private EmploymentPosition employmentPosition;
 
 	@Column(name = "start_date")
 	private LocalDate startDate;

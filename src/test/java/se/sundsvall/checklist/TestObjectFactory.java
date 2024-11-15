@@ -7,8 +7,8 @@ import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATE
 import static se.sundsvall.checklist.integration.db.model.enums.Permission.ADMIN;
 import static se.sundsvall.checklist.integration.db.model.enums.QuestionType.YES_OR_NO;
 import static se.sundsvall.checklist.integration.db.model.enums.QuestionType.YES_OR_NO_WITH_TEXT;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.EMPLOYEE;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.NEW_EMPLOYEE;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_EMPLOYEE;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -18,6 +18,10 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+import generated.se.sundsvall.employee.Employee;
+import generated.se.sundsvall.employee.Employment;
+import generated.se.sundsvall.employee.Manager;
+import generated.se.sundsvall.employee.PortalPersonData;
 import se.sundsvall.checklist.api.model.Checklist;
 import se.sundsvall.checklist.api.model.ChecklistCreateRequest;
 import se.sundsvall.checklist.api.model.ChecklistUpdateRequest;
@@ -43,11 +47,6 @@ import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
-
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.Employment;
-import generated.se.sundsvall.employee.Manager;
-import generated.se.sundsvall.employee.PortalPersonData;
 
 public final class TestObjectFactory {
 
@@ -83,7 +82,6 @@ public final class TestObjectFactory {
 			.withId(UUID.randomUUID().toString())
 			.withName("Test checklist template")
 			.withVersion(1)
-			.withRoleType(EMPLOYEE)
 			.withLifeCycle(CREATED)
 			.withPhases(new ArrayList<>(List.of(createPhaseEntity(), createPhaseEntity())))
 			.withCreated(OffsetDateTime.now().minusWeeks(1))
@@ -102,7 +100,6 @@ public final class TestObjectFactory {
 			.withSortOrder(1)
 			.withPermission(ADMIN)
 			.withTasks(new ArrayList<>(List.of(createTaskEntity(), createTaskEntity())))
-			.withRoleType(EMPLOYEE)
 			.withTimeToComplete("Test time to complete")
 			.build();
 	}
@@ -113,7 +110,7 @@ public final class TestObjectFactory {
 			.withCreated(OffsetDateTime.now().minusWeeks(1))
 			.withUpdated(OffsetDateTime.now())
 			.withLastSavedBy("someUser")
-			.withRoleType(EMPLOYEE)
+			.withRoleType(NEW_EMPLOYEE)
 			.withPermission(ADMIN)
 			.withQuestionType(YES_OR_NO)
 			.withHeading("Test heading")
@@ -154,7 +151,7 @@ public final class TestObjectFactory {
 			.withUpdated(OffsetDateTime.now())
 			.withCreated(OffsetDateTime.now().minusWeeks(1))
 			.withLastSavedBy("someUser")
-			.withRoleType(EMPLOYEE)
+			.withRoleType(NEW_EMPLOYEE)
 			.withSortOrder(1)
 			.build();
 	}
@@ -236,7 +233,6 @@ public final class TestObjectFactory {
 			.withId(UUID.randomUUID().toString())
 			.withName("Test checklist template")
 			.withVersion(1)
-			.withRoleType(MANAGER)
 			.withLifeCycle(CREATED)
 			.withPhases(new ArrayList<>(List.of(createPhase(), createPhase())))
 			.withCreated(OffsetDateTime.now().minusWeeks(1))
@@ -249,7 +245,6 @@ public final class TestObjectFactory {
 			.withName("name")
 			.withBodyText("bodyText")
 			.withTimeToComplete("P2W")
-			.withRoleType(EMPLOYEE)
 			.withPermission(ADMIN)
 			.withSortOrder(1)
 			.withCreatedBy("someUser")
@@ -270,7 +265,6 @@ public final class TestObjectFactory {
 			.withName("new name")
 			.withBodyText("new body text")
 			.withTimeToComplete("P2W")
-			.withRoleType(MANAGER)
 			.withPermission(ADMIN)
 			.withSortOrder(1)
 			.withUpdatedBy("someUser")
@@ -281,7 +275,6 @@ public final class TestObjectFactory {
 		return ChecklistCreateRequest.builder()
 			.withName("Test checklist template")
 			.withOrganizationNumber(1)
-			.withRoleType(EMPLOYEE)
 			.withDisplayName("Test display name")
 			.withCreatedBy("someUser")
 			.build();
@@ -289,7 +282,7 @@ public final class TestObjectFactory {
 
 	public static ChecklistUpdateRequest createChecklistUpdateRequest() {
 		return ChecklistUpdateRequest.builder()
-			.withRoleType(MANAGER)
+			.withDisplayName("Updated displayname")
 			.withUpdatedBy("someUser")
 			.build();
 	}
@@ -298,7 +291,7 @@ public final class TestObjectFactory {
 		final var request = TaskCreateRequest.builder()
 			.withHeading("Test heading")
 			.withText("Test text")
-			.withRoleType(MANAGER)
+			.withRoleType(MANAGER_FOR_NEW_EMPLOYEE)
 			.withPermission(ADMIN)
 			.withQuestionType(YES_OR_NO)
 			.withSortOrder(1)
@@ -319,7 +312,7 @@ public final class TestObjectFactory {
 		return TaskUpdateRequest.builder()
 			.withHeading("new heading")
 			.withText("new text")
-			.withRoleType(EMPLOYEE)
+			.withRoleType(NEW_EMPLOYEE)
 			.withPermission(ADMIN)
 			.withQuestionType(YES_OR_NO_WITH_TEXT)
 			.withSortOrder(1)
@@ -336,7 +329,6 @@ public final class TestObjectFactory {
 			.withName("Test name")
 			.withSortOrder(1)
 			.withTasks(new ArrayList<>(List.of(createTask(), createTask())))
-			.withRoleType(EMPLOYEE)
 			.withPermission(ADMIN)
 			.withTimeToComplete("P2W")
 			.build();
@@ -356,7 +348,7 @@ public final class TestObjectFactory {
 		final var task = Task.builder()
 			.withCreated(OffsetDateTime.now().minusWeeks(1))
 			.withUpdated(OffsetDateTime.now())
-			.withRoleType(EMPLOYEE)
+			.withRoleType(NEW_EMPLOYEE)
 			.withQuestionType(YES_OR_NO)
 			.withPermission(ADMIN)
 			.withHeading("Test heading")

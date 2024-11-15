@@ -24,28 +24,26 @@
 	"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{1,10}(Z|[+-]\\d{2}:\\d{2})?$",
 	"phases": [
 		{
-			"bodyText": "Description of manager phase",
+			"bodyText": "Description of phase A",
 			"sortOrder": 1,
 			"name": "Phasename",
 			"id": "7272d1fc-540e-4394-afe2-e133ca642e91",
-			"roleType": "MANAGER",
 			"timeToComplete": "P1M",
 			"tasks": [{
 				"heading": "Description of manager task",
 				"sortOrder": 1,
 				"id": "e43fdac2-331e-4808-8d83-753a59e329cd",
 				"text": "Text for manager task",
-				"roleType": "MANAGER",
+				"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
 				"questionType": "YES_OR_NO",
 				"customTask": false
 			}]
 		},
 		{
-			"bodyText": "Description of employee phase",
+			"bodyText": "Description of phase B",
 			"sortOrder": 2,
 			"name": "Phasename",
 			"id": "3e9780a7-96f3-4d07-80ee-a9634b786a38",
-			"roleType": "EMPLOYEE",
 			"timeToComplete": "P1M",
 			"tasks": [
 				{
@@ -53,7 +51,7 @@
 					"sortOrder": 1,
 					"id": "d250a20c-a616-4147-bfe0-19a0d12f3df0",
 					"text": "Text for first employee task",
-					"roleType": "EMPLOYEE",
+					"roleType": "NEW_EMPLOYEE",
 					"questionType": "YES_OR_NO_WITH_TEXT",
 					"customTask": false
 				},
@@ -62,7 +60,7 @@
 					"sortOrder": 2,
 					"id": "0c8b99e9-718b-4c92-9ba3-a49dc29d48b5",
 					"text": "Text for second employee task",
-					"roleType": "EMPLOYEE",
+					"roleType": "NEW_EMPLOYEE",
 					"questionType": "YES_OR_NO",
 					"customTask": false
 				},
@@ -71,7 +69,7 @@
 					"sortOrder": 3,
 					"id": "056423aa-01a4-4243-ace4-561a6e4cd25f",
 					"text": "Text for manager task",
-					"roleType": "MANAGER",
+					"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
 					"questionType": "YES_OR_NO",
 					"customTask": false
 				}
