@@ -20,11 +20,11 @@ import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
 
-@ExtendWith(MockitoExtension.class) // TODO: Implement tests
+@ExtendWith(MockitoExtension.class)
 class ChecklistBuilderTest {
 
 	@Mock
-	private PhaseRepository PhaseRepositoryMock;
+	private PhaseRepository phaseRepositoryMock;
 
 	@InjectMocks
 	private ChecklistBuilder checklistBuilder;
@@ -37,7 +37,7 @@ class ChecklistBuilderTest {
 		final var task1 = checklistEntity.getTasks().getFirst();
 		final var task2 = checklistEntity.getTasks().getLast();
 
-		when(PhaseRepositoryMock.findAllByMunicipalityId(checklistEntity.getMunicipalityId())).thenReturn(List.of(phaseEntity));
+		when(phaseRepositoryMock.findAllByMunicipalityId(checklistEntity.getMunicipalityId())).thenReturn(List.of(phaseEntity));
 
 		// Act
 		final var checklist = checklistBuilder.buildChecklist(checklistEntity);
