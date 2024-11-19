@@ -26,7 +26,7 @@ import se.sundsvall.checklist.integration.db.repository.TaskRepository;
 public class TaskService {
 
 	private static final String CHECKLIST_NOT_FOUND = "Checklist not found within municipality %s";
-	private static final String PHASE_NOT_FOUND = "Phase not found";
+	private static final String PHASE_NOT_FOUND = "Phase not found within municipality %s";
 	private static final String TASK_NOT_FOUND = "Task not found";
 
 	private final TaskRepository taskRepository;
@@ -43,42 +43,46 @@ public class TaskService {
 
 	public List<Task> getTasks(final String municipalityId, final String checklistId, final String phaseId) {
 		final var checklist = getChecklist(municipalityId, checklistId);
-		final var phase = getPhaseInChecklist(checklist, phaseId);
-		return toTasks(phase.getTasks());
+		getPhase(municipalityId, phaseId);
+
+		return toTasks(checklist.getTasks().stream()
+			.filter(task -> task.getPhase().getId().equals(phaseId))
+			.toList());
 	}
 
 	public Task getTask(final String municipalityId, final String checklistId, final String phaseId, final String taskId) {
 		final var checklist = getChecklist(municipalityId, checklistId);
-		final var phase = getPhaseInChecklist(checklist, phaseId);
-		final var task = getTaskInPhase(phase, taskId);
+		final var phase = getPhase(municipalityId, phaseId);
+		final var task = getTaskInPhase(checklist, phase.getId(), taskId);
+
 		return toTask(task);
 	}
 
 	@Transactional
 	public Task createTask(final String municipalityId, final String checklistId, final String phaseId, final TaskCreateRequest request) {
 		final var checklist = getChecklist(municipalityId, checklistId);
-		final var phase = getPhaseInChecklist(checklist, phaseId);
-		final var task = taskRepository.save(toTaskEntity(request));
-		phase.getTasks().add(task);
-		phaseRepository.save(phase);
+		final var phase = getPhase(municipalityId, phaseId);
+		final var task = taskRepository.save(toTaskEntity(request, phase));
+		checklist.getTasks().add(task);
+		checklistRepository.save(checklist);
+
 		return toTask(task);
 	}
 
 	public Task updateTask(final String municipalityId, final String checklistId, final String phaseId, final String taskId, final TaskUpdateRequest request) {
 		final var checklist = getChecklist(municipalityId, checklistId);
-		final var phase = getPhaseInChecklist(checklist, phaseId);
-		final var task = getTaskInPhase(phase, taskId);
+		final var phase = getPhase(municipalityId, phaseId);
+		final var task = getTaskInPhase(checklist, phase.getId(), taskId);
+
 		return toTask(taskRepository.save(updateTaskEntity(task, request)));
 	}
 
 	@Transactional
 	public void deleteTask(final String municipalityId, final String checklistId, final String phaseId, final String taskId) {
 		final var checklist = getChecklist(municipalityId, checklistId);
-		final var phase = getPhaseInChecklist(checklist, phaseId);
-		final var task = getTaskInPhase(phase, taskId);
-		phase.getTasks().remove(task);
+		final var phase = getPhase(municipalityId, phaseId);
+		final var task = getTaskInPhase(checklist, phase.getId(), taskId);
 		taskRepository.delete(task);
-		phaseRepository.save(phase);
 	}
 
 	private ChecklistEntity getChecklist(final String municipalityId, final String id) {
@@ -86,15 +90,14 @@ public class TaskService {
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND.formatted(municipalityId)));
 	}
 
-	private PhaseEntity getPhaseInChecklist(final ChecklistEntity checklist, final String phaseId) {
-		return checklist.getPhases().stream()
-			.filter(phase -> phase.getId().equals(phaseId))
-			.findFirst()
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, PHASE_NOT_FOUND));
+	private PhaseEntity getPhase(final String municipalityId, final String id) {
+		return phaseRepository.findByIdAndMunicipalityId(id, municipalityId)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, PHASE_NOT_FOUND.formatted(municipalityId)));
 	}
 
-	private TaskEntity getTaskInPhase(final PhaseEntity phase, final String taskId) {
-		return phase.getTasks().stream()
+	private TaskEntity getTaskInPhase(final ChecklistEntity checklist, final String phaseId, final String taskId) {
+		return checklist.getTasks().stream()
+			.filter(task -> task.getPhase().getId().equals(phaseId))
 			.filter(task -> task.getId().equals(taskId))
 			.findFirst()
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, TASK_NOT_FOUND));

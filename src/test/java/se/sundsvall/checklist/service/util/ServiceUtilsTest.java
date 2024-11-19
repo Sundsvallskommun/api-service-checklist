@@ -18,7 +18,6 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
-import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 
@@ -30,10 +29,8 @@ class ServiceUtilsTest {
 		final var taskId = UUID.randomUUID().toString();
 		final var employeeChecklist = EmployeeChecklistEntity.builder()
 			.withChecklist(ChecklistEntity.builder()
-				.withPhases(List.of(PhaseEntity.builder()
-					.withTasks(List.of(TaskEntity.builder()
-						.withId(taskId)
-						.build()))
+				.withTasks(List.of(TaskEntity.builder()
+					.withId(taskId)
 					.build()))
 				.build())
 			.build();

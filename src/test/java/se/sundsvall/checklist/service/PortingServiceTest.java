@@ -75,7 +75,7 @@ class PortingServiceTest {
 		final var response = service.exportChecklist(MUNICIPALITY_ID, organizationNumber, null);
 
 		// Assert and verify
-		assertThat(response).isEqualTo("{\"version\":3,\"phases\":[]}");
+		assertThat(response).isEqualTo("{\"version\":3,\"tasks\":[]}");
 
 		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID);
 	}
@@ -103,7 +103,7 @@ class PortingServiceTest {
 		final var response = service.exportChecklist(MUNICIPALITY_ID, organizationNumber, 1);
 
 		// Assert and verify
-		assertThat(response).isEqualTo("{\"version\":1,\"phases\":[]}");
+		assertThat(response).isEqualTo("{\"version\":1,\"tasks\":[]}");
 
 		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID);
 	}

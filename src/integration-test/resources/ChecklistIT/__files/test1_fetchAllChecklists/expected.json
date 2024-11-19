@@ -62,8 +62,7 @@
 				"name": "Första veckan",
 				"id": "3455a5d4-1db8-4a25-a49f-92fdd0c60a14",
 				"updated": "2019-01-01T00:00:00+01:00",
-				"timeToComplete": "P1M",
-				"tasks": []
+				"timeToComplete": "P1M"
 			},
 			{
 				"bodyText": "Dessa uppgifter ska göras andra veckan",
@@ -73,8 +72,7 @@
 				"name": "Första veckan",
 				"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
 				"updated": "2019-01-01T00:00:00+01:00",
-				"timeToComplete": "P2W",
-				"tasks": []
+				"timeToComplete": "P2W"
 			}
 		]
 	},
@@ -87,7 +85,38 @@
 		"version": 1,
 		"lifeCycle": "ACTIVE",
 		"updated": "2019-01-01T00:00:00+01:00",
-		"phases": []
+		"phases": [
+			{
+				"bodyText": "Dessa uppgifter ska göras första veckan",
+				"created": "2019-01-01T00:00:00+01:00",
+				"sortOrder": 1,
+				"lastSavedBy": "someUser",
+				"name": "Första veckan",
+				"id": "1455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+				"updated": "2019-01-01T00:00:00+01:00",
+				"timeToComplete": "P1W"
+			},
+			{
+				"bodyText": "Dessa uppgifter ska göras första månaden",
+				"created": "2019-01-01T00:00:00+01:00",
+				"sortOrder": 2,
+				"lastSavedBy": "someUser",
+				"name": "Första veckan",
+				"id": "3455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+				"updated": "2019-01-01T00:00:00+01:00",
+				"timeToComplete": "P1M"
+			},
+			{
+				"bodyText": "Dessa uppgifter ska göras andra veckan",
+				"created": "2019-01-01T00:00:00+01:00",
+				"sortOrder": 3,
+				"lastSavedBy": "someUser",
+				"name": "Första veckan",
+				"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+				"updated": "2019-01-01T00:00:00+01:00",
+				"timeToComplete": "P2W"
+			}
+		]
 	},
 	{
 		"displayName": "Pensionerad checklista",
@@ -98,7 +127,38 @@
 		"version": 1,
 		"lifeCycle": "RETIRED",
 		"updated": "2019-01-01T00:00:00+01:00",
-		"phases": []
+		"phases": [
+			{
+				"bodyText": "Dessa uppgifter ska göras första veckan",
+				"created": "2019-01-01T00:00:00+01:00",
+				"sortOrder": 1,
+				"lastSavedBy": "someUser",
+				"name": "Första veckan",
+				"id": "1455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+				"updated": "2019-01-01T00:00:00+01:00",
+				"timeToComplete": "P1W"
+			},
+			{
+				"bodyText": "Dessa uppgifter ska göras första månaden",
+				"created": "2019-01-01T00:00:00+01:00",
+				"sortOrder": 2,
+				"lastSavedBy": "someUser",
+				"name": "Första veckan",
+				"id": "3455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+				"updated": "2019-01-01T00:00:00+01:00",
+				"timeToComplete": "P1M"
+			},
+			{
+				"bodyText": "Dessa uppgifter ska göras andra veckan",
+				"created": "2019-01-01T00:00:00+01:00",
+				"sortOrder": 3,
+				"lastSavedBy": "someUser",
+				"name": "Första veckan",
+				"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+				"updated": "2019-01-01T00:00:00+01:00",
+				"timeToComplete": "P2W"
+			}
+		]
 	},
 	{
 		"displayName": "Inaktiv lista",
@@ -109,6 +169,37 @@
 		"version": 1,
 		"lifeCycle": "CREATED",
 		"updated": "2019-01-01T00:00:00+01:00",
-		"phases": []
+		"phases": [
+			{
+				"bodyText": "Dessa uppgifter ska göras första veckan",
+				"created": "2019-01-01T00:00:00+01:00",
+				"sortOrder": 1,
+				"lastSavedBy": "someUser",
+				"name": "Första veckan",
+				"id": "1455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+				"updated": "2019-01-01T00:00:00+01:00",
+				"timeToComplete": "P1W"
+			},
+			{
+				"bodyText": "Dessa uppgifter ska göras första månaden",
+				"created": "2019-01-01T00:00:00+01:00",
+				"sortOrder": 2,
+				"lastSavedBy": "someUser",
+				"name": "Första veckan",
+				"id": "3455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+				"updated": "2019-01-01T00:00:00+01:00",
+				"timeToComplete": "P1M"
+			},
+			{
+				"bodyText": "Dessa uppgifter ska göras andra veckan",
+				"created": "2019-01-01T00:00:00+01:00",
+				"sortOrder": 3,
+				"lastSavedBy": "someUser",
+				"name": "Första veckan",
+				"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+				"updated": "2019-01-01T00:00:00+01:00",
+				"timeToComplete": "P2W"
+			}
+		]
 	}
 ]

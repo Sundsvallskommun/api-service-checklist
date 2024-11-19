@@ -77,10 +77,10 @@ public class ChecklistEntity {
 
 	@Builder.Default
 	@OneToMany(cascade = {
-		CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST
+		CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE
 	}, orphanRemoval = true)
-	@JoinColumn(name = "checklist_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_checklist_phase"))
-	private List<PhaseEntity> phases = new ArrayList<>();
+	@JoinColumn(name = "checklist_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_checklist_task"))
+	private List<TaskEntity> tasks = new ArrayList<>();
 
 	@PrePersist
 	void prePersist() {

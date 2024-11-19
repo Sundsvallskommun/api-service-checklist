@@ -96,10 +96,10 @@ class EmployeeChecklistServiceTest {
 			.withManager(manager)
 			.withUpdated(OffsetDateTime.now())
 			.build();
-		final var managerTask = TaskEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.MANAGER_FOR_NEW_EMPLOYEE).build();
-		final var employeeTask = TaskEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.NEW_EMPLOYEE).build();
-		final var phase = PhaseEntity.builder().withId(UUID.randomUUID().toString()).withTasks(List.of(managerTask, employeeTask)).build();
-		final var checklist = ChecklistEntity.builder().withPhases(List.of(phase)).build();
+		final var phase = PhaseEntity.builder().withId(UUID.randomUUID().toString()).build();
+		final var managerTask = TaskEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.MANAGER_FOR_NEW_EMPLOYEE).withPhase(phase).build();
+		final var employeeTask = TaskEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.NEW_EMPLOYEE).withPhase(phase).build();
+		final var checklist = ChecklistEntity.builder().withTasks(List.of(managerTask, employeeTask)).build();
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
 			.withId(employeeChecklistId)
 			.withEmployee(employee)
@@ -200,24 +200,25 @@ class EmployeeChecklistServiceTest {
 			.withUpdated(OffsetDateTime.now())
 			.build();
 
-		final var managerTask = TaskEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.MANAGER_FOR_NEW_EMPLOYEE).build();
-		final var employeeTask = TaskEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.NEW_EMPLOYEE).build();
-		final var phase_1 = PhaseEntity.builder().withId(UUID.randomUUID().toString()).withTasks(List.of(managerTask)).build();
-		final var phase_2 = PhaseEntity.builder().withId(UUID.randomUUID().toString()).withTasks(List.of(managerTask, employeeTask)).build();
+		final var phase1 = PhaseEntity.builder().withId(UUID.randomUUID().toString()).build();
+		final var phase2 = PhaseEntity.builder().withId(UUID.randomUUID().toString()).build();
+		final var managerTask_1 = TaskEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.MANAGER_FOR_NEW_EMPLOYEE).withPhase(phase1).build();
+		final var managerTask_2 = TaskEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.MANAGER_FOR_NEW_EMPLOYEE).withPhase(phase2).build();
+		final var employeeTask = TaskEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.NEW_EMPLOYEE).withPhase(phase2).build();
 
 		final var checklist = ChecklistEntity.builder()
-			.withPhases(List.of(phase_1, phase_2))
+			.withTasks(List.of(managerTask_1, managerTask_2, employeeTask))
 			.build();
 
 		final var customEmployeeTask = CustomTaskEntity.builder()
 			.withId(customTaskId)
 			.withRoleType(RoleType.NEW_EMPLOYEE)
-			.withPhase(phase_1)
+			.withPhase(phase1)
 			.build();
 		final var customManagerTask = CustomTaskEntity.builder()
 			.withId(customTaskId)
 			.withRoleType(RoleType.MANAGER_FOR_NEW_EMPLOYEE)
-			.withPhase(phase_2)
+			.withPhase(phase2)
 			.build();
 
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
@@ -651,9 +652,11 @@ class EmployeeChecklistServiceTest {
 		final var request = EmployeeChecklistPhaseUpdateRequest.builder().build();
 		final var entity = EmployeeChecklistEntity.builder()
 			.withChecklist(ChecklistEntity.builder()
-				.withPhases(List.of(PhaseEntity.builder()
-					.withId(phaseId)
-					.withTasks(List.of(TaskEntity.builder().build())).build()))
+				.withTasks(List.of(TaskEntity.builder()
+					.withPhase(PhaseEntity.builder()
+						.withId(phaseId)
+						.build())
+					.build()))
 				.build())
 			.build();
 
@@ -678,9 +681,11 @@ class EmployeeChecklistServiceTest {
 		final var request = EmployeeChecklistPhaseUpdateRequest.builder().build();
 		final var entity = EmployeeChecklistEntity.builder()
 			.withChecklist(ChecklistEntity.builder()
-				.withPhases(List.of(PhaseEntity.builder()
-					.withId(UUID.randomUUID().toString())
-					.withTasks(List.of(TaskEntity.builder().build())).build()))
+				.withTasks(List.of(TaskEntity.builder()
+					.withPhase(PhaseEntity.builder()
+						.withId(UUID.randomUUID().toString())
+						.build())
+					.build()))
 				.build())
 			.build();
 
@@ -704,10 +709,11 @@ class EmployeeChecklistServiceTest {
 		final var request = EmployeeChecklistTaskUpdateRequest.builder().build();
 		final var employeeChecklist = EmployeeChecklistEntity.builder()
 			.withChecklist(ChecklistEntity.builder()
-				.withPhases(List.of(PhaseEntity.builder()
-					.withTasks(List.of(TaskEntity.builder()
-						.withId(taskId)
-						.build()))
+				.withTasks(List.of(TaskEntity.builder()
+					.withId(taskId)
+					.withPhase(PhaseEntity.builder()
+						.withId(UUID.randomUUID().toString())
+						.build())
 					.build()))
 				.build())
 			.build();
@@ -735,10 +741,10 @@ class EmployeeChecklistServiceTest {
 		final var employeeChecklist = EmployeeChecklistEntity.builder()
 			.withId(employeeChecklistId)
 			.withChecklist(ChecklistEntity.builder()
-				.withPhases(List.of(PhaseEntity.builder()
-					.withTasks(List.of(TaskEntity.builder()
-						.withId(UUID.randomUUID().toString())
-						.build()))
+				.withTasks(List.of(TaskEntity.builder()
+					.withId(UUID.randomUUID().toString())
+					.withPhase(PhaseEntity.builder()
+						.build())
 					.build()))
 				.build())
 			.build();

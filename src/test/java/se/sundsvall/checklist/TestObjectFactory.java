@@ -7,8 +7,8 @@ import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATE
 import static se.sundsvall.checklist.integration.db.model.enums.Permission.ADMIN;
 import static se.sundsvall.checklist.integration.db.model.enums.QuestionType.YES_OR_NO;
 import static se.sundsvall.checklist.integration.db.model.enums.QuestionType.YES_OR_NO_WITH_TEXT;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.NEW_EMPLOYEE;
 import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_EMPLOYEE;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.NEW_EMPLOYEE;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -78,12 +78,17 @@ public final class TestObjectFactory {
 	}
 
 	public static ChecklistEntity createChecklistEntity() {
+		return createChecklistEntity(createPhaseEntity());
+	}
+
+	public static ChecklistEntity createChecklistEntity(PhaseEntity phaseEntity) {
 		return ChecklistEntity.builder()
 			.withId(UUID.randomUUID().toString())
+			.withMunicipalityId("municipalityId")
 			.withName("Test checklist template")
 			.withVersion(1)
 			.withLifeCycle(CREATED)
-			.withPhases(new ArrayList<>(List.of(createPhaseEntity(), createPhaseEntity())))
+			.withTasks(new ArrayList<>(List.of(createTaskEntity(phaseEntity), createTaskEntity(phaseEntity))))
 			.withCreated(OffsetDateTime.now().minusWeeks(1))
 			.withUpdated(OffsetDateTime.now())
 			.build();
@@ -99,12 +104,15 @@ public final class TestObjectFactory {
 			.withName("Test name")
 			.withSortOrder(1)
 			.withPermission(ADMIN)
-			.withTasks(new ArrayList<>(List.of(createTaskEntity(), createTaskEntity())))
 			.withTimeToComplete("Test time to complete")
 			.build();
 	}
 
 	public static TaskEntity createTaskEntity() {
+		return createTaskEntity(createPhaseEntity());
+	}
+
+	public static TaskEntity createTaskEntity(PhaseEntity phaseEntity) {
 		return TaskEntity.builder()
 			.withId(UUID.randomUUID().toString())
 			.withCreated(OffsetDateTime.now().minusWeeks(1))
@@ -115,6 +123,7 @@ public final class TestObjectFactory {
 			.withQuestionType(YES_OR_NO)
 			.withHeading("Test heading")
 			.withText("Test text")
+			.withPhase(phaseEntity)
 			.build();
 	}
 

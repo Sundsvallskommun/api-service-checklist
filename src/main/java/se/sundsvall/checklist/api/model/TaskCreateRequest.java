@@ -40,7 +40,7 @@ public class TaskCreateRequest {
 	@NotNull
 	private Permission permission;
 
-	@Schema(description = "The question type of the task", accessMode = WRITE_ONLY)
+	@Schema(description = "The question type of the task", example = "YES_OR_NO", accessMode = WRITE_ONLY)
 	@NotNull
 	private QuestionType questionType;
 

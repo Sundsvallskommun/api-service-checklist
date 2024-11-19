@@ -5,7 +5,6 @@ import static java.util.Optional.ofNullable;
 import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.EMAIL;
 import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.EMPLOYEE;
 import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.MANAGER;
-import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toChecklists;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -131,7 +130,6 @@ public class OrganizationMapper {
 				.withOrganizationNumber(organization.getOrganizationNumber())
 				.withOrganizationName(organization.getOrganizationName())
 				.withCommunicationChannels(organization.getCommunicationChannels())
-				.withChecklists(toChecklists(organization.getChecklists()))
 				.withCreated(organization.getCreated())
 				.withUpdated(organization.getUpdated())
 				.build())

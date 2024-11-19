@@ -17,6 +17,7 @@ import static se.sundsvall.checklist.TestObjectFactory.createOrganizationUpdateR
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,6 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.zalando.problem.Problem;
 
 import se.sundsvall.checklist.api.model.Organization;
+import se.sundsvall.checklist.integration.db.ChecklistBuilder;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,6 +40,9 @@ class OrganizationServiceTest {
 	@Mock
 	private OrganizationRepository mockOrganizationRepository;
 
+	@Mock
+	private ChecklistBuilder mockChecklistBuilder;
+
 	@InjectMocks
 	private OrganizationService organizationService;
 
@@ -50,8 +55,8 @@ class OrganizationServiceTest {
 			.isInstanceOf(Problem.class)
 			.hasFieldOrPropertyWithValue("status", CONFLICT)
 			.hasMessageContaining(ORGANIZATION_NUMBER_ALREADY_EXISTS.formatted(request.getOrganizationNumber()));
+
 		verify(mockOrganizationRepository).findByOrganizationNumberAndMunicipalityId(request.getOrganizationNumber(), MUNICIPALITY_ID);
-		verify(mockOrganizationRepository, never()).save(createOrganizationEntity());
 	}
 
 	@Test
@@ -68,12 +73,12 @@ class OrganizationServiceTest {
 
 		verify(mockOrganizationRepository).findByOrganizationNumberAndMunicipalityId(request.getOrganizationNumber(), MUNICIPALITY_ID);
 		verify(mockOrganizationRepository).save(any());
-		verifyNoMoreInteractions(mockOrganizationRepository);
 	}
 
 	@Test
 	void fetchAllOrganizations() {
-		when(mockOrganizationRepository.findAllByMunicipalityId(MUNICIPALITY_ID)).thenReturn(List.of(createOrganizationEntity()));
+		final var entity = createOrganizationEntity();
+		when(mockOrganizationRepository.findAllByMunicipalityId(MUNICIPALITY_ID)).thenReturn(List.of(entity));
 
 		final var result = organizationService.fetchAllOrganizations(MUNICIPALITY_ID);
 
@@ -81,7 +86,9 @@ class OrganizationServiceTest {
 		assertThat(result.getFirst()).isInstanceOf(Organization.class);
 
 		verify(mockOrganizationRepository).findAllByMunicipalityId(MUNICIPALITY_ID);
-		verifyNoMoreInteractions(mockOrganizationRepository);
+		entity.getChecklists().forEach(checklist -> {
+			verify(mockChecklistBuilder).buildChecklist(checklist);
+		});
 	}
 
 	@Test
@@ -101,7 +108,9 @@ class OrganizationServiceTest {
 		});
 
 		verify(mockOrganizationRepository).findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID);
-		verifyNoMoreInteractions(mockOrganizationRepository);
+		entity.getChecklists().forEach(checklist -> {
+			verify(mockChecklistBuilder).buildChecklist(checklist);
+		});
 	}
 
 	@Test
@@ -112,7 +121,6 @@ class OrganizationServiceTest {
 			.hasMessageContaining(ORGANIZATION_NOT_FOUND.formatted("id"));
 
 		verify(mockOrganizationRepository).findByIdAndMunicipalityId("id", MUNICIPALITY_ID);
-		verifyNoMoreInteractions(mockOrganizationRepository);
 	}
 
 	@Test
@@ -131,7 +139,6 @@ class OrganizationServiceTest {
 
 		verify(mockOrganizationRepository).findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID);
 		verify(mockOrganizationRepository).save(any());
-		verifyNoMoreInteractions(mockOrganizationRepository);
 	}
 
 	@Test
@@ -145,7 +152,6 @@ class OrganizationServiceTest {
 
 		verify(mockOrganizationRepository).findByIdAndMunicipalityId("id", MUNICIPALITY_ID);
 		verify(mockOrganizationRepository, never()).save(any());
-		verifyNoMoreInteractions(mockOrganizationRepository);
 	}
 
 	@Test
@@ -157,7 +163,6 @@ class OrganizationServiceTest {
 
 		verify(mockOrganizationRepository).findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID);
 		verify(mockOrganizationRepository).delete(entity);
-		verifyNoMoreInteractions(mockOrganizationRepository);
 	}
 
 	@Test
@@ -169,7 +174,6 @@ class OrganizationServiceTest {
 
 		verify(mockOrganizationRepository).findByIdAndMunicipalityId("id", MUNICIPALITY_ID);
 		verify(mockOrganizationRepository, never()).delete(any());
-		verifyNoMoreInteractions(mockOrganizationRepository);
 	}
 
 	@Test
@@ -185,7 +189,10 @@ class OrganizationServiceTest {
 
 		verify(mockOrganizationRepository).findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID);
 		verify(mockOrganizationRepository, never()).delete(any());
-		verifyNoMoreInteractions(mockOrganizationRepository);
 	}
 
+	@AfterEach
+	void verifyNoMoreInteraction() {
+		verifyNoMoreInteractions(mockOrganizationRepository, mockChecklistBuilder);
+	}
 }

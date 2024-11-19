@@ -10,23 +10,23 @@ values ('2281', 5535, now(), now(), 'Sub organization 5335', 'bd49f474-303c-4a4e
 insert into checklist (municipality_id, version, created, updated, last_saved_by, id, organization_id, life_cycle, name)
 values ('2281', 1, now(), now(), 'someUser', 'e20598a4-6b32-459e-8c15-febbd4c5868e', 'bd49f474-303c-4a4e-aa54-5d4f58d9188b', 'ACTIVE', 'Checklist for Sub organization 5335');
 
-insert into phase (sort_order, created, updated, last_saved_by, body_text, checklist_id, id, name, time_to_complete)
-values (1, now(), now(), 'someUser', 'Description of phase A', 'e20598a4-6b32-459e-8c15-febbd4c5868e', '7272d1fc-540e-4394-afe2-e133ca642e91', 'Phasename', 'P1M');
+insert into phase (municipality_id, sort_order, created, updated, last_saved_by, body_text, id, name, time_to_complete)
+values ('2281', 1, now(), now(), 'someUser', 'Description of phase A', '7272d1fc-540e-4394-afe2-e133ca642e91', 'Phasename', 'P1M');
 
-insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, phase_id, text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
-values (1, 'YES_OR_NO', now(), now(), 'someUser', 'Description of manager task', 'e43fdac2-331e-4808-8d83-753a59e329cd', 'MANAGER_FOR_NEW_EMPLOYEE', '7272d1fc-540e-4394-afe2-e133ca642e91', 'Text for manager task');
+insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, checklist_id, phase_id, text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
+values (1, 'YES_OR_NO', now(), now(), 'someUser', 'Description of manager task', 'e43fdac2-331e-4808-8d83-753a59e329cd', 'MANAGER_FOR_NEW_EMPLOYEE', 'e20598a4-6b32-459e-8c15-febbd4c5868e', '7272d1fc-540e-4394-afe2-e133ca642e91', 'Text for manager task');
 
-insert into phase (sort_order, created, updated, last_saved_by, body_text, checklist_id, id, name, time_to_complete)
-values (2, now(), now(), 'someUser', 'Description of phase B', 'e20598a4-6b32-459e-8c15-febbd4c5868e', '3e9780a7-96f3-4d07-80ee-a9634b786a38', 'Phasename', 'P1M');
+insert into phase (municipality_id, sort_order, created, updated, last_saved_by, body_text, id, name, time_to_complete)
+values ('2281', 2, now(), now(), 'someUser', 'Description of phase B', '3e9780a7-96f3-4d07-80ee-a9634b786a38', 'Phasename', 'P1M');
 
-insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, phase_id, text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
-values (1, 'YES_OR_NO_WITH_TEXT', now(), now(), 'someUser', 'Description of first employee task', 'd250a20c-a616-4147-bfe0-19a0d12f3df0', 'NEW_EMPLOYEE', '3e9780a7-96f3-4d07-80ee-a9634b786a38', 'Text for first employee task');
+insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, checklist_id, phase_id, text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
+values (1, 'YES_OR_NO_WITH_TEXT', now(), now(), 'someUser', 'Description of first employee task', 'd250a20c-a616-4147-bfe0-19a0d12f3df0', 'NEW_EMPLOYEE', 'e20598a4-6b32-459e-8c15-febbd4c5868e', '3e9780a7-96f3-4d07-80ee-a9634b786a38', 'Text for first employee task');
 
-insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, phase_id, text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
-values (2, 'YES_OR_NO', now(), now(), 'someUser', 'Description of second employee task', '0c8b99e9-718b-4c92-9ba3-a49dc29d48b5', 'NEW_EMPLOYEE', '3e9780a7-96f3-4d07-80ee-a9634b786a38', 'Text for second employee task');
+insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, checklist_id, phase_id, text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
+values (2, 'YES_OR_NO', now(), now(), 'someUser', 'Description of second employee task', '0c8b99e9-718b-4c92-9ba3-a49dc29d48b5', 'NEW_EMPLOYEE', 'e20598a4-6b32-459e-8c15-febbd4c5868e', '3e9780a7-96f3-4d07-80ee-a9634b786a38', 'Text for second employee task');
 
-insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, phase_id, text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
-values (3, 'YES_OR_NO', now(), now(), 'someUser', 'Description of manager task', '056423aa-01a4-4243-ace4-561a6e4cd25f', 'MANAGER_FOR_NEW_EMPLOYEE', '3e9780a7-96f3-4d07-80ee-a9634b786a38', 'Text for manager task');
+insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, checklist_id, phase_id, text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
+values (3, 'YES_OR_NO', now(), now(), 'someUser', 'Description of manager task', '056423aa-01a4-4243-ace4-561a6e4cd25f', 'MANAGER_FOR_NEW_EMPLOYEE', 'e20598a4-6b32-459e-8c15-febbd4c5868e', '3e9780a7-96f3-4d07-80ee-a9634b786a38', 'Text for manager task');
 
 -- --------------------------------------------------------------------------------------
 -- Checklist for organizationNumber 1 (Root organization)
@@ -37,26 +37,26 @@ values ('2281', 1, now(), now(), null, 'cfcb03b1-7344-4352-9b72-7aebb1f235e1');
 insert into checklist (municipality_id, version, created, updated, last_saved_by, id, organization_id, life_cycle, name)
 values ('2281', 1, now(), now(), 'someUser', '8c66e24b-3845-47ae-af74-c4611db8be7c', 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'ACTIVE', 'Checklist for Root organization');
 
-insert into phase (sort_order, created, updated, last_saved_by, body_text, checklist_id, id, name, time_to_complete) 
-values (1, now(), now(), 'someUser', 'Description of phase C', '8c66e24b-3845-47ae-af74-c4611db8be7c', '539b074d-d654-49ec-9dce-220f8a5ba7bb', 'Phasename', 'P1M');
+insert into phase (municipality_id, sort_order, created, updated, last_saved_by, body_text, id, name, time_to_complete) 
+values ('2281', 1, now(), now(), 'someUser', 'Description of phase C', '539b074d-d654-49ec-9dce-220f8a5ba7bb', 'Phasename', 'P1M');
 
-insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, phase_id, text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
-values (1, 'COMPLETED_OR_NOT_RELEVANT', now(), now(), 'someUser', 'Description of manager to new employee task', 'c8c7abe0-5703-4ca1-86d3-74e5ad79b690', 'MANAGER_FOR_NEW_EMPLOYEE', '539b074d-d654-49ec-9dce-220f8a5ba7bb', 'Text for task to be performed by new employees manager');
+insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, checklist_id, phase_id, text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
+values (1, 'COMPLETED_OR_NOT_RELEVANT', now(), now(), 'someUser', 'Description of manager to new employee task', 'c8c7abe0-5703-4ca1-86d3-74e5ad79b690', 'MANAGER_FOR_NEW_EMPLOYEE', '8c66e24b-3845-47ae-af74-c4611db8be7c', '539b074d-d654-49ec-9dce-220f8a5ba7bb', 'Text for task to be performed by new employees manager');
 
-insert into phase (sort_order, created, updated, last_saved_by, body_text, checklist_id, id, name, time_to_complete)
-values (2, now(), now(), 'someUser', 'Description of phase D', '8c66e24b-3845-47ae-af74-c4611db8be7c', 'd2c92810-3c46-4161-af54-7ae8b3c9d0b3', 'Phasename', 'P1M');
+insert into phase (municipality_id, sort_order, created, updated, last_saved_by, body_text, id, name, time_to_complete)
+values ('2281', 2, now(), now(), 'someUser', 'Description of phase D', 'd2c92810-3c46-4161-af54-7ae8b3c9d0b3', 'Phasename', 'P1M');
 
-insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, phase_id, text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
-values (1, 'COMPLETED_OR_NOT_RELEVANT_WITH_TEXT', now(), now(), 'someUser', 'Description of new employee task', 'a76e9920-261f-42fc-9077-14fb1cdb9871', 'NEW_EMPLOYEE', 'd2c92810-3c46-4161-af54-7ae8b3c9d0b3', 'Text for task to be performed by new employee');
+insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, checklist_id, phase_id, text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
+values (1, 'COMPLETED_OR_NOT_RELEVANT_WITH_TEXT', now(), now(), 'someUser', 'Description of new employee task', 'a76e9920-261f-42fc-9077-14fb1cdb9871', 'NEW_EMPLOYEE', '8c66e24b-3845-47ae-af74-c4611db8be7c', 'd2c92810-3c46-4161-af54-7ae8b3c9d0b3', 'Text for task to be performed by new employee');
 
 -- --------------------------------------------------------------------------------------
 -- Tasks for new manager and new managers manager for organizationNumber 1 (Sundsvalls kommun)
 -- --------------------------------------------------------------------------------------
-insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, phase_id, text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
-values (1, 'YES_OR_NO', now(), now(), 'someUser', 'Description of new manager task', '0da1dfa2-5196-45c2-b605-162a323b9b5e', 'NEW_MANAGER', '539b074d-d654-49ec-9dce-220f8a5ba7bb', 'Text for task to be performed by new manager');
+insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, checklist_id, phase_id, text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
+values (1, 'YES_OR_NO', now(), now(), 'someUser', 'Description of new manager task', '0da1dfa2-5196-45c2-b605-162a323b9b5e', 'NEW_MANAGER', '8c66e24b-3845-47ae-af74-c4611db8be7c', '539b074d-d654-49ec-9dce-220f8a5ba7bb', 'Text for task to be performed by new manager');
 
-insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, phase_id, text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
-values (2, 'YES_OR_NO', now(), now(), 'someUser', 'Description of managers manager task', 'e930c70d-a961-4b71-89b4-935d47db982f', 'MANAGER_FOR_NEW_MANAGER', 'd2c92810-3c46-4161-af54-7ae8b3c9d0b3', 'Text for task to be performed by new managers manager');
+insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, checklist_id, phase_id, text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
+values (2, 'YES_OR_NO', now(), now(), 'someUser', 'Description of managers manager task', 'e930c70d-a961-4b71-89b4-935d47db982f', 'MANAGER_FOR_NEW_MANAGER', '8c66e24b-3845-47ae-af74-c4611db8be7c', 'd2c92810-3c46-4161-af54-7ae8b3c9d0b3', 'Text for task to be performed by new managers manager');
 
 -- ======================================================================================
 -- Employee A and B, Manager A and C are used in testcases test01, test03

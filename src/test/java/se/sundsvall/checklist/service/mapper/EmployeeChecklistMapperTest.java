@@ -23,7 +23,6 @@ import org.junit.jupiter.params.provider.EnumSource;
 import generated.se.sundsvall.employee.Manager;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
-import se.sundsvall.checklist.api.model.EmployeeChecklistPhase;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
@@ -150,16 +149,20 @@ class EmployeeChecklistMapperTest {
 
 	@Test
 	void toEmployeeChecklistPhaseTest() {
-		final var entity = createPhaseEntity();
+		final var phaseEntity = createPhaseEntity();
+		final var taskEntities = List.of(createTaskEntity(phaseEntity), createTaskEntity(phaseEntity));
+		final var result = toEmployeeChecklistPhase(phaseEntity, taskEntities);
 
-		final var result = toEmployeeChecklistPhase(entity);
-
-		assertThat(result).isNotNull().satisfies(r -> {
-			assertThat(r.getId()).isEqualTo(entity.getId());
-			assertThat(r.getName()).isEqualTo(entity.getName());
-			assertThat(r.getBodyText()).isEqualTo(entity.getBodyText());
-			assertThat(r.getTimeToComplete()).isEqualTo(entity.getTimeToComplete());
-			assertThat(r.getSortOrder()).isEqualTo(entity.getSortOrder());
+		assertThat(result).isNotNull().satisfies(phase -> {
+			assertThat(phase.getId()).isEqualTo(phaseEntity.getId());
+			assertThat(phase.getName()).isEqualTo(phaseEntity.getName());
+			assertThat(phase.getBodyText()).isEqualTo(phaseEntity.getBodyText());
+			assertThat(phase.getTimeToComplete()).isEqualTo(phaseEntity.getTimeToComplete());
+			assertThat(phase.getSortOrder()).isEqualTo(phaseEntity.getSortOrder());
+			assertThat(phase.getTasks()).hasSize(2).satisfies(tasks -> {
+				assertThat(tasks.stream().map(EmployeeChecklistTask::getId).toList())
+					.containsAll(taskEntities.stream().map(TaskEntity::getId).toList());
+			});
 		});
 	}
 
@@ -197,11 +200,30 @@ class EmployeeChecklistMapperTest {
 
 	@Test
 	void toEmployeeChecklistPhasesSortTest() {
+		final var phase1 = PhaseEntity.builder().withSortOrder(1).build();
+		final var phase2 = PhaseEntity.builder().withSortOrder(2).build();
+
 		assertThat(EmployeeChecklistMapper.toEmployeeChecklistPhases(List.of(
-			PhaseEntity.builder().withSortOrder(2).build(),
-			PhaseEntity.builder().withSortOrder(1).build())))
+			TaskEntity.builder().withSortOrder(2)
+				.withPhase(phase2)
+				.build(),
+			TaskEntity.builder().withSortOrder(1)
+				.withPhase(phase2)
+				.build(),
+			TaskEntity.builder().withSortOrder(2)
+				.withPhase(phase1)
+				.build(),
+			TaskEntity.builder().withSortOrder(1)
+				.withPhase(phase1)
+				.build())))
 			.hasSize(2)
-			.extracting(EmployeeChecklistPhase::getSortOrder).containsExactly(1, 2);
+			.satisfiesExactly(phase -> {
+				assertThat(phase.getSortOrder()).isEqualTo(1);
+				assertThat(phase.getTasks()).extracting(EmployeeChecklistTask::getSortOrder).containsExactly(1, 2);
+			}, phase -> {
+				assertThat(phase.getSortOrder()).isEqualTo(2);
+				assertThat(phase.getTasks()).extracting(EmployeeChecklistTask::getSortOrder).containsExactly(1, 2);
+			});
 	}
 
 	@Test

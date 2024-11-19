@@ -24,10 +24,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import se.sundsvall.checklist.api.model.Checklist;
 import se.sundsvall.checklist.api.model.ChecklistCreateRequest;
 import se.sundsvall.checklist.api.model.ChecklistUpdateRequest;
+import se.sundsvall.checklist.integration.db.ChecklistBuilder;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
-import se.sundsvall.checklist.service.mapper.ChecklistMapper;
 
 @Service
 public class ChecklistService {
@@ -40,28 +40,32 @@ public class ChecklistService {
 
 	private final OrganizationRepository organizationRepository;
 	private final ChecklistRepository checklistRepository;
+	private final ChecklistBuilder checklistBuilder;
 	private final ObjectMapper objectMapper;
 
 	public ChecklistService(
 		OrganizationRepository organizationRepository,
 		ChecklistRepository checklistRepository,
+		ChecklistBuilder checklistBuilder,
 		ObjectMapper objectMapper) {
 
 		this.organizationRepository = organizationRepository;
 		this.checklistRepository = checklistRepository;
+		this.checklistBuilder = checklistBuilder;
 		this.objectMapper = objectMapper;
 	}
 
 	public List<Checklist> getChecklists(final String municipalityId) {
 		return checklistRepository.findAllByMunicipalityId(municipalityId).stream()
-			.map(ChecklistMapper::toChecklist)
+			.map(checklistBuilder::buildChecklist)
 			.toList();
 	}
 
 	public Checklist getChecklist(final String municipalityId, final String id) {
-		final var checklist = checklistRepository.findByIdAndMunicipalityId(id, municipalityId)
+		final var checklistEntity = checklistRepository.findByIdAndMunicipalityId(id, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND.formatted(municipalityId)));
-		return toChecklist(checklist);
+
+		return checklistBuilder.buildChecklist(checklistEntity);
 	}
 
 	@Transactional
@@ -126,7 +130,7 @@ public class ChecklistService {
 		final var entity = checklistRepository.findByIdAndMunicipalityId(id, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND.formatted(municipalityId)));
 
-		return toChecklist(checklistRepository.save(updateChecklistEntity(entity, request)));
+		return checklistBuilder.buildChecklist(checklistRepository.save(updateChecklistEntity(entity, request)));
 	}
 
 	ChecklistEntity createDeepCopy(final ChecklistEntity entity) {

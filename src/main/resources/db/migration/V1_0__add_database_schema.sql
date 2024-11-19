@@ -12,8 +12,6 @@
 	-- Shedlock table (this will not be created by schema file - i.e do not remove the section above when replacing the content in this file)
     -- --------------------------------------------------------------------------------------------------------------------------------------
 
-
-
     create table checklist (
         version integer,
         created datetime(6),
@@ -153,9 +151,9 @@
         created datetime(6),
         updated datetime(6),
         body_text varchar(2048),
-        checklist_id varchar(255),
         id varchar(255) not null,
         last_saved_by varchar(255) not null,
+        municipality_id varchar(255),
         name varchar(255),
         time_to_complete varchar(255),
         permission enum ('ADMIN','SUPERADMIN'),
@@ -166,6 +164,7 @@
         sort_order integer,
         created datetime(6),
         updated datetime(6),
+        checklist_id varchar(255),
         heading varchar(255),
         id varchar(255) not null,
         last_saved_by varchar(255) not null,
@@ -293,12 +292,12 @@
        foreign key (organization_id) 
        references organization (id);
 
-    alter table if exists phase 
-       add constraint fk_checklist_phase 
-       foreign key (checklist_id) 
-       references checklist (id);
-
     alter table if exists task 
-       add constraint fk_phase_task 
+       add constraint fk_task_phase 
        foreign key (phase_id) 
        references phase (id);
+
+    alter table if exists task 
+       add constraint fk_checklist_task 
+       foreign key (checklist_id) 
+       references checklist (id);
