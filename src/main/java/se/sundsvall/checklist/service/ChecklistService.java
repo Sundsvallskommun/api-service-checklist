@@ -62,10 +62,9 @@ public class ChecklistService {
 	}
 
 	public Checklist getChecklist(final String municipalityId, final String id) {
-		final var checklistEntity = checklistRepository.findByIdAndMunicipalityId(id, municipalityId)
+		return checklistRepository.findByIdAndMunicipalityId(id, municipalityId)
+			.map(checklistBuilder::buildChecklist)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND.formatted(municipalityId)));
-
-		return checklistBuilder.buildChecklist(checklistEntity);
 	}
 
 	@Transactional
@@ -127,10 +126,9 @@ public class ChecklistService {
 	}
 
 	public Checklist updateChecklist(final String municipalityId, final String id, final ChecklistUpdateRequest request) {
-		final var entity = checklistRepository.findByIdAndMunicipalityId(id, municipalityId)
+		return checklistRepository.findByIdAndMunicipalityId(id, municipalityId)
+			.map(entity -> checklistBuilder.buildChecklist(checklistRepository.save(updateChecklistEntity(entity, request))))
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND.formatted(municipalityId)));
-
-		return checklistBuilder.buildChecklist(checklistRepository.save(updateChecklistEntity(entity, request)));
 	}
 
 	ChecklistEntity createDeepCopy(final ChecklistEntity entity) {

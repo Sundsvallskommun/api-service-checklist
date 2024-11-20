@@ -42,6 +42,12 @@ public class PortingService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PortingService.class);
 
+	private static final String MESSAGE_CHECKLIST_NOT_FOUND = "No checklist matching sent in parameters exist.";
+	private static final String MESSAGE_CHECKLIST_WITH_STATUS_NOT_FOUND = "No checklist with lifecycle status %s found.";
+	private static final String MESSAGE_PHASE_NOT_FOUND = "Phase with id %s is not present within municipality %s";
+	private static final String MESSAGE_IMPORT_ERROR = "Exception when importing checklist.";
+	private static final String MESSAGE_CHECKLIST_CONFLICT = "The organization has an existing checklist with lifecycle status CREATED present, operation aborted.";
+
 	static final String SYSTEM = "SYSTEM";
 
 	private final ChecklistRepository checklistRepository;
@@ -78,7 +84,7 @@ public class PortingService {
 			.map(this::clearFields)
 			.map(throwingFunction(objectMapper::writeValueAsString))
 			.findFirst()
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, "No checklist matching sent in parameters exist."));
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, MESSAGE_CHECKLIST_NOT_FOUND));
 	}
 
 	/**
@@ -102,7 +108,8 @@ public class PortingService {
 
 			// Find and replace phase-entities with the ones that exists in the DB
 			checklist.getTasks().forEach(task -> {
-				final var phaseInDatabase = phaseRepository.findById(task.getPhase().getId()).orElseThrow(() -> Problem.valueOf(NOT_FOUND, "Phase not found i database"));
+				final var phaseInDatabase = phaseRepository.findByIdAndMunicipalityId(task.getPhase().getId(), municipalityId)
+					.orElseThrow(() -> Problem.valueOf(NOT_FOUND, MESSAGE_PHASE_NOT_FOUND.formatted(task.getPhase().getId(), municipalityId)));
 				task.setPhase(phaseInDatabase);
 			});
 
@@ -127,7 +134,7 @@ public class PortingService {
 			throw e; // Rethrow exception
 		} catch (final Exception e) {
 			LOGGER.error("Exception when importing checklist", e);
-			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Exception when importing checklist.");
+			throw Problem.valueOf(INTERNAL_SERVER_ERROR, MESSAGE_IMPORT_ERROR);
 		}
 	}
 
@@ -145,7 +152,7 @@ public class PortingService {
 	private String newVersion(OrganizationEntity organization, ChecklistEntity checklist, boolean hasCreatedVersion) {
 		if (hasCreatedVersion) {
 			LOGGER.info("The organization has an existing checklist with lifecycle status CREATED present, operation aborted.");
-			throw Problem.valueOf(CONFLICT, "The organization has an existing checklist with lifecycle status CREATED present, operation aborted.");
+			throw Problem.valueOf(CONFLICT, MESSAGE_CHECKLIST_CONFLICT);
 		}
 
 		return createVersion(organization, checklist);
@@ -158,7 +165,7 @@ public class PortingService {
 		final var existingEntity = organization.getChecklists().stream()
 			.filter(ch -> Objects.equals(lifecycle, ch.getLifeCycle()))
 			.findFirst()
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, "No checklist with lifecycle status %s found.".formatted(lifecycle)));
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, MESSAGE_CHECKLIST_WITH_STATUS_NOT_FOUND.formatted(lifecycle)));
 
 		// Update existingEntity with values from incoming structure
 		updateExistingChecklist(existingEntity, entity);

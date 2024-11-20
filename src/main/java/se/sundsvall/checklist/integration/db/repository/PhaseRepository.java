@@ -14,4 +14,6 @@ public interface PhaseRepository extends JpaRepository<PhaseEntity, String> {
 	List<PhaseEntity> findAllByMunicipalityId(final String municipalityId);
 
 	Optional<PhaseEntity> findByIdAndMunicipalityId(final String id, final String municipalityId);
+
+	boolean existsByIdAndMunicipalityId(final String id, final String municipalityId);
 }

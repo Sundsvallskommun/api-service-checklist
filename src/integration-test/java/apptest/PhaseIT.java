@@ -7,12 +7,12 @@ import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
 
 import se.sundsvall.checklist.Application;
@@ -89,7 +89,7 @@ class PhaseIT extends AbstractAppTest {
 		setupCall()
 			.withServicePath("/2282/phases/38f2b2cc-1fc8-42ee-a752-fae751c1a858")
 			.withHttpMethod(DELETE)
-			.withExpectedResponseStatus(HttpStatus.NO_CONTENT)
+			.withExpectedResponseStatus(NO_CONTENT)
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
 	}

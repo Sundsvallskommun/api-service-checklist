@@ -10,7 +10,6 @@ import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toTask;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 
@@ -31,10 +30,9 @@ public class ChecklistBuilder {
 	}
 
 	public Checklist buildChecklist(final ChecklistEntity checklistEntity) {
-		return Stream.ofNullable(toChecklist(checklistEntity))
+		return ofNullable(toChecklist(checklistEntity))
 			.map(checklist -> populateWithPhases(checklist, phaseRepository.findAllByMunicipalityId(checklistEntity.getMunicipalityId())))
 			.map(checklist -> populateWithTasks(checklist, checklistEntity.getTasks()))
-			.findAny()
 			.orElse(null);
 	}
 

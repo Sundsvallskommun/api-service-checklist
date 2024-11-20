@@ -43,7 +43,7 @@ public class TaskService {
 
 	public List<Task> getTasks(final String municipalityId, final String checklistId, final String phaseId) {
 		final var checklist = getChecklist(municipalityId, checklistId);
-		getPhase(municipalityId, phaseId);
+		verifyPhaseIsPresent(municipalityId, phaseId); // This is here to verify that sent in phase id is present in database
 
 		return toTasks(checklist.getTasks().stream()
 			.filter(task -> task.getPhase().getId().equals(phaseId))
@@ -52,8 +52,8 @@ public class TaskService {
 
 	public Task getTask(final String municipalityId, final String checklistId, final String phaseId, final String taskId) {
 		final var checklist = getChecklist(municipalityId, checklistId);
-		final var phase = getPhase(municipalityId, phaseId);
-		final var task = getTaskInPhase(checklist, phase.getId(), taskId);
+		verifyPhaseIsPresent(municipalityId, phaseId); // This is here to verify that sent in phase id is present in database
+		final var task = getTaskInPhase(checklist, phaseId, taskId);
 
 		return toTask(task);
 	}
@@ -71,8 +71,8 @@ public class TaskService {
 
 	public Task updateTask(final String municipalityId, final String checklistId, final String phaseId, final String taskId, final TaskUpdateRequest request) {
 		final var checklist = getChecklist(municipalityId, checklistId);
-		final var phase = getPhase(municipalityId, phaseId);
-		final var task = getTaskInPhase(checklist, phase.getId(), taskId);
+		verifyPhaseIsPresent(municipalityId, phaseId); // This is here to verify that sent in phase id is present in database
+		final var task = getTaskInPhase(checklist, phaseId, taskId);
 
 		return toTask(taskRepository.save(updateTaskEntity(task, request)));
 	}
@@ -80,7 +80,7 @@ public class TaskService {
 	@Transactional
 	public void deleteTask(final String municipalityId, final String checklistId, final String phaseId, final String taskId) {
 		final var checklist = getChecklist(municipalityId, checklistId);
-		final var phase = getPhase(municipalityId, phaseId);
+		final var phase = getPhase(municipalityId, phaseId); // This is here to verify that sent in phase id is present in database
 		final var task = getTaskInPhase(checklist, phase.getId(), taskId);
 		taskRepository.delete(task);
 	}
@@ -93,6 +93,12 @@ public class TaskService {
 	private PhaseEntity getPhase(final String municipalityId, final String id) {
 		return phaseRepository.findByIdAndMunicipalityId(id, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, PHASE_NOT_FOUND.formatted(municipalityId)));
+	}
+
+	private void verifyPhaseIsPresent(final String municipalityId, final String id) {
+		if (!phaseRepository.existsByIdAndMunicipalityId(id, municipalityId)) {
+			throw Problem.valueOf(NOT_FOUND, PHASE_NOT_FOUND.formatted(municipalityId));
+		}
 	}
 
 	private TaskEntity getTaskInPhase(final ChecklistEntity checklist, final String phaseId, final String taskId) {

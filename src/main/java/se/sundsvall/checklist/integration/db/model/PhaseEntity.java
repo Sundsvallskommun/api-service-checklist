@@ -13,6 +13,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -28,7 +29,9 @@ import se.sundsvall.checklist.integration.db.model.enums.Permission;
 @Setter
 @Builder(setterPrefix = "with")
 @Entity
-@Table(name = "phase")
+@Table(name = "phase", indexes = {
+	@Index(name = "phase_municipality_id_idx", columnList = "municipality_id")
+})
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class PhaseEntity {

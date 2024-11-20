@@ -212,6 +212,9 @@
     alter table if exists organization 
        add constraint uk_organization_organization_number_municipality_id unique (organization_number, municipality_id);
 
+    create index phase_municipality_id_idx 
+       on phase (municipality_id);
+
     alter table if exists checklist 
        add constraint fk_organization_checklist 
        foreign key (organization_id) 
