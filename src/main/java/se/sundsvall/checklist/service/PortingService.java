@@ -151,7 +151,7 @@ public class PortingService {
 
 	private String newVersion(OrganizationEntity organization, ChecklistEntity checklist, boolean hasCreatedVersion) {
 		if (hasCreatedVersion) {
-			LOGGER.info("The organization has an existing checklist with lifecycle status CREATED present, operation aborted.");
+			LOGGER.info(MESSAGE_CHECKLIST_CONFLICT);
 			throw Problem.valueOf(CONFLICT, MESSAGE_CHECKLIST_CONFLICT);
 		}
 
