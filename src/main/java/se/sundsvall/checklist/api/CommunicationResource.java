@@ -52,7 +52,7 @@ class CommunicationResource {
 	@Operation(summary = "Send email notification", description = "Send an email notification to the manager for the employee checklist that matches provided id", responses = {
 		@ApiResponse(responseCode = "201", description = "Successful Operation", useReturnTypeSchema = true)
 	})
-	@PostMapping(value = "/{employeeChecklistId}/email")
+	@PostMapping(value = "/{employeeChecklistId}/email", produces = ALL_VALUE)
 	ResponseEntity<Void> sendEmail(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId) {
@@ -64,9 +64,7 @@ class CommunicationResource {
 	@Operation(summary = "Fetch correspondence", description = "Fetch the correspondence that has occured for an employee checklist", responses = {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	})
-	@GetMapping(value = "/{employeeChecklistId}/correspondence", produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@GetMapping(value = "/{employeeChecklistId}/correspondence", produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<Correspondence> fetchCorrespondence(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId) {

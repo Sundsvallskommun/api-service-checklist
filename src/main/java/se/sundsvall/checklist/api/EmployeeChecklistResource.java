@@ -10,8 +10,6 @@ import static org.springframework.http.ResponseEntity.ok;
 
 import java.util.List;
 
-import jakarta.validation.Valid;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,6 +25,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import se.sundsvall.checklist.api.model.CustomTask;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
@@ -40,14 +46,6 @@ import se.sundsvall.checklist.api.model.Mentor;
 import se.sundsvall.checklist.service.EmployeeChecklistService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/{municipalityId}/employee-checklists")
@@ -72,35 +70,31 @@ class EmployeeChecklistResource {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true),
 		@ApiResponse(responseCode = "204", description = "No employee checklist found")
 	})
-	@GetMapping(value = "/employee/{username}", produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@GetMapping(value = "/employee/{username}", produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<EmployeeChecklist> fetchChecklistForEmployee(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "username", description = "Username for user to fetch checklists for", example = "usr123") @PathVariable final String username) {
 
 		return employeeChecklistService.fetchChecklistForEmployee(municipalityId, username)
-			.map(employeeChecklist -> ok().body(employeeChecklist))
+			.map(ResponseEntity::ok)
 			.orElse(noContent().build());
 	}
 
 	@Operation(summary = "Fetch checklists where user acts as manager", description = "Fetch a users checklists where the user has the role of manager", responses = {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	})
-	@GetMapping(value = "/manager/{username}", produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@GetMapping(value = "/manager/{username}", produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<List<EmployeeChecklist>> fetchChecklistsForManager(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "username", description = "Username for user to fetch checklists for", example = "usr123") @PathVariable final String username) {
 
-		return ok().body(employeeChecklistService.fetchChecklistsForManager(municipalityId, username));
+		return ok(employeeChecklistService.fetchChecklistsForManager(municipalityId, username));
 	}
 
 	@Operation(summary = "Delete an employee checklist", description = "Delete an employee checklist completely", responses = {
 		@ApiResponse(responseCode = "204", description = "Successful Operation", useReturnTypeSchema = true)
 	})
-	@DeleteMapping(value = "/{employeeChecklistId}", produces = APPLICATION_PROBLEM_JSON_VALUE)
+	@DeleteMapping(value = "/{employeeChecklistId}", produces = ALL_VALUE)
 	ResponseEntity<Void> deleteEmployeeChecklist(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId) {
@@ -112,9 +106,7 @@ class EmployeeChecklistResource {
 	@Operation(summary = "Create a custom task", description = "Create a custom task connected to a specific employee checklist", responses = {
 		@ApiResponse(responseCode = "201", description = "Successful Operation", useReturnTypeSchema = true)
 	})
-	@PostMapping(value = "/{employeeChecklistId}/phases/{phaseId}/customtasks", consumes = APPLICATION_JSON_VALUE, produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@PostMapping(value = "/{employeeChecklistId}/phases/{phaseId}/customtasks", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<CustomTask> createCustomTask(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId,
@@ -133,38 +125,32 @@ class EmployeeChecklistResource {
 	@Operation(summary = "Read a custom task", description = "Read a custom task connected to a specific employee checklist", responses = {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	})
-	@GetMapping(value = "/{employeeChecklistId}/customtasks/{taskId}", produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@GetMapping(value = "/{employeeChecklistId}/customtasks/{taskId}", produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<CustomTask> readCustomTask(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId,
 		@Parameter(name = "taskId", description = "Task id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String taskId) {
 
-		return ok().body(employeeChecklistService.readCustomTask(municipalityId, employeeChecklistId, taskId));
+		return ok(employeeChecklistService.readCustomTask(municipalityId, employeeChecklistId, taskId));
 	}
 
 	@Operation(summary = "Update a custom task", description = "Update a custom task connected to a specific employee checklist", responses = {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	})
-	@PatchMapping(value = "/{employeeChecklistId}/customtasks/{taskId}", consumes = APPLICATION_JSON_VALUE, produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@PatchMapping(value = "/{employeeChecklistId}/customtasks/{taskId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<CustomTask> updateCustomTask(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId,
 		@Parameter(name = "taskId", description = "Task id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String taskId,
 		@RequestBody @Valid final CustomTaskUpdateRequest request) {
 
-		return ok().body(employeeChecklistService.updateCustomTask(municipalityId, employeeChecklistId, taskId, request));
+		return ok(employeeChecklistService.updateCustomTask(municipalityId, employeeChecklistId, taskId, request));
 	}
 
 	@Operation(summary = "Delete a custom task", description = "Delete a custom task from an employee checklist", responses = {
 		@ApiResponse(responseCode = "204", description = "Successful Operation", useReturnTypeSchema = true)
 	})
-	@DeleteMapping(value = "/{employeeChecklistId}/customtasks/{taskId}", produces = {
-		APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@DeleteMapping(value = "/{employeeChecklistId}/customtasks/{taskId}", produces = ALL_VALUE)
 	ResponseEntity<Void> deleteCustomTask(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId,
@@ -177,93 +163,71 @@ class EmployeeChecklistResource {
 	@Operation(summary = "Update of all tasks in a phase", description = "Bulk update of sent in attributes for all tasks in phase", responses = {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	})
-	@PatchMapping(value = "/{employeeChecklistId}/phases/{phaseId}", consumes = APPLICATION_JSON_VALUE, produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@PatchMapping(value = "/{employeeChecklistId}/phases/{phaseId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<EmployeeChecklistPhase> updateAllTasksInPhase(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId,
 		@Parameter(name = "phaseId", description = "Phase id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String phaseId,
 		@RequestBody @Valid final EmployeeChecklistPhaseUpdateRequest request) {
 
-		return ok().body(employeeChecklistService.updateAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request));
+		return ok(employeeChecklistService.updateAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request));
 	}
 
 	@Operation(summary = "Update fulfilment of a task", responses = {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	})
-	@PatchMapping(value = "/{employeeChecklistId}/tasks/{taskId}", consumes = APPLICATION_JSON_VALUE, produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@PatchMapping(value = "/{employeeChecklistId}/tasks/{taskId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<EmployeeChecklistTask> updateTaskFulfilment(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId,
 		@Parameter(name = "taskId", description = "Task id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String taskId,
 		@RequestBody @Valid final EmployeeChecklistTaskUpdateRequest request) {
 
-		return ok().body(employeeChecklistService.updateTaskFulfilment(municipalityId, employeeChecklistId, taskId, request));
+		return ok(employeeChecklistService.updateTaskFulfilment(municipalityId, employeeChecklistId, taskId, request));
 	}
 
 	@Operation(summary = "Inititalize checklists for new employees", description = "Trigger creation of checklists for all known new employees", responses = {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	})
-	@PostMapping(value = "/initialize", produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@PostMapping(value = "/initialize", produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<EmployeeChecklistResponse> initiateEmployeeChecklists(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId) {
 
-		return ok().body(employeeChecklistService.initiateEmployeeChecklists(municipalityId));
+		return ok(employeeChecklistService.initiateEmployeeChecklists(municipalityId));
 	}
 
 	@Operation(summary = "Inititalize checklists for a specific employee", description = "Trigger creation of checklist for employee matching sent in person id", responses = {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	})
-	@PostMapping(value = "/initialize/{personId}", produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@PostMapping(value = "/initialize/{personId}", produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<EmployeeChecklistResponse> initiateSpecificEmployeeChecklist(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "personId", description = "Person id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String personId) {
 
-		return ok().body(employeeChecklistService.initiateSpecificEmployeeChecklist(municipalityId, personId));
+		return ok(employeeChecklistService.initiateSpecificEmployeeChecklist(municipalityId, personId));
 	}
 
-	@Operation(
-		summary = "Set the mentor",
-		description = "Set the mentor on a specific employee checklist",
-		responses = {
-			@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
-		})
-	@PutMapping(
-		value = "/{employeeChecklistId}/mentor",
-		consumes = APPLICATION_JSON_VALUE,
-		produces = {
-			APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-		})
+	@Operation(summary = "Set the mentor", description = "Set the mentor on a specific employee checklist", responses = {
+		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
+	})
+	@PutMapping(value = "/{employeeChecklistId}/mentor", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<EmployeeChecklist> setMentor(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId,
 		@RequestBody @Valid final Mentor mentor) {
-		var checklist = employeeChecklistService.setMentor(municipalityId, employeeChecklistId, mentor);
 
-		return ok(checklist);
+		return ok(employeeChecklistService.setMentor(municipalityId, employeeChecklistId, mentor));
 	}
 
-	@Operation(
-		summary = "Delete the mentor",
-		description = "Delete the mentor on a specific employee checklist",
-		responses = {
-			@ApiResponse(responseCode = "204", description = "No Content", useReturnTypeSchema = true)
-		})
-	@DeleteMapping(
-		value = "/{employeeChecklistId}/mentor",
-		produces = APPLICATION_JSON_VALUE)
+	@Operation(summary = "Delete the mentor", description = "Delete the mentor on a specific employee checklist", responses = {
+		@ApiResponse(responseCode = "204", description = "No Content", useReturnTypeSchema = true)
+	})
+	@DeleteMapping(value = "/{employeeChecklistId}/mentor", produces = ALL_VALUE)
 	ResponseEntity<Void> deleteMentor(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId) {
 		employeeChecklistService.deleteMentor(municipalityId, employeeChecklistId);
 
-		return noContent().build();
+		return noContent().header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 }

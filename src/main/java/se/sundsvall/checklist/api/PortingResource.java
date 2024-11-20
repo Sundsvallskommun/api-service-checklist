@@ -6,6 +6,7 @@ import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
 import static org.springframework.http.ResponseEntity.created;
+import static org.springframework.http.ResponseEntity.ok;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -55,15 +56,13 @@ class PortingResource {
 			@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 		})
 
-	@GetMapping(path = "/{municipalityId}/export/{organizationNumber}", produces = {
-		APPLICATION_JSON_VALUE
-	})
+	@GetMapping(path = "/{municipalityId}/export/{organizationNumber}", produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<String> exportChecklist(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId String municipalityId,
 		@Parameter(name = "organizationNumber", description = "Organization number", example = "53") @PathVariable Integer organizationNumber,
 		@Parameter(name = "version", description = "Version", example = "2") @RequestParam(required = false) Integer version) {
 
-		return ResponseEntity.ok(portingService.exportChecklist(municipalityId, organizationNumber, version));
+		return ok(portingService.exportChecklist(municipalityId, organizationNumber, version));
 	}
 
 	@Operation(summary = "Import checklist structure for a organization as a new version with lifecycle status CREATED",
@@ -79,11 +78,7 @@ class PortingResource {
 			@ApiResponse(responseCode = "201", headers = @Header(name = LOCATION, schema = @Schema(type = "string")), description = "Successful Operation", useReturnTypeSchema = true)
 		})
 
-	@PostMapping(path = "/{municipalityId}/import/add/{organizationNumber}/{organizationName}", produces = {
-		ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	}, consumes = {
-		APPLICATION_JSON_VALUE
-	})
+	@PostMapping(path = "/{municipalityId}/import/add/{organizationNumber}/{organizationName}", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
 	ResponseEntity<Void> importChecklistAsNewVersion(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId String municipalityId,
 		@Parameter(name = "organizationNumber", description = "Organization number", example = "53") @PathVariable Integer organizationNumber,
@@ -109,11 +104,7 @@ class PortingResource {
 			@ApiResponse(responseCode = "201", headers = @Header(name = LOCATION, schema = @Schema(type = "string")), description = "Successful Operation", useReturnTypeSchema = true)
 		})
 
-	@PostMapping(path = "/{municipalityId}/import/replace/{organizationNumber}/{organizationName}", produces = {
-		ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	}, consumes = {
-		APPLICATION_JSON_VALUE
-	})
+	@PostMapping(path = "/{municipalityId}/import/replace/{organizationNumber}/{organizationName}", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
 	ResponseEntity<Void> importAndOverwriteExistingChecklist(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId String municipalityId,
 		@Parameter(name = "organizationNumber", description = "Organization number", example = "53") @PathVariable Integer organizationNumber,

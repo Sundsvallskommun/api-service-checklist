@@ -62,9 +62,7 @@ class PhaseResource {
 
 	@Operation(summary = "Fetch all phases")
 	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
-	@GetMapping(produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@GetMapping(produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<List<Phase>> fetchChecklistPhases(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId) {
 
@@ -74,9 +72,7 @@ class PhaseResource {
 
 	@Operation(summary = "Fetch single phase")
 	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
-	@GetMapping(value = "/{phaseId}", produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@GetMapping(value = "/{phaseId}", produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<Phase> fetchChecklistPhase(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "phaseId", description = "Phase id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String phaseId) {
@@ -86,11 +82,7 @@ class PhaseResource {
 
 	@Operation(summary = "Create a new phase")
 	@ApiResponse(responseCode = "201", headers = @Header(name = LOCATION, schema = @Schema(type = "string")), description = "Successful Operation", useReturnTypeSchema = true)
-	@PostMapping(produces = {
-		ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	}, consumes = {
-		APPLICATION_JSON_VALUE
-	})
+	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
 	ResponseEntity<Void> createChecklistPhase(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@RequestBody @Valid final PhaseCreateRequest request) {
@@ -103,11 +95,7 @@ class PhaseResource {
 
 	@Operation(summary = "Update an existing phase")
 	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
-	@PatchMapping(value = "/{phaseId}", produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	}, consumes = {
-		APPLICATION_JSON_VALUE
-	})
+	@PatchMapping(value = "/{phaseId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<Phase> updateChecklistPhase(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "phaseId", description = "Phase id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String phaseId,
@@ -118,7 +106,7 @@ class PhaseResource {
 
 	@Operation(summary = "Delete an existing phase")
 	@ApiResponse(responseCode = "204", description = "Successful Operation", useReturnTypeSchema = true)
-	@DeleteMapping(value = "/{phaseId}", produces = APPLICATION_PROBLEM_JSON_VALUE)
+	@DeleteMapping(value = "/{phaseId}", produces = ALL_VALUE)
 	ResponseEntity<Void> deleteChecklistPhase(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "phaseId", description = "Phase id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String phaseId) {
