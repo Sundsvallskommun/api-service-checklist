@@ -58,4 +58,12 @@ class TaskRepositoryTest {
 
 		assertThat(repository.findById(entityId)).isEmpty();
 	}
+
+	@Test
+	void countByPhaseIdTest() {
+		assertThat(repository.countByPhaseId("1455a5d4-1db8-4a25-a49f-92fdd0c60a14")).isEqualTo(3);
+		assertThat(repository.countByPhaseId("2455a5d4-1db8-4a25-a49f-92fdd0c60a14")).isZero();
+		assertThat(repository.countByPhaseId("3455a5d4-1db8-4a25-a49f-92fdd0c60a14")).isZero();
+	}
+
 }

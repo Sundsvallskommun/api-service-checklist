@@ -13,6 +13,8 @@ import org.zalando.problem.Problem;
 import se.sundsvall.checklist.api.model.Organization;
 import se.sundsvall.checklist.api.model.OrganizationCreateRequest;
 import se.sundsvall.checklist.api.model.OrganizationUpdateRequest;
+import se.sundsvall.checklist.integration.db.ChecklistBuilder;
+import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.integration.db.model.enums.LifeCycle;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
 import se.sundsvall.checklist.service.mapper.OrganizationMapper;
@@ -25,9 +27,11 @@ public class OrganizationService {
 	private static final String ORGANIZATION_NOT_FOUND = "Organization with id %s does not exist within municipality %s";
 
 	private final OrganizationRepository organizationRepository;
+	private final ChecklistBuilder checklistBuilder;
 
-	public OrganizationService(final OrganizationRepository organizationRepository) {
+	public OrganizationService(final OrganizationRepository organizationRepository, final ChecklistBuilder checklistBuilder) {
 		this.organizationRepository = organizationRepository;
+		this.checklistBuilder = checklistBuilder;
 	}
 
 	public String createOrganization(final String municipalityId, final OrganizationCreateRequest request) {
@@ -41,15 +45,22 @@ public class OrganizationService {
 	}
 
 	public List<Organization> fetchAllOrganizations(final String municipalityId) {
-		return organizationRepository.findAllByMunicipalityId(municipalityId).stream()
-			.map(OrganizationMapper::toOrganization)
+		return organizationRepository
+			.findAllByMunicipalityId(municipalityId).stream()
+			.map(this::toOrganization)
 			.toList();
 	}
 
 	public Organization fetchOrganization(final String municipalityId, final String organizationId) {
 		return organizationRepository.findByIdAndMunicipalityId(organizationId, municipalityId)
-			.map(OrganizationMapper::toOrganization)
+			.map(this::toOrganization)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ORGANIZATION_NOT_FOUND.formatted(organizationId, municipalityId)));
+	}
+
+	private Organization toOrganization(OrganizationEntity entity) {
+		final var organization = OrganizationMapper.toOrganization(entity);
+		organization.setChecklists(entity.getChecklists().stream().map(checklistBuilder::buildChecklist).toList());
+		return organization;
 	}
 
 	public Organization updateOrganization(final String municipalityId, final String organizationId, final OrganizationUpdateRequest request) {

@@ -11,6 +11,8 @@ import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toStakeho
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import se.sundsvall.checklist.api.model.CustomTask;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
@@ -116,7 +118,7 @@ public final class EmployeeChecklistMapper {
 				.withId(entity.getId())
 				.withManager(toStakeholder(entity.getEmployee().getManager()))
 				.withEmployee(toStakeholder(entity.getEmployee()))
-				.withPhases(toEmployeeChecklistPhases(entity.getChecklist().getPhases()))
+				.withPhases(toEmployeeChecklistPhases(entity.getChecklist().getTasks()))
 				.withCreated(entity.getCreated())
 				.withUpdated(entity.getUpdated())
 				.withStartDate(entity.getStartDate())
@@ -133,22 +135,25 @@ public final class EmployeeChecklistMapper {
 			.orElse(null);
 	}
 
-	public static List<EmployeeChecklistPhase> toEmployeeChecklistPhases(List<PhaseEntity> entities) {
-		return ofNullable(entities).orElse(emptyList()).stream()
-			.map(EmployeeChecklistMapper::toEmployeeChecklistPhase)
+	public static List<EmployeeChecklistPhase> toEmployeeChecklistPhases(List<TaskEntity> entities) {
+		final Map<PhaseEntity, List<TaskEntity>> groupedTasks = ofNullable(entities).orElse(emptyList()).stream()
+			.collect(Collectors.groupingBy(TaskEntity::getPhase));
+
+		return groupedTasks.entrySet().stream()
+			.map(entry -> toEmployeeChecklistPhase(entry.getKey(), entry.getValue()))
 			.sorted(comparing(EmployeeChecklistPhase::getSortOrder))
 			.collect(toCollection(ArrayList::new));
 	}
 
-	public static EmployeeChecklistPhase toEmployeeChecklistPhase(final PhaseEntity phaseEntity) {
+	public static EmployeeChecklistPhase toEmployeeChecklistPhase(final PhaseEntity phaseEntity, List<TaskEntity> taskEntities) {
 		return ofNullable(phaseEntity)
 			.map(entity -> EmployeeChecklistPhase.builder()
 				.withId(entity.getId())
 				.withName(entity.getName())
 				.withBodyText(entity.getBodyText())
 				.withSortOrder(entity.getSortOrder())
+				.withTasks(toEmployeeChecklistTasks(taskEntities))
 				.withTimeToComplete(entity.getTimeToComplete())
-				.withTasks(toEmployeeChecklistTasks(entity.getTasks()))
 				.build())
 			.orElse(null);
 	}

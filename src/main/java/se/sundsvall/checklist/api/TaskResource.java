@@ -62,9 +62,7 @@ class TaskResource {
 
 	@Operation(summary = "Fetch all tasks in a checklist phase")
 	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
-	@GetMapping(produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@GetMapping(produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<List<Task>> fetchChecklistPhaseTasks(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,
@@ -75,9 +73,7 @@ class TaskResource {
 
 	@Operation(summary = "Fetch task in a checklist phase")
 	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
-	@GetMapping(value = "/{taskId}", produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@GetMapping(value = "/{taskId}", produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<Task> fetchChecklistPhaseTask(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,
@@ -89,11 +85,7 @@ class TaskResource {
 
 	@Operation(summary = "Create task in checklist phase")
 	@ApiResponse(responseCode = "201", description = "Successful Operation", useReturnTypeSchema = true, headers = @Header(name = LOCATION, schema = @Schema(type = "string")))
-	@PostMapping(produces = {
-		ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	}, consumes = {
-		APPLICATION_JSON_VALUE
-	})
+	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
 	ResponseEntity<Void> createChecklistPhaseTask(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,
@@ -108,11 +100,7 @@ class TaskResource {
 
 	@Operation(summary = "Update task in checklist phase")
 	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
-	@PatchMapping(value = "/{taskId}", produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	}, consumes = {
-		APPLICATION_JSON_VALUE
-	})
+	@PatchMapping(value = "/{taskId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<Task> updateChecklistPhaseTask(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,
@@ -125,7 +113,7 @@ class TaskResource {
 
 	@Operation(summary = "Delete task in checklist phase")
 	@ApiResponse(responseCode = "204", description = "No Content", useReturnTypeSchema = true)
-	@DeleteMapping(value = "/{taskId}", produces = APPLICATION_PROBLEM_JSON_VALUE)
+	@DeleteMapping(value = "/{taskId}", produces = ALL_VALUE)
 	ResponseEntity<Void> deleteChecklistPhaseTask(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,

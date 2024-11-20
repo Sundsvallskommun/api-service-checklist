@@ -61,9 +61,7 @@ class OrganizationResource {
 
 	@Operation(summary = "Fetch all organizations", description = "Fetch all organizations")
 	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
-	@GetMapping(produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@GetMapping(produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<List<Organization>> fetchOrganizations(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId) {
 
@@ -72,9 +70,7 @@ class OrganizationResource {
 
 	@Operation(summary = "Fetch organization by id", description = "Fetch organization that matches provided id")
 	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
-	@GetMapping(value = "/{organizationId}", produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@GetMapping(value = "/{organizationId}", produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<Organization> fetchOrganizationById(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "organizationId", description = "Organization id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String organizationId) {
@@ -86,9 +82,7 @@ class OrganizationResource {
 		@ApiResponse(responseCode = "201", description = "Successful Operation", headers = @Header(name = LOCATION, schema = @Schema(type = "string")), useReturnTypeSchema = true),
 		@ApiResponse(responseCode = "409", description = "Conflict", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 	})
-	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = {
-		ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
 	ResponseEntity<Void> createOrganization(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Valid @RequestBody final OrganizationCreateRequest request) {
@@ -106,9 +100,7 @@ class OrganizationResource {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true),
 		@ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 	})
-	@PatchMapping(value = "/{organizationId}", consumes = APPLICATION_JSON_VALUE, produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@PatchMapping(value = "/{organizationId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<Organization> updateOrganization(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "organizationId", description = "Organization id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String organizationId,
@@ -122,7 +114,7 @@ class OrganizationResource {
 		@ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class))),
 		@ApiResponse(responseCode = "409", description = "Conflict", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 	})
-	@DeleteMapping(value = "/{organizationId}", produces = APPLICATION_PROBLEM_JSON_VALUE)
+	@DeleteMapping(value = "/{organizationId}", produces = ALL_VALUE)
 	ResponseEntity<Void> deleteOrganization(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "organizationId", description = "Organization id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String organizationId) {

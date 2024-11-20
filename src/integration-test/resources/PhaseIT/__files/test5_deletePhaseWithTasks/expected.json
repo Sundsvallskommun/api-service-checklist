@@ -1,0 +1,5 @@
+{
+	"detail": "Phase can not be deleted as it has tasks connected to it",
+	"title": "Conflict",
+	"status": 409
+}

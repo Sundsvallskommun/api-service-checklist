@@ -7,4 +7,5 @@ import se.sundsvall.checklist.integration.db.model.TaskEntity;
 
 @CircuitBreaker(name = "taskRepository")
 public interface TaskRepository extends JpaRepository<TaskEntity, String> {
+	int countByPhaseId(String phaseId);
 }

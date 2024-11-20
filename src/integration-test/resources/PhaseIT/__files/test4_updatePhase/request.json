@@ -4,5 +4,5 @@
 	"sortOrder": 1,
 	"name": "Första veckan",
 	"permission": "SUPERADMIN",
-	"timeToComplete": "P1M"
+	"timeToComplete": "P1W"
 }

@@ -61,8 +61,7 @@
 			"name": "Första veckan",
 			"id": "3455a5d4-1db8-4a25-a49f-92fdd0c60a14",
 			"updated": "2019-01-01T00:00:00+01:00",
-			"timeToComplete": "P1M",
-			"tasks": []
+			"timeToComplete": "P1M"
 		},
 		{
 			"bodyText": "Dessa uppgifter ska göras andra veckan",
@@ -72,8 +71,7 @@
 			"name": "Första veckan",
 			"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
 			"updated": "2019-01-01T00:00:00+01:00",
-			"timeToComplete": "P2W",
-			"tasks": []
+			"timeToComplete": "P2W"
 		}
 	]
 }

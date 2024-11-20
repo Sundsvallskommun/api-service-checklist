@@ -34,8 +34,8 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
 @WireMockAppTestSuite(files = "classpath:/EmployeeChecklistIT/", classes = Application.class)
 @Sql({
-	"/sql/truncate.sql",
-	"/sql/employeeChecklistIT-testdata.sql"
+	"/db/scripts/truncate.sql",
+	"/db/scripts/employeeChecklistIT-testdata.sql"
 })
 class EmployeeChecklistIT extends AbstractAppTest {
 
@@ -282,7 +282,7 @@ class EmployeeChecklistIT extends AbstractAppTest {
 
 	@Test
 	void test17_setMentor() {
-		var employeeChecklistId = "cca064da-ab15-4276-8fbb-e8ba07b28718";
+		final var employeeChecklistId = "cca064da-ab15-4276-8fbb-e8ba07b28718";
 
 		setupCall()
 			.withServicePath(PATH_PREFIX + "/" + employeeChecklistId + "/mentor")
@@ -296,7 +296,7 @@ class EmployeeChecklistIT extends AbstractAppTest {
 
 	@Test
 	void test18_deleteMentor() {
-		var employeeChecklistId = "cca064da-ab15-4276-8fbb-e8ba07b28718";
+		final var employeeChecklistId = "cca064da-ab15-4276-8fbb-e8ba07b28718";
 
 		var checklist = employeeChecklistRepository.findById(employeeChecklistId);
 		assertThat(checklist).hasValueSatisfying(employeeChecklistEntity -> assertThat(employeeChecklistEntity.getMentor()).isNotNull());

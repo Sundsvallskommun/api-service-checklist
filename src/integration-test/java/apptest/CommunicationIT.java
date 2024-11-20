@@ -18,8 +18,8 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
 @WireMockAppTestSuite(files = "classpath:/CommunicationIT/", classes = Application.class)
 @Sql({
-	"/sql/truncate.sql",
-	"/sql/communicationIT-testdata.sql"
+	"/db/scripts/truncate.sql",
+	"/db/scripts/communicationIT-testdata.sql"
 })
 class CommunicationIT extends AbstractAppTest {
 

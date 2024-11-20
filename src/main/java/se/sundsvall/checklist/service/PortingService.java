@@ -11,7 +11,6 @@ import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATE
 
 import java.text.SimpleDateFormat;
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -32,6 +31,7 @@ import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.enums.LifeCycle;
 import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
+import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
 import se.sundsvall.checklist.service.mapper.OrganizationMapper;
 
 /**
@@ -42,15 +42,23 @@ public class PortingService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PortingService.class);
 
+	private static final String MESSAGE_CHECKLIST_NOT_FOUND = "No checklist matching sent in parameters exist.";
+	private static final String MESSAGE_CHECKLIST_WITH_STATUS_NOT_FOUND = "No checklist with lifecycle status %s found.";
+	private static final String MESSAGE_PHASE_NOT_FOUND = "Phase with id %s is not present within municipality %s";
+	private static final String MESSAGE_IMPORT_ERROR = "Exception when importing checklist.";
+	private static final String MESSAGE_CHECKLIST_CONFLICT = "The organization has an existing checklist with lifecycle status CREATED present, operation aborted.";
+
 	static final String SYSTEM = "SYSTEM";
 
 	private final ChecklistRepository checklistRepository;
 	private final OrganizationRepository organizationRepository;
+	private final PhaseRepository phaseRepository;
 	private final ObjectMapper objectMapper;
 
-	public PortingService(final OrganizationRepository repository, final ChecklistRepository checklistRepository) {
+	public PortingService(final OrganizationRepository repository, final ChecklistRepository checklistRepository, final PhaseRepository phaseRepository) {
 		this.organizationRepository = repository;
 		this.checklistRepository = checklistRepository;
+		this.phaseRepository = phaseRepository;
 		this.objectMapper = new ObjectMapper()
 			.findAndRegisterModules()
 			.setDateFormat(new SimpleDateFormat(DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.getPattern()))
@@ -76,7 +84,7 @@ public class PortingService {
 			.map(this::clearFields)
 			.map(throwingFunction(objectMapper::writeValueAsString))
 			.findFirst()
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, "No checklist matching sent in parameters exist."));
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, MESSAGE_CHECKLIST_NOT_FOUND));
 	}
 
 	/**
@@ -97,6 +105,13 @@ public class PortingService {
 
 			// Deserialize json string into checklist entity (and sub ordinates)
 			final var checklist = objectMapper.readValue(jsonStructure, ChecklistEntity.class);
+
+			// Find and replace phase-entities with the ones that exists in the DB
+			checklist.getTasks().forEach(task -> {
+				final var phaseInDatabase = phaseRepository.findByIdAndMunicipalityId(task.getPhase().getId(), municipalityId)
+					.orElseThrow(() -> Problem.valueOf(NOT_FOUND, MESSAGE_PHASE_NOT_FOUND.formatted(task.getPhase().getId(), municipalityId)));
+				task.setPhase(phaseInDatabase);
+			});
 
 			// Find (or create if it does not exist) the organization entity matching sent in organizationNumber
 			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(organizationNumber, municipalityId)
@@ -119,7 +134,7 @@ public class PortingService {
 			throw e; // Rethrow exception
 		} catch (final Exception e) {
 			LOGGER.error("Exception when importing checklist", e);
-			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "Exception when importing checklist.");
+			throw Problem.valueOf(INTERNAL_SERVER_ERROR, MESSAGE_IMPORT_ERROR);
 		}
 	}
 
@@ -136,8 +151,8 @@ public class PortingService {
 
 	private String newVersion(OrganizationEntity organization, ChecklistEntity checklist, boolean hasCreatedVersion) {
 		if (hasCreatedVersion) {
-			LOGGER.info("The organization has an existing checklist with lifecycle status CREATED present, operation aborted.");
-			throw Problem.valueOf(CONFLICT, "The organization has an existing checklist with lifecycle status CREATED present, operation aborted.");
+			LOGGER.info(MESSAGE_CHECKLIST_CONFLICT);
+			throw Problem.valueOf(CONFLICT, MESSAGE_CHECKLIST_CONFLICT);
 		}
 
 		return createVersion(organization, checklist);
@@ -150,7 +165,7 @@ public class PortingService {
 		final var existingEntity = organization.getChecklists().stream()
 			.filter(ch -> Objects.equals(lifecycle, ch.getLifeCycle()))
 			.findFirst()
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, "No checklist with lifecycle status %s found.".formatted(lifecycle)));
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, MESSAGE_CHECKLIST_WITH_STATUS_NOT_FOUND.formatted(lifecycle)));
 
 		// Update existingEntity with values from incoming structure
 		updateExistingChecklist(existingEntity, entity);
@@ -164,20 +179,16 @@ public class PortingService {
 
 	private void updateLastSavedBy(final ChecklistEntity checklistEntity) {
 		checklistEntity.setLastSavedBy(SYSTEM);
-		checklistEntity.getPhases().forEach(phaseEntity -> {
-			phaseEntity.setLastSavedBy(SYSTEM);
-			phaseEntity.getTasks().forEach(taskEntity -> taskEntity.setLastSavedBy(SYSTEM));
-		});
+		checklistEntity.getTasks().forEach(taskEntity -> taskEntity.setLastSavedBy(SYSTEM));
 	}
 
 	private void updateExistingChecklist(final ChecklistEntity existingEntity, final ChecklistEntity entity) {
-		// Clear current tasks and phases from checklist
-		existingEntity.getPhases().forEach(ph -> ph.getTasks().clear());
-		existingEntity.getPhases().clear();
+		// Clear current tasks from checklist
+		existingEntity.getTasks().clear();
 
 		// Update existing checklist with values from incoming structure
 		existingEntity.setDisplayName(entity.getDisplayName());
-		existingEntity.getPhases().addAll(entity.getPhases());
+		existingEntity.getTasks().addAll(entity.getTasks());
 	}
 
 	private String createVersion(OrganizationEntity organization, ChecklistEntity entity) {
@@ -212,20 +223,15 @@ public class PortingService {
 	}
 
 	private ChecklistEntity clearFields(ChecklistEntity checklistEntity) {
-		checklistEntity.getPhases().stream()
-			.map(PhaseEntity::getTasks)
-			.flatMap(List::stream)
+		checklistEntity.getTasks().stream()
 			.forEach(task -> {
 				task.setId(null);
 				task.setCreated(null);
 				task.setUpdated(null);
-			});
-
-		checklistEntity.getPhases().stream()
-			.forEach(phase -> {
-				phase.setId(null);
-				phase.setCreated(null);
-				phase.setUpdated(null);
+				task.setPhase(PhaseEntity.builder()
+					.withId(task.getPhase().getId())
+					.withSortOrder(task.getPhase().getSortOrder())
+					.build());
 			});
 
 		checklistEntity.setId(null);

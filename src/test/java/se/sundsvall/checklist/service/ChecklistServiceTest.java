@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -21,6 +20,7 @@ import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.DEPREC
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -35,6 +35,8 @@ import org.zalando.problem.Problem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import se.sundsvall.checklist.api.model.Checklist;
+import se.sundsvall.checklist.integration.db.ChecklistBuilder;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.enums.LifeCycle;
 import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
@@ -55,6 +57,9 @@ class ChecklistServiceTest {
 	@Mock
 	private ObjectMapper objectMapperMock;
 
+	@Mock
+	private ChecklistBuilder checklistBuilderMock;
+
 	@Captor
 	private ArgumentCaptor<ChecklistEntity> checklistEntityCaptor;
 
@@ -63,25 +68,33 @@ class ChecklistServiceTest {
 
 	@Test
 	void getChecklists() {
-		when(mockChecklistRepository.findAllByMunicipalityId(MUNICIPALITY_ID)).thenReturn(List.of(createChecklistEntity(), createChecklistEntity()));
+		final var checklist1 = createChecklistEntity();
+		final var checklist2 = createChecklistEntity();
+		when(mockChecklistRepository.findAllByMunicipalityId(MUNICIPALITY_ID)).thenReturn(List.of(checklist1, checklist2));
+		when(checklistBuilderMock.buildChecklist(checklist1)).thenReturn(Checklist.builder().withId(checklist1.getId()).build());
+		when(checklistBuilderMock.buildChecklist(checklist2)).thenReturn(Checklist.builder().withId(checklist2.getId()).build());
 
 		final var result = checklistService.getChecklists(MUNICIPALITY_ID);
 
-		assertThat(result).isNotNull().hasSize(2);
+		assertThat(result).isNotNull().hasSize(2).extracting(Checklist::getId).containsExactlyInAnyOrder(checklist1.getId(), checklist2.getId());
+
 		verify(mockChecklistRepository).findAllByMunicipalityId(MUNICIPALITY_ID);
-		verifyNoMoreInteractions(mockChecklistRepository);
+		verify(checklistBuilderMock).buildChecklist(checklist1);
+		verify(checklistBuilderMock).buildChecklist(checklist2);
 	}
 
 	@Test
 	void getChecklist() {
-
-		when(mockChecklistRepository.findByIdAndMunicipalityId(UUID, MUNICIPALITY_ID)).thenReturn(Optional.of(createChecklistEntity()));
+		final var checklist = createChecklistEntity();
+		when(mockChecklistRepository.findByIdAndMunicipalityId(UUID, MUNICIPALITY_ID)).thenReturn(Optional.of(checklist));
+		when(checklistBuilderMock.buildChecklist(checklist)).thenReturn(Checklist.builder().withId(checklist.getId()).build());
 
 		final var result = checklistService.getChecklist(MUNICIPALITY_ID, UUID);
 
 		assertThat(result).isNotNull();
+
 		verify(mockChecklistRepository).findByIdAndMunicipalityId(UUID, MUNICIPALITY_ID);
-		verifyNoMoreInteractions(mockChecklistRepository);
+		verify(checklistBuilderMock).buildChecklist(checklist);
 	}
 
 	@Test
@@ -91,7 +104,6 @@ class ChecklistServiceTest {
 			.hasMessageContaining("Checklist not found");
 
 		verify(mockChecklistRepository).findByIdAndMunicipalityId(UUID, MUNICIPALITY_ID);
-		verifyNoMoreInteractions(mockChecklistRepository);
 	}
 
 	@Test
@@ -123,7 +135,6 @@ class ChecklistServiceTest {
 			.hasMessageContaining("Checklist with name '%s' already exists in municipality %s".formatted(body.getName(), MUNICIPALITY_ID));
 
 		verify(mockChecklistRepository).existsByNameAndMunicipalityId(body.getName(), MUNICIPALITY_ID);
-		verifyNoMoreInteractions(mockChecklistRepository);
 	}
 
 	@ParameterizedTest
@@ -140,7 +151,6 @@ class ChecklistServiceTest {
 		verify(mockChecklistRepository).findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID);
 		verify(mockChecklistRepository).delete(entity);
 		verify(mockOrganizationRepository).findByChecklistsIdAndChecklistsMunicipalityId(entity.getId(), MUNICIPALITY_ID);
-		verify(mockOrganizationRepository, never()).save(any());
 	}
 
 	@ParameterizedTest
@@ -173,7 +183,6 @@ class ChecklistServiceTest {
 			.hasMessageContaining("Checklist not found within municipality %s".formatted(MUNICIPALITY_ID));
 
 		verify(mockChecklistRepository).findByIdAndMunicipalityId(UUID, MUNICIPALITY_ID);
-		verifyNoMoreInteractions(mockChecklistRepository);
 	}
 
 	@ParameterizedTest
@@ -190,7 +199,6 @@ class ChecklistServiceTest {
 			.hasMessageContaining("Cannot delete checklist with lifecycle %s".formatted(lifeCycle));
 
 		verify(mockChecklistRepository).findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID);
-		verifyNoMoreInteractions(mockChecklistRepository);
 	}
 
 	@Test
@@ -210,20 +218,26 @@ class ChecklistServiceTest {
 	@Test
 	void updateChecklist() {
 		final var entity = createChecklistEntity();
-		entity.setLifeCycle(ACTIVE);
+
 		final var checklist = createChecklistUpdateRequest();
 		when(mockChecklistRepository.findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(entity));
 		when(mockChecklistRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+		when(checklistBuilderMock.buildChecklist(entity)).thenReturn(Checklist.builder().withId(entity.getId()).build());
 
 		final var result = checklistService.updateChecklist(MUNICIPALITY_ID, entity.getId(), checklist);
 
-		assertThat(result).isNotNull().satisfies(checklistEntity -> {
-			assertThat(checklistEntity.getLifeCycle()).isEqualTo(ACTIVE);
-			assertThat(checklistEntity.getDisplayName()).isEqualTo(checklist.getDisplayName());
+		verify(mockChecklistRepository).findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID);
+		verify(mockChecklistRepository).save(checklistEntityCaptor.capture());
+		verify(checklistBuilderMock).buildChecklist(entity);
+
+		assertThat(checklistEntityCaptor.getValue()).satisfies(e -> {
+			assertThat(e.getDisplayName()).isEqualTo(checklist.getDisplayName());
+			assertThat(e.getLastSavedBy()).isEqualTo(checklist.getUpdatedBy());
 		});
 
-		verify(mockChecklistRepository).findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID);
-		verify(mockChecklistRepository).save(any(ChecklistEntity.class));
+		assertThat(result).isNotNull().satisfies(c -> {
+			assertThat(c.getId()).isEqualTo(entity.getId());
+		});
 	}
 
 	@Test
@@ -233,7 +247,6 @@ class ChecklistServiceTest {
 			.hasMessageContaining("Checklist not found within municipality %s".formatted(MUNICIPALITY_ID));
 
 		verify(mockChecklistRepository).findByIdAndMunicipalityId(UUID, MUNICIPALITY_ID);
-		verifyNoMoreInteractions(mockChecklistRepository);
 	}
 
 	@Test
@@ -274,7 +287,6 @@ class ChecklistServiceTest {
 			.hasMessageContaining("Checklist not found");
 
 		verify(mockChecklistRepository).findByIdAndMunicipalityId(UUID, MUNICIPALITY_ID);
-		verifyNoMoreInteractions(mockChecklistRepository);
 	}
 
 	@Test
@@ -290,7 +302,6 @@ class ChecklistServiceTest {
 
 		verify(mockChecklistRepository).findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID);
 		verify(mockChecklistRepository).existsByNameAndMunicipalityIdAndLifeCycle(entity.getName(), MUNICIPALITY_ID, CREATED);
-		verifyNoMoreInteractions(mockChecklistRepository);
 	}
 
 	@Test
@@ -319,7 +330,10 @@ class ChecklistServiceTest {
 			.hasMessageContaining("Checklist not found");
 
 		verify(mockChecklistRepository).findByIdAndMunicipalityId(UUID, MUNICIPALITY_ID);
-		verifyNoMoreInteractions(mockChecklistRepository);
 	}
 
+	@AfterEach
+	void verifyNoMoreInteraction() {
+		verifyNoMoreInteractions(mockChecklistRepository, mockOrganizationRepository, objectMapperMock, checklistBuilderMock);
+	}
 }

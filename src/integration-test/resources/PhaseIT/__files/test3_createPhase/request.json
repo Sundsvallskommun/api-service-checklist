@@ -5,5 +5,5 @@
 	"name": "Första veckan",
 	"permission": "SUPERADMIN",
 	"roleType": "MANAGER",
-	"timeToComplete": "P1M"
+	"timeToComplete": "P1W"
 }

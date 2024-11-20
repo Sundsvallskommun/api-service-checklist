@@ -5,6 +5,7 @@ import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
@@ -20,64 +21,73 @@ import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
 @WireMockAppTestSuite(files = "classpath:/PhaseIT/", classes = Application.class)
 @Sql({
-	"/sql/truncate.sql",
-	"/sql/phaseIT-testdata.sql"
+	"/db/scripts/truncate.sql",
+	"/db/scripts/phaseIT-testdata.sql"
 })
 class PhaseIT extends AbstractAppTest {
 
-	private static final String CHECKLIST_ID = "1fb37edc-eb16-4ac3-a436-02971f020b28";
 	private static final String PHASE_ID = "28f2b2cc-1fc8-42ee-a752-fae751c1a858";
-	private static final String PATH = "/2281/checklists/" + CHECKLIST_ID + "/phases";
+	private static final String PATH = "/2281/phases";
 	private static final String REQUEST_FILE = "request.json";
 	private static final String EXPECTED_FILE = "expected.json";
 
 	@Test
-	void test1_fetchChecklistPhases() {
+	void test1_fetchPhases() {
 		setupCall()
 			.withServicePath(PATH)
 			.withHttpMethod(GET)
-			.withExpectedResponse(EXPECTED_FILE)
 			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(EXPECTED_FILE)
 			.sendRequestAndVerifyResponse();
 	}
 
 	@Test
-	void test2_fetchChecklistPhase() {
+	void test2_fetchPhase() {
 		setupCall()
 			.withServicePath(PATH + "/" + PHASE_ID)
 			.withHttpMethod(GET)
-			.withExpectedResponse(EXPECTED_FILE)
 			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(EXPECTED_FILE)
 			.sendRequestAndVerifyResponse();
 	}
 
 	@Test
-	void test3_createChecklistPhase() {
+	void test3_createPhase() {
 		setupCall()
 			.withServicePath(PATH)
 			.withHttpMethod(POST)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(CREATED)
-			.withExpectedResponseHeader(LOCATION, List.of("^/2281/checklists/(.+)/phases/(.+)$"))
+			.withExpectedResponseHeader(LOCATION, List.of("^/2281/phases/(.+)$"))
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
 	}
 
 	@Test
-	void test4_updateChecklistPhase() {
+	void test4_updatePhase() {
 		setupCall()
 			.withServicePath(PATH + "/" + PHASE_ID)
 			.withHttpMethod(PATCH)
 			.withRequest(REQUEST_FILE)
-			.withExpectedResponse(EXPECTED_FILE)
 			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(EXPECTED_FILE)
 			.sendRequestAndVerifyResponse();
 	}
 
 	@Test
-	void test5_deleteChecklistPhase() {
+	void test5_deletePhaseWithTasks() {
 		setupCall()
 			.withServicePath(PATH + "/" + PHASE_ID)
+			.withHttpMethod(DELETE)
+			.withExpectedResponseStatus(CONFLICT)
+			.withExpectedResponse(EXPECTED_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test6_deletePhaseWithoutTasks() {
+		setupCall()
+			.withServicePath("/2282/phases/38f2b2cc-1fc8-42ee-a752-fae751c1a858")
 			.withHttpMethod(DELETE)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.withExpectedResponseBodyIsNull()

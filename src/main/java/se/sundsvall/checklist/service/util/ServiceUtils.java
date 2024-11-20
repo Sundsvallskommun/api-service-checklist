@@ -20,7 +20,6 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistPhase;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
-import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 
 public final class ServiceUtils {
 	private static final String NO_MATCHING_EMPLOYEE_CHECKLIST_TASK_FOUND = "Task with id %s was not found in employee checklist with id %s.";
@@ -36,9 +35,7 @@ public final class ServiceUtils {
 
 	private static Optional<TaskType> isCommonTask(String taskId, final EmployeeChecklistEntity employeeChecklist) {
 		final var found = ofNullable(employeeChecklist.getChecklist()).orElse(ChecklistEntity.builder().build())
-			.getPhases().stream()
-			.map(PhaseEntity::getTasks)
-			.flatMap(List::stream)
+			.getTasks().stream()
 			.anyMatch(task -> Objects.equals(task.getId(), taskId));
 
 		return found ? Optional.of(COMMON) : Optional.empty();

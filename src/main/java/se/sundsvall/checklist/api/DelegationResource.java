@@ -56,9 +56,7 @@ class DelegationResource {
 		@ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class))),
 		@ApiResponse(responseCode = "409", description = "Conflict", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 	})
-	@PostMapping(value = "/{employeeChecklistId}/delegate-to/{email}", produces = {
-		ALL_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@PostMapping(value = "/{employeeChecklistId}/delegate-to/{email}", produces = ALL_VALUE)
 	ResponseEntity<Void> delegateEmployeeChecklist(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId,
@@ -71,9 +69,7 @@ class DelegationResource {
 	@Operation(summary = "Fetch all employee checklists delegated to a user", description = "Fetch all delegated employee checklists for the user that matches sent in userid", responses = {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	})
-	@GetMapping(value = "/delegated-to/{username}", produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
-	})
+	@GetMapping(value = "/delegated-to/{username}", produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<DelegatedEmployeeChecklistResponse> fetchDelegatedEmployeeChecklists(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "username", description = "Username to fetch delegations for", example = "usr123") @PathVariable final String username) {
@@ -85,7 +81,7 @@ class DelegationResource {
 		@ApiResponse(responseCode = "204", description = "Successful Operation", useReturnTypeSchema = true),
 		@ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class))),
 	})
-	@DeleteMapping(value = "/{employeeChecklistId}/delegated-to/{email}", produces = APPLICATION_PROBLEM_JSON_VALUE)
+	@DeleteMapping(value = "/{employeeChecklistId}/delegated-to/{email}", produces = ALL_VALUE)
 	ResponseEntity<Void> deleteEmployeeChecklistDelegation(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId,

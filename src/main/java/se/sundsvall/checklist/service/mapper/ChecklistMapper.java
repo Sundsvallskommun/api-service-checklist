@@ -48,11 +48,12 @@ public final class ChecklistMapper {
 		return entity;
 	}
 
-	public static PhaseEntity toPhaseEntity(final PhaseCreateRequest phaseCreateRequest) {
+	public static PhaseEntity toPhaseEntity(final PhaseCreateRequest phaseCreateRequest, final String municipalityId) {
 		return ofNullable(phaseCreateRequest)
 			.map(request -> PhaseEntity.builder()
 				.withName(request.getName())
 				.withBodyText(request.getBodyText())
+				.withMunicipalityId(municipalityId)
 				.withSortOrder(request.getSortOrder())
 				.withPermission(request.getPermission())
 				.withTimeToComplete(request.getTimeToComplete())
@@ -71,11 +72,12 @@ public final class ChecklistMapper {
 		return entity;
 	}
 
-	public static TaskEntity toTaskEntity(final TaskCreateRequest taskCreateRequest) {
+	public static TaskEntity toTaskEntity(final TaskCreateRequest taskCreateRequest, PhaseEntity phase) {
 		return ofNullable(taskCreateRequest)
 			.map(request -> TaskEntity.builder()
 				.withHeading(request.getHeading())
 				.withText(request.getText())
+				.withPhase(phase)
 				.withPermission(request.getPermission())
 				.withRoleType(request.getRoleType())
 				.withSortOrder(request.getSortOrder())
@@ -100,14 +102,6 @@ public final class ChecklistMapper {
 	// API mappings
 	// -----------------------------
 
-	public static List<Checklist> toChecklists(final List<ChecklistEntity> entities) {
-		return ofNullable(entities).orElse(emptyList())
-			.stream()
-			.map(ChecklistMapper::toChecklist)
-			.sorted(comparing(Checklist::getVersion))
-			.collect(toCollection(ArrayList::new));
-	}
-
 	public static Checklist toChecklist(final ChecklistEntity checklistEntity) {
 		return ofNullable(checklistEntity)
 			.map(entity -> Checklist.builder()
@@ -116,7 +110,6 @@ public final class ChecklistMapper {
 				.withDisplayName(entity.getDisplayName())
 				.withVersion(entity.getVersion())
 				.withLifeCycle(entity.getLifeCycle())
-				.withPhases(toPhases(entity.getPhases()))
 				.withCreated(entity.getCreated())
 				.withUpdated(entity.getUpdated())
 				.withLastSavedBy(entity.getLastSavedBy())
@@ -125,8 +118,7 @@ public final class ChecklistMapper {
 	}
 
 	public static List<Phase> toPhases(final List<PhaseEntity> entities) {
-		return ofNullable(entities).orElse(emptyList())
-			.stream()
+		return ofNullable(entities).orElse(emptyList()).stream()
 			.map(ChecklistMapper::toPhase)
 			.sorted(comparing(Phase::getSortOrder))
 			.collect(toCollection(ArrayList::new));
@@ -144,7 +136,6 @@ public final class ChecklistMapper {
 				.withCreated(entity.getCreated())
 				.withUpdated(entity.getUpdated())
 				.withLastSavedBy(entity.getLastSavedBy())
-				.withTasks(toTasks(entity.getTasks()))
 				.build())
 			.orElse(null);
 	}

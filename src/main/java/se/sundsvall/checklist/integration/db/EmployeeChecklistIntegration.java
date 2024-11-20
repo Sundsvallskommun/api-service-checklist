@@ -46,7 +46,6 @@ import se.sundsvall.checklist.integration.db.model.FulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.ManagerEntity;
 import se.sundsvall.checklist.integration.db.model.MentorEntity;
 import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
-import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
@@ -55,6 +54,7 @@ import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistReposit
 import se.sundsvall.checklist.integration.db.repository.EmployeeRepository;
 import se.sundsvall.checklist.integration.db.repository.ManagerRepository;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
+import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
 import se.sundsvall.checklist.service.OrganizationTree;
 import se.sundsvall.checklist.service.OrganizationTree.OrganizationLine;
 
@@ -65,7 +65,7 @@ public class EmployeeChecklistIntegration {
 	private static final String EMPLOYMENT_TYPE_NOT_VALID_FOR_CHECKLIST = "Employee with loginname %s does not have an employment type that validates for creating an employee checklist.";
 	private static final String NO_MATCHING_CHECKLIST_FOUND = "No checklist was found for any id in the organization tree for employee %s. Search has been performed for id %s.";
 	private static final String NO_MATCHING_EMPLOYEE_CHECKLIST_FOUND = "Employee checklist with id %s was not found within municipality %s.";
-	private static final String NO_MATCHING_EMPLOYEE_CHECKLIST_PHASE_FOUND = "Phase with id %s was not found in employee checklist with id %s.";
+	private static final String NO_MATCHING_PHASE_FOUND = "Phase with id %s was not found within municipality %s.";
 	private static final String NO_FULFILMENT_INFORMATION_FOUND = "No fulfilment information found for task with id %s in employee checklist with id %s.";
 	private static final List<String> VALID_EMPLOYMENT_FORMS_FOR_CHECKLIST = List.of("1", "2", "9"); // Permanent employment ("1"), temporary monthly paid employment ("2") and probationary employment ("9")
 
@@ -73,6 +73,7 @@ public class EmployeeChecklistIntegration {
 	private final EmployeeRepository employeeRepository;
 	private final ManagerRepository managerRepository;
 	private final EmployeeChecklistRepository employeeChecklistRepository;
+	private final PhaseRepository phaseRepository;
 	private final OrganizationRepository organizationRepository;
 	private final CustomTaskRepository customTaskRepository;
 
@@ -81,6 +82,7 @@ public class EmployeeChecklistIntegration {
 		final EmployeeRepository employeeRepository,
 		final ManagerRepository managerRepository,
 		final EmployeeChecklistRepository employeeChecklistRepository,
+		final PhaseRepository phaseRepository,
 		final OrganizationRepository organizationRepository,
 		final CustomTaskRepository customTaskRepository) {
 
@@ -88,6 +90,7 @@ public class EmployeeChecklistIntegration {
 		this.employeeRepository = employeeRepository;
 		this.managerRepository = managerRepository;
 		this.employeeChecklistRepository = employeeChecklistRepository;
+		this.phaseRepository = phaseRepository;
 		this.organizationRepository = organizationRepository;
 		this.customTaskRepository = customTaskRepository;
 	}
@@ -127,11 +130,9 @@ public class EmployeeChecklistIntegration {
 		}
 
 		// Update of all common tasks (if such exists) in phase
-		employeeChecklist.getChecklist().getPhases().stream()
-			.filter(phase -> Objects.equals(phase.getId(), phaseId))
-			.findAny()
-			.map(PhaseEntity::getTasks)
-			.ifPresent(tasks -> tasks.forEach(task -> updateCommonTask(employeeChecklist, task, request.getTasksFulfilmentStatus(), request.getUpdatedBy())));
+		employeeChecklist.getChecklist().getTasks().stream()
+			.filter(task -> Objects.equals(task.getPhase().getId(), phaseId))
+			.forEach(task -> updateCommonTask(employeeChecklist, task, request.getTasksFulfilmentStatus(), request.getUpdatedBy()));
 
 		// Update of all custom tasks (if such exists) in phase
 		employeeChecklist.getCustomTasks().stream()
@@ -168,9 +169,7 @@ public class EmployeeChecklistIntegration {
 	public FulfilmentEntity updateCommonTaskFulfilment(String municipalityId, String employeeChecklistId, String taskId, EmployeeChecklistTaskUpdateRequest request) {
 		final var employeeChecklist = fetchEmployeeChecklist(municipalityId, employeeChecklistId);
 
-		employeeChecklist.getChecklist().getPhases().stream()
-			.map(PhaseEntity::getTasks)
-			.flatMap(List::stream)
+		employeeChecklist.getChecklist().getTasks().stream()
 			.filter(task -> Objects.equals(task.getId(), taskId))
 			.findAny()
 			.ifPresent(task -> {
@@ -252,11 +251,8 @@ public class EmployeeChecklistIntegration {
 	@Transactional
 	public CustomTaskEntity createCustomTask(String municipalityId, String employeeChecklistId, String phaseId, CustomTaskCreateRequest request) {
 		final var employeeChecklist = fetchEmployeeChecklist(municipalityId, employeeChecklistId);
-
-		final var phaseEntity = employeeChecklist.getChecklist().getPhases().stream()
-			.filter(phase -> Objects.equals(phase.getId(), phaseId))
-			.findAny()
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NO_MATCHING_EMPLOYEE_CHECKLIST_PHASE_FOUND.formatted(phaseId, employeeChecklistId)));
+		final var phaseEntity = phaseRepository.findByIdAndMunicipalityId(phaseId, municipalityId)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NO_MATCHING_PHASE_FOUND.formatted(phaseId, municipalityId)));
 
 		final var customTaskEntity = toCustomTaskEntity(employeeChecklist, phaseEntity, request);
 		customTaskRepository.save(customTaskEntity);

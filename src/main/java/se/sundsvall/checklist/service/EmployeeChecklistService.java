@@ -10,8 +10,8 @@ import static org.zalando.problem.Status.OK;
 import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.EMPLOYEE;
 import static se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus.EMPTY;
 import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_EMPLOYEE;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.NEW_MANAGER;
 import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_MANAGER;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.NEW_MANAGER;
 import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.buildDefaultNewEmployeeFilter;
 import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.buildUuidEmployeeFilter;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toCustomTask;
@@ -56,7 +56,6 @@ import se.sundsvall.checklist.integration.db.EmployeeChecklistIntegration;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
-import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
 import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
@@ -221,13 +220,20 @@ public class EmployeeChecklistService {
 	public EmployeeChecklistPhase updateAllTasksInPhase(String municipalityId, String employeeChecklistId, String phaseId, EmployeeChecklistPhaseUpdateRequest request) {
 		final var employeeChecklist = employeeChecklistIntegration.updateAllFulfilmentForAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request);
 
-		return employeeChecklist.getChecklist().getPhases().stream()
-			.filter(phase -> Objects.equals(phase.getId(), phaseId))
+		return employeeChecklist.getChecklist().getTasks().stream()
+			.filter(task -> Objects.equals(task.getPhase().getId(), phaseId))
 			.findAny()
-			.map(EmployeeChecklistMapper::toEmployeeChecklistPhase)
+			.map(TaskEntity::getPhase)
+			.map(phase -> EmployeeChecklistMapper.toEmployeeChecklistPhase(phase, getTasksInPhase(employeeChecklist.getChecklist().getTasks(), phaseId)))
 			.map(phase -> decorateWithCustomTasks(phase, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(employeeChecklistId, municipalityId)))
 			.map(phase -> decorateWithFulfilment(phase, employeeChecklist))
 			.orElseThrow(() -> Problem.valueOf(INTERNAL_SERVER_ERROR, ERROR_READING_PHASE_FROM_EMPLOYEE_CHECKLIST.formatted(phaseId, employeeChecklistId)));
+	}
+
+	private List<TaskEntity> getTasksInPhase(List<TaskEntity> tasks, String phaseId) {
+		return ofNullable(tasks).orElse(emptyList()).stream()
+			.filter(task -> Objects.equals(task.getPhase().getId(), phaseId))
+			.toList();
 	}
 
 	public EmployeeChecklistTask updateTaskFulfilment(String municipalityId, String employeeChecklistId, String taskId, EmployeeChecklistTaskUpdateRequest request) {
@@ -250,9 +256,7 @@ public class EmployeeChecklistService {
 	}
 
 	private Optional<TaskEntity> findTask(String taskId, ChecklistEntity checklist) {
-		return checklist.getPhases().stream()
-			.map(PhaseEntity::getTasks)
-			.flatMap(List::stream)
+		return checklist.getTasks().stream()
 			.filter(task -> Objects.equals(task.getId(), taskId))
 			.findAny();
 	}
