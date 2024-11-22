@@ -67,8 +67,8 @@ class OrganizationResourceTest {
 	}
 
 	@Test
-	void fetchOrganizations() {
-		when(serviceMock.fetchAllOrganizations(MUNICIPALITY_ID)).thenReturn(List.of(TestObjectFactory.createOrganization(), TestObjectFactory.createOrganization()));
+	void fetchOrganizationsWithoutFilters() {
+		when(serviceMock.fetchAllOrganizations(MUNICIPALITY_ID, null)).thenReturn(List.of(TestObjectFactory.createOrganization(), TestObjectFactory.createOrganization()));
 		final var response = webTestClient.get()
 			.uri(builder -> builder.path(BASE_PATH).build(Map.of("municipalityId", MUNICIPALITY_ID)))
 			.exchange()
@@ -78,7 +78,23 @@ class OrganizationResourceTest {
 			.getResponseBody();
 
 		assertThat(response).hasSize(2);
-		verify(serviceMock).fetchAllOrganizations(MUNICIPALITY_ID);
+		verify(serviceMock).fetchAllOrganizations(MUNICIPALITY_ID, null);
+		verifyNoMoreInteractions(serviceMock);
+	}
+
+	@Test
+	void fetchOrganizationsWithFilters() {
+		when(serviceMock.fetchAllOrganizations(MUNICIPALITY_ID, List.of(12345))).thenReturn(List.of(TestObjectFactory.createOrganization()));
+		final var response = webTestClient.get()
+			.uri(builder -> builder.path(BASE_PATH).queryParam("organizationFilter", 12345).build(Map.of("municipalityId", MUNICIPALITY_ID)))
+			.exchange()
+			.expectStatus().isOk()
+			.expectBodyList(Organization.class)
+			.returnResult()
+			.getResponseBody();
+
+		assertThat(response).hasSize(1);
+		verify(serviceMock).fetchAllOrganizations(MUNICIPALITY_ID, List.of(12345));
 		verifyNoMoreInteractions(serviceMock);
 	}
 

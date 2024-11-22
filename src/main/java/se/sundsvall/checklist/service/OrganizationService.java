@@ -1,5 +1,6 @@
 package se.sundsvall.checklist.service;
 
+import static org.springframework.util.CollectionUtils.isEmpty;
 import static org.zalando.problem.Status.CONFLICT;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toOrganizationEntity;
@@ -44,10 +45,11 @@ public class OrganizationService {
 		return entity.getId();
 	}
 
-	public List<Organization> fetchAllOrganizations(final String municipalityId) {
+	public List<Organization> fetchAllOrganizations(final String municipalityId, List<Integer> organizationFilter) {
 		return organizationRepository
 			.findAllByMunicipalityId(municipalityId).stream()
 			.map(this::toOrganization)
+			.filter(organization -> isEmpty(organizationFilter) || organizationFilter.contains(organization.getOrganizationNumber()))
 			.toList();
 	}
 
@@ -78,6 +80,7 @@ public class OrganizationService {
 		if (entity.getChecklists().stream().anyMatch(checklist -> checklist.getLifeCycle() != LifeCycle.RETIRED)) {
 			throw Problem.valueOf(CONFLICT, ORGANIZATION_HAS_CHECKLISTS.formatted(organizationId));
 		}
+
 		organizationRepository.delete(entity);
 	}
 }

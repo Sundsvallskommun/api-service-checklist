@@ -67,15 +67,15 @@ public final class EmployeeChecklistMapper {
 			.build();
 	}
 
-	public static EmployeeChecklistEntity toEmployeeChecklistEntity(final EmployeeEntity employeeEntity, final ChecklistEntity checklistEntity) {
-		if (anyNull(employeeEntity, checklistEntity)) {
+	public static EmployeeChecklistEntity toEmployeeChecklistEntity(final EmployeeEntity employeeEntity, final List<ChecklistEntity> checklistEntities) {
+		if (anyNull(employeeEntity, checklistEntities)) {
 			return null;
 		}
 
 		final var startDate = ofNullable(employeeEntity.getStartDate()).orElse(LocalDate.now());
 
 		return EmployeeChecklistEntity.builder()
-			.withChecklist(checklistEntity)
+			.withChecklists(checklistEntities)
 			.withEmployee(employeeEntity)
 			.withEndDate(startDate.plus(employeeEntity.getEmploymentPosition().getTimeToComplete()))
 			.withExpirationDate(startDate.plus(employeeEntity.getEmploymentPosition().getTimeToExpiration()))
@@ -118,7 +118,11 @@ public final class EmployeeChecklistMapper {
 				.withId(entity.getId())
 				.withManager(toStakeholder(entity.getEmployee().getManager()))
 				.withEmployee(toStakeholder(entity.getEmployee()))
-				.withPhases(toEmployeeChecklistPhases(entity.getChecklist().getTasks()))
+				.withPhases(toEmployeeChecklistPhases(
+					entity.getChecklists().stream()
+						.map(ChecklistEntity::getTasks)
+						.flatMap(List::stream)
+						.toList()))
 				.withCreated(entity.getCreated())
 				.withUpdated(entity.getUpdated())
 				.withStartDate(entity.getStartDate())

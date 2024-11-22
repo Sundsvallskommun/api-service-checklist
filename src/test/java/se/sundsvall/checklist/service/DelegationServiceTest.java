@@ -76,13 +76,13 @@ class DelegationServiceTest {
 		final var employeeChecklist = createEmployeeChecklistEntity();
 		final var portalPersonData = generatePortalPersonData(UUID.randomUUID());
 
-		when(mockEmployeeChecklistRepository.findByIdAndChecklistMunicipalityId(employeeChecklist.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(employeeChecklist));
+		when(mockEmployeeChecklistRepository.findByIdAndChecklistsMunicipalityId(employeeChecklist.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(employeeChecklist));
 		when(mockEmployeeIntegration.getEmployeeByEmail(email)).thenReturn(Optional.of(portalPersonData));
 		when(mockDelegateRepository.findByEmployeeChecklistAndEmail(employeeChecklist, email)).thenReturn(Optional.empty());
 
 		service.delegateEmployeeChecklist(MUNICIPALITY_ID, employeeChecklist.getId(), email);
 
-		verify(mockEmployeeChecklistRepository).findByIdAndChecklistMunicipalityId(employeeChecklist.getId(), MUNICIPALITY_ID);
+		verify(mockEmployeeChecklistRepository).findByIdAndChecklistsMunicipalityId(employeeChecklist.getId(), MUNICIPALITY_ID);
 		verify(mockEmployeeIntegration).getEmployeeByEmail(email);
 		verify(mockDelegateRepository).findByEmployeeChecklistAndEmail(employeeChecklist, email);
 		verify(mockEmployeeChecklistRepository).save(employeeChecklist);
@@ -95,7 +95,7 @@ class DelegationServiceTest {
 		final var portalPersonData = generatePortalPersonData(UUID.randomUUID());
 		final var delegateEntity = createDelegateEntity();
 
-		when(mockEmployeeChecklistRepository.findByIdAndChecklistMunicipalityId(employeeChecklist.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(employeeChecklist));
+		when(mockEmployeeChecklistRepository.findByIdAndChecklistsMunicipalityId(employeeChecklist.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(employeeChecklist));
 		when(mockEmployeeIntegration.getEmployeeByEmail(email)).thenReturn(Optional.of(portalPersonData));
 		when(mockDelegateRepository.findByEmployeeChecklistAndEmail(employeeChecklist, email)).thenReturn(Optional.of(delegateEntity));
 
@@ -105,7 +105,7 @@ class DelegationServiceTest {
 			.hasFieldOrPropertyWithValue("title", "Conflict")
 			.hasFieldOrPropertyWithValue("detail", "Employee checklist with id " + employeeChecklist.getId() + " is already delegated to " + email);
 
-		verify(mockEmployeeChecklistRepository).findByIdAndChecklistMunicipalityId(employeeChecklist.getId(), MUNICIPALITY_ID);
+		verify(mockEmployeeChecklistRepository).findByIdAndChecklistsMunicipalityId(employeeChecklist.getId(), MUNICIPALITY_ID);
 		verify(mockEmployeeIntegration).getEmployeeByEmail(email);
 		verify(mockDelegateRepository).findByEmployeeChecklistAndEmail(employeeChecklist, email);
 		verify(mockDelegateRepository, never()).save(any());
@@ -122,7 +122,7 @@ class DelegationServiceTest {
 			.hasFieldOrPropertyWithValue("title", "Not Found")
 			.hasFieldOrPropertyWithValue("detail", "Employee checklist with id 123 was not found.");
 
-		verify(mockEmployeeChecklistRepository).findByIdAndChecklistMunicipalityId(employeeChecklistId, MUNICIPALITY_ID);
+		verify(mockEmployeeChecklistRepository).findByIdAndChecklistsMunicipalityId(employeeChecklistId, MUNICIPALITY_ID);
 	}
 
 	@Test
@@ -130,7 +130,7 @@ class DelegationServiceTest {
 		final var email = "test@test.com";
 		final var employeeChecklist = createEmployeeChecklistEntity();
 
-		when(mockEmployeeChecklistRepository.findByIdAndChecklistMunicipalityId(employeeChecklist.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(employeeChecklist));
+		when(mockEmployeeChecklistRepository.findByIdAndChecklistsMunicipalityId(employeeChecklist.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(employeeChecklist));
 		when(mockEmployeeIntegration.getEmployeeByEmail(email)).thenReturn(Optional.empty());
 
 		assertThatThrownBy(() -> service.delegateEmployeeChecklist(MUNICIPALITY_ID, employeeChecklist.getId(), email))
@@ -139,7 +139,7 @@ class DelegationServiceTest {
 			.hasFieldOrPropertyWithValue("title", "Not Found")
 			.hasFieldOrPropertyWithValue("detail", "Employee with email test@test.com was not found.");
 
-		verify(mockEmployeeChecklistRepository).findByIdAndChecklistMunicipalityId(employeeChecklist.getId(), MUNICIPALITY_ID);
+		verify(mockEmployeeChecklistRepository).findByIdAndChecklistsMunicipalityId(employeeChecklist.getId(), MUNICIPALITY_ID);
 		verify(mockEmployeeIntegration).getEmployeeByEmail(email);
 	}
 
@@ -156,7 +156,7 @@ class DelegationServiceTest {
 		assertThat(result.getEmployeeChecklists()).hasSize(1);
 
 		verify(mockDelegateRepository).findAllByUsername(username);
-		verify(mockCustomTaskRepository).findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(delegateEntity.getEmployeeChecklist().getId(), MUNICIPALITY_ID);
+		verify(mockCustomTaskRepository).findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(delegateEntity.getEmployeeChecklist().getId(), MUNICIPALITY_ID);
 		verify(mockEmployeeChecklistIntegration).fetchDelegateEmails(delegateEntity.getEmployeeChecklist().getId());
 	}
 
@@ -179,7 +179,7 @@ class DelegationServiceTest {
 		verify(mockDelegateRepository).findAllByUsername(username);
 		verify(mockEmployeeIntegration).getEmployeeInformation(filter);
 		verify(mockEmployeeChecklistIntegration).updateEmployeeInformation(delegateEntity.getEmployeeChecklist().getEmployee(), employee);
-		verify(mockCustomTaskRepository).findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(delegateEntity.getEmployeeChecklist().getId(), MUNICIPALITY_ID);
+		verify(mockCustomTaskRepository).findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(delegateEntity.getEmployeeChecklist().getId(), MUNICIPALITY_ID);
 		verify(mockEmployeeChecklistIntegration).fetchDelegateEmails(delegateEntity.getEmployeeChecklist().getId());
 	}
 
@@ -201,12 +201,12 @@ class DelegationServiceTest {
 	void deleteEmployeeChecklistDelegationTest() {
 		final var employeeChecklist = createEmployeeChecklistEntity();
 
-		when(mockEmployeeChecklistRepository.findByIdAndChecklistMunicipalityId(employeeChecklist.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(employeeChecklist));
+		when(mockEmployeeChecklistRepository.findByIdAndChecklistsMunicipalityId(employeeChecklist.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(employeeChecklist));
 		when(mockDelegateRepository.existsByEmployeeChecklistAndEmail(employeeChecklist, "email")).thenReturn(true);
 
 		service.removeEmployeeChecklistDelegation(MUNICIPALITY_ID, employeeChecklist.getId(), "email");
 
-		verify(mockEmployeeChecklistRepository).findByIdAndChecklistMunicipalityId(employeeChecklist.getId(), MUNICIPALITY_ID);
+		verify(mockEmployeeChecklistRepository).findByIdAndChecklistsMunicipalityId(employeeChecklist.getId(), MUNICIPALITY_ID);
 		verify(mockDelegateRepository).existsByEmployeeChecklistAndEmail(employeeChecklist, "email");
 		verify(mockDelegateRepository).deleteByEmployeeChecklistAndEmail(employeeChecklist, "email");
 	}
@@ -222,6 +222,6 @@ class DelegationServiceTest {
 			.hasFieldOrPropertyWithValue("title", "Not Found")
 			.hasFieldOrPropertyWithValue("detail", "Employee checklist with id 123 was not found.");
 
-		verify(mockEmployeeChecklistRepository).findByIdAndChecklistMunicipalityId(employeeChecklistId, MUNICIPALITY_ID);
+		verify(mockEmployeeChecklistRepository).findByIdAndChecklistsMunicipalityId(employeeChecklistId, MUNICIPALITY_ID);
 	}
 }

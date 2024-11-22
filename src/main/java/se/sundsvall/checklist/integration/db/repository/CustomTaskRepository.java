@@ -9,7 +9,7 @@ import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
 
 @CircuitBreaker(name = "customTaskRepository")
 public interface CustomTaskRepository extends JpaRepository<CustomTaskEntity, String> {
-	List<CustomTaskEntity> findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(String id, String municipalityId);
+	List<CustomTaskEntity> findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(String id, String municipalityId);
 
 	int countByPhaseId(String phaseId);
 }

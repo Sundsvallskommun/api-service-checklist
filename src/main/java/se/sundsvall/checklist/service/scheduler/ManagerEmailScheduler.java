@@ -61,14 +61,14 @@ public class ManagerEmailScheduler {
 	private void handleEmailCommunication(String municipalityId) {
 		// Send email to all new employees that haven't sent any email yet and where the company has opted in to send emails
 		employeeChecklistRepository
-			.findAllByChecklistMunicipalityIdAndCorrespondenceIsNull(municipalityId)
+			.findAllByChecklistsMunicipalityIdAndCorrespondenceIsNull(municipalityId)
 			.stream()
 			.filter(this::filterByCompanyWithEmailAsCommunicationChannel)
 			.forEach(communicationService::sendEmail);
 
 		// Send email to all employees where previous send request didn't succeed
 		employeeChecklistRepository
-			.findAllByChecklistMunicipalityIdAndCorrespondenceCorrespondenceStatus(municipalityId, NOT_SENT)
+			.findAllByChecklistsMunicipalityIdAndCorrespondenceCorrespondenceStatus(municipalityId, NOT_SENT)
 			.stream()
 			.filter(this::filterByCompanyWithEmailAsCommunicationChannel)
 			.forEach(communicationService::sendEmail);

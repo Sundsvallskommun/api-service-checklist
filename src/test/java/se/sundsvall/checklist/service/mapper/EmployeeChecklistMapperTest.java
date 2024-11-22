@@ -49,10 +49,10 @@ class EmployeeChecklistMapperTest {
 			.build();
 
 		// Act
-		final var entity = EmployeeChecklistMapper.toEmployeeChecklistEntity(employeeEntity, checklistEntity);
+		final var entity = EmployeeChecklistMapper.toEmployeeChecklistEntity(employeeEntity, List.of(checklistEntity));
 
 		// Assert
-		assertThat(entity.getChecklist()).isEqualTo(checklistEntity);
+		assertThat(entity.getChecklists()).hasSize(1).containsExactly(checklistEntity);
 		assertThat(entity.getCorrespondence()).isNull();
 		assertThat(entity.getCreated()).isNull();
 		assertThat(entity.getCustomFulfilments()).isNullOrEmpty();
@@ -77,10 +77,10 @@ class EmployeeChecklistMapperTest {
 			.build();
 
 		// Act
-		final var entity = EmployeeChecklistMapper.toEmployeeChecklistEntity(employeeEntity, checklistEntity);
+		final var entity = EmployeeChecklistMapper.toEmployeeChecklistEntity(employeeEntity, List.of(checklistEntity));
 
 		// Assert
-		assertThat(entity.getChecklist()).isEqualTo(checklistEntity);
+		assertThat(entity.getChecklists()).hasSize(1).containsExactly(checklistEntity);
 		assertThat(entity.getCorrespondence()).isNull();
 		assertThat(entity.getCreated()).isNull();
 		assertThat(entity.getCustomFulfilments()).isNullOrEmpty();
@@ -258,7 +258,7 @@ class EmployeeChecklistMapperTest {
 	void toEmployeeChecklistEntityFromNull() {
 		assertThat(EmployeeChecklistMapper.toEmployeeChecklistEntity(null, null)).isNull();
 		assertThat(EmployeeChecklistMapper.toEmployeeChecklistEntity(EmployeeEntity.builder().build(), null)).isNull();
-		assertThat(EmployeeChecklistMapper.toEmployeeChecklistEntity(null, ChecklistEntity.builder().build())).isNull();
+		assertThat(EmployeeChecklistMapper.toEmployeeChecklistEntity(null, List.of(ChecklistEntity.builder().build()))).isNull();
 	}
 
 	@Test

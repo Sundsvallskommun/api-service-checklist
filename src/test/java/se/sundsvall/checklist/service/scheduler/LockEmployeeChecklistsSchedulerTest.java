@@ -51,7 +51,7 @@ class LockEmployeeChecklistsSchedulerTest {
 
 		// Assert and verify
 		verify(checklistPropertiesMock, times(2)).managedMunicipalityIds();
-		verify(employeeChecklistRepositoryMock).findAllByChecklistMunicipalityIdAndExpirationDateIsBeforeAndLockedIsFalse(municipalityId, LocalDate.now());
+		verify(employeeChecklistRepositoryMock).findAllByChecklistsMunicipalityIdAndExpirationDateIsBeforeAndLockedIsFalse(municipalityId, LocalDate.now());
 		verifyNoMoreInteractions(employeeChecklistRepositoryMock);
 	}
 
@@ -65,14 +65,14 @@ class LockEmployeeChecklistsSchedulerTest {
 			.build();
 
 		when(checklistPropertiesMock.managedMunicipalityIds()).thenReturn(List.of(municipalityId));
-		when(employeeChecklistRepositoryMock.findAllByChecklistMunicipalityIdAndExpirationDateIsBeforeAndLockedIsFalse(municipalityId, LocalDate.now())).thenReturn(List.of(employeeChecklistsEntity));
+		when(employeeChecklistRepositoryMock.findAllByChecklistsMunicipalityIdAndExpirationDateIsBeforeAndLockedIsFalse(municipalityId, LocalDate.now())).thenReturn(List.of(employeeChecklistsEntity));
 
 		// Act
 		scheduler.execute();
 
 		// Assert and verify
 		verify(checklistPropertiesMock, times(2)).managedMunicipalityIds();
-		verify(employeeChecklistRepositoryMock).findAllByChecklistMunicipalityIdAndExpirationDateIsBeforeAndLockedIsFalse(municipalityId, LocalDate.now());
+		verify(employeeChecklistRepositoryMock).findAllByChecklistsMunicipalityIdAndExpirationDateIsBeforeAndLockedIsFalse(municipalityId, LocalDate.now());
 		verify(employeeChecklistRepositoryMock).save(entityCaptor.capture());
 		verifyNoMoreInteractions(employeeChecklistRepositoryMock, checklistPropertiesMock);
 

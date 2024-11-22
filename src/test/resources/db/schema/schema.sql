@@ -86,7 +86,6 @@
         start_date date,
         created datetime(6),
         updated datetime(6),
-        checklist_id varchar(255),
         correspondence_id varchar(255),
         employee_id varchar(255),
         id varchar(255) not null,
@@ -147,6 +146,11 @@
         primary key (id)
     ) engine=InnoDB;
 
+    create table referred_checklist (
+        checklist_id varchar(255) not null,
+        employee_checklist_id varchar(255) not null
+    ) engine=InnoDB;
+
     create table task (
         sort_order integer,
         created datetime(6),
@@ -202,6 +206,9 @@
     create index phase_municipality_id_idx 
        on phase (municipality_id);
 
+    alter table if exists referred_checklist 
+       add constraint uk_employee_checklist_id_checklist_id unique (employee_checklist_id, checklist_id);
+
     alter table if exists checklist 
        add constraint fk_organization_checklist 
        foreign key (organization_id) 
@@ -253,11 +260,6 @@
        references manager (id);
 
     alter table if exists employee_checklist 
-       add constraint fk_employee_checklist_checklist 
-       foreign key (checklist_id) 
-       references checklist (id);
-
-    alter table if exists employee_checklist 
        add constraint fk_employee_checklist_correspondence 
        foreign key (correspondence_id) 
        references correspondence (id);
@@ -281,6 +283,16 @@
        add constraint fk_organization_communication_channel_organization 
        foreign key (organization_id) 
        references organization (id);
+
+    alter table if exists referred_checklist 
+       add constraint fk_referred_checklist_checklist 
+       foreign key (checklist_id) 
+       references checklist (id);
+
+    alter table if exists referred_checklist 
+       add constraint fk_referred_checklist_employee_checklist 
+       foreign key (employee_checklist_id) 
+       references employee_checklist (id);
 
     alter table if exists task 
        add constraint fk_task_phase 

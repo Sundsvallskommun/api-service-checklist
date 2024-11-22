@@ -116,12 +116,13 @@ public class ChecklistService {
 			throw Problem.valueOf(BAD_REQUEST, CHECKLIST_CANNOT_BE_DELETED.formatted(checklist.getLifeCycle()));
 		}
 
-		// First remove checklist from organization if it has been attached to such
+		// Remove checklist from organization
 		organizationRepository.findByChecklistsIdAndChecklistsMunicipalityId(id, municipalityId).ifPresent(organization -> {
 			organization.getChecklists().removeIf(ch -> Objects.equals(id, ch.getId()));
 			organizationRepository.save(organization);
 		});
 
+		// Remove checklist
 		checklistRepository.delete(checklist);
 	}
 

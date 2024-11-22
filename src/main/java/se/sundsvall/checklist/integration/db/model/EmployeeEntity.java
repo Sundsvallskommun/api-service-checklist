@@ -91,9 +91,7 @@ public class EmployeeEntity {
 	@JoinColumn(name = "department_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_employee_department"))
 	private OrganizationEntity department;
 
-	@ManyToOne(cascade = {
-		CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH
-	})
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "manager_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_employee_manager"))
 	private ManagerEntity manager;
 

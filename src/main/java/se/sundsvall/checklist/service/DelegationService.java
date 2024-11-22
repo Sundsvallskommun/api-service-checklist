@@ -58,7 +58,7 @@ public class DelegationService {
 	}
 
 	public void delegateEmployeeChecklist(final String municipalityId, final String employeeChecklistId, final String email) {
-		final var employeeChecklist = employeeChecklistRepository.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)
+		final var employeeChecklist = employeeChecklistRepository.findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, EMPLOYEE_CHECKLIST_NOT_FOUND.formatted(employeeChecklistId)));
 
 		final var employeeData = employeeIntegration.getEmployeeByEmail(email)
@@ -88,7 +88,7 @@ public class DelegationService {
 		return delegatedEmployeeChecklistEntities.stream()
 			.map(this::handleUpdatedEmployeeInformation)
 			.map(EmployeeChecklistMapper::toEmployeeChecklist)
-			.map(ob -> decorateWithCustomTasks(ob, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(ob.getId(), municipalityId)))
+			.map(ob -> decorateWithCustomTasks(ob, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(ob.getId(), municipalityId)))
 			.map(ob -> decorateWithFulfilment(ob, fetchEntity(delegatedEmployeeChecklistEntities, ob.getId())))
 			.map(this::decorateWithDelegateInformation)
 			.map(ServiceUtils::calculateCompleted)
@@ -113,7 +113,7 @@ public class DelegationService {
 
 	@Transactional
 	public void removeEmployeeChecklistDelegation(final String municipalityId, final String employeeChecklistId, final String email) {
-		final var employeeChecklist = employeeChecklistRepository.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)
+		final var employeeChecklist = employeeChecklistRepository.findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, EMPLOYEE_CHECKLIST_NOT_FOUND.formatted(employeeChecklistId)));
 
 		if (delegateRepository.existsByEmployeeChecklistAndEmail(employeeChecklist, email)) {

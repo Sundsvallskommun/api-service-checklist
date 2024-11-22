@@ -39,6 +39,23 @@
 				}]
 			},
 			{
+				"bodyText": "Description of phase C",
+				"sortOrder": 1,
+				"name": "Phasename",
+				"id": "539b074d-d654-49ec-9dce-220f8a5ba7bb",
+				"timeToComplete": "P1M",
+				"tasks": [{
+					"fulfilmentStatus": "EMPTY",
+					"heading": "Description of manager to new employee task",
+					"sortOrder": 1,
+					"id": "c8c7abe0-5703-4ca1-86d3-74e5ad79b690",
+					"text": "Text for task to be performed by new employees manager",
+					"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
+					"questionType": "COMPLETED_OR_NOT_RELEVANT",
+					"customTask": false
+				}]
+			},
+			{
 				"bodyText": "Description of phase B",
 				"sortOrder": 2,
 				"name": "Phasename",
@@ -79,6 +96,23 @@
 						"customTask": false
 					}
 				]
+			},
+			{
+				"bodyText": "Description of phase D",
+				"sortOrder": 2,
+				"name": "Phasename",
+				"id": "d2c92810-3c46-4161-af54-7ae8b3c9d0b3",
+				"timeToComplete": "P1M",
+				"tasks": [{
+					"fulfilmentStatus": "EMPTY",
+					"heading": "Description of new employee task",
+					"sortOrder": 1,
+					"id": "a76e9920-261f-42fc-9077-14fb1cdb9871",
+					"text": "Text for task to be performed by new employee",
+					"roleType": "NEW_EMPLOYEE",
+					"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
+					"customTask": false
+				}]
 			}
 		],
 		"startDate": "2024-01-01",
@@ -120,6 +154,23 @@
 					"text": "Text for manager task",
 					"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
 					"questionType": "YES_OR_NO",
+					"customTask": false
+				}]
+			},
+			{
+				"bodyText": "Description of phase C",
+				"sortOrder": 1,
+				"name": "Phasename",
+				"id": "539b074d-d654-49ec-9dce-220f8a5ba7bb",
+				"timeToComplete": "P1M",
+				"tasks": [{
+					"fulfilmentStatus": "EMPTY",
+					"heading": "Description of manager to new employee task",
+					"sortOrder": 1,
+					"id": "c8c7abe0-5703-4ca1-86d3-74e5ad79b690",
+					"text": "Text for task to be performed by new employees manager",
+					"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
+					"questionType": "COMPLETED_OR_NOT_RELEVANT",
 					"customTask": false
 				}]
 			},
@@ -173,6 +224,23 @@
 						"customTask": false
 					}
 				]
+			},
+			{
+				"bodyText": "Description of phase D",
+				"sortOrder": 2,
+				"name": "Phasename",
+				"id": "d2c92810-3c46-4161-af54-7ae8b3c9d0b3",
+				"timeToComplete": "P1M",
+				"tasks": [{
+					"fulfilmentStatus": "EMPTY",
+					"heading": "Description of new employee task",
+					"sortOrder": 1,
+					"id": "a76e9920-261f-42fc-9077-14fb1cdb9871",
+					"text": "Text for task to be performed by new employee",
+					"roleType": "NEW_EMPLOYEE",
+					"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
+					"customTask": false
+				}]
 			}
 		],
 		"startDate": "2024-01-06",
@@ -189,7 +257,7 @@
 		"endDate": "2024-07-06",
 		"created": "2024-01-06T12:00:00+01:00",
 		"id": "2e2bb099-560c-450e-8f20-764498a37983",
-		"completed": true,
+		"completed": false,
 		"employee": {
 			"firstName": "C Newman",
 			"lastName": "Ager",
@@ -200,6 +268,23 @@
 		"locked": false,
 		"updated": "2024-01-06T12:00:00+01:00",
 		"phases": [
+			{
+				"bodyText": "Description of phase A",
+				"sortOrder": 1,
+				"name": "Phasename",
+				"id": "7272d1fc-540e-4394-afe2-e133ca642e91",
+				"timeToComplete": "P1M",
+				"tasks": [{
+					"fulfilmentStatus": "EMPTY",
+					"heading": "Description of manager task",
+					"sortOrder": 1,
+					"id": "e43fdac2-331e-4808-8d83-753a59e329cd",
+					"text": "Text for manager task",
+					"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
+					"questionType": "YES_OR_NO",
+					"customTask": false
+				}]
+			},
 			{
 				"bodyText": "Description of phase C",
 				"sortOrder": 1,
@@ -231,6 +316,45 @@
 						"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
 						"questionType": "COMPLETED_OR_NOT_RELEVANT",
 						"updated": "2024-01-07T12:00:00+01:00",
+						"customTask": false
+					}
+				]
+			},
+			{
+				"bodyText": "Description of phase B",
+				"sortOrder": 2,
+				"name": "Phasename",
+				"id": "3e9780a7-96f3-4d07-80ee-a9634b786a38",
+				"timeToComplete": "P1M",
+				"tasks": [
+					{
+						"fulfilmentStatus": "EMPTY",
+						"heading": "Description of first employee task",
+						"sortOrder": 1,
+						"id": "d250a20c-a616-4147-bfe0-19a0d12f3df0",
+						"text": "Text for first employee task",
+						"roleType": "NEW_EMPLOYEE",
+						"questionType": "YES_OR_NO_WITH_TEXT",
+						"customTask": false
+					},
+					{
+						"fulfilmentStatus": "EMPTY",
+						"heading": "Description of second employee task",
+						"sortOrder": 2,
+						"id": "0c8b99e9-718b-4c92-9ba3-a49dc29d48b5",
+						"text": "Text for second employee task",
+						"roleType": "NEW_EMPLOYEE",
+						"questionType": "YES_OR_NO",
+						"customTask": false
+					},
+					{
+						"fulfilmentStatus": "EMPTY",
+						"heading": "Description of manager task",
+						"sortOrder": 3,
+						"id": "056423aa-01a4-4243-ace4-561a6e4cd25f",
+						"text": "Text for manager task",
+						"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
+						"questionType": "YES_OR_NO",
 						"customTask": false
 					}
 				]

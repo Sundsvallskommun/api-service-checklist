@@ -1,17 +1,18 @@
-set foreign_key_checks = 0;
+SET foreign_key_checks = 0;
 
-truncate table employee_checklist;
-truncate table correspondence;
-truncate table checklist;
-truncate table phase;
-truncate table task;
-truncate table custom_fulfilment;
-truncate table custom_task;
-truncate table employee;
-truncate table manager;
-truncate table delegate;
-truncate table organization;
-truncate table organization_communication_channel;
-truncate table fulfilment;
+TRUNCATE TABLE referred_checklist;
+TRUNCATE TABLE employee_checklist;
+TRUNCATE TABLE correspondence;
+TRUNCATE TABLE checklist;
+TRUNCATE TABLE phase;
+TRUNCATE TABLE task;
+TRUNCATE TABLE custom_fulfilment;
+TRUNCATE TABLE custom_task;
+TRUNCATE TABLE employee;
+TRUNCATE TABLE manager;
+TRUNCATE TABLE delegate;
+TRUNCATE TABLE organization;
+TRUNCATE TABLE organization_communication_channel;
+TRUNCATE TABLE fulfilment;
 
-set foreign_key_checks = 1;
+SET foreign_key_checks = 1;

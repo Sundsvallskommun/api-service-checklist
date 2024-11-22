@@ -103,7 +103,7 @@ class EmployeeChecklistServiceTest {
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
 			.withId(employeeChecklistId)
 			.withEmployee(employee)
-			.withChecklist(checklist)
+			.withChecklists(List.of(checklist))
 			.build();
 		final var customEmployeeTask = CustomTaskEntity.builder()
 			.withId(customTaskId)
@@ -117,7 +117,7 @@ class EmployeeChecklistServiceTest {
 			.build();
 
 		when(employeeChecklistIntegrationMock.fetchOptionalEmployeeChecklist(MUNICIPALITY_ID, username)).thenReturn(Optional.of(employeeChecklistEntity));
-		when(customTaskRepositoryMock.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(employeeChecklistId, MUNICIPALITY_ID)).thenReturn(List.of(customEmployeeTask, customManagerTask));
+		when(customTaskRepositoryMock.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(employeeChecklistId, MUNICIPALITY_ID)).thenReturn(List.of(customEmployeeTask, customManagerTask));
 
 		// Act
 		final var employeeChecklist = service.fetchChecklistForEmployee(MUNICIPALITY_ID, username);
@@ -131,7 +131,7 @@ class EmployeeChecklistServiceTest {
 			});
 		});
 		verify(employeeChecklistIntegrationMock).fetchOptionalEmployeeChecklist(MUNICIPALITY_ID, username);
-		verify(customTaskRepositoryMock).findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(employeeChecklistId, MUNICIPALITY_ID);
+		verify(customTaskRepositoryMock).findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(employeeChecklistId, MUNICIPALITY_ID);
 		verify(employeeChecklistIntegrationMock).fetchDelegateEmails(employeeChecklistId);
 	}
 
@@ -150,7 +150,7 @@ class EmployeeChecklistServiceTest {
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
 			.withId(employeeChecklistId)
 			.withEmployee(employeeEntity)
-			.withChecklist(checklist)
+			.withChecklists(List.of(checklist))
 			.build();
 		final var customTask = CustomTaskEntity.builder()
 			.withId(customTaskId)
@@ -158,7 +158,7 @@ class EmployeeChecklistServiceTest {
 		final var employee = new Employee();
 
 		when(employeeChecklistIntegrationMock.fetchOptionalEmployeeChecklist(MUNICIPALITY_ID, username)).thenReturn(Optional.of(employeeChecklistEntity));
-		when(customTaskRepositoryMock.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(employeeChecklistId, MUNICIPALITY_ID)).thenReturn(List.of(customTask));
+		when(customTaskRepositoryMock.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(employeeChecklistId, MUNICIPALITY_ID)).thenReturn(List.of(customTask));
 		when(employeeIntegrationMock.getEmployeeInformation(buildUuidEmployeeFilter(employeeId))).thenReturn(List.of(employee));
 
 		// Act
@@ -167,7 +167,7 @@ class EmployeeChecklistServiceTest {
 		// Assert and verify
 		assertThat(employeeChecklist).isPresent();
 		verify(employeeChecklistIntegrationMock).fetchOptionalEmployeeChecklist(MUNICIPALITY_ID, username);
-		verify(customTaskRepositoryMock).findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(employeeChecklistId, MUNICIPALITY_ID);
+		verify(customTaskRepositoryMock).findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(employeeChecklistId, MUNICIPALITY_ID);
 		verify(employeeChecklistIntegrationMock).fetchDelegateEmails(employeeChecklistId);
 		verify(employeeIntegrationMock).getEmployeeInformation(buildUuidEmployeeFilter(employeeId));
 		verify(employeeChecklistIntegrationMock).updateEmployeeInformation(employeeEntity, employee);
@@ -224,11 +224,11 @@ class EmployeeChecklistServiceTest {
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
 			.withId(employeeChecklistId)
 			.withEmployee(employee)
-			.withChecklist(checklist)
+			.withChecklists(List.of(checklist))
 			.build();
 
 		when(employeeChecklistIntegrationMock.fetchEmployeeChecklistsForManager(MUNICIPALITY_ID, username)).thenReturn(List.of(employeeChecklistEntity));
-		when(customTaskRepositoryMock.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(employeeChecklistId, MUNICIPALITY_ID)).thenReturn(List.of(customEmployeeTask, customManagerTask));
+		when(customTaskRepositoryMock.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(employeeChecklistId, MUNICIPALITY_ID)).thenReturn(List.of(customEmployeeTask, customManagerTask));
 
 		// Act
 		final var employeeChecklists = service.fetchChecklistsForManager(MUNICIPALITY_ID, username);
@@ -262,7 +262,7 @@ class EmployeeChecklistServiceTest {
 		});
 
 		verify(employeeChecklistIntegrationMock).fetchEmployeeChecklistsForManager(MUNICIPALITY_ID, username);
-		verify(customTaskRepositoryMock).findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(employeeChecklistId, MUNICIPALITY_ID);
+		verify(customTaskRepositoryMock).findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(employeeChecklistId, MUNICIPALITY_ID);
 		verify(employeeChecklistIntegrationMock).fetchDelegateEmails(employeeChecklistId);
 	}
 
@@ -287,7 +287,7 @@ class EmployeeChecklistServiceTest {
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
 			.withId(employeeChecklistId)
 			.withEmployee(employeeEntity)
-			.withChecklist(checklist)
+			.withChecklists(List.of(checklist))
 			.build();
 		final var employment = new Employment()
 			.isMainEmployment(true)
@@ -395,9 +395,9 @@ class EmployeeChecklistServiceTest {
 		final var customTaskEntity = CustomTaskEntity.builder()
 			.withEmployeeChecklist(EmployeeChecklistEntity.builder()
 				.withId(employeeChecklistId)
-				.withChecklist(ChecklistEntity.builder()
+				.withChecklists(List.of(ChecklistEntity.builder()
 					.withMunicipalityId(MUNICIPALITY_ID)
-					.build())
+					.build()))
 				.build())
 			.build();
 
@@ -462,9 +462,9 @@ class EmployeeChecklistServiceTest {
 			.withEmployeeChecklist(
 				EmployeeChecklistEntity.builder()
 					.withId(employeeChecklistId)
-					.withChecklist(ChecklistEntity.builder()
+					.withChecklists(List.of(ChecklistEntity.builder()
 						.withMunicipalityId(MUNICIPALITY_ID)
-						.build())
+						.build()))
 					.build())
 			.build();
 		final var request = CustomTaskUpdateRequest.builder()
@@ -533,9 +533,9 @@ class EmployeeChecklistServiceTest {
 			.withEmployeeChecklist(EmployeeChecklistEntity.builder()
 				.withLocked(true)
 				.withId(employeeChecklistId)
-				.withChecklist(ChecklistEntity.builder()
+				.withChecklists(List.of(ChecklistEntity.builder()
 					.withMunicipalityId(MUNICIPALITY_ID)
-					.build())
+					.build()))
 				.build())
 			.build();
 		final var request = CustomTaskUpdateRequest.builder().build();
@@ -559,9 +559,9 @@ class EmployeeChecklistServiceTest {
 		final var customTaskId = UUID.randomUUID().toString();
 		final var entity = CustomTaskEntity.builder()
 			.withEmployeeChecklist(EmployeeChecklistEntity.builder().withId(employeeChecklistId)
-				.withChecklist(ChecklistEntity.builder()
+				.withChecklists(List.of(ChecklistEntity.builder()
 					.withMunicipalityId(MUNICIPALITY_ID)
-					.build())
+					.build()))
 				.withCustomFulfilments(new ArrayList<>(List.of(CustomFulfilmentEntity.builder()
 					.withCustomTask(CustomTaskEntity.builder()
 						.withId(customTaskId)
@@ -626,9 +626,9 @@ class EmployeeChecklistServiceTest {
 			.withEmployeeChecklist(EmployeeChecklistEntity.builder()
 				.withLocked(true)
 				.withId(employeeChecklistId)
-				.withChecklist(ChecklistEntity.builder()
+				.withChecklists(List.of(ChecklistEntity.builder()
 					.withMunicipalityId(MUNICIPALITY_ID)
-					.build())
+					.build()))
 				.build())
 			.build();
 
@@ -651,13 +651,13 @@ class EmployeeChecklistServiceTest {
 		final var phaseId = UUID.randomUUID().toString();
 		final var request = EmployeeChecklistPhaseUpdateRequest.builder().build();
 		final var entity = EmployeeChecklistEntity.builder()
-			.withChecklist(ChecklistEntity.builder()
+			.withChecklists(List.of(ChecklistEntity.builder()
 				.withTasks(List.of(TaskEntity.builder()
 					.withPhase(PhaseEntity.builder()
 						.withId(phaseId)
 						.build())
 					.build()))
-				.build())
+				.build()))
 			.build();
 
 		when(employeeChecklistIntegrationMock.updateAllFulfilmentForAllTasksInPhase(MUNICIPALITY_ID, employeeChecklistId, phaseId, request)).thenReturn(entity);
@@ -670,7 +670,7 @@ class EmployeeChecklistServiceTest {
 		assertThat(result.getId()).isEqualTo(phaseId);
 
 		verify(employeeChecklistIntegrationMock).updateAllFulfilmentForAllTasksInPhase(MUNICIPALITY_ID, employeeChecklistId, phaseId, request);
-		verify(customTaskRepositoryMock).findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(employeeChecklistId, MUNICIPALITY_ID);
+		verify(customTaskRepositoryMock).findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(employeeChecklistId, MUNICIPALITY_ID);
 	}
 
 	@Test
@@ -680,13 +680,13 @@ class EmployeeChecklistServiceTest {
 		final var phaseId = UUID.randomUUID().toString();
 		final var request = EmployeeChecklistPhaseUpdateRequest.builder().build();
 		final var entity = EmployeeChecklistEntity.builder()
-			.withChecklist(ChecklistEntity.builder()
+			.withChecklists(List.of(ChecklistEntity.builder()
 				.withTasks(List.of(TaskEntity.builder()
 					.withPhase(PhaseEntity.builder()
 						.withId(UUID.randomUUID().toString())
 						.build())
 					.build()))
-				.build())
+				.build()))
 			.build();
 
 		when(employeeChecklistIntegrationMock.updateAllFulfilmentForAllTasksInPhase(MUNICIPALITY_ID, employeeChecklistId, phaseId, request)).thenReturn(entity);
@@ -708,14 +708,14 @@ class EmployeeChecklistServiceTest {
 		final var taskId = UUID.randomUUID().toString();
 		final var request = EmployeeChecklistTaskUpdateRequest.builder().build();
 		final var employeeChecklist = EmployeeChecklistEntity.builder()
-			.withChecklist(ChecklistEntity.builder()
+			.withChecklists(List.of(ChecklistEntity.builder()
 				.withTasks(List.of(TaskEntity.builder()
 					.withId(taskId)
 					.withPhase(PhaseEntity.builder()
 						.withId(UUID.randomUUID().toString())
 						.build())
 					.build()))
-				.build())
+				.build()))
 			.build();
 		final var fulfilment = FulfilmentEntity.builder().build();
 
@@ -740,13 +740,13 @@ class EmployeeChecklistServiceTest {
 		final var request = EmployeeChecklistTaskUpdateRequest.builder().build();
 		final var employeeChecklist = EmployeeChecklistEntity.builder()
 			.withId(employeeChecklistId)
-			.withChecklist(ChecklistEntity.builder()
+			.withChecklists(List.of(ChecklistEntity.builder()
 				.withTasks(List.of(TaskEntity.builder()
 					.withId(UUID.randomUUID().toString())
 					.withPhase(PhaseEntity.builder()
 						.build())
 					.build()))
-				.build())
+				.build()))
 			.build();
 
 		when(employeeChecklistIntegrationMock.fetchEmployeeChecklist(MUNICIPALITY_ID, employeeChecklistId)).thenReturn(employeeChecklist);
