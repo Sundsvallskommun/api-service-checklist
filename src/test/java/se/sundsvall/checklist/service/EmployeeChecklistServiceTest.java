@@ -202,12 +202,12 @@ class EmployeeChecklistServiceTest {
 
 		final var phase1 = PhaseEntity.builder().withId(UUID.randomUUID().toString()).build();
 		final var phase2 = PhaseEntity.builder().withId(UUID.randomUUID().toString()).build();
-		final var managerTask_1 = TaskEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.MANAGER_FOR_NEW_EMPLOYEE).withPhase(phase1).build();
-		final var managerTask_2 = TaskEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.MANAGER_FOR_NEW_EMPLOYEE).withPhase(phase2).build();
+		final var managerTask1 = TaskEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.MANAGER_FOR_NEW_EMPLOYEE).withPhase(phase1).build();
+		final var managerTask2 = TaskEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.MANAGER_FOR_NEW_EMPLOYEE).withPhase(phase2).build();
 		final var employeeTask = TaskEntity.builder().withId(UUID.randomUUID().toString()).withRoleType(RoleType.NEW_EMPLOYEE).withPhase(phase2).build();
 
 		final var checklist = ChecklistEntity.builder()
-			.withTasks(List.of(managerTask_1, managerTask_2, employeeTask))
+			.withTasks(List.of(managerTask1, managerTask2, employeeTask))
 			.build();
 
 		final var customEmployeeTask = CustomTaskEntity.builder()

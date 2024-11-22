@@ -335,10 +335,8 @@ public class EmployeeChecklistIntegration {
 	}
 
 	private List<ChecklistEntity> retrieveChecklists(String municipalityId, Iterator<OrganizationLine> organizationIterator, List<ChecklistEntity> resultList) {
-		organizationIterator.forEachRemaining(orgLine -> {
-			retrieveActiveChecklist(municipalityId, Integer.parseInt(orgLine.getOrgId()))
-				.ifPresent(resultList::add);
-		});
+		organizationIterator.forEachRemaining(orgLine -> retrieveActiveChecklist(municipalityId, Integer.parseInt(orgLine.getOrgId()))
+			.ifPresent(resultList::add));
 
 		return resultList;
 	}
