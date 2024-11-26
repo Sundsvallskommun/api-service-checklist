@@ -24,7 +24,7 @@ class CustomTaskRepositoryTest {
 
 	@Test
 	void findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityIdTest() {
-		assertThat(repository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId("f853e2b1-a144-4305-b05e-ee8d6dc6d005", "2281")).hasSize(1).satisfiesExactly(customTask -> {
+		assertThat(repository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId("f853e2b1-a144-4305-b05e-ee8d6dc6d005", "2281")).hasSize(1).satisfiesExactly(customTask -> {
 			assertThat(customTask.getId()).isEqualTo("1b3bfe66-0e6c-4e92-a410-7c620a5461f4");
 			assertThat(customTask.getPhase().getId()).isEqualTo("2455a5d4-1db8-4a25-a49f-92fdd0c60a14");
 			assertThat(customTask.getEmployeeChecklist().getId()).isEqualTo("f853e2b1-a144-4305-b05e-ee8d6dc6d005");

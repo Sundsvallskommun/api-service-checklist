@@ -76,11 +76,28 @@ class OrganizationServiceTest {
 	}
 
 	@Test
-	void fetchAllOrganizations() {
+	void fetchAllOrganizationsWithoutFilter() {
 		final var entity = createOrganizationEntity();
 		when(mockOrganizationRepository.findAllByMunicipalityId(MUNICIPALITY_ID)).thenReturn(List.of(entity));
 
-		final var result = organizationService.fetchAllOrganizations(MUNICIPALITY_ID);
+		final var result = organizationService.fetchAllOrganizations(MUNICIPALITY_ID, null);
+
+		assertThat(result).hasSize(1);
+		assertThat(result.getFirst()).isInstanceOf(Organization.class);
+
+		verify(mockOrganizationRepository).findAllByMunicipalityId(MUNICIPALITY_ID);
+		entity.getChecklists().forEach(checklist -> {
+			verify(mockChecklistBuilder).buildChecklist(checklist);
+		});
+	}
+
+	@Test
+	void fetchAllOrganizationsWithFilter() {
+		final var entity = createOrganizationEntity();
+		entity.setOrganizationNumber(2345);
+		when(mockOrganizationRepository.findAllByMunicipalityId(MUNICIPALITY_ID)).thenReturn(List.of(entity, createOrganizationEntity()));
+
+		final var result = organizationService.fetchAllOrganizations(MUNICIPALITY_ID, List.of(1234));
 
 		assertThat(result).hasSize(1);
 		assertThat(result.getFirst()).isInstanceOf(Organization.class);

@@ -56,9 +56,9 @@ class MailHandlerTest {
 		final var employee = EmployeeEntity.builder().withManager(manager).build();
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
 			.withEmployee(employee)
-			.withChecklist(ChecklistEntity.builder()
+			.withChecklists(List.of(ChecklistEntity.builder()
 				.withMunicipalityId(municipalityId)
-				.build())
+				.build()))
 			.build();
 		final var output = "output";
 		final var renderReponse = new RenderResponse().output(output);
@@ -105,9 +105,9 @@ class MailHandlerTest {
 		final var employee = EmployeeEntity.builder().withManager(manager).build();
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
 			.withEmployee(employee)
-			.withChecklist(ChecklistEntity.builder()
+			.withChecklists(List.of(ChecklistEntity.builder()
 				.withMunicipalityId(municipalityId)
-				.build())
+				.build()))
 			.withCorrespondence(correspondence)
 			.build();
 		final var output = "output";
@@ -154,9 +154,9 @@ class MailHandlerTest {
 		final var employee = EmployeeEntity.builder().withManager(manager).build();
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
 			.withEmployee(employee)
-			.withChecklist(ChecklistEntity.builder()
+			.withChecklists(List.of(ChecklistEntity.builder()
 				.withMunicipalityId(municipalityId)
-				.build())
+				.build()))
 			.build();
 
 		// Act
@@ -192,9 +192,9 @@ class MailHandlerTest {
 		final var employee = EmployeeEntity.builder().withManager(manager).build();
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
 			.withEmployee(employee)
-			.withChecklist(ChecklistEntity.builder()
+			.withChecklists(List.of(ChecklistEntity.builder()
 				.withMunicipalityId(municipalityId)
-				.build())
+				.build()))
 			.withCorrespondence(correspondence)
 			.build();
 		final var output = "output";

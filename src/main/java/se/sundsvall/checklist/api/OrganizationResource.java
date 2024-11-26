@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.zalando.problem.Problem;
@@ -59,13 +60,13 @@ class OrganizationResource {
 		this.organizationService = organizationService;
 	}
 
-	@Operation(summary = "Fetch all organizations", description = "Fetch all organizations")
+	@Operation(summary = "Fetch all organizations, optionally filtered by organization id(s)", description = "Fetch all organizations")
 	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	@GetMapping(produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<List<Organization>> fetchOrganizations(
-		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId) {
-
-		return ok(organizationService.fetchAllOrganizations(municipalityId));
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "organizationFilter", description = "Filter response to only include organizations matching provided organization ids", example = "5432") @RequestParam(required = false) List<Integer> organizationFilter) {
+		return ok(organizationService.fetchAllOrganizations(municipalityId, organizationFilter));
 	}
 
 	@Operation(summary = "Fetch organization by id", description = "Fetch organization that matches provided id")

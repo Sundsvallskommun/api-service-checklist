@@ -41,7 +41,7 @@ public class MailHandler {
 			c.setRecipient(entity.getEmployee().getManager().getEmail());
 		}, () -> entity.setCorrespondence(toCorrespondenceEntity(EMAIL, entity.getEmployee().getManager().getEmail()))); // Add correspondence object if it does not exist on entity
 
-		templatingIntegration.renderTemplate(entity.getChecklist().getMunicipalityId(), toRenderRequest(entity.getEmployee(), emailTemplate))
+		templatingIntegration.renderTemplate(entity.getChecklists().getFirst().getMunicipalityId(), toRenderRequest(entity.getEmployee(), emailTemplate))
 			.ifPresentOrElse(renderedTemplate -> sendManagerEmail(entity, renderedTemplate.getOutput()), () -> {
 				entity.getCorrespondence().setCorrespondenceStatus(ERROR);
 				entity.getCorrespondence().setAttempts(entity.getCorrespondence().getAttempts() + 1);
@@ -51,7 +51,7 @@ public class MailHandler {
 	}
 
 	private void sendManagerEmail(final EmployeeChecklistEntity entity, String renderedTemplate) {
-		messagingIntegration.sendEmail(entity.getChecklist().getMunicipalityId(), entity.getEmployee().getManager().getEmail(), renderedTemplate)
+		messagingIntegration.sendEmail(entity.getChecklists().getFirst().getMunicipalityId(), entity.getEmployee().getManager().getEmail(), renderedTemplate)
 			.ifPresentOrElse(result -> {
 				entity.getCorrespondence().setCorrespondenceStatus(toCorrespondenceStatus(result.getDeliveries()));
 				entity.getCorrespondence().setMessageId(result.getMessageId().toString());

@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
 import se.sundsvall.checklist.Application;
@@ -109,7 +110,19 @@ class OrganizationIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test5_deleteOrganization() {
+	void test5_fetchOrganizationsWithFilters() {
+		setupCall()
+			.withServicePath(PATH + "?organizationFilter=1&organizationFilter=3")
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(EXPECTED_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	@DirtiesContext
+	void test6_deleteOrganization() {
 		final var organizationId = "45764278-50c8-4a19-af00-077bfc314fd2";
 
 		assertThat(organizationRepository.existsById(organizationId)).isTrue();

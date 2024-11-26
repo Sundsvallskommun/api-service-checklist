@@ -34,8 +34,9 @@ public final class ServiceUtils {
 	}
 
 	private static Optional<TaskType> isCommonTask(String taskId, final EmployeeChecklistEntity employeeChecklist) {
-		final var found = ofNullable(employeeChecklist.getChecklist()).orElse(ChecklistEntity.builder().build())
-			.getTasks().stream()
+		final var found = ofNullable(employeeChecklist.getChecklists()).orElse(emptyList()).stream()
+			.map(ChecklistEntity::getTasks)
+			.flatMap(List::stream)
 			.anyMatch(task -> Objects.equals(task.getId(), taskId));
 
 		return found ? Optional.of(COMMON) : Optional.empty();

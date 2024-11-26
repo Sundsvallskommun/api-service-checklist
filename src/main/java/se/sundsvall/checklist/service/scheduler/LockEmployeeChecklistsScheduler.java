@@ -68,7 +68,7 @@ public class LockEmployeeChecklistsScheduler {
 	private void lockChecklists(String municipalityId) {
 		LOGGER.info(LOG_PROCESSING_MUNCIPALITY, municipalityId);
 
-		employeeChecklistRepository.findAllByChecklistMunicipalityIdAndExpirationDateIsBeforeAndLockedIsFalse(municipalityId, LocalDate.now()).stream()
+		employeeChecklistRepository.findAllByChecklistsMunicipalityIdAndExpirationDateIsBeforeAndLockedIsFalse(municipalityId, LocalDate.now()).stream()
 			.forEach(entity -> {
 				LOGGER.info(LOG_LOCKING_EMPLOYEE_CHECKLIST, entity.getId());
 				entity.setLocked(true);

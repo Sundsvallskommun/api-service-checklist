@@ -13,15 +13,15 @@ import se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus;
 
 @CircuitBreaker(name = "employeeChecklistRepository")
 public interface EmployeeChecklistRepository extends JpaRepository<EmployeeChecklistEntity, String>, JpaSpecificationExecutor<EmployeeChecklistEntity> {
-	List<EmployeeChecklistEntity> findAllByChecklistMunicipalityIdAndCorrespondenceIsNull(String municipalityId);
+	List<EmployeeChecklistEntity> findAllByChecklistsMunicipalityIdAndCorrespondenceIsNull(String municipalityId);
 
-	List<EmployeeChecklistEntity> findAllByChecklistMunicipalityIdAndCorrespondenceCorrespondenceStatus(String muncipalityId, CorrespondenceStatus status);
+	List<EmployeeChecklistEntity> findAllByChecklistsMunicipalityIdAndCorrespondenceCorrespondenceStatus(String muncipalityId, CorrespondenceStatus status);
 
-	EmployeeChecklistEntity findByChecklistMunicipalityIdAndEmployeeUsername(String municipalityId, String username);
+	EmployeeChecklistEntity findByChecklistsMunicipalityIdAndEmployeeUsername(String municipalityId, String username);
 
-	List<EmployeeChecklistEntity> findAllByChecklistMunicipalityIdAndEmployeeManagerUsername(String municipalityId, String username);
+	List<EmployeeChecklistEntity> findAllByChecklistsMunicipalityIdAndEmployeeManagerUsername(String municipalityId, String username);
 
-	List<EmployeeChecklistEntity> findAllByChecklistMunicipalityIdAndExpirationDateIsBeforeAndLockedIsFalse(String municipalityId, LocalDate date);
+	List<EmployeeChecklistEntity> findAllByChecklistsMunicipalityIdAndExpirationDateIsBeforeAndLockedIsFalse(String municipalityId, LocalDate date);
 
-	Optional<EmployeeChecklistEntity> findByIdAndChecklistMunicipalityId(String id, String municipalityId);
+	Optional<EmployeeChecklistEntity> findByIdAndChecklistsMunicipalityId(String id, String municipalityId);
 }

@@ -19,35 +19,54 @@
 	},
 	"locked": false,
 	"updated": "2024-01-01T12:00:00+01:00",
-	"phases": [{
-		"bodyText": "Description of phase B",
-		"sortOrder": 2,
-		"name": "Phasename",
-		"id": "3e9780a7-96f3-4d07-80ee-a9634b786a38",
-		"timeToComplete": "P1M",
-		"tasks": [
-			{
+	"phases": [
+		{
+			"bodyText": "Description of phase D",
+			"sortOrder": 2,
+			"name": "Phasename",
+			"id": "d2c92810-3c46-4161-af54-7ae8b3c9d0b3",
+			"timeToComplete": "P1M",
+			"tasks": [{
 				"fulfilmentStatus": "EMPTY",
-				"heading": "Description of first employee task",
+				"heading": "Description of new employee task",
 				"sortOrder": 1,
-				"id": "d250a20c-a616-4147-bfe0-19a0d12f3df0",
-				"text": "Text for first employee task",
+				"id": "a76e9920-261f-42fc-9077-14fb1cdb9871",
+				"text": "Text for task to be performed by new employee",
 				"roleType": "NEW_EMPLOYEE",
-				"questionType": "YES_OR_NO_WITH_TEXT",
+				"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
 				"customTask": false
-			},
-			{
-				"fulfilmentStatus": "EMPTY",
-				"heading": "Description of second employee task",
-				"sortOrder": 2,
-				"id": "0c8b99e9-718b-4c92-9ba3-a49dc29d48b5",
-				"text": "Text for second employee task",
-				"roleType": "NEW_EMPLOYEE",
-				"questionType": "YES_OR_NO",
-				"customTask": false
-			}
-		]
-	}],
+			}]
+		},
+		{
+			"bodyText": "Description of phase B",
+			"sortOrder": 2,
+			"name": "Phasename",
+			"id": "3e9780a7-96f3-4d07-80ee-a9634b786a38",
+			"timeToComplete": "P1M",
+			"tasks": [
+				{
+					"fulfilmentStatus": "EMPTY",
+					"heading": "Description of first employee task",
+					"sortOrder": 1,
+					"id": "d250a20c-a616-4147-bfe0-19a0d12f3df0",
+					"text": "Text for first employee task",
+					"roleType": "NEW_EMPLOYEE",
+					"questionType": "YES_OR_NO_WITH_TEXT",
+					"customTask": false
+				},
+				{
+					"fulfilmentStatus": "EMPTY",
+					"heading": "Description of second employee task",
+					"sortOrder": 2,
+					"id": "0c8b99e9-718b-4c92-9ba3-a49dc29d48b5",
+					"text": "Text for second employee task",
+					"roleType": "NEW_EMPLOYEE",
+					"questionType": "YES_OR_NO",
+					"customTask": false
+				}
+			]
+		}
+	],
 	"startDate": "2024-01-01",
 	"expirationDate": "2024-10-01"
 }

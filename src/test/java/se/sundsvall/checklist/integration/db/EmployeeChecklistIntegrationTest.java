@@ -99,12 +99,12 @@ class EmployeeChecklistIntegrationTest {
 		final var username = "username";
 		final var entity = EmployeeChecklistEntity.builder().build();
 
-		when(employeeChecklistsRepositoryMock.findByChecklistMunicipalityIdAndEmployeeUsername(municipalityId, username)).thenReturn(entity);
+		when(employeeChecklistsRepositoryMock.findByChecklistsMunicipalityIdAndEmployeeUsername(municipalityId, username)).thenReturn(entity);
 
 		final var result = integration.fetchOptionalEmployeeChecklist(municipalityId, username);
 
 		assertThat(result).isEqualTo(Optional.of(entity));
-		verify(employeeChecklistsRepositoryMock).findByChecklistMunicipalityIdAndEmployeeUsername(municipalityId, username);
+		verify(employeeChecklistsRepositoryMock).findByChecklistsMunicipalityIdAndEmployeeUsername(municipalityId, username);
 	}
 
 	@Test
@@ -115,7 +115,7 @@ class EmployeeChecklistIntegrationTest {
 
 		// Act, assert and verify
 		assertThat(integration.fetchOptionalEmployeeChecklist(municipalityId, username)).isEmpty();
-		verify(employeeChecklistsRepositoryMock).findByChecklistMunicipalityIdAndEmployeeUsername(municipalityId, username);
+		verify(employeeChecklistsRepositoryMock).findByChecklistsMunicipalityIdAndEmployeeUsername(municipalityId, username);
 	}
 
 	@Test
@@ -125,14 +125,14 @@ class EmployeeChecklistIntegrationTest {
 		final var userId = "userId";
 		final var entity = EmployeeChecklistEntity.builder().build();
 
-		when(employeeChecklistsRepositoryMock.findAllByChecklistMunicipalityIdAndEmployeeManagerUsername(municipalityId, userId)).thenReturn(List.of(entity));
+		when(employeeChecklistsRepositoryMock.findAllByChecklistsMunicipalityIdAndEmployeeManagerUsername(municipalityId, userId)).thenReturn(List.of(entity));
 
 		// Act
 		final var result = integration.fetchEmployeeChecklistsForManager(municipalityId, userId);
 
 		// Verify and assert
 		assertThat(result).isNotEmpty().containsExactly(entity);
-		verify(employeeChecklistsRepositoryMock).findAllByChecklistMunicipalityIdAndEmployeeManagerUsername(municipalityId, userId);
+		verify(employeeChecklistsRepositoryMock).findAllByChecklistsMunicipalityIdAndEmployeeManagerUsername(municipalityId, userId);
 	}
 
 	@Test
@@ -229,7 +229,7 @@ class EmployeeChecklistIntegrationTest {
 			.withLocked(true)
 			.build();
 
-		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		// Act
 		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateAllFulfilmentForAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request));
@@ -238,7 +238,7 @@ class EmployeeChecklistIntegrationTest {
 		assertThat(e.getStatus()).isEqualTo(Status.BAD_REQUEST);
 		assertThat(e.getMessage()).isEqualTo("Bad Request: Employee checklist with id %s is locked and can not be modified.".formatted(employeeChecklistId));
 
-		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 	}
 
 	@Test
@@ -252,13 +252,13 @@ class EmployeeChecklistIntegrationTest {
 			.withTasksFulfilmentStatus(fulfilmentStatus)
 			.build();
 		final var entity = EmployeeChecklistEntity.builder()
-			.withChecklist(ChecklistEntity.builder()
+			.withChecklists(List.of(ChecklistEntity.builder()
 				.withTasks(List.of(TaskEntity.builder()
 					.withPhase(PhaseEntity.builder()
 						.withId(phaseId)
 						.build())
 					.build()))
-				.build())
+				.build()))
 			.withCustomTasks(List.of(CustomTaskEntity.builder()
 				.withPhase(PhaseEntity.builder()
 					.withId(phaseId)
@@ -266,14 +266,14 @@ class EmployeeChecklistIntegrationTest {
 				.build()))
 			.build();
 
-		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 		when(employeeChecklistsRepositoryMock.save(entity)).thenReturn(entity);
 
 		// Act
 		final var result = integration.updateAllFulfilmentForAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request);
 
 		// Verify and assert
-		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 		verify(employeeChecklistsRepositoryMock).save(entity);
 
 		assertThat(result.getFulfilments()).hasSize(1).allSatisfy(f -> {
@@ -297,13 +297,13 @@ class EmployeeChecklistIntegrationTest {
 			.withTasksFulfilmentStatus(fulfilmentStatus)
 			.build();
 		final var entity = EmployeeChecklistEntity.builder()
-			.withChecklist(ChecklistEntity.builder()
+			.withChecklists(List.of(ChecklistEntity.builder()
 				.withTasks(List.of(TaskEntity.builder()
 					.withPhase(PhaseEntity.builder()
 						.withId(phaseId)
 						.build())
 					.build()))
-				.build())
+				.build()))
 			.withCustomTasks(List.of(CustomTaskEntity.builder()
 				.withPhase(PhaseEntity.builder()
 					.withId(phaseId)
@@ -313,21 +313,21 @@ class EmployeeChecklistIntegrationTest {
 
 		entity.setFulfilments(List.of(FulfilmentEntity.builder()
 			.withEmployeeChecklist(entity)
-			.withTask(entity.getChecklist().getTasks().getFirst())
+			.withTask(entity.getChecklists().getFirst().getTasks().getFirst())
 			.build()));
 		entity.setCustomFulfilments(List.of(CustomFulfilmentEntity.builder()
 			.withEmployeeChecklist(entity)
 			.withCustomTask(entity.getCustomTasks().getFirst())
 			.build()));
 
-		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 		when(employeeChecklistsRepositoryMock.save(entity)).thenReturn(entity);
 
 		// Act
 		final var result = integration.updateAllFulfilmentForAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request);
 
 		// Verify and assert
-		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 		verify(employeeChecklistsRepositoryMock).save(entity);
 
 		assertThat(result.getFulfilments()).hasSize(1).allSatisfy(f -> {
@@ -349,13 +349,13 @@ class EmployeeChecklistIntegrationTest {
 		final var request = EmployeeChecklistPhaseUpdateRequest.builder().build();
 		final var entity = EmployeeChecklistEntity.builder().build();
 
-		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		// Act
 		final var result = integration.updateAllFulfilmentForAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request);
 
 		// Verify and assert
-		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 		assertThat(result).isEqualTo(entity);
 	}
 
@@ -374,7 +374,7 @@ class EmployeeChecklistIntegrationTest {
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s was not found within municipality %s.".formatted(employeeChecklistId, municipalityId));
 
-		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 	}
 
 	@Test
@@ -384,13 +384,13 @@ class EmployeeChecklistIntegrationTest {
 		final var employeeChecklistId = UUID.randomUUID().toString();
 		final var entity = EmployeeChecklistEntity.builder().build();
 
-		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		// Act
 		final var result = integration.fetchEmployeeChecklist(municipalityId, employeeChecklistId);
 
 		// Verify and assert
-		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 		assertThat(result).isEqualTo(entity);
 	}
 
@@ -407,7 +407,7 @@ class EmployeeChecklistIntegrationTest {
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s was not found within municipality %s.".formatted(employeeChecklistId, municipalityId));
 
-		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 	}
 
 	@Test
@@ -425,16 +425,16 @@ class EmployeeChecklistIntegrationTest {
 			.build();
 
 		final var entity = EmployeeChecklistEntity.builder()
-			.withChecklist(ChecklistEntity.builder()
+			.withChecklists(List.of(ChecklistEntity.builder()
 				.withTasks(List.of(TaskEntity.builder()
 					.withId(taskId)
 					.withPhase(PhaseEntity.builder()
 						.build())
 					.build()))
-				.build())
+				.build()))
 			.build();
 
-		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		// Act
 		final var result = integration.updateCommonTaskFulfilment(municipalityId, employeeChecklistId, taskId, request);
@@ -443,7 +443,7 @@ class EmployeeChecklistIntegrationTest {
 		assertThat(result.getCompleted()).isEqualTo(fulfilmentStatus);
 		assertThat(result.getResponseText()).isEqualTo(responseText);
 
-		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 		verify(employeeChecklistsRepositoryMock).save(entity);
 	}
 
@@ -462,20 +462,20 @@ class EmployeeChecklistIntegrationTest {
 			.build();
 
 		final var entity = EmployeeChecklistEntity.builder()
-			.withChecklist(ChecklistEntity.builder()
+			.withChecklists(List.of(ChecklistEntity.builder()
 				.withTasks(List.of(TaskEntity.builder()
 					.withId(taskId)
 					.withPhase(PhaseEntity.builder()
 						.build())
 					.build()))
-				.build())
+				.build()))
 			.build();
 
 		entity.setFulfilments(List.of(FulfilmentEntity.builder()
-			.withTask(entity.getChecklist().getTasks().getFirst())
+			.withTask(entity.getChecklists().getFirst().getTasks().getFirst())
 			.build()));
 
-		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		// Act
 		final var result = integration.updateCommonTaskFulfilment(municipalityId, employeeChecklistId, taskId, request);
@@ -485,7 +485,7 @@ class EmployeeChecklistIntegrationTest {
 		assertThat(result.getCompleted()).isEqualTo(fulfilmentStatus);
 		assertThat(result.getResponseText()).isEqualTo(responseText);
 
-		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 		verify(employeeChecklistsRepositoryMock).save(entity);
 	}
 
@@ -504,16 +504,16 @@ class EmployeeChecklistIntegrationTest {
 			.build();
 
 		final var entity = EmployeeChecklistEntity.builder()
-			.withChecklist(ChecklistEntity.builder()
+			.withChecklists(List.of(ChecklistEntity.builder()
 				.withTasks(List.of(TaskEntity.builder()
 					.withId(UUID.randomUUID().toString())
 					.withPhase(PhaseEntity.builder()
 						.build())
 					.build()))
-				.build())
+				.build()))
 			.build();
 
-		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		// Act
 		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateCommonTaskFulfilment(municipalityId, employeeChecklistId, taskId, request));
@@ -522,7 +522,7 @@ class EmployeeChecklistIntegrationTest {
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: No fulfilment information found for task with id %s in employee checklist with id %s.".formatted(taskId, employeeChecklistId));
 
-		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 	}
 
 	@Test
@@ -540,7 +540,7 @@ class EmployeeChecklistIntegrationTest {
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s was not found within municipality %s.".formatted(employeeChecklistId, municipalityId));
 
-		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 	}
 
 	@Test
@@ -563,7 +563,7 @@ class EmployeeChecklistIntegrationTest {
 				.build()))
 			.build();
 
-		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		// Act
 		final var result = integration.updateCustomTaskFulfilment(municipalityId, employeeChecklistId, taskId, request);
@@ -573,7 +573,7 @@ class EmployeeChecklistIntegrationTest {
 		assertThat(result.getCompleted()).isEqualTo(fulfilmentStatus);
 		assertThat(result.getResponseText()).isEqualTo(responseText);
 
-		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 		verify(employeeChecklistsRepositoryMock).save(entity);
 	}
 
@@ -601,7 +601,7 @@ class EmployeeChecklistIntegrationTest {
 			.withCustomTask(entity.getCustomTasks().getFirst())
 			.build()));
 
-		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		// Act
 		final var result = integration.updateCustomTaskFulfilment(municipalityId, employeeChecklistId, taskId, request);
@@ -611,7 +611,7 @@ class EmployeeChecklistIntegrationTest {
 		assertThat(result.getCompleted()).isEqualTo(fulfilmentStatus);
 		assertThat(result.getResponseText()).isEqualTo(responseText);
 
-		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 		verify(employeeChecklistsRepositoryMock).save(entity);
 	}
 
@@ -635,7 +635,7 @@ class EmployeeChecklistIntegrationTest {
 				.build()))
 			.build();
 
-		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		// Act
 		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateCustomTaskFulfilment(municipalityId, employeeChecklistId, taskId, request));
@@ -644,7 +644,7 @@ class EmployeeChecklistIntegrationTest {
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: No fulfilment information found for task with id %s in employee checklist with id %s.".formatted(taskId, employeeChecklistId));
 
-		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 	}
 
 	@Test
@@ -662,7 +662,7 @@ class EmployeeChecklistIntegrationTest {
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s was not found within municipality %s.".formatted(employeeChecklistId, municipalityId));
 
-		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 	}
 
 	@Test
@@ -670,17 +670,28 @@ class EmployeeChecklistIntegrationTest {
 		// Arrange
 		final var municipalityId = "municipalityId";
 		final var employeeChecklistId = UUID.randomUUID().toString();
-		final var entity = EmployeeChecklistEntity.builder().build();
+		final var managerEntity = ManagerEntity.builder()
+			.build();
+		final var employeeEntity = EmployeeEntity.builder()
+			.withId(UUID.randomUUID().toString())
+			.withManager(managerEntity)
+			.build();
+		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
+			.withEmployee(employeeEntity)
+			.build();
+		managerEntity.getEmployees().add(employeeEntity);
 
-		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(employeeChecklistEntity));
 
 		// Act
 		integration.deleteEmployeeChecklist(municipalityId, employeeChecklistId);
 
 		// Verify and assert
-		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
-		verify(delegateRepositoryMock).deleteByEmployeeChecklist(entity);
-		verify(employeeChecklistsRepositoryMock).deleteById(employeeChecklistId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
+		verify(delegateRepositoryMock).deleteByEmployeeChecklist(employeeChecklistEntity);
+		verify(employeeChecklistsRepositoryMock).delete(employeeChecklistEntity);
+		verify(employeeRepositoryMock).delete(employeeEntity);
+		assertThat(managerEntity.getEmployees()).isEmpty();
 	}
 
 	@Test
@@ -693,11 +704,11 @@ class EmployeeChecklistIntegrationTest {
 			.withName("someName")
 			.build();
 
-		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		integration.setMentor(municipalityId, employeeChecklistId, mentor);
 
-		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 		verify(employeeChecklistsRepositoryMock).save(employeeChecklistEntityCaptor.capture());
 
 		assertThat(employeeChecklistEntityCaptor.getValue()).satisfies(savedEmployeeChecklistEntity -> assertThat(savedEmployeeChecklistEntity.getMentor()).satisfies(mentorEntity -> {
@@ -712,11 +723,11 @@ class EmployeeChecklistIntegrationTest {
 		final var employeeChecklistId = UUID.randomUUID().toString();
 		final var entity = EmployeeChecklistEntity.builder().build();
 
-		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		integration.deleteMentor(municipalityId, employeeChecklistId);
 
-		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 		verify(employeeChecklistsRepositoryMock).save(employeeChecklistEntityCaptor.capture());
 
 		assertThat(employeeChecklistEntityCaptor.getValue()).satisfies(savedEmployeeChecklistEntity -> assertThat(savedEmployeeChecklistEntity.getMentor()).isNull());
@@ -735,7 +746,7 @@ class EmployeeChecklistIntegrationTest {
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s was not found within municipality %s.".formatted(employeeChecklistId, municipalityId));
 
-		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 	}
 
 	@Test
@@ -746,11 +757,11 @@ class EmployeeChecklistIntegrationTest {
 		final var phaseId = UUID.randomUUID().toString();
 		final var request = CustomTaskCreateRequest.builder().withSortOrder(1).build();
 		final var entity = EmployeeChecklistEntity.builder()
-			.withChecklist(ChecklistEntity.builder()
-				.build())
+			.withChecklists(List.of(ChecklistEntity.builder()
+				.build()))
 			.build();
 
-		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 		when(phaseRepositoryMock.findByIdAndMunicipalityId(phaseId, municipalityId)).thenReturn(Optional.of(PhaseEntity.builder().withId(phaseId).build()));
 
 		// Act
@@ -759,7 +770,7 @@ class EmployeeChecklistIntegrationTest {
 		// Verify and assert
 		assertThat(result).isNotNull().isInstanceOf(CustomTaskEntity.class);
 
-		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 		verify(phaseRepositoryMock).findByIdAndMunicipalityId(phaseId, municipalityId);
 		verify(employeeChecklistsRepositoryMock).save(entity);
 		verify(customTaskRepositoryMock).save(result);
@@ -779,7 +790,7 @@ class EmployeeChecklistIntegrationTest {
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s was not found within municipality %s.".formatted(employeeChecklistId, municipalityId));
 
-		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 	}
 
 	@Test
@@ -790,11 +801,11 @@ class EmployeeChecklistIntegrationTest {
 		final var phaseId = UUID.randomUUID().toString();
 		final var request = CustomTaskCreateRequest.builder().withSortOrder(1).build();
 		final var entity = EmployeeChecklistEntity.builder()
-			.withChecklist(ChecklistEntity.builder()
-				.build())
+			.withChecklists(List.of(ChecklistEntity.builder()
+				.build()))
 			.build();
 
-		when(employeeChecklistsRepositoryMock.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
+		when(employeeChecklistsRepositoryMock.findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId)).thenReturn(Optional.of(entity));
 
 		final var e = assertThrows(ThrowableProblem.class, () -> integration.createCustomTask(municipalityId, employeeChecklistId, phaseId, request));
 
@@ -802,7 +813,7 @@ class EmployeeChecklistIntegrationTest {
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Phase with id %s was not found within municipality %s.".formatted(phaseId, municipalityId));
 
-		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId);
+		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 		verify(phaseRepositoryMock).findByIdAndMunicipalityId(phaseId, municipalityId);
 	}
 
@@ -1072,7 +1083,7 @@ class EmployeeChecklistIntegrationTest {
 		assertThat(employeeEntityCaptor.getValue().getEmployeeChecklist()).isNull();
 		assertThat(employeeEntityCaptor.getValue().getManager()).isNotNull();
 		assertThat(employeeChecklistEntityCaptor.getValue().getEmployee()).isEqualTo(employeeEntity);
-		assertThat(employeeChecklistEntityCaptor.getValue().getChecklist()).isEqualTo(checklistEntity);
+		assertThat(employeeChecklistEntityCaptor.getValue().getChecklists()).hasSize(1).containsExactly(checklistEntity);
 		assertThat(employeeChecklistEntityCaptor.getValue().getCustomFulfilments()).isNullOrEmpty();
 		assertThat(employeeChecklistEntityCaptor.getValue().getCustomTasks()).isNullOrEmpty();
 		assertThat(employeeChecklistEntityCaptor.getValue().getFulfilments()).isNullOrEmpty();
@@ -1144,7 +1155,9 @@ class EmployeeChecklistIntegrationTest {
 		verify(managerRepositoryMock).findById(managerUuid.toString());
 		verify(employeeRepositoryMock).save(employeeEntityCaptor.capture());
 		verify(organizationRepositoryMock, times(2)).findByOrganizationNumberAndMunicipalityId(orgId, municipalityId);
-		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(companyId, municipalityId);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(212, municipalityId);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(21, municipalityId);
+		verify(organizationRepositoryMock, times(2)).findByOrganizationNumberAndMunicipalityId(companyId, municipalityId);
 		verify(employeeChecklistsRepositoryMock).save(employeeChecklistEntityCaptor.capture());
 
 		assertThat(employeeEntityCaptor.getValue().getDepartment()).isEqualTo(departmentEntity);
@@ -1152,7 +1165,7 @@ class EmployeeChecklistIntegrationTest {
 		assertThat(employeeEntityCaptor.getValue().getManager()).isEqualTo(managerEntity);
 		assertThat(employeeEntityCaptor.getValue().getEmployeeChecklist()).isNull();
 		assertThat(employeeChecklistEntityCaptor.getValue().getEmployee()).isEqualTo(employeeEntity);
-		assertThat(employeeChecklistEntityCaptor.getValue().getChecklist()).isEqualTo(departmentChecklistEntity);
+		assertThat(employeeChecklistEntityCaptor.getValue().getChecklists()).hasSize(2).containsExactlyInAnyOrder(companyChecklistEntity, departmentChecklistEntity);
 		assertThat(employeeChecklistEntityCaptor.getValue().getCustomFulfilments()).isNullOrEmpty();
 		assertThat(employeeChecklistEntityCaptor.getValue().getCustomTasks()).isNullOrEmpty();
 		assertThat(employeeChecklistEntityCaptor.getValue().getFulfilments()).isNullOrEmpty();

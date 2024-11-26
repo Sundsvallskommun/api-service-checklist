@@ -59,15 +59,15 @@ class ManagerEmailSchedulerTest {
 			.build();
 
 		when(checklistPropertiesMock.managedMunicipalityIds()).thenReturn(List.of(municipalityId));
-		when(employeeChecklistRepositoryMock.findAllByChecklistMunicipalityIdAndCorrespondenceIsNull(municipalityId)).thenReturn(List.of(employeeChecklistEntity));
+		when(employeeChecklistRepositoryMock.findAllByChecklistsMunicipalityIdAndCorrespondenceIsNull(municipalityId)).thenReturn(List.of(employeeChecklistEntity));
 
 		// Act
 		scheduler.execute();
 
 		// Assert and verify
 		verify(checklistPropertiesMock, times(2)).managedMunicipalityIds();
-		verify(employeeChecklistRepositoryMock).findAllByChecklistMunicipalityIdAndCorrespondenceIsNull(municipalityId);
-		verify(employeeChecklistRepositoryMock).findAllByChecklistMunicipalityIdAndCorrespondenceCorrespondenceStatus(municipalityId, NOT_SENT);
+		verify(employeeChecklistRepositoryMock).findAllByChecklistsMunicipalityIdAndCorrespondenceIsNull(municipalityId);
+		verify(employeeChecklistRepositoryMock).findAllByChecklistsMunicipalityIdAndCorrespondenceCorrespondenceStatus(municipalityId, NOT_SENT);
 		verify(communicationServiceMock).sendEmail(employeeChecklistEntity);
 		verifyNoMoreInteractions(employeeChecklistRepositoryMock, communicationServiceMock);
 	}
@@ -90,15 +90,15 @@ class ManagerEmailSchedulerTest {
 			.build();
 
 		when(checklistPropertiesMock.managedMunicipalityIds()).thenReturn(List.of(municipalityId));
-		when(employeeChecklistRepositoryMock.findAllByChecklistMunicipalityIdAndCorrespondenceCorrespondenceStatus(municipalityId, NOT_SENT)).thenReturn(List.of(employeeChecklistEntity));
+		when(employeeChecklistRepositoryMock.findAllByChecklistsMunicipalityIdAndCorrespondenceCorrespondenceStatus(municipalityId, NOT_SENT)).thenReturn(List.of(employeeChecklistEntity));
 
 		// Act
 		scheduler.execute();
 
 		// Assert and verify
 		verify(checklistPropertiesMock, times(2)).managedMunicipalityIds();
-		verify(employeeChecklistRepositoryMock).findAllByChecklistMunicipalityIdAndCorrespondenceIsNull(municipalityId);
-		verify(employeeChecklistRepositoryMock).findAllByChecklistMunicipalityIdAndCorrespondenceCorrespondenceStatus(municipalityId, NOT_SENT);
+		verify(employeeChecklistRepositoryMock).findAllByChecklistsMunicipalityIdAndCorrespondenceIsNull(municipalityId);
+		verify(employeeChecklistRepositoryMock).findAllByChecklistsMunicipalityIdAndCorrespondenceCorrespondenceStatus(municipalityId, NOT_SENT);
 		verify(communicationServiceMock).sendEmail(employeeChecklistEntity);
 		verifyNoMoreInteractions(employeeChecklistRepositoryMock, communicationServiceMock);
 	}
@@ -119,15 +119,15 @@ class ManagerEmailSchedulerTest {
 			.build();
 
 		when(checklistPropertiesMock.managedMunicipalityIds()).thenReturn(List.of(municipalityId));
-		when(employeeChecklistRepositoryMock.findAllByChecklistMunicipalityIdAndCorrespondenceIsNull(municipalityId)).thenReturn(List.of(employeeChecklistEntity));
+		when(employeeChecklistRepositoryMock.findAllByChecklistsMunicipalityIdAndCorrespondenceIsNull(municipalityId)).thenReturn(List.of(employeeChecklistEntity));
 
 		// Act
 		scheduler.execute();
 
 		// Assert and verify
 		verify(checklistPropertiesMock, times(2)).managedMunicipalityIds();
-		verify(employeeChecklistRepositoryMock).findAllByChecklistMunicipalityIdAndCorrespondenceIsNull(municipalityId);
-		verify(employeeChecklistRepositoryMock).findAllByChecklistMunicipalityIdAndCorrespondenceCorrespondenceStatus(municipalityId, NOT_SENT);
+		verify(employeeChecklistRepositoryMock).findAllByChecklistsMunicipalityIdAndCorrespondenceIsNull(municipalityId);
+		verify(employeeChecklistRepositoryMock).findAllByChecklistsMunicipalityIdAndCorrespondenceCorrespondenceStatus(municipalityId, NOT_SENT);
 		verify(employeeChecklistRepositoryMock).save(employeeChecklistEntity);
 		verifyNoMoreInteractions(employeeChecklistRepositoryMock, communicationServiceMock);
 	}
@@ -151,15 +151,15 @@ class ManagerEmailSchedulerTest {
 			.build();
 
 		when(checklistPropertiesMock.managedMunicipalityIds()).thenReturn(List.of(municipalityId));
-		when(employeeChecklistRepositoryMock.findAllByChecklistMunicipalityIdAndCorrespondenceCorrespondenceStatus(municipalityId, NOT_SENT)).thenReturn(List.of(employeeChecklistEntity));
+		when(employeeChecklistRepositoryMock.findAllByChecklistsMunicipalityIdAndCorrespondenceCorrespondenceStatus(municipalityId, NOT_SENT)).thenReturn(List.of(employeeChecklistEntity));
 
 		// Act
 		scheduler.execute();
 
 		// Assert and verify
 		verify(checklistPropertiesMock, times(2)).managedMunicipalityIds();
-		verify(employeeChecklistRepositoryMock).findAllByChecklistMunicipalityIdAndCorrespondenceIsNull(municipalityId);
-		verify(employeeChecklistRepositoryMock).findAllByChecklistMunicipalityIdAndCorrespondenceCorrespondenceStatus(municipalityId, NOT_SENT);
+		verify(employeeChecklistRepositoryMock).findAllByChecklistsMunicipalityIdAndCorrespondenceIsNull(municipalityId);
+		verify(employeeChecklistRepositoryMock).findAllByChecklistsMunicipalityIdAndCorrespondenceCorrespondenceStatus(municipalityId, NOT_SENT);
 		verify(employeeChecklistRepositoryMock).save(employeeChecklistEntity);
 		verifyNoMoreInteractions(employeeChecklistRepositoryMock, communicationServiceMock);
 	}

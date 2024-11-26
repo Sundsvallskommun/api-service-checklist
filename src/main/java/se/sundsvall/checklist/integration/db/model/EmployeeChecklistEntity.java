@@ -7,6 +7,8 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.TimeZoneStorage;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -18,16 +20,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-
-import org.hibernate.annotations.TimeZoneStorage;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -73,9 +73,7 @@ public class EmployeeChecklistEntity {
 	@Column(name = "locked")
 	private boolean locked;
 
-	@OneToOne(cascade = {
-		CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH
-	}, fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "employee_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_employee_checklist_employee"))
 	private EmployeeEntity employee;
 
@@ -85,11 +83,22 @@ public class EmployeeChecklistEntity {
 	@JoinColumn(name = "correspondence_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_employee_checklist_correspondence"))
 	private CorrespondenceEntity correspondence;
 
-	@ManyToOne(cascade = {
-		CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH
-	}, fetch = FetchType.LAZY)
-	@JoinColumn(name = "checklist_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_employee_checklist_checklist"))
-	private ChecklistEntity checklist;
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "referred_checklist",
+		joinColumns = {
+			@JoinColumn(name = "employee_checklist_id")
+		},
+		foreignKey = @ForeignKey(name = "fk_referred_checklist_employee_checklist"),
+		inverseJoinColumns = {
+			@JoinColumn(name = "checklist_id")
+		},
+		inverseForeignKey = @ForeignKey(name = "fk_referred_checklist_checklist"),
+		uniqueConstraints = {
+			@UniqueConstraint(name = "uk_employee_checklist_id_checklist_id", columnNames = {
+				"employee_checklist_id", "checklist_id"
+			})
+		})
+	private List<ChecklistEntity> checklists;
 
 	@Builder.Default
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "employeeChecklist")

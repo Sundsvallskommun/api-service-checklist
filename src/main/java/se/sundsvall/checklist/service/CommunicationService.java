@@ -31,14 +31,14 @@ public class CommunicationService {
 	}
 
 	public Correspondence fetchCorrespondence(String municipalityId, String employeeChecklistId) {
-		return employeeChecklistRepository.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)
+		return employeeChecklistRepository.findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId)
 			.map(EmployeeChecklistEntity::getCorrespondence)
 			.map(CorrespondenceMapper::toCorrespondence)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, "Employee checklist with id %s not found within municipality %s.".formatted(employeeChecklistId, municipalityId)));
 	}
 
 	public void sendEmail(String municipalityId, String employeeChecklistId) {
-		final var entity = employeeChecklistRepository.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)
+		final var entity = employeeChecklistRepository.findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, "Employee checklist with id %s not found within municipality %s.".formatted(employeeChecklistId, municipalityId)));
 
 		mailHandler.sendEmail(entity, emailTemplate);

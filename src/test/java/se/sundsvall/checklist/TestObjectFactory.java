@@ -61,7 +61,7 @@ public final class TestObjectFactory {
 			.withId(UUID.randomUUID().toString())
 			.withEmployee(createEmployeeEntity())
 			.withCorrespondence(createCorrespondenceEntity())
-			.withChecklist(createChecklistEntity())
+			.withChecklists(List.of(createChecklistEntity()))
 			.withCustomTasks(new ArrayList<>(List.of(createCustomTaskEntity())))
 			.withFulfilments(new ArrayList<>(List.of(createFulfilmentEntity())))
 			.withEndDate(LocalDate.now().plusDays(5))

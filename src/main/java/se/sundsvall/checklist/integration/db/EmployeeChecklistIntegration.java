@@ -17,6 +17,7 @@ import static se.sundsvall.checklist.service.util.ServiceUtils.getMainEmployment
 import static se.sundsvall.checklist.service.util.StringUtils.toReadableString;
 import static se.sundsvall.checklist.service.util.VerificationUtils.verifyUnlockedEmployeeChecklist;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +27,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.zalando.problem.Problem;
 import org.zalando.problem.ThrowableProblem;
 
@@ -96,11 +98,11 @@ public class EmployeeChecklistIntegration {
 	}
 
 	public Optional<EmployeeChecklistEntity> fetchOptionalEmployeeChecklist(String municipalityId, String username) {
-		return ofNullable(employeeChecklistRepository.findByChecklistMunicipalityIdAndEmployeeUsername(municipalityId, username));
+		return ofNullable(employeeChecklistRepository.findByChecklistsMunicipalityIdAndEmployeeUsername(municipalityId, username));
 	}
 
 	public List<EmployeeChecklistEntity> fetchEmployeeChecklistsForManager(String municipalityId, String username) {
-		return employeeChecklistRepository.findAllByChecklistMunicipalityIdAndEmployeeManagerUsername(municipalityId, username);
+		return employeeChecklistRepository.findAllByChecklistsMunicipalityIdAndEmployeeManagerUsername(municipalityId, username);
 	}
 
 	@Transactional
@@ -130,7 +132,9 @@ public class EmployeeChecklistIntegration {
 		}
 
 		// Update of all common tasks (if such exists) in phase
-		employeeChecklist.getChecklist().getTasks().stream()
+		employeeChecklist.getChecklists().stream()
+			.map(ChecklistEntity::getTasks)
+			.flatMap(List::stream)
 			.filter(task -> Objects.equals(task.getPhase().getId(), phaseId))
 			.forEach(task -> updateCommonTask(employeeChecklist, task, request.getTasksFulfilmentStatus(), request.getUpdatedBy()));
 
@@ -161,7 +165,7 @@ public class EmployeeChecklistIntegration {
 	}
 
 	public EmployeeChecklistEntity fetchEmployeeChecklist(String municipalityId, String employeeChecklistId) {
-		return employeeChecklistRepository.findByIdAndChecklistMunicipalityId(employeeChecklistId, municipalityId)
+		return employeeChecklistRepository.findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NO_MATCHING_EMPLOYEE_CHECKLIST_FOUND.formatted(employeeChecklistId, municipalityId)));
 	}
 
@@ -169,7 +173,9 @@ public class EmployeeChecklistIntegration {
 	public FulfilmentEntity updateCommonTaskFulfilment(String municipalityId, String employeeChecklistId, String taskId, EmployeeChecklistTaskUpdateRequest request) {
 		final var employeeChecklist = fetchEmployeeChecklist(municipalityId, employeeChecklistId);
 
-		employeeChecklist.getChecklist().getTasks().stream()
+		employeeChecklist.getChecklists().stream()
+			.map(ChecklistEntity::getTasks)
+			.flatMap(List::stream)
 			.filter(task -> Objects.equals(task.getId(), taskId))
 			.findAny()
 			.ifPresent(task -> {
@@ -226,9 +232,13 @@ public class EmployeeChecklistIntegration {
 	@Transactional
 	public void deleteEmployeeChecklist(String municipalityId, String employeeChecklistId) {
 		final var employeeChecklist = fetchEmployeeChecklist(municipalityId, employeeChecklistId);
+		final var employee = employeeChecklist.getEmployee();
+		final var manager = employeeChecklist.getEmployee().getManager();
 
 		delegateRepository.deleteByEmployeeChecklist(employeeChecklist);
-		employeeChecklistRepository.deleteById(employeeChecklistId);
+		employeeChecklistRepository.delete(employeeChecklist);
+		manager.getEmployees().remove(employee); // This will remove the manager if it no longer has any employees connected to it
+		employeeRepository.delete(employee);
 	}
 
 	@Transactional
@@ -315,25 +325,24 @@ public class EmployeeChecklistIntegration {
 	}
 
 	private void initiateEmployeeChecklist(String municipalityId, EmployeeEntity employeeEntity, OrganizationTree orgTree) {
-		final var checklistEntity = retrieveClosestAvailableChecklist(municipalityId, orgTree.getTree().descendingMap().values().iterator())
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NO_MATCHING_CHECKLIST_FOUND.formatted(employeeEntity.getUsername(),
-				toReadableString(orgTree.getTree().values().stream().map(OrganizationLine::getOrgId).toList()))));
-
-		employeeChecklistRepository.save(toEmployeeChecklistEntity(employeeEntity, checklistEntity));
-	}
-
-	private Optional<ChecklistEntity> retrieveClosestAvailableChecklist(String municipalityId, Iterator<OrganizationLine> organizationIterator) {
-		if (organizationIterator.hasNext()) {
-			return retrieveChecklist(municipalityId, Integer.parseInt(organizationIterator.next().getOrgId()))
-				.or(() -> retrieveClosestAvailableChecklist(municipalityId, organizationIterator));
+		final var checklistEntities = retrieveChecklists(municipalityId, orgTree.getTree().descendingMap().values().iterator(), new ArrayList<>());
+		if (CollectionUtils.isEmpty(checklistEntities)) {
+			throw Problem.valueOf(NOT_FOUND, NO_MATCHING_CHECKLIST_FOUND.formatted(employeeEntity.getUsername(),
+				toReadableString(orgTree.getTree().values().stream().map(OrganizationLine::getOrgId).toList())));
 		}
-		return Optional.empty();
+
+		employeeChecklistRepository.save(toEmployeeChecklistEntity(employeeEntity, checklistEntities));
 	}
 
-	private Optional<ChecklistEntity> retrieveChecklist(String municipalityId, int organizationNumber) {
-		final var possibleMatch = organizationRepository.findByOrganizationNumberAndMunicipalityId(organizationNumber, municipalityId);
+	private List<ChecklistEntity> retrieveChecklists(String municipalityId, Iterator<OrganizationLine> organizationIterator, List<ChecklistEntity> resultList) {
+		organizationIterator.forEachRemaining(orgLine -> retrieveActiveChecklist(municipalityId, Integer.parseInt(orgLine.getOrgId()))
+			.ifPresent(resultList::add));
 
-		return possibleMatch
+		return resultList;
+	}
+
+	private Optional<ChecklistEntity> retrieveActiveChecklist(String municipalityId, int organizationNumber) {
+		return organizationRepository.findByOrganizationNumberAndMunicipalityId(organizationNumber, municipalityId)
 			.map(OrganizationEntity::getChecklists)
 			.map(List::stream)
 			.orElse(Stream.empty())

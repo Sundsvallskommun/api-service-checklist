@@ -28,6 +28,7 @@ import se.sundsvall.checklist.integration.db.model.ManagerEntity;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
 import se.sundsvall.checklist.integration.db.repository.DelegateRepository;
 import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistRepository;
+import se.sundsvall.checklist.integration.db.repository.EmployeeRepository;
 import se.sundsvall.checklist.integration.db.repository.ManagerRepository;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
@@ -45,6 +46,9 @@ class EmployeeChecklistIT extends AbstractAppTest {
 
 	@Autowired
 	private EmployeeChecklistRepository employeeChecklistRepository;
+
+	@Autowired
+	private EmployeeRepository employeeRepository;
 
 	@Autowired
 	private CustomTaskRepository customTaskRepository;
@@ -93,7 +97,7 @@ class EmployeeChecklistIT extends AbstractAppTest {
 		final var filter = Example.of(ManagerEntity.builder().withUsername("fman4agr").build());
 
 		// Verify that manager is not present in database before execution
-		assertThat(managerRepository.findAll(filter)).isEmpty();
+		assertThat(managerRepository.count(filter)).isZero();
 
 		setupCall()
 			.withServicePath(PATH_PREFIX + "/manager/eman3agr")
@@ -104,15 +108,19 @@ class EmployeeChecklistIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 
 		// Verify that manager is created in database after execution
-		assertThat(managerRepository.findAll(filter)).hasSize(1);
+		assertThat(managerRepository.count(filter)).isOne();
 	}
 
 	@Test
 	void test05_deleteEmployeeChecklist() {
 		final var employeeChecklistId = "8fcc1fc7-bcda-4db6-9375-ff99961ef011";
+		final var employeeId = "bfd69468-bd32-4b84-a3b0-c5e1742a5a34";
+		final var managerId = "9d2adcf6-9234-4faf-a6c9-0c1c7518b534";
 		final var filter = Example.of(EmployeeChecklistEntity.builder().withId(employeeChecklistId).build());
 
 		assertThat(employeeChecklistRepository.count(filter)).isOne();
+		assertThat(employeeRepository.existsById(employeeId)).isTrue();
+		assertThat(managerRepository.existsById(managerId)).isTrue();
 
 		setupCall()
 			.withServicePath(PATH_PREFIX + "/" + employeeChecklistId)
@@ -122,16 +130,22 @@ class EmployeeChecklistIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 
 		assertThat(employeeChecklistRepository.count(filter)).isZero();
+		assertThat(employeeRepository.existsById(employeeId)).isFalse();
+		assertThat(managerRepository.existsById(managerId)).isFalse();
 	}
 
 	@Test
 	void test06_removeDelegatedEmployeeChecklist() {
 		final var employeeChecklistId = "e4474a9b-1a57-49b8-bec8-2e50db600fbb";
+		final var employeeId = "87b0d9c2-c06e-409d-b77e-63f427e0dbc2";
+		final var managerId = "f59918bc-a8f1-4f97-abe3-9f80f26e6bf2";
 		final var delegateId = "fcfff6b0-d66f-4f09-a77c-7b02979fbe07";
 		final var employeeChecklistFilter = Example.of(EmployeeChecklistEntity.builder().withId(employeeChecklistId).build());
 		final var delegateFilter = Example.of(DelegateEntity.builder().withId(delegateId).build());
 
 		assertThat(employeeChecklistRepository.count(employeeChecklistFilter)).isOne();
+		assertThat(employeeRepository.existsById(employeeId)).isTrue();
+		assertThat(managerRepository.existsById(managerId)).isTrue();
 		assertThat(delegateRepository.count(delegateFilter)).isOne();
 
 		setupCall()
@@ -142,6 +156,8 @@ class EmployeeChecklistIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 
 		assertThat(employeeChecklistRepository.count(employeeChecklistFilter)).isZero();
+		assertThat(employeeRepository.existsById(employeeId)).isFalse();
+		assertThat(managerRepository.existsById(managerId)).isTrue();
 		assertThat(delegateRepository.count(delegateFilter)).isZero();
 	}
 

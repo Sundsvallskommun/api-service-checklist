@@ -28,11 +28,11 @@ class ServiceUtilsTest {
 		// Arrange
 		final var taskId = UUID.randomUUID().toString();
 		final var employeeChecklist = EmployeeChecklistEntity.builder()
-			.withChecklist(ChecklistEntity.builder()
+			.withChecklists(List.of(ChecklistEntity.builder()
 				.withTasks(List.of(TaskEntity.builder()
 					.withId(taskId)
 					.build()))
-				.build())
+				.build()))
 			.build();
 
 		// Act and assert

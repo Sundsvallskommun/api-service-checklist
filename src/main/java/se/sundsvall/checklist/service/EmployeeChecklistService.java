@@ -29,6 +29,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +94,7 @@ public class EmployeeChecklistService {
 		return employeeChecklist
 			.map(this::handleUpdatedEmployeeInformation)
 			.map(EmployeeChecklistMapper::toEmployeeChecklist)
-			.map(list -> decorateWithCustomTasks(list, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(list.getId(), municipalityId)))
+			.map(list -> decorateWithCustomTasks(list, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(list.getId(), municipalityId)))
 			.map(list -> removeObsoleteTasks(list, employeeChecklist))
 			.map(this::initializeWithEmptyFulfilment)
 			.map(list -> decorateWithFulfilment(list, employeeChecklist))
@@ -110,7 +111,7 @@ public class EmployeeChecklistService {
 			.map(this::handleUpdatedEmployeeInformation)
 			.filter(list -> Objects.equals(username, list.getEmployee().getManager().getUsername())) // After possible update, the checklist might not be handled by sent in username anymore
 			.map(EmployeeChecklistMapper::toEmployeeChecklist)
-			.map(list -> decorateWithCustomTasks(list, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(list.getId(), municipalityId)))
+			.map(list -> decorateWithCustomTasks(list, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(list.getId(), municipalityId)))
 			.map(list -> removeObsoleteTasks(list, fetchEntity(employeeChecklists, list.getId())))
 			.map(this::initializeWithEmptyFulfilment)
 			.map(list -> decorateWithFulfilment(list, fetchEntity(employeeChecklists, list.getId())))
@@ -184,7 +185,7 @@ public class EmployeeChecklistService {
 	public CustomTask readCustomTask(String municipalityId, String employeeChecklistId, String taskId) {
 		return customTaskRepository.findById(taskId)
 			.filter(customTask -> Objects.equals(employeeChecklistId, customTask.getEmployeeChecklist().getId()))
-			.filter(customTask -> Objects.equals(municipalityId, customTask.getEmployeeChecklist().getChecklist().getMunicipalityId()))
+			.filter(customTask -> Objects.equals(municipalityId, customTask.getEmployeeChecklist().getChecklists().getFirst().getMunicipalityId()))
 			.map(EmployeeChecklistMapper::toCustomTask)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CUSTOM_TASK_NOT_FOUND.formatted(employeeChecklistId, taskId)));
 	}
@@ -192,7 +193,7 @@ public class EmployeeChecklistService {
 	public CustomTask updateCustomTask(String municipalityId, String employeeChecklistId, String taskId, CustomTaskUpdateRequest request) {
 		final var entity = customTaskRepository.findById(taskId)
 			.filter(customTask -> Objects.equals(employeeChecklistId, customTask.getEmployeeChecklist().getId()))
-			.filter(customTask -> Objects.equals(municipalityId, customTask.getEmployeeChecklist().getChecklist().getMunicipalityId()))
+			.filter(customTask -> Objects.equals(municipalityId, customTask.getEmployeeChecklist().getChecklists().getFirst().getMunicipalityId()))
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CUSTOM_TASK_NOT_FOUND.formatted(employeeChecklistId, taskId)));
 
 		verifyUnlockedEmployeeChecklist(entity.getEmployeeChecklist());
@@ -206,7 +207,7 @@ public class EmployeeChecklistService {
 	public void deleteCustomTask(String municipalityId, String employeeChecklistId, String taskId) {
 		final var entity = customTaskRepository.findById(taskId)
 			.filter(customTask -> Objects.equals(employeeChecklistId, customTask.getEmployeeChecklist().getId()))
-			.filter(customTask -> Objects.equals(municipalityId, customTask.getEmployeeChecklist().getChecklist().getMunicipalityId()))
+			.filter(customTask -> Objects.equals(municipalityId, customTask.getEmployeeChecklist().getChecklists().getFirst().getMunicipalityId()))
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CUSTOM_TASK_NOT_FOUND.formatted(employeeChecklistId, taskId)));
 
 		verifyUnlockedEmployeeChecklist(entity.getEmployeeChecklist());
@@ -220,14 +221,20 @@ public class EmployeeChecklistService {
 	public EmployeeChecklistPhase updateAllTasksInPhase(String municipalityId, String employeeChecklistId, String phaseId, EmployeeChecklistPhaseUpdateRequest request) {
 		final var employeeChecklist = employeeChecklistIntegration.updateAllFulfilmentForAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request);
 
-		return employeeChecklist.getChecklist().getTasks().stream()
+		return allTasksAsStream(employeeChecklist)
 			.filter(task -> Objects.equals(task.getPhase().getId(), phaseId))
 			.findAny()
 			.map(TaskEntity::getPhase)
-			.map(phase -> EmployeeChecklistMapper.toEmployeeChecklistPhase(phase, getTasksInPhase(employeeChecklist.getChecklist().getTasks(), phaseId)))
-			.map(phase -> decorateWithCustomTasks(phase, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistMunicipalityId(employeeChecklistId, municipalityId)))
+			.map(phase -> EmployeeChecklistMapper.toEmployeeChecklistPhase(phase, getTasksInPhase(allTasksAsStream(employeeChecklist).toList(), phaseId)))
+			.map(phase -> decorateWithCustomTasks(phase, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(employeeChecklistId, municipalityId)))
 			.map(phase -> decorateWithFulfilment(phase, employeeChecklist))
 			.orElseThrow(() -> Problem.valueOf(INTERNAL_SERVER_ERROR, ERROR_READING_PHASE_FROM_EMPLOYEE_CHECKLIST.formatted(phaseId, employeeChecklistId)));
+	}
+
+	private Stream<TaskEntity> allTasksAsStream(final EmployeeChecklistEntity employeeChecklist) {
+		return employeeChecklist.getChecklists().stream()
+			.map(ChecklistEntity::getTasks)
+			.flatMap(List::stream);
 	}
 
 	private List<TaskEntity> getTasksInPhase(List<TaskEntity> tasks, String phaseId) {
@@ -242,7 +249,7 @@ public class EmployeeChecklistService {
 
 		if (calculateTaskType(employeeChecklist, taskId) == TaskType.COMMON) {
 			final var fulfilment = employeeChecklistIntegration.updateCommonTaskFulfilment(municipalityId, employeeChecklistId, taskId, request);
-			return findTask(taskId, employeeChecklist.getChecklist())
+			return findTask(taskId, employeeChecklist)
 				.map(EmployeeChecklistMapper::toEmployeeChecklistTask)
 				.map(employeeChecklistTask -> decorateWithFulfilment(employeeChecklistTask, fulfilment))
 				.orElse(null); // This will never happen as the task is verified to exist in the calculateTaskType method
@@ -255,8 +262,8 @@ public class EmployeeChecklistService {
 			.orElse(null); // This will never happen as the custom task is verified to exist in the calculateTaskType method
 	}
 
-	private Optional<TaskEntity> findTask(String taskId, ChecklistEntity checklist) {
-		return checklist.getTasks().stream()
+	private Optional<TaskEntity> findTask(String taskId, EmployeeChecklistEntity employeeChecklistEntity) {
+		return allTasksAsStream(employeeChecklistEntity)
 			.filter(task -> Objects.equals(task.getId(), taskId))
 			.findAny();
 	}
