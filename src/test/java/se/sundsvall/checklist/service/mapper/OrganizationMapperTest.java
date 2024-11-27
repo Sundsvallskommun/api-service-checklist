@@ -230,6 +230,7 @@ class OrganizationMapperTest {
 		final var id = UUID.randomUUID().toString();
 		final var lastName = "lastName";
 		final var username = "username";
+		final var title = "title";
 
 		final var entity = EmployeeEntity.builder()
 			.withEmail(email)
@@ -237,6 +238,7 @@ class OrganizationMapperTest {
 			.withId(id)
 			.withLastName(lastName)
 			.withUsername(username)
+			.withTitle(title)
 			.build();
 
 		// Act
@@ -248,6 +250,7 @@ class OrganizationMapperTest {
 		assertThat(stakeholder.getId()).isEqualTo(id);
 		assertThat(stakeholder.getLastName()).isEqualTo(lastName);
 		assertThat(stakeholder.getUsername()).isEqualTo(username);
+		assertThat(stakeholder.getTitle()).isEqualTo(title);
 	}
 
 	@Test
@@ -276,6 +279,7 @@ class OrganizationMapperTest {
 		assertThat(stakeholder.getId()).isEqualTo(id);
 		assertThat(stakeholder.getLastName()).isEqualTo(lastName);
 		assertThat(stakeholder.getUsername()).isEqualTo(username);
+		assertThat(stakeholder.getTitle()).isNull();
 	}
 
 	@Test

@@ -151,6 +151,7 @@ public class OrganizationMapper {
 				.withLastName(entity.getLastName())
 				.withEmail(entity.getEmail())
 				.withUsername(entity.getUsername())
+				.withTitle(entity.getTitle())
 				.build())
 			.orElse(null);
 	}
