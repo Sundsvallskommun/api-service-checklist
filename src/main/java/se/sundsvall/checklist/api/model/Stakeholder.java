@@ -30,4 +30,7 @@ public class Stakeholder {
 
 	@Schema(description = "The username for the stakeholder", example = "abc12def", accessMode = READ_ONLY)
 	private String username;
+
+	@Schema(description = "The job title for the stakeholder (if applicable)", example = "Skoladministratör (Sundsvalls kommun)", accessMode = READ_ONLY)
+	private String title;
 }

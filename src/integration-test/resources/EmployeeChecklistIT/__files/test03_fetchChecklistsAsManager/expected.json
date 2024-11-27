@@ -15,6 +15,7 @@
 			"firstName": "A Emp",
 			"lastName": "Loyee",
 			"id": "1810c9c4-7281-44de-9930-426d9f065f4d",
+			"title": "Cleaner",
 			"email": "a.employee@5535.com",
 			"username": "aemp0loyee"
 		},
@@ -134,6 +135,7 @@
 			"firstName": "B Emp",
 			"lastName": "Loyee",
 			"id": "8122705b-e0e6-4055-b301-eba21986e219",
+			"title": "Loather",
 			"email": "b.employee@5535.com",
 			"username": "bemp0loyee"
 		},
@@ -262,6 +264,7 @@
 			"firstName": "C Newman",
 			"lastName": "Ager",
 			"id": "ae93a63e-d975-4cd9-8e28-4cc9ea8b4d96",
+			"title": "New manager",
 			"email": "c.manager@55351.com",
 			"username": "cman1agr"
 		},
