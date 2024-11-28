@@ -48,3 +48,21 @@ VALUES ('f853e2b1-a144-4305-b05e-ee8d6dc6d005', '25764278-50c8-4a19-af00-077bfc3
 INSERT INTO custom_task (sort_order, created, updated, last_saved_by, heading, id, employee_checklist_id, phase_id, `text`, question_type, role_type)
 VALUES (0, '2024-01-03 12:00:00.000', '2024-01-03 12:00:00.000', 'someUser', 'Custom employee task', '1b3bfe66-0e6c-4e92-a410-7c620a5461f4', 'f853e2b1-a144-4305-b05e-ee8d6dc6d005', '2455a5d4-1db8-4a25-a49f-92fdd0c60a14', 'Descriptive text for custom task', 'YES_OR_NO', 'NEW_EMPLOYEE');
 
+INSERT INTO custom_sortorder (id, municipality_id, organization_number, component_type, component_id, position)
+VALUES -- organizational unit 13
+('01ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 13, 'PHASE', 'b3d3c566-527b-44b5-aa7b-ff2b52a8a920', 1),
+('02ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 13, 'PHASE', 'c69fd0f9-b5d3-44c7-be0d-13b2fa254dd5', 2),
+('03ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 13, 'TASK', '1bc21aff-af4e-4cdb-ac4d-c8b8c0b6ee76', 1),
+('04ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 13, 'TASK', '98dc80a9-7395-400b-8570-1bdeb5e38195', 2),
+('05ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 13, 'TASK', '7c49e4f0-6fc0-433c-89df-ac1460a64bd7', 3),
+('06ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 13, 'TASK', '7121d85d-6eee-49b4-8f1d-db1e165a5c29', 1),
+-- organizational unit 14
+('14ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 14, 'TASK', '7121d85d-6eee-49b4-8f1d-db1e165a5c29', 1),
+-- organizational unit 578
+('07ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 578, 'PHASE', 'b3d3c566-527b-44b5-aa7b-ff2b52a8a920', 2),
+('08ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 578, 'PHASE', 'c69fd0f9-b5d3-44c7-be0d-13b2fa254dd5', 1),
+('09ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 578, 'TASK', '1bc21aff-af4e-4cdb-ac4d-c8b8c0b6ee76', 3),
+('10ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 578, 'TASK', '98dc80a9-7395-400b-8570-1bdeb5e38195', 1),
+('11ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 578, 'TASK', '7c49e4f0-6fc0-433c-89df-ac1460a64bd7', 2),
+('12ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 578, 'TASK', 'ee5d73c0-db96-4a31-a8eb-2b5129f7428c', 1),
+('13ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 578, 'TASK', '7121d85d-6eee-49b4-8f1d-db1e165a5c29', 2);

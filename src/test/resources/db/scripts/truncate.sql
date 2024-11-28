@@ -14,5 +14,6 @@ TRUNCATE TABLE delegate;
 TRUNCATE TABLE organization;
 TRUNCATE TABLE organization_communication_channel;
 TRUNCATE TABLE fulfilment;
+TRUNCATE TABLE custom_sortorder;
 
 SET foreign_key_checks = 1;
