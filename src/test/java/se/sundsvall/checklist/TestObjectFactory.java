@@ -31,6 +31,9 @@ import se.sundsvall.checklist.api.model.OrganizationUpdateRequest;
 import se.sundsvall.checklist.api.model.Phase;
 import se.sundsvall.checklist.api.model.PhaseCreateRequest;
 import se.sundsvall.checklist.api.model.PhaseUpdateRequest;
+import se.sundsvall.checklist.api.model.SortorderRequest;
+import se.sundsvall.checklist.api.model.SortorderRequest.PhaseItem;
+import se.sundsvall.checklist.api.model.SortorderRequest.TaskItem;
 import se.sundsvall.checklist.api.model.Task;
 import se.sundsvall.checklist.api.model.TaskCreateRequest;
 import se.sundsvall.checklist.api.model.TaskUpdateRequest;
@@ -415,5 +418,37 @@ public final class TestObjectFactory {
 			.loginName("PERSONAL\\tes10tes")
 			.email("test@test.com")
 			.isManager(false);
+	}
+
+	public static SortorderRequest generateSortorderRequest() {
+		return SortorderRequest.builder()
+			.withPhaseOrder(List.of(
+				PhaseItem.builder()
+					.withId(UUID.randomUUID().toString())
+					.withPosition(1)
+					.withTaskOrder(List.of(
+						TaskItem.builder()
+							.withId(UUID.randomUUID().toString())
+							.withPosition(2)
+							.build(),
+						TaskItem.builder()
+							.withId(UUID.randomUUID().toString())
+							.withPosition(1)
+							.build()))
+					.build(),
+				PhaseItem.builder()
+					.withId(UUID.randomUUID().toString())
+					.withPosition(2)
+					.withTaskOrder(List.of(
+						TaskItem.builder()
+							.withId(UUID.randomUUID().toString())
+							.withPosition(1)
+							.build(),
+						TaskItem.builder()
+							.withId(UUID.randomUUID().toString())
+							.withPosition(2)
+							.build()))
+					.build()))
+			.build();
 	}
 }

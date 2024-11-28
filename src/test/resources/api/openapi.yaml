@@ -22,11 +22,59 @@ tags:
   description: Resources for managing tasks in a phase
 - name: Organization resources
   description: Resources for managing organizational units
+- name: Custom sort order resources
+  description: Resources for managing custom sort order of checklist phases and tasks
 - name: Delegation resources
   description: Resources for managing delegations of employee checklists
 - name: Employee checklist resources
   description: Resources for managing employee checklists
 paths:
+  /{municipalityId}/sortorder/{organizationNumber}:
+    put:
+      tags:
+      - Custom sort order resources
+      summary: Creates or replaces a custom sort order of checklist components for
+        the provided organisation number
+      operationId: saveSortorder
+      parameters:
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: organizationNumber
+        in: path
+        description: Organization number to the organization owning the sort order
+        required: true
+        schema:
+          type: integer
+          format: int32
+        example: 587
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SortorderRequest"
+        required: true
+      responses:
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "202":
+          description: Successful Operation
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
   /{municipalityId}/employee-checklists/{employeeChecklistId}/mentor:
     put:
       tags:
@@ -153,14 +201,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "200":
-          description: Successful Operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Phase"
         "400":
           description: Bad Request
           content:
@@ -169,6 +209,14 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Phase"
     post:
       tags:
       - Phase resources
@@ -195,6 +243,12 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "201":
           description: Successful Operation
           headers:
@@ -202,12 +256,6 @@ paths:
               style: simple
               schema:
                 type: string
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -249,14 +297,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "200":
-          description: Successful Operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Organization"
         "400":
           description: Bad Request
           content:
@@ -265,6 +305,14 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Organization"
     post:
       tags:
       - Organization resources
@@ -545,14 +593,14 @@ paths:
       responses:
         "201":
           description: Successful Operation
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -878,14 +926,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "200":
-          description: Successful Operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Task"
         "400":
           description: Bad Request
           content:
@@ -894,6 +934,14 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
     post:
       tags:
       - Task resources
@@ -934,6 +982,12 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "201":
           description: Successful Operation
           headers:
@@ -941,12 +995,6 @@ paths:
               style: simple
               schema:
                 type: string
-        "404":
-          description: Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad Request
           content:
@@ -989,12 +1037,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "200":
-          description: Successful Operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Phase"
         "400":
           description: Bad Request
           content:
@@ -1003,6 +1045,12 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Phase"
     delete:
       tags:
       - Phase resources
@@ -1024,14 +1072,14 @@ paths:
           type: string
         example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       responses:
-        "204":
-          description: Successful Operation
         "500":
           description: Internal Server Error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+        "204":
+          description: Successful Operation
         "404":
           description: Not Found
           content:
@@ -1085,12 +1133,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "200":
-          description: Successful Operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Phase"
         "400":
           description: Bad Request
           content:
@@ -1099,6 +1141,12 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Phase"
   /{municipalityId}/organizations/{organizationId}:
     get:
       tags:
@@ -1128,12 +1176,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "200":
-          description: Successful Operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Organization"
         "400":
           description: Bad Request
           content:
@@ -1142,6 +1184,12 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Organization"
     delete:
       tags:
       - Organization resources
@@ -1729,12 +1777,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "200":
-          description: Successful Operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Task"
         "400":
           description: Bad Request
           content:
@@ -1743,6 +1785,12 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
     delete:
       tags:
       - Task resources
@@ -1784,14 +1832,14 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "204":
-          description: No Content
         "404":
           description: Not Found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+        "204":
+          description: No Content
         "400":
           description: Bad Request
           content:
@@ -1853,12 +1901,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "200":
-          description: Successful Operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Task"
         "400":
           description: Bad Request
           content:
@@ -1867,6 +1909,12 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
   /{municipalityId}/checklists/{checklistId}/activate:
     patch:
       tags:
@@ -2004,14 +2052,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Correspondence"
-        "404":
-          description: Not found
+        "500":
+          description: Internal Server Error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not found
           content:
             application/problem+json:
               schema:
@@ -2290,19 +2338,59 @@ paths:
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
 components:
   schemas:
-    Mentor:
+    PhaseItem:
       required:
-      - name
-      - userId
+      - position
       type: object
       properties:
-        userId:
+        id:
           type: string
-          description: The user-id of the mentor
-        name:
+          description: The id for the item
+          writeOnly: true
+          example: 283cec0f-b6eb-473c-9dbb-d97a959a8144
+        position:
+          type: integer
+          description: The sort order position for the item
+          format: int32
+          writeOnly: true
+          example: 1
+        taskOrder:
+          type: array
+          description: List containing sort order for the task items connected to
+            the phase
+          writeOnly: true
+          items:
+            $ref: "#/components/schemas/TaskItem"
+      description: Model for a phase item in the sort order structure
+      writeOnly: true
+    SortorderRequest:
+      type: object
+      properties:
+        phaseOrder:
+          type: array
+          description: List containing sort order for phase items
+          writeOnly: true
+          items:
+            $ref: "#/components/schemas/PhaseItem"
+      description: Model for custom sort order request
+    TaskItem:
+      required:
+      - position
+      type: object
+      properties:
+        id:
           type: string
-          description: The name of the mentor
-      description: Model for a mentor on an employee checklist
+          description: The id for the item
+          writeOnly: true
+          example: 283cec0f-b6eb-473c-9dbb-d97a959a8144
+        position:
+          type: integer
+          description: The sort order position for the item
+          format: int32
+          writeOnly: true
+          example: 1
+      description: Model for a task item in the sort order structure
+      writeOnly: true
     Problem:
       type: object
       properties:
@@ -2497,6 +2585,19 @@ components:
           type: string
         message:
           type: string
+    Mentor:
+      required:
+      - name
+      - userId
+      type: object
+      properties:
+        userId:
+          type: string
+          description: The user-id of the mentor
+        name:
+          type: string
+          description: The name of the mentor
+      description: Model for a mentor on an employee checklist
     EmployeeChecklist:
       type: object
       properties:
