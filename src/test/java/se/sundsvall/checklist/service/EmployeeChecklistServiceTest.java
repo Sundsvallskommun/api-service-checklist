@@ -1,5 +1,6 @@
 package se.sundsvall.checklist.service;
 
+import static java.time.format.DateTimeFormatter.ISO_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -12,6 +13,7 @@ import static org.mockito.Mockito.when;
 import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.buildUuidEmployeeFilter;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -860,13 +862,13 @@ class EmployeeChecklistServiceTest {
 		assertThat(response.getDetails()).extracting(Detail::getStatus, Detail::getInformation)
 			.containsExactly(tuple(Status.OK, information));
 
-		verify(employeeIntegrationMock).getNewEmployees("{}");
+		verify(employeeIntegrationMock).getNewEmployees("{\"HireDateFrom\":\"%s\"}".formatted(LocalDate.now().minusDays(30).format(ISO_DATE)));
 		verify(employeeIntegrationMock).getEmployeeByEmail(emailAddress);
 		verify(employeeChecklistIntegrationMock).initiateEmployee(eq(MUNICIPALITY_ID), eq(employee), any());
 	}
 
 	@Test
-	void initiateEmployeeChecklistssNoStructuralDataFound() {
+	void initiateEmployeeChecklistsNoStructuralDataFound() {
 		// Arrange
 		final var emailAddress = "emailAddress";
 		final var employeeUuid = UUID.randomUUID();
@@ -886,7 +888,7 @@ class EmployeeChecklistServiceTest {
 		assertThat(response.getDetails()).extracting(Detail::getStatus, Detail::getInformation)
 			.containsExactly(tuple(Status.NOT_FOUND, "Not Found: Employee with username loginName is missing information regarding organizational structure."));
 
-		verify(employeeIntegrationMock).getNewEmployees("{}");
+		verify(employeeIntegrationMock).getNewEmployees("{\"HireDateFrom\":\"%s\"}".formatted(LocalDate.now().minusDays(30).format(ISO_DATE)));
 		verify(employeeIntegrationMock).getEmployeeByEmail(emailAddress);
 		verify(employeeChecklistIntegrationMock, never()).initiateEmployee(eq(MUNICIPALITY_ID), any(), any());
 	}
@@ -918,7 +920,7 @@ class EmployeeChecklistServiceTest {
 		assertThat(response.getDetails()).extracting(Detail::getStatus, Detail::getInformation)
 			.containsExactly(tuple(Status.INTERNAL_SERVER_ERROR, "Internal Server Error: There is a null value in the neighborhood"));
 
-		verify(employeeIntegrationMock).getNewEmployees("{}");
+		verify(employeeIntegrationMock).getNewEmployees("{\"HireDateFrom\":\"%s\"}".formatted(LocalDate.now().minusDays(30).format(ISO_DATE)));
 		verify(employeeIntegrationMock).getEmployeeByEmail(emailAddress);
 		verify(employeeChecklistIntegrationMock).initiateEmployee(eq(MUNICIPALITY_ID), eq(employee), any());
 	}
@@ -932,7 +934,7 @@ class EmployeeChecklistServiceTest {
 		assertThat(response.getSummary()).isEqualTo("No employees found");
 		assertThat(response.getDetails()).isNullOrEmpty();
 
-		verify(employeeIntegrationMock).getNewEmployees("{}");
+		verify(employeeIntegrationMock).getNewEmployees("{\"HireDateFrom\":\"%s\"}".formatted(LocalDate.now().minusDays(30).format(ISO_DATE)));
 	}
 
 	@Test

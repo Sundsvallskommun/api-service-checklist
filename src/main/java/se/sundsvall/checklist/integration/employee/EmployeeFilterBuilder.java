@@ -128,6 +128,7 @@ public class EmployeeFilterBuilder {
 	 */
 	public static String buildDefaultNewEmployeeFilter() {
 		return getDefaultNewEmployeeFilterBuilder()
+			.withHireDateFrom(LocalDate.now().minusDays(30))
 			.build();
 	}
 
