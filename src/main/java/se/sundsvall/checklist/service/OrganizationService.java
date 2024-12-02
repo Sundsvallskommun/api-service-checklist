@@ -9,6 +9,7 @@ import static se.sundsvall.checklist.service.mapper.OrganizationMapper.updateOrg
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
 
 import se.sundsvall.checklist.api.model.Organization;
@@ -18,6 +19,7 @@ import se.sundsvall.checklist.integration.db.ChecklistBuilder;
 import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.integration.db.model.enums.LifeCycle;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
+import se.sundsvall.checklist.integration.db.repository.SortorderRepository;
 import se.sundsvall.checklist.service.mapper.OrganizationMapper;
 
 @Service
@@ -29,10 +31,16 @@ public class OrganizationService {
 
 	private final OrganizationRepository organizationRepository;
 	private final ChecklistBuilder checklistBuilder;
+	private final SortorderRepository sortorderRepository;
 
-	public OrganizationService(final OrganizationRepository organizationRepository, final ChecklistBuilder checklistBuilder) {
+	public OrganizationService(
+		final OrganizationRepository organizationRepository,
+		final ChecklistBuilder checklistBuilder,
+		final SortorderRepository sortorderRepository) {
+
 		this.organizationRepository = organizationRepository;
 		this.checklistBuilder = checklistBuilder;
+		this.sortorderRepository = sortorderRepository;
 	}
 
 	public String createOrganization(final String municipalityId, final OrganizationCreateRequest request) {
@@ -73,6 +81,7 @@ public class OrganizationService {
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ORGANIZATION_NOT_FOUND.formatted(organizationId, municipalityId)));
 	}
 
+	@Transactional
 	public void deleteOrganization(final String municipalityId, final String organizationId) {
 		final var entity = organizationRepository.findByIdAndMunicipalityId(organizationId, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ORGANIZATION_NOT_FOUND.formatted(organizationId, municipalityId)));
@@ -81,6 +90,7 @@ public class OrganizationService {
 			throw Problem.valueOf(CONFLICT, ORGANIZATION_HAS_CHECKLISTS.formatted(organizationId));
 		}
 
+		sortorderRepository.deleteAllInBatch(sortorderRepository.findAllByMunicipalityIdAndOrganizationNumber(municipalityId, entity.getOrganizationNumber()));
 		organizationRepository.delete(entity);
 	}
 }

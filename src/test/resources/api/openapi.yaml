@@ -289,7 +289,6 @@ paths:
           items:
             type: integer
             format: int32
-        example: 5432
       responses:
         "500":
           description: Internal Server Error

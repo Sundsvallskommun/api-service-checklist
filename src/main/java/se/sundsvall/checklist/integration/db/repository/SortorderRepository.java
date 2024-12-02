@@ -9,12 +9,7 @@ import se.sundsvall.checklist.integration.db.model.SortorderEntity;
 
 @CircuitBreaker(name = "sortorderRepository")
 public interface SortorderRepository extends JpaRepository<SortorderEntity, String> {
-
-	boolean existsByMunicipalityIdAndOrganizationNumber(final String municipalityId, final int organizationNumber);
-
 	List<SortorderEntity> findAllByMunicipalityIdAndOrganizationNumber(final String municipalityId, final int organizationNumber);
 
-	void deleteAllByMunicipalityIdAndOrganizationNumber(final String municipalityId, final int organizationNumber);
-
-	void deleteByMunicipalityIdAndOrganizationNumberAndComponentId(final String municipalityId, final int organizationNumber, final String componentId);
+	List<SortorderEntity> findAllByComponentId(final String componentId);
 }
