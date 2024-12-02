@@ -22,6 +22,11 @@ config:
       token-url: ${config.common.token-url}
       client-id: ${config.common.client-id}
       client-secret: ${config.common.client-secret}
+    mdviewer:
+      url: http://localhost:${wiremock.server.port}/api-mdviewer
+      token-url: ${config.common.token-url}
+      client-id: ${config.common.client-id}
+      client-secret: ${config.common.client-secret}
     messaging:
       url: http://localhost:${wiremock.server.port}/api-messaging
       token-url: ${config.common.token-url}
@@ -70,5 +75,4 @@ spring:
               action: create
               create-target: target/database/generated-schema.sql
 cache:
-  employee:
-    enabled: false
+  enabled: false
