@@ -9,6 +9,7 @@ import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.DEPREC
 import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toChecklist;
 import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toChecklistEntity;
 import static se.sundsvall.checklist.service.mapper.ChecklistMapper.updateChecklistEntity;
+import static se.sundsvall.checklist.service.util.SortingUtils.getChecklistItemIds;
 
 import java.util.List;
 import java.util.Objects;
@@ -42,17 +43,20 @@ public class ChecklistService {
 	private final ChecklistRepository checklistRepository;
 	private final ChecklistBuilder checklistBuilder;
 	private final ObjectMapper objectMapper;
+	private final SortorderService sortorderService;
 
 	public ChecklistService(
 		OrganizationRepository organizationRepository,
 		ChecklistRepository checklistRepository,
 		ChecklistBuilder checklistBuilder,
-		ObjectMapper objectMapper) {
+		ObjectMapper objectMapper,
+		SortorderService sortorderService) {
 
 		this.organizationRepository = organizationRepository;
 		this.checklistRepository = checklistRepository;
 		this.checklistBuilder = checklistBuilder;
 		this.objectMapper = objectMapper;
+		this.sortorderService = sortorderService;
 	}
 
 	public List<Checklist> getChecklists(final String municipalityId) {
@@ -98,6 +102,7 @@ public class ChecklistService {
 		return toChecklist(checklistRepository.save(copy));
 	}
 
+	@Transactional
 	public Checklist activateChecklist(final String municipalityId, final String checklistId) {
 		final var entity = checklistRepository.findByIdAndMunicipalityId(checklistId, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND.formatted(municipalityId)));
@@ -121,6 +126,9 @@ public class ChecklistService {
 			organization.getChecklists().removeIf(ch -> Objects.equals(id, ch.getId()));
 			organizationRepository.save(organization);
 		});
+
+		// Remove custom sort options for components in the checcklist
+		getChecklistItemIds(checklist).forEach(sortorderService::deleteSortorderItem);
 
 		// Remove checklist
 		checklistRepository.delete(checklist);

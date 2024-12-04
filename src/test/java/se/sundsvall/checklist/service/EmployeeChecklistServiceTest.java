@@ -74,6 +74,9 @@ class EmployeeChecklistServiceTest {
 	@Mock
 	private CustomTaskRepository customTaskRepositoryMock;
 
+	@Mock
+	private SortorderService sortorderServiceMock;
+
 	@InjectMocks
 	private EmployeeChecklistService service;
 
@@ -120,6 +123,7 @@ class EmployeeChecklistServiceTest {
 
 		when(employeeChecklistIntegrationMock.fetchOptionalEmployeeChecklist(MUNICIPALITY_ID, username)).thenReturn(Optional.of(employeeChecklistEntity));
 		when(customTaskRepositoryMock.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(employeeChecklistId, MUNICIPALITY_ID)).thenReturn(List.of(customEmployeeTask, customManagerTask));
+		when(sortorderServiceMock.applySorting(any(), any())).thenAnswer(arg -> arg.getArgument(1));
 
 		// Act
 		final var employeeChecklist = service.fetchChecklistForEmployee(MUNICIPALITY_ID, username);
@@ -135,6 +139,7 @@ class EmployeeChecklistServiceTest {
 		verify(employeeChecklistIntegrationMock).fetchOptionalEmployeeChecklist(MUNICIPALITY_ID, username);
 		verify(customTaskRepositoryMock).findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(employeeChecklistId, MUNICIPALITY_ID);
 		verify(employeeChecklistIntegrationMock).fetchDelegateEmails(employeeChecklistId);
+		verify(sortorderServiceMock).applySorting(any(), any());
 	}
 
 	@Test
@@ -162,6 +167,7 @@ class EmployeeChecklistServiceTest {
 		when(employeeChecklistIntegrationMock.fetchOptionalEmployeeChecklist(MUNICIPALITY_ID, username)).thenReturn(Optional.of(employeeChecklistEntity));
 		when(customTaskRepositoryMock.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(employeeChecklistId, MUNICIPALITY_ID)).thenReturn(List.of(customTask));
 		when(employeeIntegrationMock.getEmployeeInformation(buildUuidEmployeeFilter(employeeId))).thenReturn(List.of(employee));
+		when(sortorderServiceMock.applySorting(any(), any())).thenAnswer(args -> args.getArgument(1));
 
 		// Act
 		final var employeeChecklist = service.fetchChecklistForEmployee(MUNICIPALITY_ID, username);
@@ -173,6 +179,7 @@ class EmployeeChecklistServiceTest {
 		verify(employeeChecklistIntegrationMock).fetchDelegateEmails(employeeChecklistId);
 		verify(employeeIntegrationMock).getEmployeeInformation(buildUuidEmployeeFilter(employeeId));
 		verify(employeeChecklistIntegrationMock).updateEmployeeInformation(employeeEntity, employee);
+		verify(sortorderServiceMock).applySorting(any(), any());
 	}
 
 	@Test
@@ -231,6 +238,7 @@ class EmployeeChecklistServiceTest {
 
 		when(employeeChecklistIntegrationMock.fetchEmployeeChecklistsForManager(MUNICIPALITY_ID, username)).thenReturn(List.of(employeeChecklistEntity));
 		when(customTaskRepositoryMock.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(employeeChecklistId, MUNICIPALITY_ID)).thenReturn(List.of(customEmployeeTask, customManagerTask));
+		when(sortorderServiceMock.applySorting(any(), any())).thenAnswer(arg -> arg.getArgument(1));
 
 		// Act
 		final var employeeChecklists = service.fetchChecklistsForManager(MUNICIPALITY_ID, username);
@@ -266,6 +274,7 @@ class EmployeeChecklistServiceTest {
 		verify(employeeChecklistIntegrationMock).fetchEmployeeChecklistsForManager(MUNICIPALITY_ID, username);
 		verify(customTaskRepositoryMock).findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(employeeChecklistId, MUNICIPALITY_ID);
 		verify(employeeChecklistIntegrationMock).fetchDelegateEmails(employeeChecklistId);
+		verify(sortorderServiceMock).applySorting(any(), any());
 	}
 
 	@Test

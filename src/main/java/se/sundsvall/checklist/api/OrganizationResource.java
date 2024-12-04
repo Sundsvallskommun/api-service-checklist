@@ -60,13 +60,15 @@ class OrganizationResource {
 		this.organizationService = organizationService;
 	}
 
-	@Operation(summary = "Fetch all organizations, optionally filtered by organization id(s)", description = "Fetch all organizations")
+	@Operation(summary = "Fetch all organizations, optionally filtered by organization number(s)", description = "Fetch all organizations")
 	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	@GetMapping(produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<List<Organization>> fetchOrganizations(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
-		@Parameter(name = "organizationFilter", description = "Filter response to only include organizations matching provided organization ids") @RequestParam(required = false) List<Integer> organizationFilter) {
-		return ok(organizationService.fetchAllOrganizations(municipalityId, organizationFilter));
+		@Parameter(name = "organizationFilter", description = "Filter response to only include organizations matching provided organization numbers") @RequestParam(required = false) List<Integer> organizationFilter,
+		@Parameter(name = "applySortFor", description = "Optional parameter for using custom sort based on provided organization number for response") @RequestParam(required = false) Integer applySortFor) {
+
+		return ok(organizationService.fetchAllOrganizations(municipalityId, organizationFilter, applySortFor));
 	}
 
 	@Operation(summary = "Fetch organization by id", description = "Fetch organization that matches provided id")
@@ -74,9 +76,10 @@ class OrganizationResource {
 	@GetMapping(value = "/{organizationId}", produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<Organization> fetchOrganizationById(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
-		@Parameter(name = "organizationId", description = "Organization id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String organizationId) {
+		@Parameter(name = "organizationId", description = "Organization id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String organizationId,
+		@Parameter(name = "applySortFor", description = "Optional parameter for using custom sort based on provided organization number for response") @RequestParam(required = false) Integer applySortFor) {
 
-		return ok(organizationService.fetchOrganization(municipalityId, organizationId));
+		return ok(organizationService.fetchOrganization(municipalityId, organizationId, applySortFor));
 	}
 
 	@Operation(summary = "Create an organization", description = "Create a new organizational unit", responses = {

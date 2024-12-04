@@ -1,0 +1,337 @@
+[
+	{
+		"checklists": [{
+			"created": "2019-01-01T00:00:00+01:00",
+			"lastSavedBy": "someUser",
+			"name": "Active checklist for root organization A",
+			"id": "4bc85739-cf6d-4223-b9dc-09218f044db7",
+			"version": 1,
+			"lifeCycle": "ACTIVE",
+			"updated": "2019-01-01T00:00:00+01:00",
+			"phases": [
+				{
+					"bodyText": "Uppgifter under fas 1",
+					"created": "2019-01-01T00:00:00+01:00",
+					"sortOrder": 1,
+					"lastSavedBy": "someUser",
+					"name": "Fas 1",
+					"id": "1455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+					"updated": "2019-01-01T00:00:00+01:00",
+					"timeToComplete": "P1W",
+					"tasks": [{
+						"heading": "Uppg 7",
+						"created": "2019-01-01T00:00:00+01:00",
+						"sortOrder": 1,
+						"lastSavedBy": "someUser",
+						"id": "9ba82aca-f841-4257-baec-d745e3ab78bf",
+						"text": "Gör G",
+						"roleType": "NEW_EMPLOYEE",
+						"questionType": "YES_OR_NO",
+						"updated": "2019-01-01T00:00:00+01:00"
+					}]
+				},
+				{
+					"bodyText": "Uppgifter under fas 2",
+					"created": "2019-01-01T00:00:00+01:00",
+					"sortOrder": 2,
+					"lastSavedBy": "someUser",
+					"name": "Fas 2",
+					"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+					"updated": "2019-01-01T00:00:00+01:00",
+					"timeToComplete": "P2W",
+					"tasks": [{
+						"heading": "Uppg 8",
+						"created": "2019-01-01T00:00:00+01:00",
+						"sortOrder": 1,
+						"lastSavedBy": "someUser",
+						"id": "10a82aca-f841-4257-baec-d745e3ab78bf",
+						"text": "Gör H",
+						"roleType": "NEW_EMPLOYEE",
+						"questionType": "YES_OR_NO",
+						"updated": "2019-01-01T00:00:00+01:00"
+					}]
+				},
+				{
+					"bodyText": "Uppgifter under fas 3",
+					"created": "2019-01-01T00:00:00+01:00",
+					"sortOrder": 3,
+					"lastSavedBy": "someUser",
+					"name": "Fas 3",
+					"id": "3455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+					"updated": "2019-01-01T00:00:00+01:00",
+					"timeToComplete": "P1M",
+					"tasks": [{
+						"heading": "Uppg 9",
+						"created": "2019-01-01T00:00:00+01:00",
+						"sortOrder": 1,
+						"lastSavedBy": "someUser",
+						"id": "11a82aca-f841-4257-baec-d745e3ab78bf",
+						"text": "Gör I",
+						"roleType": "NEW_EMPLOYEE",
+						"questionType": "YES_OR_NO",
+						"updated": "2019-01-01T00:00:00+01:00"
+					}]
+				}
+			]
+		}],
+		"organizationName": "Root organization A (level 1)",
+		"organizationNumber": 1,
+		"created": "2019-01-01T00:00:00+01:00",
+		"communicationChannels": ["EMAIL"],
+		"id": "15764278-50c8-4a19-af00-077bfc314fd2",
+		"updated": "2019-01-01T00:00:00+01:00"
+	},
+	{
+		"checklists": [{
+			"created": "2019-01-01T00:00:00+01:00",
+			"lastSavedBy": "someUser",
+			"name": "Active checklist for organization 1 on level 2",
+			"id": "3bc85739-cf6d-4223-b9dc-09218f044db7",
+			"version": 1,
+			"lifeCycle": "ACTIVE",
+			"updated": "2019-01-01T00:00:00+01:00",
+			"phases": [
+				{
+					"bodyText": "Uppgifter under fas 1",
+					"created": "2019-01-01T00:00:00+01:00",
+					"sortOrder": 1,
+					"lastSavedBy": "someUser",
+					"name": "Fas 1",
+					"id": "1455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+					"updated": "2019-01-01T00:00:00+01:00",
+					"timeToComplete": "P1W"
+				},
+				{
+					"bodyText": "Uppgifter under fas 2",
+					"created": "2019-01-01T00:00:00+01:00",
+					"sortOrder": 2,
+					"lastSavedBy": "someUser",
+					"name": "Fas 2",
+					"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+					"updated": "2019-01-01T00:00:00+01:00",
+					"timeToComplete": "P2W",
+					"tasks": [
+						{
+							"heading": "Uppg 6",
+							"created": "2019-01-01T00:00:00+01:00",
+							"sortOrder": 1,
+							"lastSavedBy": "someUser",
+							"id": "8ba82aca-f841-4257-baec-d745e3ab78bf",
+							"text": "Gör F",
+							"roleType": "NEW_EMPLOYEE",
+							"questionType": "YES_OR_NO",
+							"updated": "2019-01-01T00:00:00+01:00"
+						},
+						{
+							"heading": "Uppg 5",
+							"created": "2019-01-01T00:00:00+01:00",
+							"sortOrder": 2,
+							"lastSavedBy": "someUser",
+							"id": "7ba82aca-f841-4257-baec-d745e3ab78bf",
+							"text": "Gör E",
+							"roleType": "NEW_EMPLOYEE",
+							"questionType": "YES_OR_NO",
+							"updated": "2019-01-01T00:00:00+01:00"
+						}
+					]
+				},
+				{
+					"bodyText": "Uppgifter under fas 3",
+					"created": "2019-01-01T00:00:00+01:00",
+					"sortOrder": 3,
+					"lastSavedBy": "someUser",
+					"name": "Fas 3",
+					"id": "3455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+					"updated": "2019-01-01T00:00:00+01:00",
+					"timeToComplete": "P1M"
+				}
+			]
+		}],
+		"organizationName": "Middle organization 1 (level 2)",
+		"organizationNumber": 11,
+		"created": "2019-01-01T00:00:00+01:00",
+		"communicationChannels": ["EMAIL"],
+		"id": "25764278-50c8-4a19-af00-077bfc314fd2",
+		"updated": "2019-01-01T00:00:00+01:00"
+	},
+	{
+		"checklists": [],
+		"organizationName": "Middle organization 2 (level 2)",
+		"organizationNumber": 12,
+		"created": "2019-01-01T00:00:00+01:00",
+		"communicationChannels": ["EMAIL"],
+		"id": "35764278-50c8-4a19-af00-077bfc314fd2",
+		"updated": "2019-01-01T00:00:00+01:00"
+	},
+	{
+		"checklists": [
+			{
+				"created": "2019-01-01T00:00:00+01:00",
+				"lastSavedBy": "someUser",
+				"name": "Deprecated checklist for organization 1 on level 3",
+				"id": "1bc85739-cf6d-4223-b9dc-09218f044db7",
+				"version": 1,
+				"lifeCycle": "DEPRECATED",
+				"updated": "2019-01-01T00:00:00+01:00",
+				"phases": [
+					{
+						"bodyText": "Uppgifter under fas 1",
+						"created": "2019-01-01T00:00:00+01:00",
+						"sortOrder": 1,
+						"lastSavedBy": "someUser",
+						"name": "Fas 1",
+						"id": "1455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+						"updated": "2019-01-01T00:00:00+01:00",
+						"timeToComplete": "P1W",
+						"tasks": [
+							{
+								"heading": "Uppg 1",
+								"created": "2019-01-01T00:00:00+01:00",
+								"sortOrder": 1,
+								"lastSavedBy": "someUser",
+								"id": "1ba82aca-f841-4257-baec-d745e3ab78bf",
+								"text": "Gör A",
+								"roleType": "NEW_EMPLOYEE",
+								"questionType": "YES_OR_NO",
+								"updated": "2019-01-01T00:00:00+01:00"
+							},
+							{
+								"heading": "Uppg 2",
+								"created": "2019-01-01T00:00:00+01:00",
+								"sortOrder": 2,
+								"lastSavedBy": "someUser",
+								"id": "2ba82aca-f841-4257-baec-d745e3ab78bf",
+								"text": "Gör B",
+								"roleType": "NEW_EMPLOYEE",
+								"questionType": "YES_OR_NO",
+								"updated": "2019-01-01T00:00:00+01:00"
+							}
+						]
+					},
+					{
+						"bodyText": "Uppgifter under fas 2",
+						"created": "2019-01-01T00:00:00+01:00",
+						"sortOrder": 2,
+						"lastSavedBy": "someUser",
+						"name": "Fas 2",
+						"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+						"updated": "2019-01-01T00:00:00+01:00",
+						"timeToComplete": "P2W"
+					},
+					{
+						"bodyText": "Uppgifter under fas 3",
+						"created": "2019-01-01T00:00:00+01:00",
+						"sortOrder": 3,
+						"lastSavedBy": "someUser",
+						"name": "Fas 3",
+						"id": "3455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+						"updated": "2019-01-01T00:00:00+01:00",
+						"timeToComplete": "P1M"
+					}
+				]
+			},
+			{
+				"created": "2019-01-01T00:00:00+01:00",
+				"lastSavedBy": "someUser",
+				"name": "Active checklist for organization 1 on level 3",
+				"id": "2bc85739-cf6d-4223-b9dc-09218f044db7",
+				"version": 1,
+				"lifeCycle": "ACTIVE",
+				"updated": "2019-01-01T00:00:00+01:00",
+				"phases": [
+					{
+						"bodyText": "Uppgifter under fas 1",
+						"created": "2019-01-01T00:00:00+01:00",
+						"sortOrder": 1,
+						"lastSavedBy": "someUser",
+						"name": "Fas 1",
+						"id": "1455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+						"updated": "2019-01-01T00:00:00+01:00",
+						"timeToComplete": "P1W",
+						"tasks": [
+							{
+								"heading": "Uppg 1",
+								"created": "2019-01-01T00:00:00+01:00",
+								"sortOrder": 1,
+								"lastSavedBy": "someUser",
+								"id": "3ba82aca-f841-4257-baec-d745e3ab78bf",
+								"text": "Gör A",
+								"roleType": "NEW_EMPLOYEE",
+								"questionType": "YES_OR_NO",
+								"updated": "2019-01-01T00:00:00+01:00"
+							},
+							{
+								"heading": "Uppg 2",
+								"created": "2019-01-01T00:00:00+01:00",
+								"sortOrder": 1,
+								"lastSavedBy": "someUser",
+								"id": "4ba82aca-f841-4257-baec-d745e3ab78bf",
+								"text": "Gör B",
+								"roleType": "NEW_EMPLOYEE",
+								"questionType": "YES_OR_NO",
+								"updated": "2019-01-01T00:00:00+01:00"
+							},
+							{
+								"heading": "Uppg 3",
+								"created": "2019-01-01T00:00:00+01:00",
+								"sortOrder": 3,
+								"lastSavedBy": "someUser",
+								"id": "5ba82aca-f841-4257-baec-d745e3ab78bf",
+								"text": "Gör C",
+								"roleType": "NEW_EMPLOYEE",
+								"questionType": "YES_OR_NO",
+								"updated": "2019-01-01T00:00:00+01:00"
+							}
+						]
+					},
+					{
+						"bodyText": "Uppgifter under fas 2",
+						"created": "2019-01-01T00:00:00+01:00",
+						"sortOrder": 2,
+						"lastSavedBy": "someUser",
+						"name": "Fas 2",
+						"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+						"updated": "2019-01-01T00:00:00+01:00",
+						"timeToComplete": "P2W",
+						"tasks": [{
+							"heading": "Uppg 4",
+							"created": "2019-01-01T00:00:00+01:00",
+							"sortOrder": 1,
+							"lastSavedBy": "someUser",
+							"id": "6ba82aca-f841-4257-baec-d745e3ab78bf",
+							"text": "Gör D",
+							"roleType": "NEW_EMPLOYEE",
+							"questionType": "YES_OR_NO",
+							"updated": "2019-01-01T00:00:00+01:00"
+						}]
+					},
+					{
+						"bodyText": "Uppgifter under fas 3",
+						"created": "2019-01-01T00:00:00+01:00",
+						"sortOrder": 3,
+						"lastSavedBy": "someUser",
+						"name": "Fas 3",
+						"id": "3455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+						"updated": "2019-01-01T00:00:00+01:00",
+						"timeToComplete": "P1M"
+					}
+				]
+			}
+		],
+		"organizationName": "Leaf organization 1 (level 3)",
+		"organizationNumber": 111,
+		"created": "2019-01-01T00:00:00+01:00",
+		"communicationChannels": ["EMAIL"],
+		"id": "45764278-50c8-4a19-af00-077bfc314fd2",
+		"updated": "2019-01-01T00:00:00+01:00"
+	},
+	{
+		"checklists": [],
+		"organizationName": "Leaf organization 2 (level 3)",
+		"organizationNumber": 112,
+		"created": "2019-01-01T00:00:00+01:00",
+		"communicationChannels": [],
+		"id": "55764278-50c8-4a19-af00-077bfc314fd2",
+		"updated": "2019-01-01T00:00:00+01:00"
+	}
+]

@@ -18,6 +18,15 @@ import se.sundsvall.checklist.integration.mdviewer.configuration.MDViewerConfigu
 public interface MDViewerClient {
 
 	/**
+	 * Get all root company items as a flat list.
+	 *
+	 * @return List of root organizations (a.k.a. companies)
+	 */
+	@Cacheable(MDVIEWER_CACHE)
+	@GetMapping(path = "/root", produces = MediaType.APPLICATION_JSON_VALUE)
+	List<Organization> getCompanies();
+
+	/**
 	 * Get all organizations for a root company presented as a flat list.
 	 *
 	 * @param  companyId containing the id of the root company to fetch organizations for
