@@ -31,6 +31,8 @@ spring:
         provider:
           employee:
             token-uri: ${config.integration.employee.token-url}
+          mdviewer:
+            token-uri: ${config.integration.mdviewer.token-url}
           messaging:
             token-uri: ${config.integration.messaging.token-url}
           templating:
@@ -41,6 +43,11 @@ spring:
             provider: employee
             client-id: ${config.integration.employee.client-id}
             client-secret: ${config.integration.employee.client-secret}
+          mdviewer:
+            authorization-grant-type: client_credentials
+            provider: mdviewer
+            client-id: ${config.integration.mdviewer.client-id}
+            client-secret: ${config.integration.mdviewer.client-secret}
           messaging:
             authorization-grant-type: client_credentials
             provider: messaging
@@ -54,6 +61,10 @@ spring:
 integration:
   employee:
     url: ${config.integration.employee.url}
+    connect-timeout: 5
+    read-timeout: 60
+  mdviewer:
+    url: ${config.integration.mdviewer.url}
     connect-timeout: 5
     read-timeout: 60
   templating:
@@ -71,9 +82,11 @@ integration:
         name: ${config.manager-email.sender.name}
         reply-to: ${config.manager-email.sender.reply-to}
 cache:
+  enabled: true
   employee:
-    enabled: true
     expire-after-write: PT1H
+  mdviewer:
+    expire-after-write: PT24H
 logbook:
   body-filters:
     jsonPath:
