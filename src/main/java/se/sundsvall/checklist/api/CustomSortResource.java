@@ -25,6 +25,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import se.sundsvall.checklist.api.model.SortorderRequest;
+import se.sundsvall.checklist.service.SortorderService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 
 @RestController
@@ -38,8 +39,11 @@ import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 })
 @Validated
 class CustomSortResource {
+	private final SortorderService sortorderService;
 
-	CustomSortResource() {}
+	CustomSortResource(SortorderService sortorderService) {
+		this.sortorderService = sortorderService;
+	}
 
 	@Operation(summary = "Creates or replaces a custom sort order of checklist components for the provided organisation number")
 	@ApiResponse(responseCode = "202", description = "Successful Operation", useReturnTypeSchema = true)
@@ -49,6 +53,7 @@ class CustomSortResource {
 		@Parameter(name = "organizationNumber", description = "Organization number to the organization owning the sort order", example = "587") @PathVariable final Integer organizationNumber,
 		@Valid @RequestBody final SortorderRequest request) {
 
+		sortorderService.saveSortorder(municipalityId, organizationNumber, request);
 		return accepted().header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 }

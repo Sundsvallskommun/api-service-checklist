@@ -20,6 +20,7 @@ import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
 import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
+import se.sundsvall.checklist.integration.db.repository.SortorderRepository;
 import se.sundsvall.checklist.integration.db.repository.TaskRepository;
 
 @Service
@@ -32,13 +33,18 @@ public class TaskService {
 	private final TaskRepository taskRepository;
 	private final ChecklistRepository checklistRepository;
 	private final PhaseRepository phaseRepository;
+	private final SortorderRepository sortorderRepository;
 
-	public TaskService(final TaskRepository taskRepository,
+	public TaskService(
+		final TaskRepository taskRepository,
 		final ChecklistRepository checklistRepository,
-		final PhaseRepository phaseRepository) {
+		final PhaseRepository phaseRepository,
+		final SortorderRepository sortorderRepository) {
+
 		this.taskRepository = taskRepository;
 		this.checklistRepository = checklistRepository;
 		this.phaseRepository = phaseRepository;
+		this.sortorderRepository = sortorderRepository;
 	}
 
 	public List<Task> getTasks(final String municipalityId, final String checklistId, final String phaseId) {
@@ -80,8 +86,10 @@ public class TaskService {
 	@Transactional
 	public void deleteTask(final String municipalityId, final String checklistId, final String phaseId, final String taskId) {
 		final var checklist = getChecklist(municipalityId, checklistId);
-		final var phase = getPhase(municipalityId, phaseId); // This is here to verify that sent in phase id is present in database
-		final var task = getTaskInPhase(checklist, phase.getId(), taskId);
+		verifyPhaseIsPresent(municipalityId, phaseId); // This is here to verify that sent in phase id is present in database
+		final var task = getTaskInPhase(checklist, phaseId, taskId);
+
+		sortorderRepository.deleteAllInBatch(sortorderRepository.findAllByComponentId(taskId));
 		taskRepository.delete(task);
 	}
 

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -25,8 +26,10 @@ import org.zalando.problem.Problem;
 
 import se.sundsvall.checklist.api.model.Phase;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
+import se.sundsvall.checklist.integration.db.model.SortorderEntity;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
 import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
+import se.sundsvall.checklist.integration.db.repository.SortorderRepository;
 import se.sundsvall.checklist.integration.db.repository.TaskRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,6 +46,9 @@ class PhaseServiceTest {
 	@Mock
 	private CustomTaskRepository mockCustomTaskRepository;
 
+	@Mock
+	private SortorderRepository mockSortorderRepository;
+
 	@InjectMocks
 	private PhaseService service;
 
@@ -58,7 +64,6 @@ class PhaseServiceTest {
 		assertThat(result).isNotNull().hasSize(2);
 
 		verify(mockPhaseRepository).findAllByMunicipalityId(MUNICIPALITY_ID);
-		verifyNoMoreInteractions(mockPhaseRepository, mockTaskRepository, mockCustomTaskRepository);
 	}
 
 	@Test
@@ -66,7 +71,6 @@ class PhaseServiceTest {
 		assertThat(service.getPhases(MUNICIPALITY_ID)).isNullOrEmpty();
 
 		verify(mockPhaseRepository).findAllByMunicipalityId(MUNICIPALITY_ID);
-		verifyNoMoreInteractions(mockPhaseRepository, mockTaskRepository, mockCustomTaskRepository);
 	}
 
 	@Test
@@ -79,7 +83,6 @@ class PhaseServiceTest {
 		assertThat(result).isNotNull().isInstanceOf(Phase.class);
 
 		verify(mockPhaseRepository).findByIdAndMunicipalityId(phaseEntity.getId(), MUNICIPALITY_ID);
-		verifyNoMoreInteractions(mockPhaseRepository, mockTaskRepository, mockCustomTaskRepository);
 	}
 
 	@Test
@@ -91,7 +94,6 @@ class PhaseServiceTest {
 			.hasMessage("Not Found: Phase not found within municipality %s".formatted(MUNICIPALITY_ID));
 
 		verify(mockPhaseRepository).findByIdAndMunicipalityId(randomId, MUNICIPALITY_ID);
-		verifyNoMoreInteractions(mockPhaseRepository, mockTaskRepository, mockCustomTaskRepository);
 	}
 
 	@Test
@@ -101,7 +103,6 @@ class PhaseServiceTest {
 		final var result = service.createPhase(MUNICIPALITY_ID, request);
 
 		verify(mockPhaseRepository).save(phaseEntityCaptor.capture());
-		verifyNoMoreInteractions(mockPhaseRepository, mockTaskRepository, mockCustomTaskRepository);
 
 		assertThat(result).isNotNull().isInstanceOf(Phase.class);
 		assertThat(phaseEntityCaptor.getValue()).satisfies(entity -> {
@@ -128,7 +129,6 @@ class PhaseServiceTest {
 		final var result = service.updatePhase(MUNICIPALITY_ID, phaseEntity.getId(), request);
 
 		verify(mockPhaseRepository).save(phaseEntityCaptor.capture());
-		verifyNoMoreInteractions(mockPhaseRepository, mockTaskRepository, mockCustomTaskRepository);
 
 		assertThat(result).isNotNull().isInstanceOf(Phase.class);
 		assertThat(phaseEntityCaptor.getValue()).satisfies(entity -> {
@@ -151,21 +151,23 @@ class PhaseServiceTest {
 			.hasMessage("Not Found: Phase not found within municipality %s".formatted(MUNICIPALITY_ID));
 
 		verify(mockPhaseRepository).findByIdAndMunicipalityId(randomId, MUNICIPALITY_ID);
-		verifyNoMoreInteractions(mockPhaseRepository, mockTaskRepository, mockCustomTaskRepository);
 	}
 
 	@Test
 	void deletePhase() {
 		final var phaseEntity = createPhaseEntity();
+		final var sortOrderEntities = List.of(SortorderEntity.builder().build(), SortorderEntity.builder().build());
 		when(mockPhaseRepository.findByIdAndMunicipalityId(phaseEntity.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(phaseEntity));
+		when(mockSortorderRepository.findAllByComponentId(phaseEntity.getId())).thenReturn(sortOrderEntities);
 
 		service.deletePhase(MUNICIPALITY_ID, phaseEntity.getId());
 
 		verify(mockPhaseRepository).findByIdAndMunicipalityId(phaseEntity.getId(), MUNICIPALITY_ID);
 		verify(mockTaskRepository).countByPhaseId(phaseEntity.getId());
 		verify(mockCustomTaskRepository).countByPhaseId(phaseEntity.getId());
+		verify(mockSortorderRepository).findAllByComponentId(phaseEntity.getId());
+		verify(mockSortorderRepository).deleteAllInBatch(sortOrderEntities);
 		verify(mockPhaseRepository).delete(phaseEntityCaptor.capture());
-		verifyNoMoreInteractions(mockPhaseRepository, mockTaskRepository, mockCustomTaskRepository);
 
 		assertThat(phaseEntityCaptor.getValue()).satisfies(entity -> {
 			assertThat(entity.getId()).isEqualTo(phaseEntity.getId());
@@ -181,7 +183,6 @@ class PhaseServiceTest {
 			.hasMessage("Not Found: Phase not found within municipality %s".formatted(MUNICIPALITY_ID));
 
 		verify(mockPhaseRepository).findByIdAndMunicipalityId(randomId, MUNICIPALITY_ID);
-		verifyNoMoreInteractions(mockPhaseRepository, mockTaskRepository, mockCustomTaskRepository);
 	}
 
 	@Test
@@ -196,7 +197,6 @@ class PhaseServiceTest {
 
 		verify(mockPhaseRepository).findByIdAndMunicipalityId(phaseEntity.getId(), MUNICIPALITY_ID);
 		verify(mockTaskRepository).countByPhaseId(phaseEntity.getId());
-		verifyNoMoreInteractions(mockPhaseRepository, mockTaskRepository, mockCustomTaskRepository);
 	}
 
 	@Test
@@ -212,6 +212,10 @@ class PhaseServiceTest {
 		verify(mockPhaseRepository).findByIdAndMunicipalityId(phaseEntity.getId(), MUNICIPALITY_ID);
 		verify(mockTaskRepository).countByPhaseId(phaseEntity.getId());
 		verify(mockCustomTaskRepository).countByPhaseId(phaseEntity.getId());
-		verifyNoMoreInteractions(mockPhaseRepository, mockTaskRepository, mockCustomTaskRepository);
+	}
+
+	@AfterEach
+	void verifyNoMoreInteraction() {
+		verifyNoMoreInteractions(mockPhaseRepository, mockTaskRepository, mockCustomTaskRepository, mockSortorderRepository);
 	}
 }

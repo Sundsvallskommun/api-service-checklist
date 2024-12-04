@@ -78,34 +78,22 @@ class SortorderRepositoryTest {
 	}
 
 	@Test
-	void existsByMunicipalityIdAndOrganizationNumber() {
-		// Act and assert
-		assertThat(repository.existsByMunicipalityIdAndOrganizationNumber("2281", 578)).isTrue();
-		assertThat(repository.existsByMunicipalityIdAndOrganizationNumber("2281", 579)).isFalse();
-		assertThat(repository.existsByMunicipalityIdAndOrganizationNumber("2282", 578)).isFalse();
+	void findAllByComponentId() {
+		// Act
+		final var result = repository.findAllByComponentId("7121d85d-6eee-49b4-8f1d-db1e165a5c29");
+
+		// Assert
+		assertThat(result).hasSize(3);
+		assertThat(result.stream())
+			.extracting(SortorderEntity::getId)
+			.containsExactlyInAnyOrder(
+				"06ca2228-c49e-4e36-91c6-8e3bcb733c14",
+				"14ca2228-c49e-4e36-91c6-8e3bcb733c14",
+				"13ca2228-c49e-4e36-91c6-8e3bcb733c14");
 	}
 
 	@Test
-	void deleteAllByMunicipalityIdAndOrganizationNumber() {
-		// Assert posts exist
-		assertThat(repository.findAllByMunicipalityIdAndOrganizationNumber("2281", 13)).hasSize(6);
-
-		// Act
-		repository.deleteAllByMunicipalityIdAndOrganizationNumber("2281", 13);
-
-		// Assert
-		assertThat(repository.findAllByMunicipalityIdAndOrganizationNumber("2281", 13)).isEmpty();
-	}
-
-	@Test
-	void delete() {
-		// Assert post exist
-		assertThat(repository.findAllByMunicipalityIdAndOrganizationNumber("2281", 14)).hasSize(1);
-
-		// Act
-		repository.deleteByMunicipalityIdAndOrganizationNumberAndComponentId("2281", 14, "7121d85d-6eee-49b4-8f1d-db1e165a5c29");
-
-		// Assert
-		assertThat(repository.findAllByMunicipalityIdAndOrganizationNumber("2281", 14)).isEmpty();
+	void findAllByComponentIdNoMatch() {
+		assertThat(repository.findAllByComponentId("06ca2228-c49e-4e36-91c6-8e3bcb733c14")).isEmpty();
 	}
 }

@@ -10,6 +10,7 @@ import static se.sundsvall.checklist.service.mapper.ChecklistMapper.updatePhaseE
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
 
 import se.sundsvall.checklist.api.model.Phase;
@@ -18,6 +19,7 @@ import se.sundsvall.checklist.api.model.PhaseUpdateRequest;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
 import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
+import se.sundsvall.checklist.integration.db.repository.SortorderRepository;
 import se.sundsvall.checklist.integration.db.repository.TaskRepository;
 
 @Service
@@ -29,11 +31,18 @@ public class PhaseService {
 	private final PhaseRepository phaseRepository;
 	private final TaskRepository taskRepository;
 	private final CustomTaskRepository customTaskRepository;
+	private final SortorderRepository sortorderRepository;
 
-	public PhaseService(final PhaseRepository phaseRepository, final TaskRepository taskRepository, final CustomTaskRepository customTaskRepository) {
+	public PhaseService(
+		final PhaseRepository phaseRepository,
+		final TaskRepository taskRepository,
+		final CustomTaskRepository customTaskRepository,
+		final SortorderRepository sortorderRepository) {
+
 		this.phaseRepository = phaseRepository;
 		this.taskRepository = taskRepository;
 		this.customTaskRepository = customTaskRepository;
+		this.sortorderRepository = sortorderRepository;
 	}
 
 	public List<Phase> getPhases(final String municipalityId) {
@@ -56,11 +65,14 @@ public class PhaseService {
 		return toPhase(phaseRepository.save(updatePhaseEntity(phase, request)));
 	}
 
+	@Transactional
 	public void deletePhase(final String municipalityId, final String id) {
 		final var phase = getPhaseEntity(municipalityId, id);
 		if (taskRepository.countByPhaseId(phase.getId()) > 0 || customTaskRepository.countByPhaseId(phase.getId()) > 0) {
 			throw Problem.valueOf(CONFLICT, PHASE_CONTAINS_TASKS);
 		}
+
+		sortorderRepository.deleteAllInBatch(sortorderRepository.findAllByComponentId(id));
 		phaseRepository.delete(phase);
 	}
 

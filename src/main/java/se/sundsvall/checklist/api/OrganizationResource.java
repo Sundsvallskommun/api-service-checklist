@@ -65,7 +65,7 @@ class OrganizationResource {
 	@GetMapping(produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<List<Organization>> fetchOrganizations(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
-		@Parameter(name = "organizationFilter", description = "Filter response to only include organizations matching provided organization ids", example = "5432") @RequestParam(required = false) List<Integer> organizationFilter) {
+		@Parameter(name = "organizationFilter", description = "Filter response to only include organizations matching provided organization ids") @RequestParam(required = false) List<Integer> organizationFilter) {
 		return ok(organizationService.fetchAllOrganizations(municipalityId, organizationFilter));
 	}
 

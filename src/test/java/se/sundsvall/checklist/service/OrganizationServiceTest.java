@@ -27,7 +27,9 @@ import org.zalando.problem.Problem;
 
 import se.sundsvall.checklist.api.model.Organization;
 import se.sundsvall.checklist.integration.db.ChecklistBuilder;
+import se.sundsvall.checklist.integration.db.model.SortorderEntity;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
+import se.sundsvall.checklist.integration.db.repository.SortorderRepository;
 
 @ExtendWith(MockitoExtension.class)
 class OrganizationServiceTest {
@@ -42,6 +44,9 @@ class OrganizationServiceTest {
 
 	@Mock
 	private ChecklistBuilder mockChecklistBuilder;
+
+	@Mock
+	private SortorderRepository mockSortorderRepository;
 
 	@InjectMocks
 	private OrganizationService organizationService;
@@ -174,11 +179,16 @@ class OrganizationServiceTest {
 	@Test
 	void deleteOrganization() {
 		final var entity = createOrganizationEntity();
+		final var sortOrderEntities = List.of(SortorderEntity.builder().build(), SortorderEntity.builder().build());
+
 		when(mockOrganizationRepository.findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(entity));
+		when(mockSortorderRepository.findAllByMunicipalityIdAndOrganizationNumber(MUNICIPALITY_ID, entity.getOrganizationNumber())).thenReturn(sortOrderEntities);
 
 		organizationService.deleteOrganization(MUNICIPALITY_ID, entity.getId());
 
 		verify(mockOrganizationRepository).findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID);
+		verify(mockSortorderRepository).findAllByMunicipalityIdAndOrganizationNumber(MUNICIPALITY_ID, entity.getOrganizationNumber());
+		verify(mockSortorderRepository).deleteAllInBatch(sortOrderEntities);
 		verify(mockOrganizationRepository).delete(entity);
 	}
 
@@ -210,6 +220,6 @@ class OrganizationServiceTest {
 
 	@AfterEach
 	void verifyNoMoreInteraction() {
-		verifyNoMoreInteractions(mockOrganizationRepository, mockChecklistBuilder);
+		verifyNoMoreInteractions(mockOrganizationRepository, mockChecklistBuilder, mockSortorderRepository);
 	}
 }
