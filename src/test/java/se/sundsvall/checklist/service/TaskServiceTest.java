@@ -10,7 +10,6 @@ import static se.sundsvall.checklist.TestObjectFactory.createChecklistEntity;
 import static se.sundsvall.checklist.TestObjectFactory.createTaskCreateRequest;
 import static se.sundsvall.checklist.TestObjectFactory.createTaskUpdateRequest;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,11 +29,9 @@ import se.sundsvall.checklist.api.model.TaskCreateRequest;
 import se.sundsvall.checklist.api.model.TaskUpdateRequest;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
-import se.sundsvall.checklist.integration.db.model.SortorderEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
 import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
-import se.sundsvall.checklist.integration.db.repository.SortorderRepository;
 import se.sundsvall.checklist.integration.db.repository.TaskRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -58,7 +55,7 @@ class TaskServiceTest {
 	private TaskRepository mockTaskRepository;
 
 	@Mock
-	private SortorderRepository mockSortorderRepository;
+	private SortorderService mockSortorderService;
 
 	@InjectMocks
 	private TaskService taskService;
@@ -255,18 +252,14 @@ class TaskServiceTest {
 
 	@Test
 	void deleteTask() {
-		final var sortOrderEntities = List.of(SortorderEntity.builder().build(), SortorderEntity.builder().build());
-
 		when(mockChecklistRepository.findByIdAndMunicipalityId(checklistEntity.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(checklistEntity));
 		when(mockPhaseRepository.existsByIdAndMunicipalityId(phaseEntity.getId(), MUNICIPALITY_ID)).thenReturn(true);
-		when(mockSortorderRepository.findAllByComponentId(taskEntity.getId())).thenReturn(sortOrderEntities);
 
 		taskService.deleteTask(MUNICIPALITY_ID, checklistEntity.getId(), phaseEntity.getId(), taskEntity.getId());
 
 		verify(mockChecklistRepository).findByIdAndMunicipalityId(checklistEntity.getId(), MUNICIPALITY_ID);
 		verify(mockPhaseRepository).existsByIdAndMunicipalityId(phaseEntity.getId(), MUNICIPALITY_ID);
-		verify(mockSortorderRepository).findAllByComponentId(taskEntity.getId());
-		verify(mockSortorderRepository).deleteAllInBatch(sortOrderEntities);
+		verify(mockSortorderService).deleteSortorderItem(taskEntity.getId());
 		verify(mockTaskRepository).delete(taskEntityCaptor.capture());
 
 		assertThat(taskEntityCaptor.getValue()).satisfies(entity -> {
@@ -311,7 +304,7 @@ class TaskServiceTest {
 
 	@AfterEach
 	void verifyNoMoreInteraction() {
-		verifyNoMoreInteractions(mockChecklistRepository, mockPhaseRepository, mockTaskRepository, mockSortorderRepository);
+		verifyNoMoreInteractions(mockChecklistRepository, mockPhaseRepository, mockTaskRepository, mockSortorderService);
 	}
 
 }

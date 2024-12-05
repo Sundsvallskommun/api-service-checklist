@@ -1,0 +1,54 @@
+{
+	"manager": {
+		"firstName": "H Man",
+		"lastName": "Ager",
+		"id": "9dcffa46-c500-4696-a862-04867df207d0",
+		"email": "h.manager@55351.com",
+		"username": "hman6agr"
+	},
+	"endDate": "2024-07-01",
+	"created": "2024-01-01T12:00:00+01:00",
+	"id": "87f45fed-b64c-4e81-8a3a-282df548bc38",
+	"completed": false,
+	"employee": {
+		"firstName": "K Emp",
+		"lastName": "Loyee",
+		"id": "9fcfa7e5-fcec-4b1b-b254-8ee29d3017cd",
+		"title": "Struggler",
+		"email": "k.employee@5536.com",
+		"username": "kemp8loyee"
+	},
+	"locked": false,
+	"updated": "2024-01-01T12:00:00+01:00",
+	"phases": [{
+		"bodyText": "Description of phase D",
+		"sortOrder": 3,
+		"name": "Phasename D",
+		"id": "d2c92810-3c46-4161-af54-7ae8b3c9d0b3",
+		"timeToComplete": "P1M",
+		"tasks": [
+			{
+				"fulfilmentStatus": "EMPTY",
+				"heading": "Description of new employee task",
+				"sortOrder": 5,
+				"id": "a76e9920-261f-42fc-9077-14fb1cdb9871",
+				"text": "Text for task to be performed by new employee",
+				"roleType": "NEW_EMPLOYEE",
+				"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
+				"customTask": false
+			},
+			{
+				"fulfilmentStatus": "EMPTY",
+				"heading": "Description of task for dept 5536",
+				"sortOrder": 9,
+				"id": "368c4c0b-ccb9-443b-9e38-9da52f0b4b95",
+				"text": "Text for dept 5536 task",
+				"roleType": "NEW_EMPLOYEE",
+				"questionType": "YES_OR_NO",
+				"customTask": false
+			}
+		]
+	}],
+	"startDate": "2024-01-01",
+	"expirationDate": "2024-10-01"
+}

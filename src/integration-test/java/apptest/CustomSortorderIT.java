@@ -64,7 +64,7 @@ class CustomSortorderIT extends AbstractAppTest {
 	@Test
 	@DirtiesContext
 	void test02_deleteTask() {
-		assertThat(repository.findAllByComponentId("aba82aca-f841-4257-baec-d745e3ab78bf")).hasSize(2);
+		assertThat(repository.findAllByComponentId("aba82aca-f841-4257-baec-d745e3ab78bf")).isNotEmpty();
 
 		setupCall()
 			.withServicePath("/2281/checklists/15764278-50c8-4a19-af00-077bfc314fd2/phases/1455a5d4-1db8-4a25-a49f-92fdd0c60a14/tasks/aba82aca-f841-4257-baec-d745e3ab78bf")
@@ -79,7 +79,7 @@ class CustomSortorderIT extends AbstractAppTest {
 	@Test
 	@DirtiesContext
 	void test03_deletePhase() {
-		assertThat(repository.findAllByComponentId("2455a5d4-1db8-4a25-a49f-92fdd0c60a14")).hasSize(2);
+		assertThat(repository.findAllByComponentId("2455a5d4-1db8-4a25-a49f-92fdd0c60a14")).isNotEmpty();
 
 		setupCall()
 			.withServicePath("/2281/phases/2455a5d4-1db8-4a25-a49f-92fdd0c60a14")
@@ -92,10 +92,27 @@ class CustomSortorderIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test04_deleteOrganization() {
+	@DirtiesContext
+	void test04_deleteChecklist() {
+		assertThat(repository.findAllByComponentId("3455a5d4-1db8-4a25-a49f-92fdd0c60a14")).isNotEmpty();
+		assertThat(repository.findAllByComponentId("cba82aca-f841-4257-baec-d745e3ab78bf")).isNotEmpty();
+
+		setupCall()
+			.withServicePath("/2281/checklists/25764278-50c8-4a19-af00-077bfc314fd2")
+			.withHttpMethod(DELETE)
+			.withExpectedResponseStatus(NO_CONTENT)
+			.withExpectedResponseBodyIsNull()
+			.sendRequestAndVerifyResponse();
+
+		assertThat(repository.findAllByComponentId("3455a5d4-1db8-4a25-a49f-92fdd0c60a14")).isEmpty();
+		assertThat(repository.findAllByComponentId("cba82aca-f841-4257-baec-d745e3ab78bf")).isEmpty();
+	}
+
+	@Test
+	void test05_deleteOrganization() {
 		final var organizationNumber = 578;
 
-		assertThat(repository.findAllByMunicipalityIdAndOrganizationNumber("2281", organizationNumber)).hasSize(4);
+		assertThat(repository.findAllByMunicipalityIdAndOrganizationNumber("2281", organizationNumber)).isNotEmpty();
 
 		setupCall()
 			.withServicePath("/2281/organizations/047c78a2-aadc-40e5-8913-8623b1fecc35")

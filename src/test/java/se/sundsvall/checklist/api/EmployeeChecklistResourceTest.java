@@ -176,27 +176,20 @@ class EmployeeChecklistResourceTest {
 
 	@Test
 	void setMentor() {
-		var mockedResponse = EmployeeChecklist.builder().withId(UUID.randomUUID().toString()).build();
-		var path = "/{employeeChecklistId}/mentor";
-		var request = Mentor.builder()
+		EmployeeChecklist.builder().withId(UUID.randomUUID().toString()).build();
+		final var path = "/{employeeChecklistId}/mentor";
+		final var request = Mentor.builder()
 			.withUserId("someUserId")
 			.withName("someName")
 			.build();
 
-		when(serviceMock.setMentor(MUNICIPALITY_ID, ID, request)).thenReturn(mockedResponse);
-
 		// Act
-		var response = webTestClient.put()
+		webTestClient.put()
 			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID)))
 			.bodyValue(request)
 			.exchange()
-			.expectStatus().isOk()
-			.expectBody(EmployeeChecklist.class)
-			.returnResult()
-			.getResponseBody();
-
-		// Assert and verify
-		assertThat(response).isEqualTo(mockedResponse);
+			.expectStatus().isAccepted()
+			.expectBody().isEmpty();
 
 		verify(serviceMock).setMentor(MUNICIPALITY_ID, ID, request);
 		verifyNoMoreInteractions(serviceMock);
@@ -204,7 +197,7 @@ class EmployeeChecklistResourceTest {
 
 	@Test
 	void deleteMentor() {
-		var path = "/{employeeChecklistId}/mentor";
+		final var path = "/{employeeChecklistId}/mentor";
 
 		webTestClient.delete()
 			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID)))

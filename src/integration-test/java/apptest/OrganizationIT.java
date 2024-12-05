@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
 import se.sundsvall.checklist.Application;
@@ -44,7 +43,7 @@ class OrganizationIT extends AbstractAppTest {
 	private ChecklistRepository checklistRepository;
 
 	@Test
-	void test1_fetchOrganizations() {
+	void test01_fetchOrganizationsWithoutApplyingSortorder() {
 		setupCall()
 			.withServicePath(PATH)
 			.withHttpMethod(GET)
@@ -53,11 +52,11 @@ class OrganizationIT extends AbstractAppTest {
 			.withExpectedResponse(EXPECTED_FILE)
 			.sendRequestAndVerifyResponse();
 
-		assertThat(organizationRepository.findAll()).hasSize(4);
+		assertThat(organizationRepository.findAllByMunicipalityId("2281")).hasSize(5);
 	}
 
 	@Test
-	void test2_fetchOrganizationById() {
+	void test02_fetchOrganizationById() {
 		final var organizationId = "15764278-50c8-4a19-af00-077bfc314fd2";
 
 		setupCall()
@@ -72,7 +71,7 @@ class OrganizationIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test3_createOrganization() {
+	void test03_createOrganization() {
 		setupCall()
 			.withServicePath(PATH)
 			.withHttpMethod(POST)
@@ -92,7 +91,7 @@ class OrganizationIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test4_updateOrganization() {
+	void test04_updateOrganization() {
 		final var organizationId = "15764278-50c8-4a19-af00-077bfc314fd2";
 
 		setupCall()
@@ -110,9 +109,9 @@ class OrganizationIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test5_fetchOrganizationsWithFilters() {
+	void test05_fetchOrganizationsWithFilters() {
 		setupCall()
-			.withServicePath(PATH + "?organizationFilter=1&organizationFilter=3")
+			.withServicePath(PATH + "?organizationFilter=1&organizationFilter=11&organizationFilter=111")
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
@@ -121,22 +120,43 @@ class OrganizationIT extends AbstractAppTest {
 	}
 
 	@Test
-	@DirtiesContext
-	void test6_deleteOrganization() {
-		final var organizationId = "45764278-50c8-4a19-af00-077bfc314fd2";
+	void test06_fetchOrganizationsWithFiltersAndSpecificSortorder() {
+		setupCall()
+			.withServicePath(PATH + "?organizationFilter=1&organizationFilter=11&organizationFilter=111&applySortFor=111")
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(EXPECTED_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test07_fetchOrganizationsWithFiltersAndInheritedSortorder() {
+		setupCall()
+			.withServicePath(PATH + "?organizationFilter=1&organizationFilter=11&organizationFilter=112&applySortFor=112") // 112 doesn't have own sortorder and should inherit from closest parent (11)
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(EXPECTED_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	void test08_deleteOrganization() {
+		final var organizationId = "65764278-50c8-4a19-af00-077bfc314fd2";
 
 		assertThat(organizationRepository.existsById(organizationId)).isTrue();
-		assertThat(checklistRepository.existsByNameAndMunicipalityId("CHECKLIST_SHOULD_BE_DELETED", "2281")).isTrue();
+		assertThat(checklistRepository.existsByNameAndMunicipalityId("Retired checklist for root organization B", "2262")).isTrue();
 
 		setupCall()
-			.withServicePath(PATH + "/" + organizationId)
+			.withServicePath("/2262/organizations/" + organizationId)
 			.withHttpMethod(DELETE)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
 
 		assertThat(organizationRepository.existsById(organizationId)).isFalse();
-		assertThat(checklistRepository.existsByNameAndMunicipalityId("CHECKLIST_SHOULD_BE_DELETED", "2281")).isFalse();
+		assertThat(checklistRepository.existsByNameAndMunicipalityId("Retired checklist for root organization B", "2262")).isFalse();
 	}
 
 }

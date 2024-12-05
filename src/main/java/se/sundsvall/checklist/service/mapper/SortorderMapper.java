@@ -22,7 +22,7 @@ public class SortorderMapper {
 
 	public static List<SortorderEntity> toSortorderEntities(final String municipalityId, final Integer organizationNumber, final SortorderRequest request) {
 		if (anyNull(municipalityId, organizationNumber, request)) {
-			return null;
+			return emptyList();
 		}
 
 		// Start by converting all phases to to entities

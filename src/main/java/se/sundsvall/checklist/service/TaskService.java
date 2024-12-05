@@ -20,7 +20,6 @@ import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
 import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
-import se.sundsvall.checklist.integration.db.repository.SortorderRepository;
 import se.sundsvall.checklist.integration.db.repository.TaskRepository;
 
 @Service
@@ -33,18 +32,18 @@ public class TaskService {
 	private final TaskRepository taskRepository;
 	private final ChecklistRepository checklistRepository;
 	private final PhaseRepository phaseRepository;
-	private final SortorderRepository sortorderRepository;
+	private final SortorderService sortorderService;
 
 	public TaskService(
 		final TaskRepository taskRepository,
 		final ChecklistRepository checklistRepository,
 		final PhaseRepository phaseRepository,
-		final SortorderRepository sortorderRepository) {
+		final SortorderService sortorderService) {
 
 		this.taskRepository = taskRepository;
 		this.checklistRepository = checklistRepository;
 		this.phaseRepository = phaseRepository;
-		this.sortorderRepository = sortorderRepository;
+		this.sortorderService = sortorderService;
 	}
 
 	public List<Task> getTasks(final String municipalityId, final String checklistId, final String phaseId) {
@@ -89,7 +88,7 @@ public class TaskService {
 		verifyPhaseIsPresent(municipalityId, phaseId); // This is here to verify that sent in phase id is present in database
 		final var task = getTaskInPhase(checklist, phaseId, taskId);
 
-		sortorderRepository.deleteAllInBatch(sortorderRepository.findAllByComponentId(taskId));
+		sortorderService.deleteSortorderItem(taskId);
 		taskRepository.delete(task);
 	}
 

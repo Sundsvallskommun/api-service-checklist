@@ -4,6 +4,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
+import static org.springframework.http.ResponseEntity.accepted;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
@@ -208,15 +209,16 @@ class EmployeeChecklistResource {
 	}
 
 	@Operation(summary = "Set the mentor", description = "Set the mentor on a specific employee checklist", responses = {
-		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
+		@ApiResponse(responseCode = "202", description = "Successful Operation", useReturnTypeSchema = true)
 	})
-	@PutMapping(value = "/{employeeChecklistId}/mentor", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-	ResponseEntity<EmployeeChecklist> setMentor(
+	@PutMapping(value = "/{employeeChecklistId}/mentor", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
+	ResponseEntity<Void> setMentor(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "employeeChecklistId", description = "Employee checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String employeeChecklistId,
 		@RequestBody @Valid final Mentor mentor) {
 
-		return ok(employeeChecklistService.setMentor(municipalityId, employeeChecklistId, mentor));
+		employeeChecklistService.setMentor(municipalityId, employeeChecklistId, mentor);
+		return accepted().header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 
 	@Operation(summary = "Delete the mentor", description = "Delete the mentor on a specific employee checklist", responses = {

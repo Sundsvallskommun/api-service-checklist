@@ -4,7 +4,6 @@ import static java.time.format.DateTimeFormatter.ISO_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,9 +13,9 @@ class EmployeeFilterBuilderTest {
 
 	@Test
 	void testFilterCreatesValidString() {
-		var wantedFilterString = "{\"HireDateFrom\":\"2020-01-01\",\"HireDateTo\":\"2022-01-01\",\"IsManual\":false,\"ShowOnlyNewEmployees\":true,\"PersonId\":\"2a22bae0-6c09-4bbd-a805-c2ccca22c7dd\"}";
+		final var wantedFilterString = "{\"HireDateFrom\":\"2020-01-01\",\"HireDateTo\":\"2022-01-01\",\"IsManual\":false,\"ShowOnlyNewEmployees\":true,\"PersonId\":\"2a22bae0-6c09-4bbd-a805-c2ccca22c7dd\"}";
 
-		var filterString = new EmployeeFilterBuilder()
+		final var filterString = new EmployeeFilterBuilder()
 			.withShowOnlyNewEmployees(true)
 			.withHireDateFrom(LocalDate.of(2020, 1, 1))
 			.withHireDateTo(LocalDate.of(2022, 1, 1))
@@ -29,18 +28,18 @@ class EmployeeFilterBuilderTest {
 
 	@Test
 	void testDefaultBuilder() {
-		var wantedFilterString = "{\"HireDateFrom\":\"%s\"}".formatted(LocalDate.now().minusDays(30).format(ISO_DATE));
+		final var wantedFilterString = "{\"HireDateFrom\":\"%s\"}".formatted(LocalDate.now().minusDays(30).format(ISO_DATE));
 
-		var filterString = EmployeeFilterBuilder.buildDefaultNewEmployeeFilter();
+		final var filterString = EmployeeFilterBuilder.buildDefaultNewEmployeeFilter();
 
 		assertThat(filterString).isEqualTo(wantedFilterString);
 	}
 
 	@Test
 	void testDefaultBuilderWithAddedFilter() {
-		var wantedString = "{\"PersonId\":\"2a22bae0-6c09-4bbd-a805-c2ccca22c7dd\"}";
+		final var wantedString = "{\"PersonId\":\"2a22bae0-6c09-4bbd-a805-c2ccca22c7dd\"}";
 
-		var filterString = EmployeeFilterBuilder.getDefaultNewEmployeeFilterBuilder()
+		final var filterString = EmployeeFilterBuilder.getDefaultNewEmployeeFilterBuilder()
 			.withPersonId("2a22bae0-6c09-4bbd-a805-c2ccca22c7dd")
 			.build();
 
@@ -49,9 +48,9 @@ class EmployeeFilterBuilderTest {
 
 	@Test
 	void testDefaultBuilder_shouldBeAbleToAddCompanyId() {
-		var wantedString = "{\"CompanyId\":[2,3]}";
+		final var wantedString = "{\"CompanyId\":[2,3]}";
 
-		var filterString = EmployeeFilterBuilder.getDefaultNewEmployeeFilterBuilder()
+		final var filterString = EmployeeFilterBuilder.getDefaultNewEmployeeFilterBuilder()
 			.withCompanyId(2)
 			.withCompanyId(3)
 			.build();
@@ -61,9 +60,9 @@ class EmployeeFilterBuilderTest {
 
 	@Test
 	void testDefaultBuilder_shouldBeAbleToAddCompanyIds() {
-		var wantedString = "{\"CompanyId\":[1,2]}";
+		final var wantedString = "{\"CompanyId\":[1,2]}";
 
-		var filterString = EmployeeFilterBuilder.getDefaultNewEmployeeFilterBuilder()
+		final var filterString = EmployeeFilterBuilder.getDefaultNewEmployeeFilterBuilder()
 			.withCompanyIds(List.of(1, 2))
 			.build();
 
@@ -72,9 +71,9 @@ class EmployeeFilterBuilderTest {
 
 	@Test
 	void testDefaultBuilder_withOneAddedEventInfo() {
-		var wantedString = "{\"EventInfo\":[\"Mover\"]}";
+		final var wantedString = "{\"EventInfo\":[\"Mover\"]}";
 
-		var filterString = EmployeeFilterBuilder.getDefaultNewEmployeeFilterBuilder()
+		final var filterString = EmployeeFilterBuilder.getDefaultNewEmployeeFilterBuilder()
 			.withEventInfo("Mover")
 			.build();
 
@@ -83,9 +82,9 @@ class EmployeeFilterBuilderTest {
 
 	@Test
 	void testDefaultBuilder_withTwoAddedEventInfos() {
-		var wantedString = "{\"EventInfo\":[\"Mover\",\"Corporate\"]}";
+		final var wantedString = "{\"EventInfo\":[\"Mover\",\"Corporate\"]}";
 
-		var filterString = EmployeeFilterBuilder.getDefaultNewEmployeeFilterBuilder()
+		final var filterString = EmployeeFilterBuilder.getDefaultNewEmployeeFilterBuilder()
 			.withEventInfo("Mover", "Corporate")
 			.build();
 
@@ -94,10 +93,10 @@ class EmployeeFilterBuilderTest {
 
 	@Test
 	void testUuidEmployeeFilter() {
-		var uuid = UUID.randomUUID().toString();
-		var wantedFilterString = "{\"ShowOnlyNewEmployees\":false,\"PersonId\":\"%s\",\"EventInfo\":[\"Mover\",\"Corporate\",\"Company\",\"Rehire,Corporate\"]}".formatted(uuid);
+		final var uuid = UUID.randomUUID().toString();
+		final var wantedFilterString = "{\"ShowOnlyNewEmployees\":false,\"PersonId\":\"%s\",\"EventInfo\":[\"Mover\",\"Corporate\",\"Company\",\"Rehire,Corporate\"]}".formatted(uuid);
 
-		var filterString = EmployeeFilterBuilder.buildUuidEmployeeFilter(uuid);
+		final var filterString = EmployeeFilterBuilder.buildUuidEmployeeFilter(uuid);
 
 		assertThat(filterString).isEqualTo(wantedFilterString);
 	}

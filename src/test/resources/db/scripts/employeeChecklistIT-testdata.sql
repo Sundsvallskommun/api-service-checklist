@@ -2,6 +2,21 @@
 -- Common data used in all tests
 -- ======================================================================================
 -- --------------------------------------------------------------------------------------
+-- Phases (common for all checklists)
+-- --------------------------------------------------------------------------------------
+insert into phase (municipality_id, sort_order, created, updated, last_saved_by, body_text, id, name, time_to_complete)
+values ('2281', 1, now(), now(), 'someUser', 'Description of phase A', '7272d1fc-540e-4394-afe2-e133ca642e91', 'Phasename A', 'P1M');
+
+insert into phase (municipality_id, sort_order, created, updated, last_saved_by, body_text, id, name, time_to_complete)
+values ('2281', 2, now(), now(), 'someUser', 'Description of phase B', '3e9780a7-96f3-4d07-80ee-a9634b786a38', 'Phasename B', 'P1M');
+
+insert into phase (municipality_id, sort_order, created, updated, last_saved_by, body_text, id, name, time_to_complete) 
+values ('2281', 1, now(), now(), 'someUser', 'Description of phase C', '539b074d-d654-49ec-9dce-220f8a5ba7bb', 'Phasename C', 'P1M');
+
+insert into phase (municipality_id, sort_order, created, updated, last_saved_by, body_text, id, name, time_to_complete)
+values ('2281', 2, now(), now(), 'someUser', 'Description of phase D', 'd2c92810-3c46-4161-af54-7ae8b3c9d0b3', 'Phasename D', 'P1M');
+
+-- --------------------------------------------------------------------------------------
 -- Checklist for organizationNumber 5335 (Sub organization 5335)
 -- --------------------------------------------------------------------------------------
 insert into organization (municipality_id, organization_number, created, updated, organization_name, id)
@@ -10,14 +25,8 @@ values ('2281', 5535, now(), now(), 'Sub organization 5335', 'bd49f474-303c-4a4e
 insert into checklist (municipality_id, version, created, updated, last_saved_by, id, organization_id, life_cycle, name)
 values ('2281', 1, now(), now(), 'someUser', 'e20598a4-6b32-459e-8c15-febbd4c5868e', 'bd49f474-303c-4a4e-aa54-5d4f58d9188b', 'ACTIVE', 'Checklist for Sub organization 5335');
 
-insert into phase (municipality_id, sort_order, created, updated, last_saved_by, body_text, id, name, time_to_complete)
-values ('2281', 1, now(), now(), 'someUser', 'Description of phase A', '7272d1fc-540e-4394-afe2-e133ca642e91', 'Phasename', 'P1M');
-
 insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, checklist_id, phase_id, text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
 values (1, 'YES_OR_NO', now(), now(), 'someUser', 'Description of manager task', 'e43fdac2-331e-4808-8d83-753a59e329cd', 'MANAGER_FOR_NEW_EMPLOYEE', 'e20598a4-6b32-459e-8c15-febbd4c5868e', '7272d1fc-540e-4394-afe2-e133ca642e91', 'Text for manager task');
-
-insert into phase (municipality_id, sort_order, created, updated, last_saved_by, body_text, id, name, time_to_complete)
-values ('2281', 2, now(), now(), 'someUser', 'Description of phase B', '3e9780a7-96f3-4d07-80ee-a9634b786a38', 'Phasename', 'P1M');
 
 insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, checklist_id, phase_id, text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
 values (1, 'YES_OR_NO_WITH_TEXT', now(), now(), 'someUser', 'Description of first employee task', 'd250a20c-a616-4147-bfe0-19a0d12f3df0', 'NEW_EMPLOYEE', 'e20598a4-6b32-459e-8c15-febbd4c5868e', '3e9780a7-96f3-4d07-80ee-a9634b786a38', 'Text for first employee task');
@@ -28,6 +37,33 @@ values (2, 'YES_OR_NO', now(), now(), 'someUser', 'Description of second employe
 insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, checklist_id, phase_id, text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
 values (3, 'YES_OR_NO', now(), now(), 'someUser', 'Description of manager task', '056423aa-01a4-4243-ace4-561a6e4cd25f', 'MANAGER_FOR_NEW_EMPLOYEE', 'e20598a4-6b32-459e-8c15-febbd4c5868e', '3e9780a7-96f3-4d07-80ee-a9634b786a38', 'Text for manager task');
 
+insert into custom_sortorder (id, municipality_id, organization_number, component_type, component_id, position)
+values ('01ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281',  5535, 'PHASE', '7272d1fc-540e-4394-afe2-e133ca642e91', 4),
+       ('02ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281',  5535, 'PHASE', '3e9780a7-96f3-4d07-80ee-a9634b786a38', 3),
+       ('03ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281',  5535, 'PHASE', '539b074d-d654-49ec-9dce-220f8a5ba7bb', 2),
+       ('04ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281',  5535, 'PHASE', 'd2c92810-3c46-4161-af54-7ae8b3c9d0b3', 1),
+       ('05ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281',  5535, 'TASK', 'e43fdac2-331e-4808-8d83-753a59e329cd', 4),
+       ('06ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281',  5535, 'TASK', 'd250a20c-a616-4147-bfe0-19a0d12f3df0', 3),
+       ('07ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281',  5535, 'TASK', '0c8b99e9-718b-4c92-9ba3-a49dc29d48b5', 2),
+       ('08ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281',  5535, 'TASK', '056423aa-01a4-4243-ace4-561a6e4cd25f', 1),
+       -- Tasks below is managed by organization 1 (root organization)
+       ('09ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281',  5535, 'TASK', 'c8c7abe0-5703-4ca1-86d3-74e5ad79b690', 4),
+       ('10ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281',  5535, 'TASK', 'a76e9920-261f-42fc-9077-14fb1cdb9871', 3),
+       ('11ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281',  5535, 'TASK', '0da1dfa2-5196-45c2-b605-162a323b9b5e', 2),
+       ('12ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281',  5535, 'TASK', 'e930c70d-a961-4b71-89b4-935d47db982f', 1);
+
+-- --------------------------------------------------------------------------------------
+-- Checklist for organizationNumber 5336 (Sub organization 5336) that has no explicit custom sort 
+-- --------------------------------------------------------------------------------------
+insert into organization (municipality_id, organization_number, created, updated, organization_name, id)
+values ('2281', 5536, now(), now(), 'Sub organization 5336', '11ecf84e-cb11-426f-acd9-081330f28f7c');
+
+insert into checklist (municipality_id, version, created, updated, last_saved_by, id, organization_id, life_cycle, name)
+values ('2281', 1, now(), now(), 'someUser', '68849473-59aa-4ae6-b4bd-7f046e857984', '11ecf84e-cb11-426f-acd9-081330f28f7c', 'ACTIVE', 'Checklist for Sub organization 5336');
+
+insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, checklist_id, phase_id, text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
+values (9, 'YES_OR_NO', now(), now(), 'someUser', 'Description of task for dept 5536', '368c4c0b-ccb9-443b-9e38-9da52f0b4b95', 'NEW_EMPLOYEE', '68849473-59aa-4ae6-b4bd-7f046e857984', 'd2c92810-3c46-4161-af54-7ae8b3c9d0b3', 'Text for dept 5536 task');
+
 -- --------------------------------------------------------------------------------------
 -- Checklist for organizationNumber 1 (Root organization)
 -- --------------------------------------------------------------------------------------
@@ -37,26 +73,27 @@ values ('2281', 1, now(), now(), null, 'cfcb03b1-7344-4352-9b72-7aebb1f235e1');
 insert into checklist (municipality_id, version, created, updated, last_saved_by, id, organization_id, life_cycle, name)
 values ('2281', 1, now(), now(), 'someUser', '8c66e24b-3845-47ae-af74-c4611db8be7c', 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'ACTIVE', 'Checklist for Root organization');
 
-insert into phase (municipality_id, sort_order, created, updated, last_saved_by, body_text, id, name, time_to_complete) 
-values ('2281', 1, now(), now(), 'someUser', 'Description of phase C', '539b074d-d654-49ec-9dce-220f8a5ba7bb', 'Phasename', 'P1M');
-
 insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, checklist_id, phase_id, text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
 values (1, 'COMPLETED_OR_NOT_RELEVANT', now(), now(), 'someUser', 'Description of manager to new employee task', 'c8c7abe0-5703-4ca1-86d3-74e5ad79b690', 'MANAGER_FOR_NEW_EMPLOYEE', '8c66e24b-3845-47ae-af74-c4611db8be7c', '539b074d-d654-49ec-9dce-220f8a5ba7bb', 'Text for task to be performed by new employees manager');
-
-insert into phase (municipality_id, sort_order, created, updated, last_saved_by, body_text, id, name, time_to_complete)
-values ('2281', 2, now(), now(), 'someUser', 'Description of phase D', 'd2c92810-3c46-4161-af54-7ae8b3c9d0b3', 'Phasename', 'P1M');
 
 insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, checklist_id, phase_id, text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
 values (1, 'COMPLETED_OR_NOT_RELEVANT_WITH_TEXT', now(), now(), 'someUser', 'Description of new employee task', 'a76e9920-261f-42fc-9077-14fb1cdb9871', 'NEW_EMPLOYEE', '8c66e24b-3845-47ae-af74-c4611db8be7c', 'd2c92810-3c46-4161-af54-7ae8b3c9d0b3', 'Text for task to be performed by new employee');
 
--- --------------------------------------------------------------------------------------
--- Tasks for new manager and new managers manager for organizationNumber 1 (Sundsvalls kommun)
--- --------------------------------------------------------------------------------------
 insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, checklist_id, phase_id, text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
 values (1, 'YES_OR_NO', now(), now(), 'someUser', 'Description of new manager task', '0da1dfa2-5196-45c2-b605-162a323b9b5e', 'NEW_MANAGER', '8c66e24b-3845-47ae-af74-c4611db8be7c', '539b074d-d654-49ec-9dce-220f8a5ba7bb', 'Text for task to be performed by new manager');
 
 insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, checklist_id, phase_id, text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
 values (2, 'YES_OR_NO', now(), now(), 'someUser', 'Description of managers manager task', 'e930c70d-a961-4b71-89b4-935d47db982f', 'MANAGER_FOR_NEW_MANAGER', '8c66e24b-3845-47ae-af74-c4611db8be7c', 'd2c92810-3c46-4161-af54-7ae8b3c9d0b3', 'Text for task to be performed by new managers manager');
+
+insert into custom_sortorder (id, municipality_id, organization_number, component_type, component_id, position)
+values ('21ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281',  1, 'PHASE', '7272d1fc-540e-4394-afe2-e133ca642e91', 1),
+       ('22ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281',  1, 'PHASE', '3e9780a7-96f3-4d07-80ee-a9634b786a38', 4),
+       ('23ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281',  1, 'PHASE', '539b074d-d654-49ec-9dce-220f8a5ba7bb', 2),
+       ('24ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281',  1, 'PHASE', 'd2c92810-3c46-4161-af54-7ae8b3c9d0b3', 3),
+       ('25ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281',  1, 'TASK', 'c8c7abe0-5703-4ca1-86d3-74e5ad79b690', 2),
+       ('26ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281',  1, 'TASK', 'a76e9920-261f-42fc-9077-14fb1cdb9871', 5),
+       ('27ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281',  1, 'TASK', '0da1dfa2-5196-45c2-b605-162a323b9b5e', 3),
+       ('28ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281',  1, 'TASK', 'e930c70d-a961-4b71-89b4-935d47db982f', 4);
 
 -- ======================================================================================
 -- Employee A and B, Manager A and C are used in testcases test01, test03
@@ -181,7 +218,8 @@ insert into employee_checklist (end_date, expiration_date, start_date, locked, c
 values ('2024-07-01', '2024-10-01', '2024-01-01', false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL, 'fe34e2a9-5723-4734-91dc-42a664c5432f', 'fda66ff0-d554-4501-a16d-1b0b6e1825c3');
 
 insert into referred_checklist (employee_checklist_id, checklist_id)
-values ('fda66ff0-d554-4501-a16d-1b0b6e1825c3', 'e20598a4-6b32-459e-8c15-febbd4c5868e');
+values ('fda66ff0-d554-4501-a16d-1b0b6e1825c3', 'e20598a4-6b32-459e-8c15-febbd4c5868e'),
+       ('fda66ff0-d554-4501-a16d-1b0b6e1825c3', '8c66e24b-3845-47ae-af74-c4611db8be7c');
 
 -- ======================================================================================
 -- Manager G and M, Employee E, F and I are used in testcases test05 and test06
@@ -231,13 +269,15 @@ insert into employee_checklist (end_date, expiration_date, start_date, locked, c
 values ('2024-07-01', '2024-10-01', '2024-01-01', false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL, '7bc7707c-2a82-44fb-bbf6-fe00f9ec11c6', '426c7fbf-e943-45c8-980c-f8cfd4268767');
 
 insert into referred_checklist (employee_checklist_id, checklist_id)
-values ('426c7fbf-e943-45c8-980c-f8cfd4268767', 'e20598a4-6b32-459e-8c15-febbd4c5868e');
+values ('426c7fbf-e943-45c8-980c-f8cfd4268767', 'e20598a4-6b32-459e-8c15-febbd4c5868e'),
+       ('426c7fbf-e943-45c8-980c-f8cfd4268767', '8c66e24b-3845-47ae-af74-c4611db8be7c');
 
 -- ======================================================================================
--- Manager H is used in testcases test07, test09, test10, test11, test12 and test13
--- Employee G is used in testcases test07, test09, test11, test12 and test13
--- Employee H is used in testcase test10
--- Employee J is used in testcase test16
+-- Manager H is used in test 07, 09, 10, 11, 12, 13, 16 and 19
+-- Employee G is used in test 07, 09, 11, 12 and 13
+-- Employee H is used in test 10
+-- Employee J is used in test 16
+-- Employee K is used in test 19
 -- ======================================================================================
 -- Manager
 insert into manager (created, updated, email, first_name, id, last_name, username)
@@ -288,4 +328,18 @@ insert into employee_checklist (end_date, expiration_date, start_date, locked, c
 values ('2024-07-01', '2024-10-01', '2024-01-01', false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL, '619d40cd-025f-4c13-a8f2-e08715f70d56', 'cca064da-ab15-4276-8fbb-e8ba07b28718', 'someMentorName', 'someMentorUserId');
 
 insert into referred_checklist (employee_checklist_id, checklist_id)
-values ('cca064da-ab15-4276-8fbb-e8ba07b28718', 'e20598a4-6b32-459e-8c15-febbd4c5868e');
+values ('cca064da-ab15-4276-8fbb-e8ba07b28718', 'e20598a4-6b32-459e-8c15-febbd4c5868e'),
+       ('cca064da-ab15-4276-8fbb-e8ba07b28718', '8c66e24b-3845-47ae-af74-c4611db8be7c');
+
+-- Employee K (used in test18 to validate inheritance of custom sort order)
+insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name, manager_id, title, username, employment_position)
+values ('2024-01-01', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', '11ecf84e-cb11-426f-acd9-081330f28f7c', 'k.employee@5536.com', 'K Emp', '9fcfa7e5-fcec-4b1b-b254-8ee29d3017cd', 'Loyee', '9dcffa46-c500-4696-a862-04867df207d0', 'Struggler', 'kemp8loyee', 'EMPLOYEE');
+
+-- Employee checklist
+insert into employee_checklist (end_date, expiration_date, start_date, locked, created, updated, correspondence_id, employee_id, id, mentor_name, mentor_user_id)
+values ('2024-07-01', '2024-10-01', '2024-01-01', false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL, '9fcfa7e5-fcec-4b1b-b254-8ee29d3017cd', '87f45fed-b64c-4e81-8a3a-282df548bc38', NULL, NULL);
+
+insert into referred_checklist (employee_checklist_id, checklist_id)
+values ('87f45fed-b64c-4e81-8a3a-282df548bc38', '68849473-59aa-4ae6-b4bd-7f046e857984'),
+       ('87f45fed-b64c-4e81-8a3a-282df548bc38', '8c66e24b-3845-47ae-af74-c4611db8be7c');
+       

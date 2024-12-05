@@ -8,9 +8,11 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
+import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
@@ -126,6 +128,7 @@ class EmployeeChecklistIT extends AbstractAppTest {
 			.withServicePath(PATH_PREFIX + "/" + employeeChecklistId)
 			.withHttpMethod(DELETE)
 			.withExpectedResponseStatus(NO_CONTENT)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(ALL_VALUE))
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
 
@@ -152,6 +155,7 @@ class EmployeeChecklistIT extends AbstractAppTest {
 			.withServicePath(PATH_PREFIX + "/" + employeeChecklistId)
 			.withHttpMethod(DELETE)
 			.withExpectedResponseStatus(NO_CONTENT)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(ALL_VALUE))
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
 
@@ -216,6 +220,7 @@ class EmployeeChecklistIT extends AbstractAppTest {
 			.withServicePath(PATH_PREFIX + "/" + employeeChecklistId + "/customtasks/" + customTaskId)
 			.withHttpMethod(DELETE)
 			.withExpectedResponseStatus(NO_CONTENT)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(ALL_VALUE))
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
 
@@ -304,9 +309,9 @@ class EmployeeChecklistIT extends AbstractAppTest {
 			.withServicePath(PATH_PREFIX + "/" + employeeChecklistId + "/mentor")
 			.withHttpMethod(PUT)
 			.withRequest(REQUEST_FILE)
-			.withExpectedResponseStatus(OK)
-			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
-			.withExpectedResponse(EXPECTED_FILE)
+			.withExpectedResponseStatus(ACCEPTED)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(ALL_VALUE))
+			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
 	}
 
@@ -321,10 +326,23 @@ class EmployeeChecklistIT extends AbstractAppTest {
 			.withServicePath(PATH_PREFIX + "/" + employeeChecklistId + "/mentor")
 			.withHttpMethod(DELETE)
 			.withExpectedResponseStatus(NO_CONTENT)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(ALL_VALUE))
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
 
 		checklist = employeeChecklistRepository.findById(employeeChecklistId);
 		assertThat(checklist).hasValueSatisfying(employeeChecklistEntity -> assertThat(employeeChecklistEntity.getMentor()).isNull());
+	}
+
+	@Test
+	void test19_fetchChecklistWithInheritedSortorder() {
+		setupCall()
+			.withServicePath(PATH_PREFIX + "/employee/kemp8loyee")
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(EXPECTED_FILE)
+			.sendRequestAndVerifyResponse();
+
 	}
 }

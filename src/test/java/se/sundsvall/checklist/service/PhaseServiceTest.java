@@ -29,7 +29,6 @@ import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.SortorderEntity;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
 import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
-import se.sundsvall.checklist.integration.db.repository.SortorderRepository;
 import se.sundsvall.checklist.integration.db.repository.TaskRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,7 +46,7 @@ class PhaseServiceTest {
 	private CustomTaskRepository mockCustomTaskRepository;
 
 	@Mock
-	private SortorderRepository mockSortorderRepository;
+	private SortorderService mockSortorderService;
 
 	@InjectMocks
 	private PhaseService service;
@@ -156,17 +155,15 @@ class PhaseServiceTest {
 	@Test
 	void deletePhase() {
 		final var phaseEntity = createPhaseEntity();
-		final var sortOrderEntities = List.of(SortorderEntity.builder().build(), SortorderEntity.builder().build());
+		List.of(SortorderEntity.builder().build(), SortorderEntity.builder().build());
 		when(mockPhaseRepository.findByIdAndMunicipalityId(phaseEntity.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(phaseEntity));
-		when(mockSortorderRepository.findAllByComponentId(phaseEntity.getId())).thenReturn(sortOrderEntities);
 
 		service.deletePhase(MUNICIPALITY_ID, phaseEntity.getId());
 
 		verify(mockPhaseRepository).findByIdAndMunicipalityId(phaseEntity.getId(), MUNICIPALITY_ID);
 		verify(mockTaskRepository).countByPhaseId(phaseEntity.getId());
 		verify(mockCustomTaskRepository).countByPhaseId(phaseEntity.getId());
-		verify(mockSortorderRepository).findAllByComponentId(phaseEntity.getId());
-		verify(mockSortorderRepository).deleteAllInBatch(sortOrderEntities);
+		verify(mockSortorderService).deleteSortorderItem(phaseEntity.getId());
 		verify(mockPhaseRepository).delete(phaseEntityCaptor.capture());
 
 		assertThat(phaseEntityCaptor.getValue()).satisfies(entity -> {
@@ -216,6 +213,6 @@ class PhaseServiceTest {
 
 	@AfterEach
 	void verifyNoMoreInteraction() {
-		verifyNoMoreInteractions(mockPhaseRepository, mockTaskRepository, mockCustomTaskRepository, mockSortorderRepository);
+		verifyNoMoreInteractions(mockPhaseRepository, mockTaskRepository, mockCustomTaskRepository, mockSortorderService);
 	}
 }

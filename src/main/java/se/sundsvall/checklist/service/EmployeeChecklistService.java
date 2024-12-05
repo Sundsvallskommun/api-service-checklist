@@ -15,7 +15,6 @@ import static se.sundsvall.checklist.integration.db.model.enums.RoleType.NEW_MAN
 import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.buildDefaultNewEmployeeFilter;
 import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.buildUuidEmployeeFilter;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toCustomTask;
-import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEmployeeChecklist;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.updateCustomTaskEntity;
 import static se.sundsvall.checklist.service.util.EmployeeChecklistDecorator.decorateWithCustomTasks;
 import static se.sundsvall.checklist.service.util.EmployeeChecklistDecorator.decorateWithFulfilment;
@@ -74,17 +73,20 @@ public class EmployeeChecklistService {
 	private final CustomTaskRepository customTaskRepository;
 	private final EmployeeIntegration employeeIntegration;
 	private final EmployeeChecklistIntegration employeeChecklistIntegration;
+	private final SortorderService sortorderService;
 	private final Duration employeeInformationUpdateInterval;
 
 	public EmployeeChecklistService(
 		final CustomTaskRepository customTaskRepository,
 		final EmployeeIntegration employeeIntegration,
 		final EmployeeChecklistIntegration employeeChecklistIntegration,
+		final SortorderService sortorderService,
 		@Value("${checklist.employee-update-interval}") final Duration employeeInformationUpdateInterval) {
 
 		this.customTaskRepository = customTaskRepository;
 		this.employeeIntegration = employeeIntegration;
 		this.employeeChecklistIntegration = employeeChecklistIntegration;
+		this.sortorderService = sortorderService;
 		this.employeeInformationUpdateInterval = employeeInformationUpdateInterval;
 	}
 
@@ -100,7 +102,8 @@ public class EmployeeChecklistService {
 			.map(list -> decorateWithFulfilment(list, employeeChecklist))
 			.map(this::decorateWithDelegateInformation)
 			.map(ServiceUtils::calculateCompleted)
-			.map(this::removeManagerTasks);
+			.map(this::removeManagerTasks)
+			.map(list -> sortorderService.applySorting(employeeChecklist, list));
 	}
 
 	public List<EmployeeChecklist> fetchChecklistsForManager(String municipalityId, String username) {
@@ -117,6 +120,7 @@ public class EmployeeChecklistService {
 			.map(list -> decorateWithFulfilment(list, fetchEntity(employeeChecklists, list.getId())))
 			.map(this::decorateWithDelegateInformation)
 			.map(ServiceUtils::calculateCompleted)
+			.map(list -> sortorderService.applySorting(fetchEntity(employeeChecklists, list.getId()), list))
 			.toList();
 	}
 
@@ -169,8 +173,8 @@ public class EmployeeChecklistService {
 		employeeChecklistIntegration.deleteEmployeeChecklist(municipalityId, employeeChecklistId);
 	}
 
-	public EmployeeChecklist setMentor(final String municipalityId, final String employeeChecklistId, final Mentor mentor) {
-		return toEmployeeChecklist(employeeChecklistIntegration.setMentor(municipalityId, employeeChecklistId, mentor));
+	public void setMentor(final String municipalityId, final String employeeChecklistId, final Mentor mentor) {
+		employeeChecklistIntegration.setMentor(municipalityId, employeeChecklistId, mentor);
 	}
 
 	public void deleteMentor(final String municipalityId, final String employeeChecklistId) {

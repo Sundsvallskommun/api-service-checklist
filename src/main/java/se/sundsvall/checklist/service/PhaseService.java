@@ -19,7 +19,6 @@ import se.sundsvall.checklist.api.model.PhaseUpdateRequest;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
 import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
-import se.sundsvall.checklist.integration.db.repository.SortorderRepository;
 import se.sundsvall.checklist.integration.db.repository.TaskRepository;
 
 @Service
@@ -31,18 +30,18 @@ public class PhaseService {
 	private final PhaseRepository phaseRepository;
 	private final TaskRepository taskRepository;
 	private final CustomTaskRepository customTaskRepository;
-	private final SortorderRepository sortorderRepository;
+	private final SortorderService sortorderService;
 
 	public PhaseService(
 		final PhaseRepository phaseRepository,
 		final TaskRepository taskRepository,
 		final CustomTaskRepository customTaskRepository,
-		final SortorderRepository sortorderRepository) {
+		final SortorderService sortorderService) {
 
 		this.phaseRepository = phaseRepository;
 		this.taskRepository = taskRepository;
 		this.customTaskRepository = customTaskRepository;
-		this.sortorderRepository = sortorderRepository;
+		this.sortorderService = sortorderService;
 	}
 
 	public List<Phase> getPhases(final String municipalityId) {
@@ -72,7 +71,7 @@ public class PhaseService {
 			throw Problem.valueOf(CONFLICT, PHASE_CONTAINS_TASKS);
 		}
 
-		sortorderRepository.deleteAllInBatch(sortorderRepository.findAllByComponentId(id));
+		sortorderService.deleteSortorderItem(id);
 		phaseRepository.delete(phase);
 	}
 
