@@ -3,15 +3,13 @@ package se.sundsvall.checklist.service.util;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import generated.se.sundsvall.employee.Employee;
+import generated.se.sundsvall.employee.Employment;
 import java.util.List;
 import java.util.UUID;
-
 import org.junit.jupiter.api.Test;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
-
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.Employment;
 import se.sundsvall.checklist.api.model.EmployeeChecklist;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhase;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;

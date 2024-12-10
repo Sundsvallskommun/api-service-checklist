@@ -2,7 +2,6 @@ package se.sundsvall.checklist.integration.db.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

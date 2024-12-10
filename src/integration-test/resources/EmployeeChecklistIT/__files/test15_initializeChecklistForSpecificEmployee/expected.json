@@ -1,7 +1,9 @@
 {
 	"summary": "Successful import of 1 employees",
-	"details": [{
-		"information": "Employee with loginname jar31jed processed successfully.",
-		"status": 200
-	}]
+	"details": [
+		{
+			"information": "Employee with loginname jar31jed processed successfully.",
+			"status": 200
+		}
+	]
 }

@@ -3,11 +3,10 @@ package se.sundsvall.checklist.service.mapper;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 
-import java.util.List;
-import java.util.Optional;
-
 import generated.se.sundsvall.messaging.DeliveryResult;
 import generated.se.sundsvall.messaging.MessageStatus;
+import java.util.List;
+import java.util.Optional;
 import se.sundsvall.checklist.api.model.Correspondence;
 import se.sundsvall.checklist.integration.db.model.CorrespondenceEntity;
 import se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel;

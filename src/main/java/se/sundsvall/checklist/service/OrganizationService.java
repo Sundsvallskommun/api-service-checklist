@@ -8,11 +8,9 @@ import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toOrganiz
 import static se.sundsvall.checklist.service.mapper.OrganizationMapper.updateOrganizationEntity;
 
 import java.util.List;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
-
 import se.sundsvall.checklist.api.model.Organization;
 import se.sundsvall.checklist.api.model.OrganizationCreateRequest;
 import se.sundsvall.checklist.api.model.OrganizationUpdateRequest;

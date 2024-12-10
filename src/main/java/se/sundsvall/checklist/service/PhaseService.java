@@ -8,11 +8,9 @@ import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toPhases;
 import static se.sundsvall.checklist.service.mapper.ChecklistMapper.updatePhaseEntity;
 
 import java.util.List;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
-
 import se.sundsvall.checklist.api.model.Phase;
 import se.sundsvall.checklist.api.model.PhaseCreateRequest;
 import se.sundsvall.checklist.api.model.PhaseUpdateRequest;

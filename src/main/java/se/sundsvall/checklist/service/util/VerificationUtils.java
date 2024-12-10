@@ -9,13 +9,11 @@ import static org.zalando.problem.Status.BAD_REQUEST;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.checklist.service.util.StringUtils.toReadableString;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.zalando.problem.Problem;
-
 import generated.se.sundsvall.employee.Employee;
 import generated.se.sundsvall.employee.Employment;
+import java.util.ArrayList;
+import java.util.List;
+import org.zalando.problem.Problem;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 
 public final class VerificationUtils {

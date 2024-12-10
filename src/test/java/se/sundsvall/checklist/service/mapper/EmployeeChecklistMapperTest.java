@@ -12,15 +12,13 @@ import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEm
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEmployeeChecklistTask;
 import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toStakeholder;
 
+import generated.se.sundsvall.employee.Manager;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-
-import generated.se.sundsvall.employee.Manager;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
