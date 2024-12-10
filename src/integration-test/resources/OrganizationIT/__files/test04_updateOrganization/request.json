@@ -1,4 +1,6 @@
 {
 	"organizationName": "NEW NAME",
-	"communicationChannels": ["NO_COMMUNICATION"]
+	"communicationChannels": [
+		"NO_COMMUNICATION"
+	]
 }

@@ -8,7 +8,6 @@ import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATE
 
 import java.util.ArrayList;
 import java.util.List;
-
 import se.sundsvall.checklist.api.model.Checklist;
 import se.sundsvall.checklist.api.model.ChecklistCreateRequest;
 import se.sundsvall.checklist.api.model.ChecklistUpdateRequest;

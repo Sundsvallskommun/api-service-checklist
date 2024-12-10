@@ -4,7 +4,6 @@ import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.verify;
 
 import java.time.Duration;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;

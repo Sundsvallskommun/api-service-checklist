@@ -1,34 +1,38 @@
-[{
-	"emailAddress": "john.doe@email.com",
-	"loginname": "johndoe",
-	"givenname": "John",
-	"isClassified": false,
-	"isManager": false,
-	"personId": "1f183588-48ef-4287-9725-4963997c817d",
-	"employments": [{
-		"orgName": "Sub organization 5535",
-		"topOrgId": 28,
-		"manager": {
-			"emailAddress": "kalleanka@email.com",
-			"loginname": "kalleanka",
-			"referenceNumber": "KALLE01ANKA",
-			"givenname": "Kalle",
-			"personId": "1273fadb-0455-455e-a5e6-0eebda329867",
-			"lastname": "Anka"
-		},
-		"employmentType": 0,
-		"formOfEmploymentId": "1",
-		"topOrgName": "Top organization name",
-		"isManual": false,
-		"title": "Prowler",
-		"orgId": 5535,
-		"companyId": 1,
-		"paTeam": "AB01",
-		"isMainEmployment": true,
-		"benefitGroupId": 11,
-		"aid": "123456",
-		"startDate": "2024-01-01T00:00:00"
-	}],
-	"personNumber": "1901011234",
-	"lastname": "Dear"
-}]
+[
+	{
+		"emailAddress": "john.doe@email.com",
+		"loginname": "johndoe",
+		"givenname": "John",
+		"isClassified": false,
+		"isManager": false,
+		"personId": "1f183588-48ef-4287-9725-4963997c817d",
+		"employments": [
+			{
+				"orgName": "Sub organization 5535",
+				"topOrgId": 28,
+				"manager": {
+					"emailAddress": "kalleanka@email.com",
+					"loginname": "kalleanka",
+					"referenceNumber": "KALLE01ANKA",
+					"givenname": "Kalle",
+					"personId": "1273fadb-0455-455e-a5e6-0eebda329867",
+					"lastname": "Anka"
+				},
+				"employmentType": 0,
+				"formOfEmploymentId": "1",
+				"topOrgName": "Top organization name",
+				"isManual": false,
+				"title": "Prowler",
+				"orgId": 5535,
+				"companyId": 1,
+				"paTeam": "AB01",
+				"isMainEmployment": true,
+				"benefitGroupId": 11,
+				"aid": "123456",
+				"startDate": "2024-01-01T00:00:00"
+			}
+		],
+		"personNumber": "1901011234",
+		"lastname": "Dear"
+	}
+]

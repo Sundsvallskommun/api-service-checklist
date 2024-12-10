@@ -5,7 +5,6 @@ import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPositi
 import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.MANAGER;
 
 import java.time.Period;
-
 import org.junit.jupiter.api.Test;
 
 class EmploymentTypeTest {

@@ -31,16 +31,18 @@
 			"name": "Phasename D",
 			"id": "d2c92810-3c46-4161-af54-7ae8b3c9d0b3",
 			"timeToComplete": "P1M",
-			"tasks": [{
-				"fulfilmentStatus": "EMPTY",
-				"heading": "Description of new employee task",
-				"sortOrder": 3,
-				"id": "a76e9920-261f-42fc-9077-14fb1cdb9871",
-				"text": "Text for task to be performed by new employee",
-				"roleType": "NEW_EMPLOYEE",
-				"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
-				"customTask": false
-			}]
+			"tasks": [
+				{
+					"fulfilmentStatus": "EMPTY",
+					"heading": "Description of new employee task",
+					"sortOrder": 3,
+					"id": "a76e9920-261f-42fc-9077-14fb1cdb9871",
+					"text": "Text for task to be performed by new employee",
+					"roleType": "NEW_EMPLOYEE",
+					"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
+					"customTask": false
+				}
+			]
 		},
 		{
 			"bodyText": "Description of phase B",

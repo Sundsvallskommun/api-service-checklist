@@ -3,17 +3,15 @@ package se.sundsvall.checklist.integration.employee;
 import static se.sundsvall.checklist.configuration.CacheConfiguration.EMPLOYEE_CACHE;
 import static se.sundsvall.checklist.integration.employee.configuration.EmployeeConfiguration.CLIENT_ID;
 
+import generated.se.sundsvall.employee.Employee;
+import generated.se.sundsvall.employee.PortalPersonData;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.PortalPersonData;
 import se.sundsvall.checklist.integration.employee.configuration.EmployeeConfiguration;
 
 @FeignClient(name = CLIENT_ID, url = "${integration.employee.url}", configuration = EmployeeConfiguration.class, dismiss404 = true)

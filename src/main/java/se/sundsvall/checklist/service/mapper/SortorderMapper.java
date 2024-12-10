@@ -10,7 +10,6 @@ import static se.sundsvall.checklist.integration.db.model.enums.ComponentType.TA
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 import se.sundsvall.checklist.api.model.SortorderRequest;
 import se.sundsvall.checklist.api.model.SortorderRequest.PhaseItem;
 import se.sundsvall.checklist.api.model.SortorderRequest.TaskItem;

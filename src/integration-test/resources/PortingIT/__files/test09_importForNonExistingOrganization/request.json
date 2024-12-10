@@ -1,15 +1,17 @@
 {
 	"displayName": "Imported checklist",
 	"name": "TEST09_CHECKLIST",
-	"tasks": [{
-		"phase": {
+	"tasks": [
+		{
+			"phase": {
+				"sortOrder": 1,
+				"id": "1455a5d4-1db8-4a25-a49f-92fdd0c60a14"
+			},
+			"heading": "Imported task name",
 			"sortOrder": 1,
-			"id": "1455a5d4-1db8-4a25-a49f-92fdd0c60a14"
-		},
-		"heading": "Imported task name",
-		"sortOrder": 1,
-		"text": "Task description of imported task for employee",
-		"roleType": "NEW_EMPLOYEE",
-		"questionType": "YES_OR_NO"
-	}]
+			"text": "Task description of imported task for employee",
+			"roleType": "NEW_EMPLOYEE",
+			"questionType": "YES_OR_NO"
+		}
+	]
 }

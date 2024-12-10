@@ -7,15 +7,13 @@ import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceSt
 import static se.sundsvall.checklist.service.mapper.CorrespondenceMapper.toCorrespondenceEntity;
 
 import java.util.Optional;
-
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
-
-import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistRepository;
 import se.sundsvall.checklist.service.CommunicationService;

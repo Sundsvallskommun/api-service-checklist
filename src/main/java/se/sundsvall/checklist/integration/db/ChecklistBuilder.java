@@ -10,9 +10,7 @@ import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toTask;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 import org.springframework.stereotype.Component;
-
 import se.sundsvall.checklist.api.model.Checklist;
 import se.sundsvall.checklist.api.model.Phase;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;

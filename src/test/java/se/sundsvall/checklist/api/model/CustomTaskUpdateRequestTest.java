@@ -9,11 +9,9 @@ import static com.google.code.beanmatchers.BeanMatchers.registerValueGenerator;
 import static org.hamcrest.CoreMatchers.allOf;
 
 import java.util.Random;
-
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 
 class CustomTaskUpdateRequestTest {

@@ -7,11 +7,9 @@ import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toTasks;
 import static se.sundsvall.checklist.service.mapper.ChecklistMapper.updateTaskEntity;
 
 import java.util.List;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
-
 import se.sundsvall.checklist.api.model.Task;
 import se.sundsvall.checklist.api.model.TaskCreateRequest;
 import se.sundsvall.checklist.api.model.TaskUpdateRequest;

@@ -1,10 +1,10 @@
 package se.sundsvall.checklist.integration.db.model.enums;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.NEW_EMPLOYEE;
 import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_EMPLOYEE;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.NEW_MANAGER;
 import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_MANAGER;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.NEW_EMPLOYEE;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.NEW_MANAGER;
 
 import org.junit.jupiter.api.Test;
 

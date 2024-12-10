@@ -2,15 +2,13 @@ package se.sundsvall.checklist.integration.employee;
 
 import static java.util.Collections.emptyList;
 
+import generated.se.sundsvall.employee.Employee;
+import generated.se.sundsvall.employee.PortalPersonData;
 import java.util.List;
 import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.PortalPersonData;
 
 /**
  * Wrapper class for {@link EmployeeClient}.

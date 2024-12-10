@@ -12,9 +12,7 @@ import static se.sundsvall.checklist.service.mapper.ChecklistMapper.updateTaskEn
 
 import java.time.OffsetDateTime;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.checklist.api.model.ChecklistCreateRequest;
 import se.sundsvall.checklist.api.model.ChecklistUpdateRequest;
 import se.sundsvall.checklist.api.model.PhaseCreateRequest;

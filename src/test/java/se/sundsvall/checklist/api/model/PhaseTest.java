@@ -13,7 +13,6 @@ import static se.sundsvall.checklist.integration.db.model.enums.Permission.ADMIN
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Random;
-
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

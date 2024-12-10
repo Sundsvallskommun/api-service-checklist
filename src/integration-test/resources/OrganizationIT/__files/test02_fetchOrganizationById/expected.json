@@ -1,82 +1,92 @@
 {
-	"checklists": [{
-		"created": "2019-01-01T00:00:00+01:00",
-		"lastSavedBy": "someUser",
-		"name": "Active checklist for root organization A",
-		"id": "4bc85739-cf6d-4223-b9dc-09218f044db7",
-		"version": 1,
-		"lifeCycle": "ACTIVE",
-		"updated": "2019-01-01T00:00:00+01:00",
-		"phases": [
-			{
-				"bodyText": "Uppgifter under fas 1",
-				"created": "2019-01-01T00:00:00+01:00",
-				"sortOrder": 1,
-				"lastSavedBy": "someUser",
-				"name": "Fas 1",
-				"id": "1455a5d4-1db8-4a25-a49f-92fdd0c60a14",
-				"updated": "2019-01-01T00:00:00+01:00",
-				"timeToComplete": "P1W",
-				"tasks": [{
-					"heading": "Uppg 7",
+	"checklists": [
+		{
+			"created": "2019-01-01T00:00:00+01:00",
+			"lastSavedBy": "someUser",
+			"name": "Active checklist for root organization A",
+			"id": "4bc85739-cf6d-4223-b9dc-09218f044db7",
+			"version": 1,
+			"lifeCycle": "ACTIVE",
+			"updated": "2019-01-01T00:00:00+01:00",
+			"phases": [
+				{
+					"bodyText": "Uppgifter under fas 1",
 					"created": "2019-01-01T00:00:00+01:00",
 					"sortOrder": 1,
 					"lastSavedBy": "someUser",
-					"id": "9ba82aca-f841-4257-baec-d745e3ab78bf",
-					"text": "Gör G",
-					"roleType": "NEW_EMPLOYEE",
-					"questionType": "YES_OR_NO",
-					"updated": "2019-01-01T00:00:00+01:00"
-				}]
-			},
-			{
-				"bodyText": "Uppgifter under fas 2",
-				"created": "2019-01-01T00:00:00+01:00",
-				"sortOrder": 2,
-				"lastSavedBy": "someUser",
-				"name": "Fas 2",
-				"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
-				"updated": "2019-01-01T00:00:00+01:00",
-				"timeToComplete": "P2W",
-				"tasks": [{
-					"heading": "Uppg 8",
+					"name": "Fas 1",
+					"id": "1455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+					"updated": "2019-01-01T00:00:00+01:00",
+					"timeToComplete": "P1W",
+					"tasks": [
+						{
+							"heading": "Uppg 7",
+							"created": "2019-01-01T00:00:00+01:00",
+							"sortOrder": 1,
+							"lastSavedBy": "someUser",
+							"id": "9ba82aca-f841-4257-baec-d745e3ab78bf",
+							"text": "Gör G",
+							"roleType": "NEW_EMPLOYEE",
+							"questionType": "YES_OR_NO",
+							"updated": "2019-01-01T00:00:00+01:00"
+						}
+					]
+				},
+				{
+					"bodyText": "Uppgifter under fas 2",
 					"created": "2019-01-01T00:00:00+01:00",
-					"sortOrder": 1,
+					"sortOrder": 2,
 					"lastSavedBy": "someUser",
-					"id": "10a82aca-f841-4257-baec-d745e3ab78bf",
-					"text": "Gör H",
-					"roleType": "NEW_EMPLOYEE",
-					"questionType": "YES_OR_NO",
-					"updated": "2019-01-01T00:00:00+01:00"
-				}]
-			},
-			{
-				"bodyText": "Uppgifter under fas 3",
-				"created": "2019-01-01T00:00:00+01:00",
-				"sortOrder": 3,
-				"lastSavedBy": "someUser",
-				"name": "Fas 3",
-				"id": "3455a5d4-1db8-4a25-a49f-92fdd0c60a14",
-				"updated": "2019-01-01T00:00:00+01:00",
-				"timeToComplete": "P1M",
-				"tasks": [{
-					"heading": "Uppg 9",
+					"name": "Fas 2",
+					"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+					"updated": "2019-01-01T00:00:00+01:00",
+					"timeToComplete": "P2W",
+					"tasks": [
+						{
+							"heading": "Uppg 8",
+							"created": "2019-01-01T00:00:00+01:00",
+							"sortOrder": 1,
+							"lastSavedBy": "someUser",
+							"id": "10a82aca-f841-4257-baec-d745e3ab78bf",
+							"text": "Gör H",
+							"roleType": "NEW_EMPLOYEE",
+							"questionType": "YES_OR_NO",
+							"updated": "2019-01-01T00:00:00+01:00"
+						}
+					]
+				},
+				{
+					"bodyText": "Uppgifter under fas 3",
 					"created": "2019-01-01T00:00:00+01:00",
-					"sortOrder": 1,
+					"sortOrder": 3,
 					"lastSavedBy": "someUser",
-					"id": "11a82aca-f841-4257-baec-d745e3ab78bf",
-					"text": "Gör I",
-					"roleType": "NEW_EMPLOYEE",
-					"questionType": "YES_OR_NO",
-					"updated": "2019-01-01T00:00:00+01:00"
-				}]
-			}
-		]
-	}],
+					"name": "Fas 3",
+					"id": "3455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+					"updated": "2019-01-01T00:00:00+01:00",
+					"timeToComplete": "P1M",
+					"tasks": [
+						{
+							"heading": "Uppg 9",
+							"created": "2019-01-01T00:00:00+01:00",
+							"sortOrder": 1,
+							"lastSavedBy": "someUser",
+							"id": "11a82aca-f841-4257-baec-d745e3ab78bf",
+							"text": "Gör I",
+							"roleType": "NEW_EMPLOYEE",
+							"questionType": "YES_OR_NO",
+							"updated": "2019-01-01T00:00:00+01:00"
+						}
+					]
+				}
+			]
+		}
+	],
 	"organizationName": "Root organization A (level 1)",
 	"organizationNumber": 1,
 	"created": "2019-01-01T00:00:00+01:00",
-	"communicationChannels": ["EMAIL"],
+	"communicationChannels": [
+		"EMAIL"
+	],
 	"id": "15764278-50c8-4a19-af00-077bfc314fd2",
 	"updated": "2019-01-01T00:00:00+01:00"
 }

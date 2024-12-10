@@ -9,14 +9,12 @@ import static se.sundsvall.checklist.service.util.SortingUtils.applyCustomSortor
 import static se.sundsvall.checklist.service.util.SortingUtils.sortEmployeeChecklistPhases;
 import static se.sundsvall.checklist.service.util.SortingUtils.sortPhases;
 
+import generated.se.sundsvall.mdviewer.Organization;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import generated.se.sundsvall.mdviewer.Organization;
 import se.sundsvall.checklist.api.model.Checklist;
 import se.sundsvall.checklist.api.model.EmployeeChecklist;
 import se.sundsvall.checklist.api.model.SortorderRequest;

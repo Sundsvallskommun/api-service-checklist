@@ -1,31 +1,33 @@
-{"tree": {
-	"1": {
-		"level": 1,
-		"orgId": "1"
-	},
-	"2": {
-		"orgName": "Sundsvall Energi",
-		"level": 2,
-		"orgId": "9271"
-	},
-	"3": {
-		"orgName": "SEAB Produktion Gemensamt",
-		"level": 3,
-		"orgId": "9246"
-	},
-	"4": {
-		"orgName": "SEAB Enhet drift",
-		"level": 4,
-		"orgId": "9251"
-	},
-	"5": {
-		"orgName": "SEAB Enhet drift",
-		"level": 5,
-		"orgId": "9279"
-	},
-	"6": {
-		"orgName": "SEAB Enhet drift",
-		"level": 6,
-		"orgId": "9250"
+{
+	"tree": {
+		"1": {
+			"level": 1,
+			"orgId": "1"
+		},
+		"2": {
+			"orgName": "Sundsvall Energi",
+			"level": 2,
+			"orgId": "9271"
+		},
+		"3": {
+			"orgName": "SEAB Produktion Gemensamt",
+			"level": 3,
+			"orgId": "9246"
+		},
+		"4": {
+			"orgName": "SEAB Enhet drift",
+			"level": 4,
+			"orgId": "9251"
+		},
+		"5": {
+			"orgName": "SEAB Enhet drift",
+			"level": 5,
+			"orgId": "9279"
+		},
+		"6": {
+			"orgName": "SEAB Enhet drift",
+			"level": 6,
+			"orgId": "9250"
+		}
 	}
-}}
+}

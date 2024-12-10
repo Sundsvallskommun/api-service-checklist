@@ -8,14 +8,12 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 import java.util.Map;
 import java.util.UUID;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
 import se.sundsvall.checklist.Application;
 import se.sundsvall.checklist.api.model.DelegatedEmployeeChecklistResponse;
 import se.sundsvall.checklist.service.DelegationService;
@@ -29,7 +27,7 @@ class DelegationResourceTest {
 	private static final String EMAIL = "test@test.com";
 	private static final String BASE_PATH = "{municipalityId}/employee-checklists";
 
-	@MockBean
+	@MockitoBean
 	private DelegationService serviceMock;
 
 	@Autowired

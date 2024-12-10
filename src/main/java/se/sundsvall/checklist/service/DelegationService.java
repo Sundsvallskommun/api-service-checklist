@@ -11,12 +11,10 @@ import static se.sundsvall.checklist.service.util.ServiceUtils.fetchEntity;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
-
 import se.sundsvall.checklist.api.model.DelegatedEmployeeChecklistResponse;
 import se.sundsvall.checklist.api.model.EmployeeChecklist;
 import se.sundsvall.checklist.integration.db.EmployeeChecklistIntegration;

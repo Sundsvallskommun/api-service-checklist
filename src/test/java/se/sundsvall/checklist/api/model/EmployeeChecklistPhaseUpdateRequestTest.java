@@ -10,11 +10,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 
 import java.util.Random;
-
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 
 class EmployeeChecklistPhaseUpdateRequestTest {

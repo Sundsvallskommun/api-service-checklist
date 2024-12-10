@@ -3,13 +3,11 @@ package se.sundsvall.checklist.service;
 import static org.apache.commons.lang3.math.NumberUtils.isCreatable;
 
 import java.util.TreeMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Representation of an organization in the municipality.

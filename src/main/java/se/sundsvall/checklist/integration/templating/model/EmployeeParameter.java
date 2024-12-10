@@ -1,7 +1,6 @@
 package se.sundsvall.checklist.integration.templating.model;
 
 import java.time.LocalDate;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

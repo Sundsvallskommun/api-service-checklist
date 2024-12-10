@@ -1,11 +1,17 @@
 {
 	"request": {
-		"headers": {"Authorization": {"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI4"}},
+		"headers": {
+			"Authorization": {
+				"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI4"
+			}
+		},
 		"method": "POST",
 		"url": "/api-templating/2281/render"
 	},
 	"response": {
-		"headers": {"Content-Type": "application/json; charset=utf-8"},
+		"headers": {
+			"Content-Type": "application/json; charset=utf-8"
+		},
 		"bodyFileName": "test2_sendEmail/responses/templating.json",
 		"status": "200"
 	}

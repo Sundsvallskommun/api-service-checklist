@@ -6,14 +6,12 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import static se.sundsvall.checklist.TestObjectFactory.generateSortorderRequest;
 
 import java.util.Map;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
 import se.sundsvall.checklist.Application;
 import se.sundsvall.checklist.service.SortorderService;
 
@@ -25,7 +23,7 @@ class CustomSortResourceTest {
 	private static final String ORGANIZATION_NUMBER = "123";
 	private static final String BASE_PATH = "/{municipalityId}/sortorder/{organizationNumber}";
 
-	@MockBean
+	@MockitoBean
 	private SortorderService serviceMock;
 
 	@Autowired

@@ -1,20 +1,22 @@
-{"phaseOrder": [
-	{
-		"id": "1455a5d4-1db8-4a25-a49f-92fdd0c60a14",
-		"position": 2,
-		"taskOrder": [
-			{
-				"id": "aba82aca-f841-4257-baec-d745e3ab78bf",
-				"position": 2
-			},
-			{
-				"id": "bba82aca-f841-4257-baec-d745e3ab78bf",
-				"position": 1
-			}
-		]
-	},
-	{
-		"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
-		"position": 1
-	}
-]}
+{
+	"phaseOrder": [
+		{
+			"id": "1455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+			"position": 2,
+			"taskOrder": [
+				{
+					"id": "aba82aca-f841-4257-baec-d745e3ab78bf",
+					"position": 2
+				},
+				{
+					"id": "bba82aca-f841-4257-baec-d745e3ab78bf",
+					"position": 1
+				}
+			]
+		},
+		{
+			"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+			"position": 1
+		}
+	]
+}

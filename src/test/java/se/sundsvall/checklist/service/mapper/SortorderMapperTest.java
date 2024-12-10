@@ -6,7 +6,6 @@ import static se.sundsvall.checklist.integration.db.model.enums.ComponentType.PH
 import static se.sundsvall.checklist.integration.db.model.enums.ComponentType.TASK;
 
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.checklist.api.model.SortorderRequest;
 
 class SortorderMapperTest {
