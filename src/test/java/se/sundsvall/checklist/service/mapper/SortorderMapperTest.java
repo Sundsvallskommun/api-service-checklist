@@ -86,7 +86,7 @@ class SortorderMapperTest {
 
 	@Test
 	void toSortorderEntitiesFromNull() {
-		assertThat(SortorderMapper.toSortorderEntities(null, null, null)).isNull();
+		assertThat(SortorderMapper.toSortorderEntities(null, null, null)).isEmpty();
 	}
 
 }

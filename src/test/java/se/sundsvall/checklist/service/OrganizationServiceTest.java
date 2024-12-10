@@ -27,9 +27,7 @@ import org.zalando.problem.Problem;
 
 import se.sundsvall.checklist.api.model.Organization;
 import se.sundsvall.checklist.integration.db.ChecklistBuilder;
-import se.sundsvall.checklist.integration.db.model.SortorderEntity;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
-import se.sundsvall.checklist.integration.db.repository.SortorderRepository;
 
 @ExtendWith(MockitoExtension.class)
 class OrganizationServiceTest {
@@ -46,7 +44,7 @@ class OrganizationServiceTest {
 	private ChecklistBuilder mockChecklistBuilder;
 
 	@Mock
-	private SortorderRepository mockSortorderRepository;
+	private SortorderService mockSortorderService;
 
 	@InjectMocks
 	private OrganizationService organizationService;
@@ -85,7 +83,7 @@ class OrganizationServiceTest {
 		final var entity = createOrganizationEntity();
 		when(mockOrganizationRepository.findAllByMunicipalityId(MUNICIPALITY_ID)).thenReturn(List.of(entity));
 
-		final var result = organizationService.fetchAllOrganizations(MUNICIPALITY_ID, null);
+		final var result = organizationService.fetchAllOrganizations(MUNICIPALITY_ID, null, null);
 
 		assertThat(result).hasSize(1);
 		assertThat(result.getFirst()).isInstanceOf(Organization.class);
@@ -102,7 +100,7 @@ class OrganizationServiceTest {
 		entity.setOrganizationNumber(2345);
 		when(mockOrganizationRepository.findAllByMunicipalityId(MUNICIPALITY_ID)).thenReturn(List.of(entity, createOrganizationEntity()));
 
-		final var result = organizationService.fetchAllOrganizations(MUNICIPALITY_ID, List.of(1234));
+		final var result = organizationService.fetchAllOrganizations(MUNICIPALITY_ID, List.of(1234), null);
 
 		assertThat(result).hasSize(1);
 		assertThat(result.getFirst()).isInstanceOf(Organization.class);
@@ -118,7 +116,7 @@ class OrganizationServiceTest {
 		final var entity = createOrganizationEntity();
 		when(mockOrganizationRepository.findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(entity));
 
-		final var result = organizationService.fetchOrganization(MUNICIPALITY_ID, entity.getId());
+		final var result = organizationService.fetchOrganization(MUNICIPALITY_ID, entity.getId(), null);
 
 		assertThat(result).satisfies(organization -> {
 			assertThat(organization).isInstanceOf(Organization.class);
@@ -137,7 +135,7 @@ class OrganizationServiceTest {
 
 	@Test
 	void fetchOrganizationsByIdNotFound() {
-		assertThatThrownBy(() -> organizationService.fetchOrganization(MUNICIPALITY_ID, "id"))
+		assertThatThrownBy(() -> organizationService.fetchOrganization(MUNICIPALITY_ID, "id", null))
 			.isInstanceOf(Problem.class)
 			.hasFieldOrPropertyWithValue("status", NOT_FOUND)
 			.hasMessageContaining(ORGANIZATION_NOT_FOUND.formatted("id"));
@@ -179,16 +177,12 @@ class OrganizationServiceTest {
 	@Test
 	void deleteOrganization() {
 		final var entity = createOrganizationEntity();
-		final var sortOrderEntities = List.of(SortorderEntity.builder().build(), SortorderEntity.builder().build());
-
 		when(mockOrganizationRepository.findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(entity));
-		when(mockSortorderRepository.findAllByMunicipalityIdAndOrganizationNumber(MUNICIPALITY_ID, entity.getOrganizationNumber())).thenReturn(sortOrderEntities);
 
 		organizationService.deleteOrganization(MUNICIPALITY_ID, entity.getId());
 
 		verify(mockOrganizationRepository).findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID);
-		verify(mockSortorderRepository).findAllByMunicipalityIdAndOrganizationNumber(MUNICIPALITY_ID, entity.getOrganizationNumber());
-		verify(mockSortorderRepository).deleteAllInBatch(sortOrderEntities);
+		verify(mockSortorderService).deleteSortorder(MUNICIPALITY_ID, entity.getOrganizationNumber());
 		verify(mockOrganizationRepository).delete(entity);
 	}
 
@@ -220,6 +214,6 @@ class OrganizationServiceTest {
 
 	@AfterEach
 	void verifyNoMoreInteraction() {
-		verifyNoMoreInteractions(mockOrganizationRepository, mockChecklistBuilder, mockSortorderRepository);
+		verifyNoMoreInteractions(mockOrganizationRepository, mockChecklistBuilder, mockSortorderService);
 	}
 }

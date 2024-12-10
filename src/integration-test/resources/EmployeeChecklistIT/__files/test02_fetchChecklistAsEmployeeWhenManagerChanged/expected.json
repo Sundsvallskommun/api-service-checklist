@@ -23,14 +23,14 @@
 	"phases": [
 		{
 			"bodyText": "Description of phase D",
-			"sortOrder": 2,
-			"name": "Phasename",
+			"sortOrder": 1,
+			"name": "Phasename D",
 			"id": "d2c92810-3c46-4161-af54-7ae8b3c9d0b3",
 			"timeToComplete": "P1M",
 			"tasks": [{
 				"fulfilmentStatus": "EMPTY",
 				"heading": "Description of new employee task",
-				"sortOrder": 1,
+				"sortOrder": 3,
 				"id": "a76e9920-261f-42fc-9077-14fb1cdb9871",
 				"text": "Text for task to be performed by new employee",
 				"roleType": "NEW_EMPLOYEE",
@@ -40,21 +40,11 @@
 		},
 		{
 			"bodyText": "Description of phase B",
-			"sortOrder": 2,
-			"name": "Phasename",
+			"sortOrder": 3,
+			"name": "Phasename B",
 			"id": "3e9780a7-96f3-4d07-80ee-a9634b786a38",
 			"timeToComplete": "P1M",
 			"tasks": [
-				{
-					"fulfilmentStatus": "EMPTY",
-					"heading": "Description of first employee task",
-					"sortOrder": 1,
-					"id": "d250a20c-a616-4147-bfe0-19a0d12f3df0",
-					"text": "Text for first employee task",
-					"roleType": "NEW_EMPLOYEE",
-					"questionType": "YES_OR_NO_WITH_TEXT",
-					"customTask": false
-				},
 				{
 					"fulfilmentStatus": "EMPTY",
 					"heading": "Description of second employee task",
@@ -63,6 +53,16 @@
 					"text": "Text for second employee task",
 					"roleType": "NEW_EMPLOYEE",
 					"questionType": "YES_OR_NO",
+					"customTask": false
+				},
+				{
+					"fulfilmentStatus": "EMPTY",
+					"heading": "Description of first employee task",
+					"sortOrder": 3,
+					"id": "d250a20c-a616-4147-bfe0-19a0d12f3df0",
+					"text": "Text for first employee task",
+					"roleType": "NEW_EMPLOYEE",
+					"questionType": "YES_OR_NO_WITH_TEXT",
 					"customTask": false
 				}
 			]

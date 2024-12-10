@@ -1,5 +1,6 @@
 package se.sundsvall.checklist.service;
 
+import static java.util.Optional.ofNullable;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static org.zalando.problem.Status.CONFLICT;
 import static org.zalando.problem.Status.NOT_FOUND;
@@ -19,7 +20,6 @@ import se.sundsvall.checklist.integration.db.ChecklistBuilder;
 import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.integration.db.model.enums.LifeCycle;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
-import se.sundsvall.checklist.integration.db.repository.SortorderRepository;
 import se.sundsvall.checklist.service.mapper.OrganizationMapper;
 
 @Service
@@ -31,16 +31,16 @@ public class OrganizationService {
 
 	private final OrganizationRepository organizationRepository;
 	private final ChecklistBuilder checklistBuilder;
-	private final SortorderRepository sortorderRepository;
+	private final SortorderService sortorderService;
 
 	public OrganizationService(
 		final OrganizationRepository organizationRepository,
 		final ChecklistBuilder checklistBuilder,
-		final SortorderRepository sortorderRepository) {
+		final SortorderService sortorderService) {
 
 		this.organizationRepository = organizationRepository;
 		this.checklistBuilder = checklistBuilder;
-		this.sortorderRepository = sortorderRepository;
+		this.sortorderService = sortorderService;
 	}
 
 	public String createOrganization(final String municipalityId, final OrganizationCreateRequest request) {
@@ -53,23 +53,28 @@ public class OrganizationService {
 		return entity.getId();
 	}
 
-	public List<Organization> fetchAllOrganizations(final String municipalityId, List<Integer> organizationFilter) {
+	public List<Organization> fetchAllOrganizations(final String municipalityId, final List<Integer> organizationFilter, final Integer applySortFor) {
 		return organizationRepository
 			.findAllByMunicipalityId(municipalityId).stream()
-			.map(this::toOrganization)
 			.filter(organization -> isEmpty(organizationFilter) || organizationFilter.contains(organization.getOrganizationNumber()))
+			.map(organization -> toOrganization(organization, applySortFor))
 			.toList();
 	}
 
-	public Organization fetchOrganization(final String municipalityId, final String organizationId) {
+	public Organization fetchOrganization(final String municipalityId, final String organizationId, final Integer applySortFor) {
 		return organizationRepository.findByIdAndMunicipalityId(organizationId, municipalityId)
-			.map(this::toOrganization)
+			.map(organization -> toOrganization(organization, applySortFor))
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ORGANIZATION_NOT_FOUND.formatted(organizationId, municipalityId)));
 	}
 
-	private Organization toOrganization(OrganizationEntity entity) {
+	private Organization toOrganization(final OrganizationEntity entity, final Integer applySortFor) {
 		final var organization = OrganizationMapper.toOrganization(entity);
 		organization.setChecklists(entity.getChecklists().stream().map(checklistBuilder::buildChecklist).toList());
+
+		// Find and apply requested custom sorting
+		ofNullable(applySortFor).ifPresent(orgNumber -> organization.setChecklists(
+			sortorderService.applySorting(entity.getMunicipalityId(), orgNumber, organization.getChecklists())));
+
 		return organization;
 	}
 
@@ -90,7 +95,7 @@ public class OrganizationService {
 			throw Problem.valueOf(CONFLICT, ORGANIZATION_HAS_CHECKLISTS.formatted(organizationId));
 		}
 
-		sortorderRepository.deleteAllInBatch(sortorderRepository.findAllByMunicipalityIdAndOrganizationNumber(municipalityId, entity.getOrganizationNumber()));
+		sortorderService.deleteSortorder(municipalityId, entity.getOrganizationNumber());
 		organizationRepository.delete(entity);
 	}
 }

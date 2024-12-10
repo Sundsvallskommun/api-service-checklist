@@ -114,7 +114,7 @@ class CustomSortResourceFailureTest {
 
 		// Arrange
 		final var request = generateSortorderRequest();
-		request.getPhaseOrder().stream().forEach(phase -> {
+		request.getPhaseOrder().forEach(phase -> {
 			phase.setId(null);
 			phase.setPosition(null);
 			phase.getTaskOrder().forEach(task -> {
