@@ -5,6 +5,8 @@ import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static se.sundsvall.checklist.service.mapper.SortorderMapper.toSortorderEntities;
+import static se.sundsvall.checklist.service.mapper.SortorderMapper.toSortorderEntity;
+import static se.sundsvall.checklist.service.mapper.SortorderMapper.toTaskItem;
 import static se.sundsvall.checklist.service.util.SortingUtils.applyCustomSortorder;
 import static se.sundsvall.checklist.service.util.SortingUtils.sortEmployeeChecklistPhases;
 import static se.sundsvall.checklist.service.util.SortingUtils.sortPhases;
@@ -12,6 +14,8 @@ import static se.sundsvall.checklist.service.util.SortingUtils.sortPhases;
 import generated.se.sundsvall.mdviewer.Organization;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +38,26 @@ public class SortorderService {
 	public SortorderService(final SortorderRepository sortorderRepository, final MDViewerClient mdViewerClient) {
 		this.sortorderRepository = sortorderRepository;
 		this.mdViewerClient = mdViewerClient;
+	}
+
+	/**
+	 * Method for copying and saving custom sort order for existing checklist items to their respective new version. Method
+	 * is primarily used when creating a new version of an existing checklist.
+	 *
+	 * @param translationMap a map consisting of key value-pair, where key is the id for the new version of the item and
+	 *                       value is the id for the old version of the item
+	 */
+	public void copySortorderItems(final Map<String, String> translationMap) {
+		translationMap.entrySet().stream()
+			.map(this::copyCurrentSortorder)
+			.forEach(sortorderRepository::saveAll);
+	}
+
+	private List<SortorderEntity> copyCurrentSortorder(Entry<String, String> entry) {
+		return sortorderRepository.findAllByComponentId(entry.getValue())
+			.stream()
+			.map(currentSort -> toSortorderEntity(currentSort.getMunicipalityId(), currentSort.getOrganizationNumber(), toTaskItem(entry.getKey(), currentSort)))
+			.toList();
 	}
 
 	/**

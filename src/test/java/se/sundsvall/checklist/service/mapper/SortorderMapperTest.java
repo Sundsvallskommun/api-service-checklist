@@ -5,8 +5,13 @@ import static se.sundsvall.checklist.TestObjectFactory.generateSortorderRequest;
 import static se.sundsvall.checklist.integration.db.model.enums.ComponentType.PHASE;
 import static se.sundsvall.checklist.integration.db.model.enums.ComponentType.TASK;
 
+import java.util.UUID;
+
+import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.checklist.api.model.SortorderRequest;
+import se.sundsvall.checklist.api.model.SortorderRequest.TaskItem;
+import se.sundsvall.checklist.integration.db.model.SortorderEntity;
 
 class SortorderMapperTest {
 	private static final String MUNICIPALITY_ID = "municipalityId";
@@ -88,4 +93,18 @@ class SortorderMapperTest {
 		assertThat(SortorderMapper.toSortorderEntities(null, null, null)).isEmpty();
 	}
 
+	@Test
+	void toTaskItem() {
+		final var id = UUID.randomUUID().toString();
+		final var position = RandomUtils.secure().randomInt();
+
+		final var currentSort = SortorderEntity.builder()
+			.withPosition(position)
+			.build();
+
+		final var taskItem = SortorderMapper.toTaskItem(id, currentSort);
+		assertThat(taskItem).isNotNull()
+			.extracting(TaskItem::getId, TaskItem::getPosition)
+			.containsExactly(id, position);
+	}
 }
