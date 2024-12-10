@@ -85,13 +85,13 @@ class EmployeeChecklistResourceFailureTest {
 
 	@Test
 	void setMentorInvalidPathValues() {
-		var path = "/{employeeChecklistId}/mentor";
-		var body = Mentor.builder()
+		final var path = "/{employeeChecklistId}/mentor";
+		final var body = Mentor.builder()
 			.withUserId("someUserId")
 			.withName("someName")
 			.build();
 
-		var response = webTestClient.put()
+		final var response = webTestClient.put()
 			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", INVALID, "employeeChecklistId", INVALID)))
 			.bodyValue(body)
 			.exchange()
@@ -115,9 +115,9 @@ class EmployeeChecklistResourceFailureTest {
 
 	@Test
 	void setMentorNullRequest() {
-		var path = "/{employeeChecklistId}/mentor";
+		final var path = "/{employeeChecklistId}/mentor";
 
-		var response = webTestClient.put()
+		final var response = webTestClient.put()
 			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID)))
 			.contentType(APPLICATION_JSON)
 			.exchange()
@@ -131,7 +131,7 @@ class EmployeeChecklistResourceFailureTest {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getTitle()).isEqualTo("Bad Request");
 			assertThat(r.getDetail()).isEqualTo("""
-				Required request body is missing: org.springframework.http.ResponseEntity<se.sundsvall.checklist.api.model.EmployeeChecklist> \
+				Required request body is missing: org.springframework.http.ResponseEntity<java.lang.Void> \
 				se.sundsvall.checklist.api.EmployeeChecklistResource.setMentor(java.lang.String,java.lang.String,se.sundsvall.checklist.api.model.Mentor)\
 				""");
 		});
@@ -139,7 +139,7 @@ class EmployeeChecklistResourceFailureTest {
 
 	@Test
 	void setMentorEmptyRequest() {
-		var path = "/{employeeChecklistId}/mentor";
+		final var path = "/{employeeChecklistId}/mentor";
 		final var body = Mentor.builder().build();
 
 		// Act
@@ -167,9 +167,9 @@ class EmployeeChecklistResourceFailureTest {
 
 	@Test
 	void deleteMentorInvalidPathValues() {
-		var path = "/{employeeChecklistId}/mentor";
+		final var path = "/{employeeChecklistId}/mentor";
 
-		var response = webTestClient.delete()
+		final var response = webTestClient.delete()
 			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", INVALID, "employeeChecklistId", INVALID)))
 			.exchange()
 			.expectStatus().isBadRequest()
