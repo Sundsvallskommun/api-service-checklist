@@ -13,7 +13,6 @@ import static se.sundsvall.checklist.TestObjectFactory.createTaskUpdateRequest;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +23,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.zalando.problem.Problem;
-
 import se.sundsvall.checklist.api.model.Task;
 import se.sundsvall.checklist.api.model.TaskCreateRequest;
 import se.sundsvall.checklist.api.model.TaskUpdateRequest;

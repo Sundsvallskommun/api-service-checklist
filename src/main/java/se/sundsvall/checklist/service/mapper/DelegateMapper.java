@@ -2,12 +2,11 @@ package se.sundsvall.checklist.service.mapper;
 
 import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 
+import generated.se.sundsvall.employee.PortalPersonData;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zalando.problem.Problem;
-
-import generated.se.sundsvall.employee.PortalPersonData;
 import se.sundsvall.checklist.integration.db.model.DelegateEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 

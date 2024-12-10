@@ -9,7 +9,6 @@ import static se.sundsvall.checklist.TestObjectFactory.createChecklistUpdateRequ
 
 import java.util.Map;
 import java.util.UUID;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +18,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 import org.zalando.problem.violations.Violation;
-
 import se.sundsvall.checklist.Application;
 import se.sundsvall.checklist.TestObjectFactory;
 import se.sundsvall.checklist.api.model.ChecklistCreateRequest;

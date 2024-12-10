@@ -7,14 +7,12 @@ import static se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus
 import static se.sundsvall.checklist.service.util.TaskType.COMMON;
 import static se.sundsvall.checklist.service.util.TaskType.CUSTOM;
 
+import generated.se.sundsvall.employee.Employee;
+import generated.se.sundsvall.employee.Employment;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
 import org.zalando.problem.Problem;
-
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.Employment;
 import se.sundsvall.checklist.api.model.EmployeeChecklist;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhase;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;

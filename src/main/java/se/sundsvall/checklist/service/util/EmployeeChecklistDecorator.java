@@ -8,7 +8,6 @@ import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEm
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
 import se.sundsvall.checklist.api.model.EmployeeChecklist;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhase;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;

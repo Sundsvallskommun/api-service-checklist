@@ -1,12 +1,22 @@
 {
 	"request": {
-		"headers": {"Authorization": {"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI4"}},
+		"headers": {
+			"Authorization": {
+				"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI4"
+			}
+		},
 		"method": "GET",
-		"queryParameters": {"filter": {"matches": "\\{\"HireDateFrom\":\"([0-9]{4}-[0-4]{2}-[0-9]{2})\"\\}"}},
+		"queryParameters": {
+			"filter": {
+				"matches": "\\{\"HireDateFrom\":\"([0-9]{4}-[0-4]{2}-[0-9]{2})\"\\}"
+			}
+		},
 		"urlPath": "/api-employee/newemployments"
 	},
 	"response": {
-		"headers": {"Content-Type": "application/json"},
+		"headers": {
+			"Content-Type": "application/json"
+		},
 		"bodyFileName": "test14_initializeEmployeeChecklists/responses/api-employee-new-employments-response.json",
 		"status": 200
 	},

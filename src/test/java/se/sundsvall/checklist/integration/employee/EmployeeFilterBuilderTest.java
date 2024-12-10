@@ -4,10 +4,8 @@ import static java.time.format.DateTimeFormatter.ISO_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
-
 import org.junit.jupiter.api.Test;
 
 class EmployeeFilterBuilderTest {

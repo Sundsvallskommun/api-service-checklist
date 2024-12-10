@@ -28,16 +28,18 @@
 				"name": "Phasename",
 				"id": "7272d1fc-540e-4394-afe2-e133ca642e91",
 				"timeToComplete": "P1M",
-				"tasks": [{
-					"fulfilmentStatus": "EMPTY",
-					"heading": "Description of manager task",
-					"sortOrder": 1,
-					"id": "e43fdac2-331e-4808-8d83-753a59e329cd",
-					"text": "Text for manager task",
-					"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
-					"questionType": "YES_OR_NO",
-					"customTask": false
-				}]
+				"tasks": [
+					{
+						"fulfilmentStatus": "EMPTY",
+						"heading": "Description of manager task",
+						"sortOrder": 1,
+						"id": "e43fdac2-331e-4808-8d83-753a59e329cd",
+						"text": "Text for manager task",
+						"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
+						"questionType": "YES_OR_NO",
+						"customTask": false
+					}
+				]
 			},
 			{
 				"bodyText": "Description of phase C",
@@ -45,16 +47,18 @@
 				"name": "Phasename",
 				"id": "539b074d-d654-49ec-9dce-220f8a5ba7bb",
 				"timeToComplete": "P1M",
-				"tasks": [{
-					"fulfilmentStatus": "EMPTY",
-					"heading": "Description of manager to new employee task",
-					"sortOrder": 1,
-					"id": "c8c7abe0-5703-4ca1-86d3-74e5ad79b690",
-					"text": "Text for task to be performed by new employees manager",
-					"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
-					"questionType": "COMPLETED_OR_NOT_RELEVANT",
-					"customTask": false
-				}]
+				"tasks": [
+					{
+						"fulfilmentStatus": "EMPTY",
+						"heading": "Description of manager to new employee task",
+						"sortOrder": 1,
+						"id": "c8c7abe0-5703-4ca1-86d3-74e5ad79b690",
+						"text": "Text for task to be performed by new employees manager",
+						"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
+						"questionType": "COMPLETED_OR_NOT_RELEVANT",
+						"customTask": false
+					}
+				]
 			},
 			{
 				"bodyText": "Description of phase B",
@@ -104,16 +108,18 @@
 				"name": "Phasename",
 				"id": "d2c92810-3c46-4161-af54-7ae8b3c9d0b3",
 				"timeToComplete": "P1M",
-				"tasks": [{
-					"fulfilmentStatus": "EMPTY",
-					"heading": "Description of new employee task",
-					"sortOrder": 1,
-					"id": "a76e9920-261f-42fc-9077-14fb1cdb9871",
-					"text": "Text for task to be performed by new employee",
-					"roleType": "NEW_EMPLOYEE",
-					"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
-					"customTask": false
-				}]
+				"tasks": [
+					{
+						"fulfilmentStatus": "EMPTY",
+						"heading": "Description of new employee task",
+						"sortOrder": 1,
+						"id": "a76e9920-261f-42fc-9077-14fb1cdb9871",
+						"text": "Text for task to be performed by new employee",
+						"roleType": "NEW_EMPLOYEE",
+						"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
+						"customTask": false
+					}
+				]
 			}
 		],
 		"startDate": "2024-01-01",
@@ -148,16 +154,18 @@
 				"name": "Phasename",
 				"id": "7272d1fc-540e-4394-afe2-e133ca642e91",
 				"timeToComplete": "P1M",
-				"tasks": [{
-					"fulfilmentStatus": "EMPTY",
-					"heading": "Description of manager task",
-					"sortOrder": 1,
-					"id": "e43fdac2-331e-4808-8d83-753a59e329cd",
-					"text": "Text for manager task",
-					"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
-					"questionType": "YES_OR_NO",
-					"customTask": false
-				}]
+				"tasks": [
+					{
+						"fulfilmentStatus": "EMPTY",
+						"heading": "Description of manager task",
+						"sortOrder": 1,
+						"id": "e43fdac2-331e-4808-8d83-753a59e329cd",
+						"text": "Text for manager task",
+						"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
+						"questionType": "YES_OR_NO",
+						"customTask": false
+					}
+				]
 			},
 			{
 				"bodyText": "Description of phase C",
@@ -165,16 +173,18 @@
 				"name": "Phasename",
 				"id": "539b074d-d654-49ec-9dce-220f8a5ba7bb",
 				"timeToComplete": "P1M",
-				"tasks": [{
-					"fulfilmentStatus": "EMPTY",
-					"heading": "Description of manager to new employee task",
-					"sortOrder": 1,
-					"id": "c8c7abe0-5703-4ca1-86d3-74e5ad79b690",
-					"text": "Text for task to be performed by new employees manager",
-					"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
-					"questionType": "COMPLETED_OR_NOT_RELEVANT",
-					"customTask": false
-				}]
+				"tasks": [
+					{
+						"fulfilmentStatus": "EMPTY",
+						"heading": "Description of manager to new employee task",
+						"sortOrder": 1,
+						"id": "c8c7abe0-5703-4ca1-86d3-74e5ad79b690",
+						"text": "Text for task to be performed by new employees manager",
+						"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
+						"questionType": "COMPLETED_OR_NOT_RELEVANT",
+						"customTask": false
+					}
+				]
 			},
 			{
 				"bodyText": "Description of phase B",
@@ -233,16 +243,18 @@
 				"name": "Phasename",
 				"id": "d2c92810-3c46-4161-af54-7ae8b3c9d0b3",
 				"timeToComplete": "P1M",
-				"tasks": [{
-					"fulfilmentStatus": "EMPTY",
-					"heading": "Description of new employee task",
-					"sortOrder": 1,
-					"id": "a76e9920-261f-42fc-9077-14fb1cdb9871",
-					"text": "Text for task to be performed by new employee",
-					"roleType": "NEW_EMPLOYEE",
-					"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
-					"customTask": false
-				}]
+				"tasks": [
+					{
+						"fulfilmentStatus": "EMPTY",
+						"heading": "Description of new employee task",
+						"sortOrder": 1,
+						"id": "a76e9920-261f-42fc-9077-14fb1cdb9871",
+						"text": "Text for task to be performed by new employee",
+						"roleType": "NEW_EMPLOYEE",
+						"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
+						"customTask": false
+					}
+				]
 			}
 		],
 		"startDate": "2024-01-06",
@@ -277,16 +289,18 @@
 				"name": "Phasename",
 				"id": "7272d1fc-540e-4394-afe2-e133ca642e91",
 				"timeToComplete": "P1M",
-				"tasks": [{
-					"fulfilmentStatus": "EMPTY",
-					"heading": "Description of manager task",
-					"sortOrder": 1,
-					"id": "e43fdac2-331e-4808-8d83-753a59e329cd",
-					"text": "Text for manager task",
-					"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
-					"questionType": "YES_OR_NO",
-					"customTask": false
-				}]
+				"tasks": [
+					{
+						"fulfilmentStatus": "EMPTY",
+						"heading": "Description of manager task",
+						"sortOrder": 1,
+						"id": "e43fdac2-331e-4808-8d83-753a59e329cd",
+						"text": "Text for manager task",
+						"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
+						"questionType": "YES_OR_NO",
+						"customTask": false
+					}
+				]
 			},
 			{
 				"bodyText": "Description of phase C",

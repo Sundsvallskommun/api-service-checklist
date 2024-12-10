@@ -2,10 +2,6 @@ package se.sundsvall.checklist.integration.db.model;
 
 import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
 
-import java.time.OffsetDateTime;
-
-import org.hibernate.annotations.TimeZoneStorage;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,12 +11,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import java.time.OffsetDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.TimeZoneStorage;
 import se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel;
 import se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus;
 

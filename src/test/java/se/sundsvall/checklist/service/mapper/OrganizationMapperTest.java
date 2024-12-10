@@ -5,6 +5,8 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.EMPLOYEE;
 import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.MANAGER;
 
+import generated.se.sundsvall.employee.Employee;
+import generated.se.sundsvall.employee.Employment;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -12,16 +14,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.Employment;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
 import se.sundsvall.checklist.integration.db.model.ManagerEntity;

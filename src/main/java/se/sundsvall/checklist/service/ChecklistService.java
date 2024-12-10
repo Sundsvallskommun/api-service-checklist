@@ -10,17 +10,14 @@ import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toChecklist;
 import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toChecklistEntity;
 import static se.sundsvall.checklist.service.mapper.ChecklistMapper.updateChecklistEntity;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Objects;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import se.sundsvall.checklist.api.model.Checklist;
 import se.sundsvall.checklist.api.model.ChecklistCreateRequest;
 import se.sundsvall.checklist.api.model.ChecklistUpdateRequest;

@@ -11,7 +11,6 @@ import static se.sundsvall.checklist.TestObjectFactory.createPhaseUpdateRequest;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,7 +24,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 import org.zalando.problem.violations.Violation;
-
 import se.sundsvall.checklist.Application;
 import se.sundsvall.checklist.api.model.PhaseCreateRequest;
 import se.sundsvall.checklist.api.model.PhaseUpdateRequest;

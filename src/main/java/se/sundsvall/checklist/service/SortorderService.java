@@ -4,7 +4,6 @@ import static se.sundsvall.checklist.service.mapper.SortorderMapper.toSortorderE
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import se.sundsvall.checklist.api.model.SortorderRequest;
 import se.sundsvall.checklist.integration.db.repository.SortorderRepository;
 

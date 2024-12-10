@@ -3,7 +3,7 @@ package se.sundsvall.checklist.service.scheduler;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 import java.time.LocalDate;
-
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -12,8 +12,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
-
-import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistRepository;
 import se.sundsvall.dept44.requestid.RequestId;
 

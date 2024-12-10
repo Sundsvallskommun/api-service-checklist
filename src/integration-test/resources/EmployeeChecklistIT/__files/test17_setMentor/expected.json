@@ -30,15 +30,17 @@
 			"name": "Phasename",
 			"id": "7272d1fc-540e-4394-afe2-e133ca642e91",
 			"timeToComplete": "P1M",
-			"tasks": [{
-				"heading": "Description of manager task",
-				"sortOrder": 1,
-				"id": "e43fdac2-331e-4808-8d83-753a59e329cd",
-				"text": "Text for manager task",
-				"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
-				"questionType": "YES_OR_NO",
-				"customTask": false
-			}]
+			"tasks": [
+				{
+					"heading": "Description of manager task",
+					"sortOrder": 1,
+					"id": "e43fdac2-331e-4808-8d83-753a59e329cd",
+					"text": "Text for manager task",
+					"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
+					"questionType": "YES_OR_NO",
+					"customTask": false
+				}
+			]
 		},
 		{
 			"bodyText": "Description of phase B",

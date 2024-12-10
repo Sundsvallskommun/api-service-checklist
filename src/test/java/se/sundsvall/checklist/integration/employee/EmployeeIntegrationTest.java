@@ -7,18 +7,16 @@ import static org.mockito.Mockito.when;
 import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 import static org.zalando.problem.Status.NOT_FOUND;
 
+import generated.se.sundsvall.employee.PortalPersonData;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import generated.se.sundsvall.employee.PortalPersonData;
 import se.sundsvall.checklist.TestObjectFactory;
 import se.sundsvall.dept44.exception.ClientProblem;
 
