@@ -55,21 +55,21 @@
 				]
 			},
 			{
-				"bodyText": "Dessa uppgifter ska göras första månaden",
+				"bodyText": "Dessa uppgifter ska göras tredje veckan",
 				"created": "2019-01-01T00:00:00+01:00",
 				"sortOrder": 2,
 				"lastSavedBy": "someUser",
-				"name": "Första veckan",
+				"name": "Tredje veckan",
 				"id": "3455a5d4-1db8-4a25-a49f-92fdd0c60a14",
 				"updated": "2019-01-01T00:00:00+01:00",
-				"timeToComplete": "P1M"
+				"timeToComplete": "P3W"
 			},
 			{
 				"bodyText": "Dessa uppgifter ska göras andra veckan",
 				"created": "2019-01-01T00:00:00+01:00",
 				"sortOrder": 3,
 				"lastSavedBy": "someUser",
-				"name": "Första veckan",
+				"name": "Andra veckan",
 				"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
 				"updated": "2019-01-01T00:00:00+01:00",
 				"timeToComplete": "P2W"
@@ -97,21 +97,21 @@
 				"timeToComplete": "P1W"
 			},
 			{
-				"bodyText": "Dessa uppgifter ska göras första månaden",
+				"bodyText": "Dessa uppgifter ska göras tredje veckan",
 				"created": "2019-01-01T00:00:00+01:00",
 				"sortOrder": 2,
 				"lastSavedBy": "someUser",
-				"name": "Första veckan",
+				"name": "Tredje veckan",
 				"id": "3455a5d4-1db8-4a25-a49f-92fdd0c60a14",
 				"updated": "2019-01-01T00:00:00+01:00",
-				"timeToComplete": "P1M"
+				"timeToComplete": "P3W"
 			},
 			{
 				"bodyText": "Dessa uppgifter ska göras andra veckan",
 				"created": "2019-01-01T00:00:00+01:00",
 				"sortOrder": 3,
 				"lastSavedBy": "someUser",
-				"name": "Första veckan",
+				"name": "Andra veckan",
 				"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
 				"updated": "2019-01-01T00:00:00+01:00",
 				"timeToComplete": "P2W"
@@ -136,24 +136,59 @@
 				"name": "Första veckan",
 				"id": "1455a5d4-1db8-4a25-a49f-92fdd0c60a14",
 				"updated": "2019-01-01T00:00:00+01:00",
-				"timeToComplete": "P1W"
+				"timeToComplete": "P1W",
+				"tasks": [
+					{
+						"heading": "Lunch",
+						"created": "2019-01-01T00:00:00+01:00",
+						"sortOrder": 1,
+						"lastSavedBy": "someUser",
+						"id": "fba82aca-f841-4257-baec-d745e3ab78bf",
+						"text": "Boka upp social lunch med chefen",
+						"roleType": "NEW_EMPLOYEE",
+						"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
+						"updated": "2019-01-01T00:00:00+01:00"
+					},
+					{
+						"heading": "Fika",
+						"created": "2019-01-01T00:00:00+01:00",
+						"sortOrder": 2,
+						"lastSavedBy": "someUser",
+						"id": "dba82aca-f841-4257-baec-d745e3ab78bf",
+						"text": "Bjud på hembakat fika",
+						"roleType": "NEW_EMPLOYEE",
+						"questionType": "YES_OR_NO",
+						"updated": "2019-01-01T00:00:00+01:00"
+					},
+					{
+						"heading": "Allergi",
+						"created": "2019-01-01T00:00:00+01:00",
+						"sortOrder": 3,
+						"lastSavedBy": "someUser",
+						"id": "eba82aca-f841-4257-baec-d745e3ab78bf",
+						"text": "Har du några allergier?",
+						"roleType": "NEW_EMPLOYEE",
+						"questionType": "YES_OR_NO_WITH_TEXT",
+						"updated": "2019-01-01T00:00:00+01:00"
+					}
+				]
 			},
 			{
-				"bodyText": "Dessa uppgifter ska göras första månaden",
+				"bodyText": "Dessa uppgifter ska göras tredje veckan",
 				"created": "2019-01-01T00:00:00+01:00",
 				"sortOrder": 2,
 				"lastSavedBy": "someUser",
-				"name": "Första veckan",
+				"name": "Tredje veckan",
 				"id": "3455a5d4-1db8-4a25-a49f-92fdd0c60a14",
 				"updated": "2019-01-01T00:00:00+01:00",
-				"timeToComplete": "P1M"
+				"timeToComplete": "P3W"
 			},
 			{
 				"bodyText": "Dessa uppgifter ska göras andra veckan",
 				"created": "2019-01-01T00:00:00+01:00",
 				"sortOrder": 3,
 				"lastSavedBy": "someUser",
-				"name": "Första veckan",
+				"name": "Andra veckan",
 				"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
 				"updated": "2019-01-01T00:00:00+01:00",
 				"timeToComplete": "P2W"
@@ -181,21 +216,21 @@
 				"timeToComplete": "P1W"
 			},
 			{
-				"bodyText": "Dessa uppgifter ska göras första månaden",
+				"bodyText": "Dessa uppgifter ska göras tredje veckan",
 				"created": "2019-01-01T00:00:00+01:00",
 				"sortOrder": 2,
 				"lastSavedBy": "someUser",
-				"name": "Första veckan",
+				"name": "Tredje veckan",
 				"id": "3455a5d4-1db8-4a25-a49f-92fdd0c60a14",
 				"updated": "2019-01-01T00:00:00+01:00",
-				"timeToComplete": "P1M"
+				"timeToComplete": "P3W"
 			},
 			{
 				"bodyText": "Dessa uppgifter ska göras andra veckan",
 				"created": "2019-01-01T00:00:00+01:00",
 				"sortOrder": 3,
 				"lastSavedBy": "someUser",
-				"name": "Första veckan",
+				"name": "Andra veckan",
 				"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
 				"updated": "2019-01-01T00:00:00+01:00",
 				"timeToComplete": "P2W"

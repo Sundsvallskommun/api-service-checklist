@@ -53,6 +53,7 @@ class ChecklistIT extends AbstractAppTest {
 
 	@Test
 	void test3_createChecklist() {
+		// Create new checklist
 		setupCall()
 			.withServicePath(PATH)
 			.withRequest(REQUEST_FILE)
@@ -60,18 +61,38 @@ class ChecklistIT extends AbstractAppTest {
 			.withExpectedResponseStatus(CREATED)
 			.withExpectedResponseHeader(LOCATION, List.of("^/2281/checklists/(.+)$"))
 			.withExpectedResponseBodyIsNull()
+			.sendRequest();
+
+		// Fetch checklists for the organization to verify that new checklist has been added to it
+		setupCall()
+			.withServicePath("/2281/organizations/19dddb61-9a7b-423f-a873-94049e17cbee")
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(EXPECTED_FILE)
 			.sendRequestAndVerifyResponse();
+
 	}
 
 	@Test
 	void test4_createNewVersion() {
-		final var retiredChecklistId = "35764278-50c8-4a19-af00-077bfc314fd2";
+		final var checklistId = "35764278-50c8-4a19-af00-077bfc314fd2";
+
+		// Create new version of checklist
 		setupCall()
-			.withServicePath(PATH + "/" + retiredChecklistId + "/version")
+			.withServicePath(PATH + "/" + checklistId + "/version")
 			.withHttpMethod(POST)
 			.withExpectedResponseStatus(CREATED)
 			.withExpectedResponseHeader(LOCATION, List.of("^/2281/checklists/(.+)$"))
 			.withExpectedResponseBodyIsNull()
+			.sendRequest();
+
+		// Fetch checklists for the organization to verify that new checklist has been added to it and is using same sort order
+		// as the previous version
+		setupCall()
+			.withServicePath("/2281/organizations?organizationFilter=3&applySortFor=3")
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(EXPECTED_FILE)
 			.sendRequestAndVerifyResponse();
 	}
 
