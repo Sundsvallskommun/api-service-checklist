@@ -12,7 +12,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -28,7 +28,7 @@ class CommunicationResourceTest {
 	private static final String ID = UUID.randomUUID().toString();
 	private static final String BASE_PATH = "/{municipalityId}/employee-checklists";
 
-	@MockBean
+	@MockitoBean
 	private CommunicationService communicationServiceMock;
 
 	@Autowired
