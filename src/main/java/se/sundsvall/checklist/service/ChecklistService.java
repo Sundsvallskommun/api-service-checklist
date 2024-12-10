@@ -127,7 +127,7 @@ public class ChecklistService {
 			organizationRepository.save(organization);
 		});
 
-		// Remove custom sort options for components in the checcklist
+		// Remove custom sort options for components in the checklist
 		getChecklistItemIds(checklist).forEach(sortorderService::deleteSortorderItem);
 
 		// Remove checklist

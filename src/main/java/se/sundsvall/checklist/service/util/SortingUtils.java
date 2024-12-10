@@ -56,7 +56,7 @@ public class SortingUtils {
 	 * @return        the sorted list
 	 */
 	public static List<Phase> sortPhases(final List<Phase> phases) {
-		ofNullable(phases).orElse(emptyList()).stream()
+		ofNullable(phases).orElse(emptyList())
 			.forEach(phase -> phase.setTasks(sortTasks(phase.getTasks())));
 
 		return ofNullable(phases).orElse(emptyList()).stream()
@@ -118,7 +118,7 @@ public class SortingUtils {
 	 * @return        the sorted list
 	 */
 	public static List<EmployeeChecklistPhase> sortEmployeeChecklistPhases(final List<EmployeeChecklistPhase> phases) {
-		ofNullable(phases).orElse(emptyList()).stream()
+		ofNullable(phases).orElse(emptyList())
 			.forEach(phase -> phase.setTasks(sortEmployeeChecklistTasks(phase.getTasks())));
 
 		return ofNullable(phases).orElse(emptyList()).stream()
