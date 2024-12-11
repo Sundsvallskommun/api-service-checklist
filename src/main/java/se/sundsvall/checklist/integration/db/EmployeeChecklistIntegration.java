@@ -17,23 +17,21 @@ import static se.sundsvall.checklist.service.util.ServiceUtils.getMainEmployment
 import static se.sundsvall.checklist.service.util.StringUtils.toReadableString;
 import static se.sundsvall.checklist.service.util.VerificationUtils.verifyUnlockedEmployeeChecklist;
 
+import generated.se.sundsvall.employee.Employee;
+import generated.se.sundsvall.employee.Employment;
+import generated.se.sundsvall.employee.Manager;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.zalando.problem.Problem;
 import org.zalando.problem.ThrowableProblem;
-
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.Employment;
-import generated.se.sundsvall.employee.Manager;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;

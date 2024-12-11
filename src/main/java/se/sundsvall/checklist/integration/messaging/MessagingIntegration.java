@@ -1,12 +1,10 @@
 package se.sundsvall.checklist.integration.messaging;
 
+import generated.se.sundsvall.messaging.MessageResult;
 import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import generated.se.sundsvall.messaging.MessageResult;
 import se.sundsvall.checklist.integration.messaging.configuration.MessagingProperties;
 
 @Component

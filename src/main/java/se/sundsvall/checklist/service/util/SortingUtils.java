@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
 import se.sundsvall.checklist.api.model.Checklist;
 import se.sundsvall.checklist.api.model.EmployeeChecklist;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhase;

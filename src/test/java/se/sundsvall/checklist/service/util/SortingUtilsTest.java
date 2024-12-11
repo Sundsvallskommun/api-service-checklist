@@ -6,9 +6,7 @@ import static se.sundsvall.checklist.integration.db.model.enums.ComponentType.TA
 
 import java.util.List;
 import java.util.UUID;
-
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.checklist.api.model.Checklist;
 import se.sundsvall.checklist.api.model.EmployeeChecklist;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhase;

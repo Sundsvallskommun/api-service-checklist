@@ -9,8 +9,16 @@ import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,16 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.headers.Header;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import se.sundsvall.checklist.api.model.Phase;
 import se.sundsvall.checklist.api.model.PhaseCreateRequest;
 import se.sundsvall.checklist.api.model.PhaseUpdateRequest;
@@ -60,8 +58,9 @@ class PhaseResource {
 		this.phaseService = phaseService;
 	}
 
-	@Operation(summary = "Fetch all phases")
-	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
+	@Operation(summary = "Fetch all phases", responses = {
+		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
+	})
 	@GetMapping(produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<List<Phase>> fetchChecklistPhases(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId) {
@@ -70,8 +69,9 @@ class PhaseResource {
 		return ok(phases);
 	}
 
-	@Operation(summary = "Fetch single phase")
-	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
+	@Operation(summary = "Fetch single phase", responses = {
+		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
+	})
 	@GetMapping(value = "/{phaseId}", produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<Phase> fetchChecklistPhase(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
@@ -80,8 +80,9 @@ class PhaseResource {
 		return ok(phaseService.getPhase(municipalityId, phaseId));
 	}
 
-	@Operation(summary = "Create a new phase")
-	@ApiResponse(responseCode = "201", headers = @Header(name = LOCATION, schema = @Schema(type = "string")), description = "Successful Operation", useReturnTypeSchema = true)
+	@Operation(summary = "Create a new phase", responses = {
+		@ApiResponse(responseCode = "201", headers = @Header(name = LOCATION, schema = @Schema(type = "string")), description = "Successful Operation", useReturnTypeSchema = true)
+	})
 	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
 	ResponseEntity<Void> createChecklistPhase(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
@@ -93,8 +94,9 @@ class PhaseResource {
 			.toUri()).header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 
-	@Operation(summary = "Update an existing phase")
-	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
+	@Operation(summary = "Update an existing phase", responses = {
+		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
+	})
 	@PatchMapping(value = "/{phaseId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<Phase> updateChecklistPhase(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
@@ -104,8 +106,9 @@ class PhaseResource {
 		return ok(phaseService.updatePhase(municipalityId, phaseId, request));
 	}
 
-	@Operation(summary = "Delete an existing phase")
-	@ApiResponse(responseCode = "204", description = "Successful Operation", useReturnTypeSchema = true)
+	@Operation(summary = "Delete an existing phase", responses = {
+		@ApiResponse(responseCode = "204", description = "Successful Operation", useReturnTypeSchema = true)
+	})
 	@DeleteMapping(value = "/{phaseId}", produces = ALL_VALUE)
 	ResponseEntity<Void> deleteChecklistPhase(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,

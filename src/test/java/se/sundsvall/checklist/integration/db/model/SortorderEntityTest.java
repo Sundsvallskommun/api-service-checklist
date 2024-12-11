@@ -7,7 +7,6 @@ import static org.hamcrest.CoreMatchers.allOf;
 
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
-
 import se.sundsvall.checklist.integration.db.model.enums.ComponentType;
 
 class SortorderEntityTest {

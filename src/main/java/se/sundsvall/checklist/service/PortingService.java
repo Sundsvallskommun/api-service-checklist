@@ -9,11 +9,12 @@ import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.ACTIVE;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATED;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
-
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
 import org.zalando.problem.ThrowableProblem;
-
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;

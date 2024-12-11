@@ -7,10 +7,8 @@ import static se.sundsvall.checklist.service.mapper.CorrespondenceMapper.toCorre
 import static se.sundsvall.checklist.service.mapper.CorrespondenceMapper.toCorrespondenceStatus;
 
 import java.util.Optional;
-
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistRepository;
 import se.sundsvall.checklist.integration.messaging.MessagingIntegration;

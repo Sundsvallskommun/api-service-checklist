@@ -5,21 +5,19 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.zalando.problem.Status.NOT_FOUND;
 
+import generated.se.sundsvall.employee.Employee;
+import generated.se.sundsvall.employee.Employment;
+import generated.se.sundsvall.employee.Manager;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
-
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.Employment;
-import generated.se.sundsvall.employee.Manager;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 
 class VerificationUtilsTest {

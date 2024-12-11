@@ -1,13 +1,11 @@
 package se.sundsvall.checklist.integration.templating;
 
+import generated.se.sundsvall.templating.RenderRequest;
+import generated.se.sundsvall.templating.RenderResponse;
 import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import generated.se.sundsvall.templating.RenderRequest;
-import generated.se.sundsvall.templating.RenderResponse;
 
 @Component
 public class TemplatingIntegration {

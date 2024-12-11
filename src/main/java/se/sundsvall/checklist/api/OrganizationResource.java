@@ -9,8 +9,16 @@ import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,16 +33,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.headers.Header;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import se.sundsvall.checklist.api.model.Organization;
 import se.sundsvall.checklist.api.model.OrganizationCreateRequest;
 import se.sundsvall.checklist.api.model.OrganizationUpdateRequest;
@@ -60,24 +58,26 @@ class OrganizationResource {
 		this.organizationService = organizationService;
 	}
 
-	@Operation(summary = "Fetch all organizations, optionally filtered by organization number(s)", description = "Fetch all organizations")
-	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
+	@Operation(summary = "Fetch all organizations, optionally filtered by organization number(s)", description = "Fetch all organizations", responses = {
+		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
+	})
 	@GetMapping(produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<List<Organization>> fetchOrganizations(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
-		@Parameter(name = "organizationFilter", description = "Filter response to only include organizations matching provided organization numbers") @RequestParam(required = false) List<Integer> organizationFilter,
-		@Parameter(name = "applySortFor", description = "Optional parameter for using custom sort based on provided organization number for response") @RequestParam(required = false) Integer applySortFor) {
+		@Parameter(name = "organizationFilter", description = "Filter response to only include organizations matching provided organization numbers") @RequestParam(required = false) final List<Integer> organizationFilter,
+		@Parameter(name = "applySortFor", description = "Optional parameter for using custom sort based on provided organization number for response") @RequestParam(required = false) final Integer applySortFor) {
 
 		return ok(organizationService.fetchAllOrganizations(municipalityId, organizationFilter, applySortFor));
 	}
 
-	@Operation(summary = "Fetch organization by id", description = "Fetch organization that matches provided id")
-	@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
+	@Operation(summary = "Fetch organization by id", description = "Fetch organization that matches provided id", responses = {
+		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
+	})
 	@GetMapping(value = "/{organizationId}", produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<Organization> fetchOrganizationById(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "organizationId", description = "Organization id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String organizationId,
-		@Parameter(name = "applySortFor", description = "Optional parameter for using custom sort based on provided organization number for response") @RequestParam(required = false) Integer applySortFor) {
+		@Parameter(name = "applySortFor", description = "Optional parameter for using custom sort based on provided organization number for response") @RequestParam(required = false) final Integer applySortFor) {
 
 		return ok(organizationService.fetchOrganization(municipalityId, organizationId, applySortFor));
 	}

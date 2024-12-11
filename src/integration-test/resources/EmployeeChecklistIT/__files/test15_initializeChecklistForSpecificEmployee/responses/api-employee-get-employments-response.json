@@ -1,34 +1,38 @@
-[{
-	"emailAddress": "jargon.jedi@noreply.com",
-	"loginname": "jar31jed",
-	"givenname": "Jargon",
-	"isClassified": false,
-	"isManager": true,
-	"personId": "af920bfe-630a-44e9-b2e7-53f092cd0225",
-	"employments": [{
-		"orgName": "Sub organization 553",
-		"topOrgId": 28,
-		"manager": {
-			"emailAddress": "top.dog@noreply.com",
-			"loginname": "top34dog",
-			"referenceNumber": "TOP1DOG",
-			"givenname": "Top",
-			"personId": "e4218391-49d3-415f-877a-c555105af686",
-			"lastname": "Dog"
-		},
-		"employmentType": 0,
-		"formOfEmploymentId": "1",
-		"topOrgName": "Top organization name",
-		"isManual": false,
-		"title": "Senior Screaming Executive",
-		"orgId": 553,
-		"companyId": 1,
-		"paTeam": "AB01",
-		"isMainEmployment": true,
-		"benefitGroupId": 11,
-		"aid": "123456",
-		"startDate": "2024-01-01T00:00:00"
-	}],
-	"personNumber": "1901111234",
-	"lastname": "Jedi"
-}]
+[
+	{
+		"emailAddress": "jargon.jedi@noreply.com",
+		"loginname": "jar31jed",
+		"givenname": "Jargon",
+		"isClassified": false,
+		"isManager": true,
+		"personId": "af920bfe-630a-44e9-b2e7-53f092cd0225",
+		"employments": [
+			{
+				"orgName": "Sub organization 553",
+				"topOrgId": 28,
+				"manager": {
+					"emailAddress": "top.dog@noreply.com",
+					"loginname": "top34dog",
+					"referenceNumber": "TOP1DOG",
+					"givenname": "Top",
+					"personId": "e4218391-49d3-415f-877a-c555105af686",
+					"lastname": "Dog"
+				},
+				"employmentType": 0,
+				"formOfEmploymentId": "1",
+				"topOrgName": "Top organization name",
+				"isManual": false,
+				"title": "Senior Screaming Executive",
+				"orgId": 553,
+				"companyId": 1,
+				"paTeam": "AB01",
+				"isMainEmployment": true,
+				"benefitGroupId": 11,
+				"aid": "123456",
+				"startDate": "2024-01-01T00:00:00"
+			}
+		],
+		"personNumber": "1901111234",
+		"lastname": "Jedi"
+	}
+]

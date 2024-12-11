@@ -1,34 +1,38 @@
-[{
-	"emailAddress": "c.employee@55351.com",
-	"loginname": "cemp3loyee",
-	"givenname": "C Emp",
-	"isClassified": false,
-	"isManager": false,
-	"personId": "702323a9-f542-4081-a780-a1396068c8c9",
-	"employments": [{
-		"orgName": "Sub organization 55351",
-		"topOrgId": 28,
-		"manager": {
-			"emailAddress": "c.manager@55351.com",
-			"loginname": "cman1agr",
-			"referenceNumber": "CNEW01AGR",
-			"givenname": "C Newman",
-			"personId": "ae93a63e-d975-4cd9-8e28-4cc9ea8b4d96",
-			"lastname": "Ager"
-		},
-		"employmentType": 0,
-		"formOfEmploymentId": "1",
-		"topOrgName": "Top organization name",
-		"isManual": false,
-		"title": "Growler",
-		"orgId": 55351,
-		"companyId": 1,
-		"paTeam": "AB01",
-		"isMainEmployment": true,
-		"benefitGroupId": 11,
-		"aid": "123456",
-		"startDate": "2024-01-01T00:00:00"
-	}],
-	"personNumber": "1901011234",
-	"lastname": "Loyee"
-}]
+[
+	{
+		"emailAddress": "c.employee@55351.com",
+		"loginname": "cemp3loyee",
+		"givenname": "C Emp",
+		"isClassified": false,
+		"isManager": false,
+		"personId": "702323a9-f542-4081-a780-a1396068c8c9",
+		"employments": [
+			{
+				"orgName": "Sub organization 55351",
+				"topOrgId": 28,
+				"manager": {
+					"emailAddress": "c.manager@55351.com",
+					"loginname": "cman1agr",
+					"referenceNumber": "CNEW01AGR",
+					"givenname": "C Newman",
+					"personId": "ae93a63e-d975-4cd9-8e28-4cc9ea8b4d96",
+					"lastname": "Ager"
+				},
+				"employmentType": 0,
+				"formOfEmploymentId": "1",
+				"topOrgName": "Top organization name",
+				"isManual": false,
+				"title": "Growler",
+				"orgId": 55351,
+				"companyId": 1,
+				"paTeam": "AB01",
+				"isMainEmployment": true,
+				"benefitGroupId": 11,
+				"aid": "123456",
+				"startDate": "2024-01-01T00:00:00"
+			}
+		],
+		"personNumber": "1901011234",
+		"lastname": "Loyee"
+	}
+]
