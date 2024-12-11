@@ -40,12 +40,13 @@ import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 class CustomSortResource {
 	private final SortorderService sortorderService;
 
-	CustomSortResource(SortorderService sortorderService) {
+	CustomSortResource(final SortorderService sortorderService) {
 		this.sortorderService = sortorderService;
 	}
 
-	@Operation(summary = "Creates or replaces a custom sort order of checklist components for the provided organisation number")
-	@ApiResponse(responseCode = "202", description = "Successful Operation", useReturnTypeSchema = true)
+	@Operation(summary = "Creates or replaces a custom sort order of checklist components for the provided organisation number", responses = {
+		@ApiResponse(responseCode = "202", description = "Successful Operation", useReturnTypeSchema = true)
+	})
 	@PutMapping(consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
 	ResponseEntity<Void> saveSortorder(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
