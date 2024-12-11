@@ -1,14 +1,16 @@
-[{
-	"organizationId": "a3384913-a269-40c8-a7de-66800b2c35b2",
-	"isLeafLevel": false,
-	"responsibilityCode": null,
-	"companyId": 1,
-	"orgName": "Company 1",
-	"treeLevel": 1,
-	"orgNameShort": "Company 1",
-	"abbreviation": null,
-	"concatAbbreviation": null,
-	"orgId": 100,
-	"parentId": null,
-	"responsibilityCodePartList": null
-}]
+[
+	{
+		"organizationId": "a3384913-a269-40c8-a7de-66800b2c35b2",
+		"isLeafLevel": false,
+		"responsibilityCode": null,
+		"companyId": 1,
+		"orgName": "Company 1",
+		"treeLevel": 1,
+		"orgNameShort": "Company 1",
+		"abbreviation": null,
+		"concatAbbreviation": null,
+		"orgId": 100,
+		"parentId": null,
+		"responsibilityCodePartList": null
+	}
+]
