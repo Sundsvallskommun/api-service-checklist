@@ -149,7 +149,10 @@ public class EmployeeChecklistIntegration {
 			.filter(fulfilment -> Objects.equals(task, fulfilment.getTask()))
 			.findAny()
 			.ifPresentOrElse(
-				fulfilment -> fulfilment.setCompleted(fulfilmentStatus),
+				fulfilment -> {
+					fulfilment.setCompleted(fulfilmentStatus);
+					fulfilment.setLastSavedBy(updatedBy);
+				},
 				() -> employeeChecklist.getFulfilments().add(toFulfilmentEntity(employeeChecklist, task, fulfilmentStatus, null, updatedBy)));
 	}
 
@@ -158,7 +161,10 @@ public class EmployeeChecklistIntegration {
 			.filter(fulfilment -> Objects.equals(customTask, fulfilment.getCustomTask()))
 			.findAny()
 			.ifPresentOrElse(
-				fulfilment -> fulfilment.setCompleted(fulfilmentStatus),
+				fulfilment -> {
+					fulfilment.setCompleted(fulfilmentStatus);
+					fulfilment.setLastSavedBy(updatedBy);
+				},
 				() -> employeeChecklist.getCustomFulfilments().add(toCustomFulfilmentEntity(employeeChecklist, customTask, fulfilmentStatus, null, updatedBy)));
 	}
 
@@ -195,6 +201,7 @@ public class EmployeeChecklistIntegration {
 				fulfilment -> {
 					ofNullable(request.getFulfilmentStatus()).ifPresent(fulfilment::setCompleted);
 					ofNullable(request.getResponseText()).ifPresent(fulfilment::setResponseText);
+					fulfilment.setLastSavedBy(request.getUpdatedBy());
 				}, () -> employeeChecklist.getFulfilments().add(toFulfilmentEntity(employeeChecklist, task, request.getFulfilmentStatus(), request.getResponseText(), request.getUpdatedBy())));
 	}
 
@@ -224,6 +231,7 @@ public class EmployeeChecklistIntegration {
 				fulfilment -> {
 					ofNullable(request.getFulfilmentStatus()).ifPresent(fulfilment::setCompleted);
 					ofNullable(request.getResponseText()).ifPresent(fulfilment::setResponseText);
+					fulfilment.setLastSavedBy(request.getUpdatedBy());
 				}, () -> employeeChecklist.getCustomFulfilments().add(toCustomFulfilmentEntity(employeeChecklist, customTask, request.getFulfilmentStatus(), request.getResponseText(), request.getUpdatedBy())));
 	}
 
