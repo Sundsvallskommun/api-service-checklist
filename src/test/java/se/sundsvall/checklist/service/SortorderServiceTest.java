@@ -10,6 +10,7 @@ import static se.sundsvall.checklist.TestObjectFactory.generateSortorderRequest;
 import generated.se.sundsvall.mdviewer.Organization;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -305,6 +306,47 @@ class SortorderServiceTest {
 		});
 
 		verify(sortorderRepositoryMock, never()).findAllByMunicipalityIdAndOrganizationNumber(MUNICIPALITY_ID, ORGANIZATION_NUMBER);
+	}
+
+	@Test
+	void copySortorderItems() {
+		final var newId = UUID.randomUUID().toString();
+		final var translationMap = Map.of(newId, COMPONENT_ID1);
+
+		final var sortorderEntities = List.of(
+			SortorderEntity.builder()
+				.withComponentId(COMPONENT_ID1)
+				.withOrganizationNumber(ORGANIZATION_NUMBER)
+				.withMunicipalityId(MUNICIPALITY_ID)
+				.withPosition(121)
+				.build(),
+			SortorderEntity.builder()
+				.withComponentId(COMPONENT_ID1)
+				.withOrganizationNumber(ORGANIZATION_NUMBER + 1)
+				.withMunicipalityId(MUNICIPALITY_ID)
+				.withPosition(212)
+				.build());
+
+		when(sortorderRepositoryMock.findAllByComponentId(COMPONENT_ID1)).thenReturn(sortorderEntities);
+
+		service.copySortorderItems(translationMap);
+
+		verify(sortorderRepositoryMock).findAllByComponentId(COMPONENT_ID1);
+		verify(sortorderRepositoryMock).saveAll(saveAllCaptor.capture());
+
+		assertThat(saveAllCaptor.getValue()).hasSize(2)
+			.allSatisfy(entity -> {
+				assertThat(entity.getComponentId()).isEqualTo(newId);
+				assertThat(entity.getComponentType()).isEqualTo(ComponentType.TASK);
+				assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
+			})
+			.satisfiesExactlyInAnyOrder(entity -> {
+				assertThat(entity.getOrganizationNumber()).isEqualTo(ORGANIZATION_NUMBER);
+				assertThat(entity.getPosition()).isEqualTo(121);
+			}, entity -> {
+				assertThat(entity.getOrganizationNumber()).isEqualTo(ORGANIZATION_NUMBER + 1);
+				assertThat(entity.getPosition()).isEqualTo(212);
+			});
 	}
 
 	private static List<SortorderEntity> createCustomorder() {

@@ -51,7 +51,7 @@ public class SortorderMapper {
 			.build();
 	}
 
-	private static SortorderEntity toSortorderEntity(final String municipalityId, final int organizationNumber, final TaskItem item) {
+	public static SortorderEntity toSortorderEntity(final String municipalityId, final int organizationNumber, final TaskItem item) {
 		return SortorderEntity.builder()
 			.withComponentId(item.getId())
 			.withComponentType(TASK)
@@ -61,4 +61,10 @@ public class SortorderMapper {
 			.build();
 	}
 
+	public static TaskItem toTaskItem(String id, SortorderEntity currentSort) {
+		return TaskItem.builder()
+			.withId(id)
+			.withPosition(currentSort.getPosition())
+			.build();
+	}
 }

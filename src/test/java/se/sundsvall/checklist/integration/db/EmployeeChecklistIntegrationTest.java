@@ -291,8 +291,10 @@ class EmployeeChecklistIntegrationTest {
 		final var employeeChecklistId = UUID.randomUUID().toString();
 		final var phaseId = UUID.randomUUID().toString();
 		final var fulfilmentStatus = FulfilmentStatus.EMPTY;
+		final var updatedBy = "updatedBy";
 		final var request = EmployeeChecklistPhaseUpdateRequest.builder()
 			.withTasksFulfilmentStatus(fulfilmentStatus)
+			.withUpdatedBy(updatedBy)
 			.build();
 		final var entity = EmployeeChecklistEntity.builder()
 			.withChecklists(List.of(ChecklistEntity.builder()
@@ -329,12 +331,14 @@ class EmployeeChecklistIntegrationTest {
 		verify(employeeChecklistsRepositoryMock).save(entity);
 
 		assertThat(result.getFulfilments()).hasSize(1).allSatisfy(f -> {
-			assertThat(f).hasAllNullFieldsOrPropertiesExcept("employeeChecklist", "task", "completed");
+			assertThat(f).hasAllNullFieldsOrPropertiesExcept("employeeChecklist", "task", "completed", "lastSavedBy");
 			assertThat(f.getCompleted()).isEqualTo(fulfilmentStatus);
+			assertThat(f.getLastSavedBy()).isEqualTo(updatedBy);
 		});
 		assertThat(result.getCustomFulfilments()).hasSize(1).allSatisfy(f -> {
-			assertThat(f).hasAllNullFieldsOrPropertiesExcept("employeeChecklist", "customTask", "completed");
+			assertThat(f).hasAllNullFieldsOrPropertiesExcept("employeeChecklist", "customTask", "completed", "lastSavedBy");
 			assertThat(f.getCompleted()).isEqualTo(fulfilmentStatus);
+			assertThat(f.getLastSavedBy()).isEqualTo(updatedBy);
 		});
 	}
 
@@ -416,10 +420,12 @@ class EmployeeChecklistIntegrationTest {
 		final var taskId = UUID.randomUUID().toString();
 		final var fulfilmentStatus = FulfilmentStatus.TRUE;
 		final var responseText = "responseText";
+		final var updatedBy = "updatedBy";
 
 		final var request = EmployeeChecklistTaskUpdateRequest.builder()
 			.withFulfilmentStatus(fulfilmentStatus)
 			.withResponseText(responseText)
+			.withUpdatedBy(updatedBy)
 			.build();
 
 		final var entity = EmployeeChecklistEntity.builder()
@@ -438,8 +444,10 @@ class EmployeeChecklistIntegrationTest {
 		final var result = integration.updateCommonTaskFulfilment(municipalityId, employeeChecklistId, taskId, request);
 
 		// Verify and assert
+		assertThat(result).isEqualTo(entity.getFulfilments().getFirst());
 		assertThat(result.getCompleted()).isEqualTo(fulfilmentStatus);
 		assertThat(result.getResponseText()).isEqualTo(responseText);
+		assertThat(result.getLastSavedBy()).isEqualTo(updatedBy);
 
 		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 		verify(employeeChecklistsRepositoryMock).save(entity);
@@ -453,10 +461,12 @@ class EmployeeChecklistIntegrationTest {
 		final var taskId = UUID.randomUUID().toString();
 		final var fulfilmentStatus = FulfilmentStatus.TRUE;
 		final var responseText = "responseText";
+		final var updatedBy = "updatedBy";
 
 		final var request = EmployeeChecklistTaskUpdateRequest.builder()
 			.withFulfilmentStatus(fulfilmentStatus)
 			.withResponseText(responseText)
+			.withUpdatedBy(updatedBy)
 			.build();
 
 		final var entity = EmployeeChecklistEntity.builder()
@@ -482,6 +492,7 @@ class EmployeeChecklistIntegrationTest {
 		assertThat(result).isEqualTo(entity.getFulfilments().getFirst());
 		assertThat(result.getCompleted()).isEqualTo(fulfilmentStatus);
 		assertThat(result.getResponseText()).isEqualTo(responseText);
+		assertThat(result.getLastSavedBy()).isEqualTo(updatedBy);
 
 		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 		verify(employeeChecklistsRepositoryMock).save(entity);
@@ -549,10 +560,12 @@ class EmployeeChecklistIntegrationTest {
 		final var taskId = UUID.randomUUID().toString();
 		final var fulfilmentStatus = FulfilmentStatus.TRUE;
 		final var responseText = "responseText";
+		final var updatedBy = "updatedBy";
 
 		final var request = EmployeeChecklistTaskUpdateRequest.builder()
 			.withFulfilmentStatus(fulfilmentStatus)
 			.withResponseText(responseText)
+			.withUpdatedBy(updatedBy)
 			.build();
 
 		final var entity = EmployeeChecklistEntity.builder()
@@ -570,6 +583,7 @@ class EmployeeChecklistIntegrationTest {
 		assertThat(result).isEqualTo(entity.getCustomFulfilments().getFirst());
 		assertThat(result.getCompleted()).isEqualTo(fulfilmentStatus);
 		assertThat(result.getResponseText()).isEqualTo(responseText);
+		assertThat(result.getLastSavedBy()).isEqualTo(updatedBy);
 
 		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 		verify(employeeChecklistsRepositoryMock).save(entity);
@@ -583,10 +597,12 @@ class EmployeeChecklistIntegrationTest {
 		final var taskId = UUID.randomUUID().toString();
 		final var fulfilmentStatus = FulfilmentStatus.TRUE;
 		final var responseText = "responseText";
+		final var updatedBy = "updatedBy";
 
 		final var request = EmployeeChecklistTaskUpdateRequest.builder()
 			.withFulfilmentStatus(fulfilmentStatus)
 			.withResponseText(responseText)
+			.withUpdatedBy(updatedBy)
 			.build();
 
 		final var entity = EmployeeChecklistEntity.builder()
@@ -608,6 +624,7 @@ class EmployeeChecklistIntegrationTest {
 		assertThat(result).isEqualTo(entity.getCustomFulfilments().getFirst());
 		assertThat(result.getCompleted()).isEqualTo(fulfilmentStatus);
 		assertThat(result.getResponseText()).isEqualTo(responseText);
+		assertThat(result.getLastSavedBy()).isEqualTo(updatedBy);
 
 		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
 		verify(employeeChecklistsRepositoryMock).save(entity);

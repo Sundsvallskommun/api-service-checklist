@@ -90,7 +90,7 @@ public final class TestObjectFactory {
 			.withName("Test checklist template")
 			.withVersion(1)
 			.withLifeCycle(CREATED)
-			.withTasks(new ArrayList<>(List.of(createTaskEntity(phaseEntity), createTaskEntity(phaseEntity))))
+			.withTasks(new ArrayList<>(List.of(createTaskEntity(phaseEntity, "Heading-1"), createTaskEntity(phaseEntity, "Heading-2"))))
 			.withCreated(OffsetDateTime.now().minusWeeks(1))
 			.withUpdated(OffsetDateTime.now())
 			.build();
@@ -115,6 +115,10 @@ public final class TestObjectFactory {
 	}
 
 	public static TaskEntity createTaskEntity(PhaseEntity phaseEntity) {
+		return createTaskEntity(phaseEntity, "Test heading");
+	}
+
+	public static TaskEntity createTaskEntity(PhaseEntity phaseEntity, String heading) {
 		return TaskEntity.builder()
 			.withId(UUID.randomUUID().toString())
 			.withCreated(OffsetDateTime.now().minusWeeks(1))
@@ -123,7 +127,7 @@ public final class TestObjectFactory {
 			.withRoleType(NEW_EMPLOYEE)
 			.withPermission(ADMIN)
 			.withQuestionType(YES_OR_NO)
-			.withHeading("Test heading")
+			.withHeading(heading)
 			.withText("Test text")
 			.withPhase(phaseEntity)
 			.build();

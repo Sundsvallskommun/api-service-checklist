@@ -54,21 +54,21 @@
 			]
 		},
 		{
-			"bodyText": "Dessa uppgifter ska göras första månaden",
+			"bodyText": "Dessa uppgifter ska göras tredje veckan",
 			"created": "2019-01-01T00:00:00+01:00",
 			"sortOrder": 2,
 			"lastSavedBy": "someUser",
-			"name": "Första veckan",
+			"name": "Tredje veckan",
 			"id": "3455a5d4-1db8-4a25-a49f-92fdd0c60a14",
 			"updated": "2019-01-01T00:00:00+01:00",
-			"timeToComplete": "P1M"
+			"timeToComplete": "P3W"
 		},
 		{
 			"bodyText": "Dessa uppgifter ska göras andra veckan",
 			"created": "2019-01-01T00:00:00+01:00",
 			"sortOrder": 3,
 			"lastSavedBy": "someUser",
-			"name": "Första veckan",
+			"name": "Andra veckan",
 			"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
 			"updated": "2019-01-01T00:00:00+01:00",
 			"timeToComplete": "P2W"
