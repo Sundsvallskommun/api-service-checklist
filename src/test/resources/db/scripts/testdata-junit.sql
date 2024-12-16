@@ -15,10 +15,10 @@ VALUES ('2281', '1455a5d4-1db8-4a25-a49f-92fdd0c60a14', 'Första veckan', 'Dessa
        ('2281', '3455a5d4-1db8-4a25-a49f-92fdd0c60a14', 'Första månaden', 'Dessa uppgifter ska göras första månaden', 'P1M', 1, '2019-01-01 00:00:00', '2019-01-01 00:00:00', 'someUser');
 
 
-INSERT INTO task(id, heading, text, role_type, question_type, created, sort_order, updated, last_saved_by, checklist_id, phase_id)
-VALUES ('aba82aca-f841-4257-baec-d745e3ab78bf', 'Fika', 'Bjud på hembakat fika', 'NEW_EMPLOYEE', 'YES_OR_NO', '2019-01-01 00:00:00', 1, '2019-01-01 00:00:00', 'someUser', '15764278-50c8-4a19-af00-077bfc314fd2', '1455a5d4-1db8-4a25-a49f-92fdd0c60a14'),
-       ('bba82aca-f841-4257-baec-d745e3ab78bf', 'Allergi', 'Har du några allergier?', 'NEW_EMPLOYEE', 'YES_OR_NO_WITH_TEXT', '2019-01-01 00:00:00', 1, '2019-01-01 00:00:00', 'someUser', '15764278-50c8-4a19-af00-077bfc314fd2', '1455a5d4-1db8-4a25-a49f-92fdd0c60a14'),
-       ('cba82aca-f841-4257-baec-d745e3ab78bf', 'Lunch', 'Boka upp social lunch med chefen', 'NEW_EMPLOYEE', 'COMPLETED_OR_NOT_RELEVANT_WITH_TEXT', '2019-01-01 00:00:00', 1, '2019-01-01 00:00:00', 'someUser', '15764278-50c8-4a19-af00-077bfc314fd2', '1455a5d4-1db8-4a25-a49f-92fdd0c60a14');
+INSERT INTO task(id, heading, heading_reference, text, role_type, question_type, created, sort_order, updated, last_saved_by, checklist_id, phase_id)
+VALUES ('aba82aca-f841-4257-baec-d745e3ab78bf', 'Fika', null, 'Bjud på hembakat fika', 'NEW_EMPLOYEE', 'YES_OR_NO', '2019-01-01 00:00:00', 1, '2019-01-01 00:00:00', 'someUser', '15764278-50c8-4a19-af00-077bfc314fd2', '1455a5d4-1db8-4a25-a49f-92fdd0c60a14'),
+       ('bba82aca-f841-4257-baec-d745e3ab78bf', 'Allergi', null, 'Har du några allergier?', 'NEW_EMPLOYEE', 'YES_OR_NO_WITH_TEXT', '2019-01-01 00:00:00', 1, '2019-01-01 00:00:00', 'someUser', '15764278-50c8-4a19-af00-077bfc314fd2', '1455a5d4-1db8-4a25-a49f-92fdd0c60a14'),
+       ('cba82aca-f841-4257-baec-d745e3ab78bf', 'Lunch', 'http://some.lunchbookingsite.ref', 'Boka upp social lunch med chefen', 'NEW_EMPLOYEE', 'COMPLETED_OR_NOT_RELEVANT_WITH_TEXT', '2019-01-01 00:00:00', 1, '2019-01-01 00:00:00', 'someUser', '15764278-50c8-4a19-af00-077bfc314fd2', '1455a5d4-1db8-4a25-a49f-92fdd0c60a14');
 
 
 INSERT INTO manager (created, updated, email, first_name, id, last_name, username)
@@ -45,8 +45,8 @@ VALUES ('f853e2b1-a144-4305-b05e-ee8d6dc6d005', '25764278-50c8-4a19-af00-077bfc3
        ('223a076f-441d-4a30-b5d0-f2bfd5ab250b', '25764278-50c8-4a19-af00-077bfc314fd2'),
        ('f5960058-fad8-4825-85f3-b0fdb518adc5', '25764278-50c8-4a19-af00-077bfc314fd2');
 
-INSERT INTO custom_task (sort_order, created, updated, last_saved_by, heading, id, employee_checklist_id, phase_id, `text`, question_type, role_type)
-VALUES (0, '2024-01-03 12:00:00.000', '2024-01-03 12:00:00.000', 'someUser', 'Custom employee task', '1b3bfe66-0e6c-4e92-a410-7c620a5461f4', 'f853e2b1-a144-4305-b05e-ee8d6dc6d005', '2455a5d4-1db8-4a25-a49f-92fdd0c60a14', 'Descriptive text for custom task', 'YES_OR_NO', 'NEW_EMPLOYEE');
+INSERT INTO custom_task (sort_order, created, updated, last_saved_by, heading, heading_reference, id, employee_checklist_id, phase_id, `text`, question_type, role_type)
+VALUES (0, '2024-01-03 12:00:00.000', '2024-01-03 12:00:00.000', 'someUser', 'Custom employee task', 'http://some.customlink.ref', '1b3bfe66-0e6c-4e92-a410-7c620a5461f4', 'f853e2b1-a144-4305-b05e-ee8d6dc6d005', '2455a5d4-1db8-4a25-a49f-92fdd0c60a14', 'Descriptive text for custom task', 'YES_OR_NO', 'NEW_EMPLOYEE');
 
 INSERT INTO custom_sortorder (id, municipality_id, organization_number, component_type, component_id, position)
 VALUES -- organizational unit 13

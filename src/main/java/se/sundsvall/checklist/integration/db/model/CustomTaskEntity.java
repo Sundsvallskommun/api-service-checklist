@@ -46,6 +46,9 @@ public class CustomTaskEntity {
 	@Column(name = "heading")
 	private String heading;
 
+	@Column(name = "heading_reference")
+	private String headingReference;
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "role_type")
 	private RoleType roleType;
