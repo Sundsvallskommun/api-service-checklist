@@ -60,6 +60,7 @@
 				{
 					"fulfilmentStatus": "EMPTY",
 					"heading": "Description of first employee task",
+					"headingReference": "http://www.address-to-click.web",
 					"sortOrder": 3,
 					"id": "d250a20c-a616-4147-bfe0-19a0d12f3df0",
 					"text": "Text for first employee task",

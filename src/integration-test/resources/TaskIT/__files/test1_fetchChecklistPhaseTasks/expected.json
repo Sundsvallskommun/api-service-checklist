@@ -13,6 +13,7 @@
 	},
 	{
 		"heading": "Task 2",
+		"headingReference": "http://www.task-2.web",
 		"created": "2024-01-01T00:00:00+01:00",
 		"sortOrder": 2,
 		"lastSavedBy": "someUser",

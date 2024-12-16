@@ -374,6 +374,7 @@ class EmployeeChecklistMapperTest {
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder().build();
 		final var phaseEntity = PhaseEntity.builder().build();
 		final var heading = "heading";
+		final var headingReference = "headingReference";
 		final var questionType = QuestionType.COMPLETED_OR_NOT_RELEVANT;
 		final var sortOrder = 654;
 		final var text = "text";
@@ -381,6 +382,7 @@ class EmployeeChecklistMapperTest {
 
 		final var customTaskRequest = CustomTaskCreateRequest.builder()
 			.withHeading(heading)
+			.withHeadingReference(headingReference)
 			.withQuestionType(questionType)
 			.withSortOrder(sortOrder)
 			.withText(text)
@@ -391,6 +393,7 @@ class EmployeeChecklistMapperTest {
 
 		assertThat(entity.getCreated()).isNull();
 		assertThat(entity.getHeading()).isEqualTo(heading);
+		assertThat(entity.getHeadingReference()).isEqualTo(headingReference);
 		assertThat(entity.getId()).isNull();
 		assertThat(entity.getEmployeeChecklist()).isEqualTo(employeeChecklistEntity);
 		assertThat(entity.getPhase()).isEqualTo(phaseEntity);
@@ -413,6 +416,7 @@ class EmployeeChecklistMapperTest {
 	@Test
 	void updateCustomTaskEntity() {
 		final var heading = "heading";
+		final var headingReference = "headingReference";
 		final var questionType = QuestionType.COMPLETED_OR_NOT_RELEVANT;
 		final var sortOrder = 654;
 		final var text = "text";
@@ -420,6 +424,7 @@ class EmployeeChecklistMapperTest {
 
 		final var request = CustomTaskUpdateRequest.builder()
 			.withHeading(heading)
+			.withHeadingReference(headingReference)
 			.withQuestionType(questionType)
 			.withSortOrder(sortOrder)
 			.withText(text)
@@ -433,6 +438,7 @@ class EmployeeChecklistMapperTest {
 
 		assertThat(entity.getCreated()).isNull();
 		assertThat(entity.getHeading()).isEqualTo(heading);
+		assertThat(entity.getHeadingReference()).isEqualTo(headingReference);
 		assertThat(entity.getId()).isNull();
 		assertThat(entity.getEmployeeChecklist()).isNull();
 		assertThat(entity.getPhase()).isNull();
@@ -463,6 +469,7 @@ class EmployeeChecklistMapperTest {
 		assertThat(result).isNotNull().satisfies(r -> {
 			assertThat(r.getCreated()).isEqualTo(entity.getCreated());
 			assertThat(r.getHeading()).isEqualTo(entity.getHeading());
+			assertThat(r.getHeadingReference()).isEqualTo(entity.getHeadingReference());
 			assertThat(r.getId()).isEqualTo(entity.getId());
 			assertThat(r.getQuestionType()).isEqualTo(entity.getQuestionType());
 			assertThat(r.getRoleType()).isEqualTo(entity.getRoleType());

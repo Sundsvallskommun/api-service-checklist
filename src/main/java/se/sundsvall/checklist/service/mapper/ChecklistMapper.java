@@ -75,6 +75,7 @@ public final class ChecklistMapper {
 		return ofNullable(taskCreateRequest)
 			.map(request -> TaskEntity.builder()
 				.withHeading(request.getHeading())
+				.withHeadingReference(request.getHeadingReference())
 				.withText(request.getText())
 				.withPhase(phase)
 				.withPermission(request.getPermission())
@@ -88,6 +89,7 @@ public final class ChecklistMapper {
 
 	public static TaskEntity updateTaskEntity(final TaskEntity entity, final TaskUpdateRequest request) {
 		ofNullable(request.getHeading()).ifPresent(entity::setHeading);
+		ofNullable(request.getHeadingReference()).ifPresent(entity::setHeadingReference);
 		ofNullable(request.getText()).ifPresent(entity::setText);
 		ofNullable(request.getRoleType()).ifPresent(entity::setRoleType);
 		ofNullable(request.getPermission()).ifPresent(entity::setPermission);
@@ -152,6 +154,7 @@ public final class ChecklistMapper {
 				.withId(entity.getId())
 				.withText(entity.getText())
 				.withHeading(entity.getHeading())
+				.withHeadingReference(entity.getHeadingReference())
 				.withRoleType(entity.getRoleType())
 				.withQuestionType(entity.getQuestionType())
 				.withPermission(entity.getPermission())

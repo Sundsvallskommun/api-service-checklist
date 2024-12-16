@@ -1,5 +1,6 @@
 {
 	"heading": "Name of the task",
+	"headingReference": "mailto:dummy@noreply.com",
 	"createdBy": "someUser",
 	"sortOrder": 1,
 	"permission": "SUPERADMIN",
