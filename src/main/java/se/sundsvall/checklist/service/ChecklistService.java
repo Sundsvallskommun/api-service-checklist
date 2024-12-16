@@ -1,5 +1,6 @@
 package se.sundsvall.checklist.service;
 
+import static org.springframework.util.CollectionUtils.isEmpty;
 import static org.zalando.problem.Status.BAD_REQUEST;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.ACTIVE;
@@ -33,6 +34,7 @@ public class ChecklistService {
 	private static final String ORGANIZATION_NOT_FOUND = "Organization with organization number %s does not exist within municipality %s";
 	private static final String CHECKLIST_CANNOT_BE_DELETED = "Cannot delete checklist with lifecycle %s";
 	private static final String CHECKLIST_DRAFT_IN_PROGRESS = "Checklist already has a draft version in progress preventing another draft version from being created";
+	private static final String ORGANIZATION_HAS_EXISTING_CHECKLIST = "Organization %s already has a defined checklist and can therefor not create a new checklist";
 
 	private final OrganizationRepository organizationRepository;
 	private final ChecklistRepository checklistRepository;
@@ -74,6 +76,13 @@ public class ChecklistService {
 
 		final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(request.getOrganizationNumber(), municipalityId)
 			.orElseThrow(() -> Problem.valueOf(BAD_REQUEST, ORGANIZATION_NOT_FOUND.formatted(request.getOrganizationNumber(), municipalityId)));
+
+		// A new checklist is only possible to create if the organization does not have any checklist (in any lifecyclestatus)
+		// connected to it. If it has one or more versions of a checklist connected, a new version of the existing checklist
+		// should be made instead, as each organizational unit can only have one checklist (but 1 to n versions of it)
+		if (!isEmpty(organization.getChecklists())) {
+			throw Problem.valueOf(BAD_REQUEST, ORGANIZATION_HAS_EXISTING_CHECKLIST.formatted(organization.getOrganizationNumber()));
+		}
 
 		final var entity = checklistRepository.save(toChecklistEntity(request, municipalityId));
 		organization.getChecklists().add(entity);

@@ -45,6 +45,7 @@ class EmployeeChecklistTaskTest {
 		final var customTask = true;
 		final var fulfilmentStatus = FulfilmentStatus.FALSE;
 		final var heading = "heading";
+		final var headingReference = "headingReference";
 		final var id = "id";
 		final var updatedBy = "updatedBy";
 		final var questionType = QuestionType.YES_OR_NO_WITH_TEXT;
@@ -58,6 +59,7 @@ class EmployeeChecklistTaskTest {
 			.withCustomTask(customTask)
 			.withFulfilmentStatus(fulfilmentStatus)
 			.withHeading(heading)
+			.withHeadingReference(headingReference)
 			.withId(id)
 			.withUpdatedBy(updatedBy)
 			.withQuestionType(questionType)
@@ -72,6 +74,7 @@ class EmployeeChecklistTaskTest {
 		assertThat(bean.isCustomTask()).isEqualTo(customTask);
 		assertThat(bean.getFulfilmentStatus()).isEqualTo(fulfilmentStatus);
 		assertThat(bean.getHeading()).isEqualTo(heading);
+		assertThat(bean.getHeadingReference()).isEqualTo(headingReference);
 		assertThat(bean.getId()).isEqualTo(id);
 		assertThat(bean.getUpdatedBy()).isEqualTo(updatedBy);
 		assertThat(bean.getQuestionType()).isEqualTo(questionType);

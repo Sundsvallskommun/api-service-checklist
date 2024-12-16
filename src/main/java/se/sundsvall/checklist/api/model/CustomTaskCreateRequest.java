@@ -23,6 +23,9 @@ public class CustomTaskCreateRequest {
 	@NotBlank
 	private String heading;
 
+	@Schema(description = "Optional reference to use as value for the headings anchor element", example = "http://www.google.com", accessMode = WRITE_ONLY)
+	private String headingReference;
+
 	@Schema(description = "The body text of the task", example = "Detta är en beskrivning av ett uppdrag", accessMode = WRITE_ONLY)
 	private String text;
 
@@ -34,7 +37,7 @@ public class CustomTaskCreateRequest {
 	@NotNull
 	private Integer sortOrder;
 
-	@Schema(description = "The id of the user creating the custom task")
+	@Schema(description = "The id of the user creating the custom task", example = "joe01doe", accessMode = WRITE_ONLY)
 	@NotBlank
 	private String createdBy;
 }

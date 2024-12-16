@@ -18,19 +18,22 @@ import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 @Schema(description = "Model for custom task update request")
 public class CustomTaskUpdateRequest {
 
-	@Schema(description = "The heading of the task", example = "Bjud på fika")
+	@Schema(description = "The heading of the task", example = "Bjud på fika", accessMode = WRITE_ONLY)
 	private String heading;
 
-	@Schema(description = "The body text of the task", example = "Detta är en beskrivning av ett uppdrag")
+	@Schema(description = "Optional reference to use as value for the headings anchor element", example = "http://www.google.com", accessMode = WRITE_ONLY)
+	private String headingReference;
+
+	@Schema(description = "The body text of the task", example = "Detta är en beskrivning av ett uppdrag", accessMode = WRITE_ONLY)
 	private String text;
 
-	@Schema(description = "The question type of the task")
+	@Schema(description = "The question type of the task", accessMode = WRITE_ONLY)
 	private QuestionType questionType;
 
 	@Schema(description = "The sort order for the task", accessMode = WRITE_ONLY)
 	private Integer sortOrder;
 
-	@Schema(description = "The id of the user updating the custom task")
+	@Schema(description = "The id of the user updating the custom task", example = "joe01doe", accessMode = WRITE_ONLY)
 	@NotBlank
 	private String updatedBy;
 }

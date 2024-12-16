@@ -39,6 +39,7 @@ class TaskTest {
 	void testBuilderMethods() {
 		final var id = "id";
 		final var heading = "heading";
+		final var headingReference = "headingReference";
 		final var text = "text";
 		final var roleType = RoleType.NEW_EMPLOYEE;
 		final var questionType = QuestionType.YES_OR_NO;
@@ -51,6 +52,7 @@ class TaskTest {
 		final var bean = Task.builder()
 			.withId(id)
 			.withHeading(heading)
+			.withHeadingReference(headingReference)
 			.withText(text)
 			.withRoleType(roleType)
 			.withQuestionType(questionType)
@@ -64,6 +66,7 @@ class TaskTest {
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(bean.getCreated()).isEqualTo(created);
 		assertThat(bean.getHeading()).isEqualTo(heading);
+		assertThat(bean.getHeadingReference()).isEqualTo(headingReference);
 		assertThat(bean.getId()).isEqualTo(id);
 		assertThat(bean.getLastSavedBy()).isEqualTo(lastSavedBy);
 		assertThat(bean.getPermission()).isEqualTo(permission);
