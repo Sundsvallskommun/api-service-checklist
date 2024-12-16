@@ -30,6 +30,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
@@ -42,6 +45,7 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistResponse.Detail;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.Mentor;
+import se.sundsvall.checklist.api.model.ParameterPagingBase;
 import se.sundsvall.checklist.integration.db.EmployeeChecklistIntegration;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
@@ -86,6 +90,31 @@ class EmployeeChecklistServiceTest {
 	@AfterEach
 	void assertNoMoreInteractions() {
 		verifyNoMoreInteractions(employeeChecklistIntegrationMock, customTaskRepositoryMock, employeeIntegrationMock);
+	}
+
+	@Test
+	void getOngoingEmployeeChecklists() {
+		// Arrange
+		final var pagingBase = new ParameterPagingBase();
+		pagingBase.setPage(1);
+		pagingBase.setLimit(10);
+		final var pageable = PageRequest.of(pagingBase.getPage() - 1, pagingBase.getLimit(), pagingBase.sort());
+		Page<EmployeeChecklistEntity> pagedChecklists = new PageImpl<>(List.of(), pageable, 10);
+
+		when(employeeChecklistIntegrationMock.fetchAllOngoingEmployeeChecklists(eq(MUNICIPALITY_ID), any(PageRequest.class))).thenReturn(pagedChecklists);
+
+		// Act
+		final var result = service.getOngoingEmployeeChecklists(MUNICIPALITY_ID, pagingBase);
+
+		// Assert and verify
+		assertThat(result).isNotNull();
+		assertThat(result.getChecklists()).isNotNull().isEmpty();
+		assertThat(result.getMetadata()).isNotNull().satisfies(meta -> {
+			assertThat(meta.getLimit()).isEqualTo(pagingBase.getLimit());
+			assertThat(meta.getPage()).isEqualTo(pagingBase.getPage());
+		});
+
+		verify(employeeChecklistIntegrationMock).fetchAllOngoingEmployeeChecklists(eq(MUNICIPALITY_ID), any(PageRequest.class));
 	}
 
 	@Test

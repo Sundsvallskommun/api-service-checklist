@@ -4,6 +4,8 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
@@ -22,4 +24,6 @@ public interface EmployeeChecklistRepository extends JpaRepository<EmployeeCheck
 	List<EmployeeChecklistEntity> findAllByChecklistsMunicipalityIdAndExpirationDateIsBeforeAndLockedIsFalse(String municipalityId, LocalDate date);
 
 	Optional<EmployeeChecklistEntity> findByIdAndChecklistsMunicipalityId(String id, String municipalityId);
+
+	Page<EmployeeChecklistEntity> findAllByChecklistsMunicipalityIdAndStartDateIsAfterAndEndDateIsAfter(String municipalityId, LocalDate startDate, LocalDate endDate, Pageable pageable);
 }

@@ -34,6 +34,42 @@ import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 
 class EmployeeChecklistMapperTest {
 
+	@Test
+	void toOngoingEmployeeChecklists() {
+		var employeeChecklistEntity = createEmployeeChecklistEntity();
+		var employeeChecklistEntities = List.of(employeeChecklistEntity);
+
+		var result = EmployeeChecklistMapper.toOngoingEmployeeChecklists(employeeChecklistEntities);
+
+		var ongoingEmployeeChecklist = result.getFirst();
+		assertThat(ongoingEmployeeChecklist).isNotNull().satisfies(checklist -> {
+			assertThat(checklist.getEmployeeName()).isEqualTo(employeeChecklistEntity.getEmployee().getFirstName() + " " + employeeChecklistEntity.getEmployee().getLastName());
+			assertThat(checklist.getEmployeeUsername()).isEqualTo(employeeChecklistEntity.getEmployee().getUsername());
+			assertThat(checklist.getManagerName()).isEqualTo(employeeChecklistEntity.getEmployee().getManager().getFirstName() + " " + employeeChecklistEntity.getEmployee().getManager().getLastName());
+			assertThat(checklist.getOrganizationName()).isEqualTo(employeeChecklistEntity.getEmployee().getCompany().getOrganizationName());
+			assertThat(checklist.getDelegatedTo()).isEqualTo(employeeChecklistEntity.getDelegates().stream().map(e -> e.getFirstName() + " " + e.getLastName()).toList());
+			assertThat(checklist.getEmploymentDate()).isEqualTo(employeeChecklistEntity.getEmployee().getStartDate());
+			assertThat(checklist.getPurgeDate()).isEqualTo(employeeChecklistEntity.getEndDate());
+		});
+	}
+
+	@Test
+	void toOngoingEmployeeChecklist() {
+		var employeeChecklistEntity = createEmployeeChecklistEntity();
+
+		var ongoingEmployeeChecklist = EmployeeChecklistMapper.toOngoingEmployeeChecklist(employeeChecklistEntity);
+
+		assertThat(ongoingEmployeeChecklist).isNotNull().satisfies(checklist -> {
+			assertThat(checklist.getEmployeeName()).isEqualTo(employeeChecklistEntity.getEmployee().getFirstName() + " " + employeeChecklistEntity.getEmployee().getLastName());
+			assertThat(checklist.getEmployeeUsername()).isEqualTo(employeeChecklistEntity.getEmployee().getUsername());
+			assertThat(checklist.getManagerName()).isEqualTo(employeeChecklistEntity.getEmployee().getManager().getFirstName() + " " + employeeChecklistEntity.getEmployee().getManager().getLastName());
+			assertThat(checklist.getOrganizationName()).isEqualTo(employeeChecklistEntity.getEmployee().getCompany().getOrganizationName());
+			assertThat(checklist.getDelegatedTo()).isEqualTo(employeeChecklistEntity.getDelegates().stream().map(e -> e.getFirstName() + " " + e.getLastName()).toList());
+			assertThat(checklist.getEmploymentDate()).isEqualTo(employeeChecklistEntity.getEmployee().getStartDate());
+			assertThat(checklist.getPurgeDate()).isEqualTo(employeeChecklistEntity.getEndDate());
+		});
+	}
+
 	@ParameterizedTest
 	@EnumSource(EmploymentPosition.class)
 	void toEmployeeChecklistEntity(EmploymentPosition employmentPosition) {

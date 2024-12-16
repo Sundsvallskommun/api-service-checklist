@@ -42,6 +42,8 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistResponse;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.Mentor;
+import se.sundsvall.checklist.api.model.OngoingEmployeeChecklists;
+import se.sundsvall.checklist.api.model.ParameterPagingBase;
 import se.sundsvall.checklist.service.EmployeeChecklistService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
@@ -61,8 +63,20 @@ class EmployeeChecklistResource {
 
 	private final EmployeeChecklistService employeeChecklistService;
 
-	EmployeeChecklistResource(EmployeeChecklistService employeeChecklistService) {
+	EmployeeChecklistResource(final EmployeeChecklistService employeeChecklistService) {
 		this.employeeChecklistService = employeeChecklistService;
+	}
+
+	@Operation(summary = "Fetches a paginated response of ongoing employee checklists", responses = {
+		@ApiResponse(responseCode = "200",
+			description = "Successful Operation",
+			content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = OngoingEmployeeChecklists.class))),
+	})
+	@GetMapping("/ongoing")
+	ResponseEntity<OngoingEmployeeChecklists> fetchAllOngoingEmployeeChecklists(
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "pagingBase", description = "Pagination model", schema = @Schema(implementation = ParameterPagingBase.class)) @Valid final ParameterPagingBase pagingBase) {
+		return ok(employeeChecklistService.getOngoingEmployeeChecklists(municipalityId, pagingBase));
 	}
 
 	@Operation(summary = "Fetch checklist where user acts as employee", description = "Fetch a users checklist where the user has the role of employee", responses = {

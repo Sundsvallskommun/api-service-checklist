@@ -20,6 +20,7 @@ import static se.sundsvall.checklist.service.util.VerificationUtils.verifyUnlock
 import generated.se.sundsvall.employee.Employee;
 import generated.se.sundsvall.employee.Employment;
 import generated.se.sundsvall.employee.Manager;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +28,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -354,5 +357,17 @@ public class EmployeeChecklistIntegration {
 			.orElse(Stream.empty())
 			.filter(checklist -> Objects.equals(checklist.getLifeCycle(), ACTIVE))
 			.findAny();
+	}
+
+	/**
+	 * Fetches all ongoing employee checklists for a specific municipality. An ongoing employee checklist is an employee
+	 * checklist that started before today and ends after today.
+	 *
+	 * @param  municipalityId the id of the municipality
+	 * @param  pageable       the page request
+	 * @return                a page of ongoing employee checklists
+	 */
+	public Page<EmployeeChecklistEntity> fetchAllOngoingEmployeeChecklists(final String municipalityId, final PageRequest pageable) {
+		return employeeChecklistRepository.findAllByChecklistsMunicipalityIdAndStartDateIsAfterAndEndDateIsAfter(municipalityId, LocalDate.now().minusDays(1), LocalDate.now(), pageable);
 	}
 }

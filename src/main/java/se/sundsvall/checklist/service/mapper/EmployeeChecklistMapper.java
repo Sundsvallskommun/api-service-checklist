@@ -20,6 +20,7 @@ import se.sundsvall.checklist.api.model.EmployeeChecklist;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhase;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.Mentor;
+import se.sundsvall.checklist.api.model.OngoingEmployeeChecklist;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
@@ -112,6 +113,25 @@ public final class EmployeeChecklistMapper {
 	// -----------------------------
 	// API mappings
 	// -----------------------------
+
+	public static List<OngoingEmployeeChecklist> toOngoingEmployeeChecklists(final List<EmployeeChecklistEntity> employeeChecklistEntities) {
+		return ofNullable(employeeChecklistEntities).orElse(emptyList()).stream()
+			.map(EmployeeChecklistMapper::toOngoingEmployeeChecklist)
+			.toList();
+	}
+
+	public static OngoingEmployeeChecklist toOngoingEmployeeChecklist(final EmployeeChecklistEntity employeeChecklistEntity) {
+		return ofNullable(employeeChecklistEntity).map(entity -> OngoingEmployeeChecklist.builder()
+			.withEmployeeName(entity.getEmployee().getFirstName() + " " + entity.getEmployee().getLastName())
+			.withEmployeeUsername(entity.getEmployee().getUsername())
+			.withManagerName(entity.getEmployee().getManager().getFirstName() + " " + entity.getEmployee().getManager().getLastName())
+			.withOrganizationName(entity.getEmployee().getCompany().getOrganizationName())
+			.withDelegatedTo(entity.getDelegates().stream().map(e -> e.getFirstName() + " " + e.getLastName()).toList())
+			.withEmploymentDate(entity.getEmployee().getStartDate())
+			.withPurgeDate(entity.getEndDate())
+			.build())
+			.orElse(null);
+	}
 
 	public static EmployeeChecklist toEmployeeChecklist(final EmployeeChecklistEntity employeeChecklistEntity) {
 		return ofNullable(employeeChecklistEntity)
