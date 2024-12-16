@@ -8,45 +8,45 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetter
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 
-import java.util.Set;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
-import se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel;
 
-class OrganizationCreateRequestTest {
+class ChecklistCreateRequestTest {
 
 	@Test
 	void testBean() {
-		MatcherAssert.assertThat(OrganizationCreateRequest.class, allOf(
+		MatcherAssert.assertThat(ChecklistCreateRequest.class, allOf(
 			hasValidBeanConstructor(),
 			hasValidGettersAndSetters(),
-			hasValidBeanToString(),
+			hasValidBeanHashCode(),
 			hasValidBeanEquals(),
-			hasValidBeanHashCode()));
+			hasValidBeanToString()));
 	}
 
 	@Test
 	void testBuilderMethods() {
-		final var communicationChannels = Set.of(CommunicationChannel.EMAIL);
-		final var organizationName = "organizationName";
-		final var organizationNumber = 3321;
+		final var createdBy = "someUser";
+		final var displayName = "displayName";
+		final var name = "name";
+		final var organizationNumber = 1337;
 
-		final var bean = OrganizationCreateRequest.builder()
-			.withCommunicationChannels(communicationChannels)
-			.withOrganizationName(organizationName)
+		final var bean = ChecklistCreateRequest.builder()
+			.withCreatedBy(createdBy)
+			.withDisplayName(displayName)
+			.withName(name)
 			.withOrganizationNumber(organizationNumber)
 			.build();
 
-		assertThat(bean).hasNoNullFieldsOrProperties();
-		assertThat(bean.getCommunicationChannels()).isEqualTo(communicationChannels);
-		assertThat(bean.getOrganizationName()).isEqualTo(organizationName);
+		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
+		assertThat(bean.getCreatedBy()).isEqualTo(createdBy);
+		assertThat(bean.getDisplayName()).isEqualTo(displayName);
+		assertThat(bean.getName()).isEqualTo(name);
 		assertThat(bean.getOrganizationNumber()).isEqualTo(organizationNumber);
-
 	}
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(OrganizationCreateRequest.builder().build()).hasAllNullFieldsOrProperties();
-		assertThat(new OrganizationCreateRequest()).hasAllNullFieldsOrProperties();
+		assertThat(ChecklistCreateRequest.builder().build()).hasAllNullFieldsOrProperties();
+		assertThat(new ChecklistCreateRequest()).hasAllNullFieldsOrProperties();
 	}
 }

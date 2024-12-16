@@ -158,6 +158,23 @@ class ChecklistServiceTest {
 		verify(checklistRepositoryMock).existsByNameAndMunicipalityId(body.getName(), MUNICIPALITY_ID);
 	}
 
+	@Test
+	void createChecklistWhenOrganizationAlreadyHasConnectedChecklist() {
+		final var body = createChecklistCreateRequest();
+		final var organization = createOrganizationEntity();
+		organization.setOrganizationNumber(body.getOrganizationNumber());
+		organization.setChecklists(List.of(createChecklistEntity()));
+
+		when(organizationRepositoryMock.findByOrganizationNumberAndMunicipalityId(anyInt(), eq(MUNICIPALITY_ID))).thenReturn(Optional.of(organization));
+
+		assertThatThrownBy(() -> checklistService.createChecklist(MUNICIPALITY_ID, body))
+			.isInstanceOfAny(Problem.class)
+			.hasMessage("Bad Request: Organization %s already has a defined checklist and can therefor not create a new checklist".formatted(body.getOrganizationNumber()));
+
+		verify(checklistRepositoryMock).existsByNameAndMunicipalityId(body.getName(), MUNICIPALITY_ID);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(body.getOrganizationNumber(), MUNICIPALITY_ID);
+	}
+
 	@ParameterizedTest
 	@EnumSource(value = LifeCycle.class, names = {
 		"ACTIVE", "DEPRECATED"

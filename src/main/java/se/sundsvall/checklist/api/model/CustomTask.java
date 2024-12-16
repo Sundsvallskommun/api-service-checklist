@@ -26,6 +26,9 @@ public class CustomTask {
 	@Schema(description = "The heading of the task", example = "Bjud på fika", accessMode = READ_ONLY)
 	private String heading;
 
+	@Schema(description = "Reference to use as value for the headings anchor element (if present)", example = "http://www.google.com", accessMode = READ_ONLY)
+	private String headingReference;
+
 	@Schema(description = "The body text of the task", example = "Detta är en beskrivning av ett uppdrag", accessMode = READ_ONLY)
 	private String text;
 
@@ -46,6 +49,6 @@ public class CustomTask {
 	@DateTimeFormat(iso = DATE_TIME)
 	private OffsetDateTime updated;
 
-	@Schema(description = "The id of the user that last modified the custom task")
+	@Schema(description = "The id of the user that last modified the custom task", example = "joe01doe", accessMode = READ_ONLY)
 	private String lastSavedBy;
 }

@@ -8,16 +8,15 @@ import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetter
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 
-import java.util.Set;
+import java.util.List;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
-import se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel;
 
-class OrganizationUpdateRequestTest {
+class DelegatedEmployeeChecklistResponseTest {
 
 	@Test
 	void testBean() {
-		MatcherAssert.assertThat(OrganizationUpdateRequest.class, allOf(
+		MatcherAssert.assertThat(DelegatedEmployeeChecklistResponse.class, allOf(
 			hasValidBeanConstructor(),
 			hasValidGettersAndSetters(),
 			hasValidBeanToString(),
@@ -27,22 +26,19 @@ class OrganizationUpdateRequestTest {
 
 	@Test
 	void testBuilderMethods() {
-		final var communicationChannels = Set.of(CommunicationChannel.EMAIL);
-		final var organizationName = "organizationName";
+		final var employeeChecklists = List.of(EmployeeChecklist.builder().build(), EmployeeChecklist.builder().build());
 
-		final var bean = OrganizationUpdateRequest.builder()
-			.withCommunicationChannels(communicationChannels)
-			.withOrganizationName(organizationName)
+		final var bean = DelegatedEmployeeChecklistResponse.builder()
+			.withEmployeeChecklists(employeeChecklists)
 			.build();
 
-		assertThat(bean).hasNoNullFieldsOrProperties();
-		assertThat(bean.getCommunicationChannels()).isEqualTo(communicationChannels);
-		assertThat(bean.getOrganizationName()).isEqualTo(organizationName);
+		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
+		assertThat(bean.getEmployeeChecklists()).isEqualTo(employeeChecklists);
 	}
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(OrganizationUpdateRequest.builder().build()).hasAllNullFieldsOrProperties();
-		assertThat(new OrganizationUpdateRequest()).hasAllNullFieldsOrProperties();
+		assertThat(DelegatedEmployeeChecklistResponse.builder().build()).hasAllNullFieldsOrProperties();
+		assertThat(new DelegatedEmployeeChecklistResponse()).hasAllNullFieldsOrProperties();
 	}
 }

@@ -25,6 +25,9 @@ public class TaskCreateRequest {
 	@NotBlank
 	private String heading;
 
+	@Schema(description = "Optional reference to use as value for the headings anchor element", example = "http://www.google.com", accessMode = WRITE_ONLY)
+	private String headingReference;
+
 	@Schema(description = "The body text of the task", example = "Body text of the task", accessMode = WRITE_ONLY)
 	private String text;
 
@@ -44,7 +47,7 @@ public class TaskCreateRequest {
 	@NotNull
 	private QuestionType questionType;
 
-	@Schema(description = "The id of the user creating the task")
+	@Schema(description = "The id of the user creating the task", example = "joe01doe", accessMode = WRITE_ONLY)
 	@NotBlank
 	private String createdBy;
 }

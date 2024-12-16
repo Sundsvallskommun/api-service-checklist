@@ -27,6 +27,9 @@ public class EmployeeChecklistTask {
 	@Schema(description = "The heading of the task", example = "Bjud på fika", accessMode = READ_ONLY)
 	private String heading;
 
+	@Schema(description = "Reference to use as value for the headings anchor element (if present)", example = "http://www.google.com", accessMode = READ_ONLY)
+	private String headingReference;
+
 	@Schema(description = "The body text of the task", example = "Detta är en beskrivning av ett uppdrag", accessMode = READ_ONLY)
 	private String text;
 

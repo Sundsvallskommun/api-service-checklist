@@ -2,7 +2,7 @@
 	"displayName": "Inaktiv lista",
 	"created": "2019-01-01T00:00:00+01:00",
 	"lastSavedBy": "someUser",
-	"name": "INACTIVE_LIST",
+	"name": "LIST_FOR_ACTIVATION",
 	"id": "45764278-50c8-4a19-af00-077bfc314fd2",
 	"version": 1,
 	"lifeCycle": "ACTIVE",

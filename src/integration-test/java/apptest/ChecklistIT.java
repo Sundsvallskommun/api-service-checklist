@@ -65,7 +65,7 @@ class ChecklistIT extends AbstractAppTest {
 
 		// Fetch checklists for the organization to verify that new checklist has been added to it
 		setupCall()
-			.withServicePath("/2281/organizations/19dddb61-9a7b-423f-a873-94049e17cbee")
+			.withServicePath("/2281/organizations/59dddb61-9a7b-423f-a873-94049e17cbee")
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(EXPECTED_FILE)
