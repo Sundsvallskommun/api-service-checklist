@@ -1,0 +1,27 @@
+{
+  "checklists": [
+	{
+	  "employeeName": "Anton Nyberg",
+	  "employeeUsername": "nemp6loyee",
+	  "managerName": "J Man Ager",
+	  "delegatedTo": [],
+	  "employmentDate": "2024-01-01",
+	  "purgeDate": "2124-07-01"
+	},
+	{
+	  "employeeName": "Fredrik Karlsson",
+	  "employeeUsername": "oemp6loyee",
+	  "managerName": "J Man Ager",
+	  "delegatedTo": [],
+	  "employmentDate": "2024-01-01",
+	  "purgeDate": "2124-07-01"
+	}
+  ],
+  "_meta": {
+	"page": 2,
+	"limit": 2,
+	"count": 2,
+	"totalRecords": 8,
+	"totalPages": 4
+  }
+}

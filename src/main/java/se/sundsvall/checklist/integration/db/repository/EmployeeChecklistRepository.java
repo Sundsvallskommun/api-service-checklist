@@ -8,14 +8,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus;
 
 @CircuitBreaker(name = "employeeChecklistRepository")
-public interface EmployeeChecklistRepository extends JpaRepository<EmployeeChecklistEntity, String>, JpaSpecificationExecutor<EmployeeChecklistEntity> {
+public interface EmployeeChecklistRepository extends JpaRepository<EmployeeChecklistEntity, String>, PagingAndSortingRepository<EmployeeChecklistEntity, String>, JpaSpecificationExecutor<EmployeeChecklistEntity> {
 	List<EmployeeChecklistEntity> findAllByChecklistsMunicipalityIdAndCorrespondenceIsNull(String municipalityId);
 
-	List<EmployeeChecklistEntity> findAllByChecklistsMunicipalityIdAndCorrespondenceCorrespondenceStatus(String muncipalityId, CorrespondenceStatus status);
+	List<EmployeeChecklistEntity> findAllByChecklistsMunicipalityIdAndCorrespondenceCorrespondenceStatus(String municipalityId, CorrespondenceStatus status);
 
 	EmployeeChecklistEntity findByChecklistsMunicipalityIdAndEmployeeUsername(String municipalityId, String username);
 
@@ -25,5 +26,6 @@ public interface EmployeeChecklistRepository extends JpaRepository<EmployeeCheck
 
 	Optional<EmployeeChecklistEntity> findByIdAndChecklistsMunicipalityId(String id, String municipalityId);
 
-	Page<EmployeeChecklistEntity> findAllByChecklistsMunicipalityIdAndStartDateIsAfterAndEndDateIsAfter(String municipalityId, LocalDate startDate, LocalDate endDate, Pageable pageable);
+	Page<EmployeeChecklistEntity> findAllByChecklistsMunicipalityIdAndStartDateIsBeforeAndEndDateIsAfter(String municipalityId, LocalDate startDate, LocalDate endDate, Pageable pageable);
+
 }
