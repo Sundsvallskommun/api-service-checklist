@@ -282,7 +282,8 @@ public class EmployeeChecklistService {
 	}
 
 	/**
-	 * Fetch a specific employee from employee integration (regardless of other data than uuid, for example if it is a new or old employee) and initiate checklists for him or her.
+	 * Fetch a specific employee from employee integration (regardless of other data than uuid, for example if it is a new
+	 * or old employee) and initiate checklists for him or her.
 	 */
 	public EmployeeChecklistResponse initiateSpecificEmployeeChecklist(String municipalityId, String uuid) {
 		final var filter = buildUuidEmployeeFilter(uuid);

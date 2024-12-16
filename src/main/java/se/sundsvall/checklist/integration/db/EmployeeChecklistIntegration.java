@@ -285,10 +285,10 @@ public class EmployeeChecklistIntegration {
 	/**
 	 * Method for creating an employee checklist based on nearest organizational checklist.
 	 *
-	 * @param municipalityId the id of the municipality where the employee belongs
-	 * @param employee the employee to onboard
-	 * @param orgTree the organization tree for the employee
-	 * @return status of the process of creating the employee checklist
+	 * @param  municipalityId   the id of the municipality where the employee belongs
+	 * @param  employee         the employee to onboard
+	 * @param  orgTree          the organization tree for the employee
+	 * @return                  status of the process of creating the employee checklist
 	 * @throws ThrowableProblem if error occurs when processing employee
 	 */
 	@Transactional
@@ -360,11 +360,12 @@ public class EmployeeChecklistIntegration {
 	}
 
 	/**
-	 * Fetches all ongoing employee checklists for a specific municipality. An ongoing employee checklist is an employee checklist that started before today and ends after today.
+	 * Fetches all ongoing employee checklists for a specific municipality. An ongoing employee checklist is an employee
+	 * checklist that started before today and ends after today.
 	 *
-	 * @param municipalityId the id of the municipality
-	 * @param pageable the page request
-	 * @return a page of ongoing employee checklists
+	 * @param  municipalityId the id of the municipality
+	 * @param  pageable       the page request
+	 * @return                a page of ongoing employee checklists
 	 */
 	public Page<EmployeeChecklistEntity> fetchAllOngoingEmployeeChecklists(final String municipalityId, final PageRequest pageable) {
 		return employeeChecklistRepository.findAllByChecklistsMunicipalityIdAndStartDateIsBeforeAndEndDateIsAfter(municipalityId, LocalDate.now().minusDays(1), LocalDate.now(), pageable);

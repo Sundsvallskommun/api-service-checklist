@@ -1,43 +1,43 @@
 {
-  "checklists": [
-	{
-	  "employeeName": "Lars Pettersson",
-	  "employeeUsername": "lemp6loyee",
-	  "managerName": "J Man Ager",
-	  "delegatedTo": [],
-	  "employmentDate": "2024-01-01",
-	  "purgeDate": "2124-07-01"
-	},
-	{
-	  "employeeName": "Lars Bertilsson",
-	  "employeeUsername": "memp6loyee",
-	  "managerName": "J Man Ager",
-	  "delegatedTo": [],
-	  "employmentDate": "2024-01-01",
-	  "purgeDate": "2124-07-01"
-	},
-	{
-	  "employeeName": "Anton Nyberg",
-	  "employeeUsername": "nemp6loyee",
-	  "managerName": "J Man Ager",
-	  "delegatedTo": [],
-	  "employmentDate": "2024-01-01",
-	  "purgeDate": "2124-07-01"
-	},
-	{
-	  "employeeName": "Fredrik Karlsson",
-	  "employeeUsername": "oemp6loyee",
-	  "managerName": "J Man Ager",
-	  "delegatedTo": [],
-	  "employmentDate": "2024-01-01",
-	  "purgeDate": "2124-07-01"
+	"checklists": [
+		{
+			"employeeName": "Lars Pettersson",
+			"employeeUsername": "lemp6loyee",
+			"managerName": "J Man Ager",
+			"delegatedTo": [],
+			"employmentDate": "2024-01-01",
+			"purgeDate": "2124-07-01"
+		},
+		{
+			"employeeName": "Lars Bertilsson",
+			"employeeUsername": "memp6loyee",
+			"managerName": "J Man Ager",
+			"delegatedTo": [],
+			"employmentDate": "2024-01-01",
+			"purgeDate": "2124-07-01"
+		},
+		{
+			"employeeName": "Anton Nyberg",
+			"employeeUsername": "nemp6loyee",
+			"managerName": "J Man Ager",
+			"delegatedTo": [],
+			"employmentDate": "2024-01-01",
+			"purgeDate": "2124-07-01"
+		},
+		{
+			"employeeName": "Fredrik Karlsson",
+			"employeeUsername": "oemp6loyee",
+			"managerName": "J Man Ager",
+			"delegatedTo": [],
+			"employmentDate": "2024-01-01",
+			"purgeDate": "2124-07-01"
+		}
+	],
+	"_meta": {
+		"page": 1,
+		"limit": 100,
+		"count": 4,
+		"totalRecords": 4,
+		"totalPages": 1
 	}
-  ],
-  "_meta": {
-	"page": 1,
-	"limit": 100,
-	"count": 4,
-	"totalRecords": 4,
-	"totalPages": 1
-  }
 }
