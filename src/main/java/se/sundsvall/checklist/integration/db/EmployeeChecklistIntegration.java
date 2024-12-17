@@ -58,6 +58,7 @@ import se.sundsvall.checklist.integration.db.repository.EmployeeRepository;
 import se.sundsvall.checklist.integration.db.repository.ManagerRepository;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
 import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
+import se.sundsvall.checklist.integration.db.repository.projection.OngoingEmployeeChecklistProjection;
 import se.sundsvall.checklist.service.OrganizationTree;
 import se.sundsvall.checklist.service.OrganizationTree.OrganizationLine;
 
@@ -367,7 +368,8 @@ public class EmployeeChecklistIntegration {
 	 * @param  pageable       the page request
 	 * @return                a page of ongoing employee checklists
 	 */
-	public Page<EmployeeChecklistEntity> fetchAllOngoingEmployeeChecklists(final String municipalityId, final PageRequest pageable) {
-		return employeeChecklistRepository.findAllByChecklistsMunicipalityIdAndStartDateIsBeforeAndEndDateIsAfter(municipalityId, LocalDate.now().minusDays(1), LocalDate.now(), pageable);
+	public Page<OngoingEmployeeChecklistProjection> fetchAllOngoingEmployeeChecklists(final String municipalityId, final PageRequest pageable) {
+		var today = LocalDate.now();
+		return employeeChecklistRepository.findAllByChecklistsMunicipalityIdAndStartDateIsBeforeAndEndDateIsAfter(municipalityId, today, today, pageable);
 	}
 }

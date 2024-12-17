@@ -392,7 +392,7 @@ class EmployeeChecklistIT extends AbstractAppTest {
 	@Test
 	void test23_fetchOngoingChecklists_4() {
 		setupCall()
-			.withServicePath(PATH_PREFIX + "/ongoing?sortBy=employee_firstName,employee_lastName&sortDirection=DESC")
+			.withServicePath(PATH_PREFIX + "/ongoing?sortBy=employeeName&sortDirection=DESC")
 			.withHttpMethod(GET)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))

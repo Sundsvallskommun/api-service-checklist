@@ -30,6 +30,7 @@ import se.sundsvall.checklist.integration.db.model.FulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
+import se.sundsvall.checklist.integration.db.repository.projection.OngoingEmployeeChecklistProjection;
 
 public final class EmployeeChecklistMapper {
 
@@ -114,21 +115,15 @@ public final class EmployeeChecklistMapper {
 	// API mappings
 	// -----------------------------
 
-	public static List<OngoingEmployeeChecklist> toOngoingEmployeeChecklists(final List<EmployeeChecklistEntity> employeeChecklistEntities) {
-		return ofNullable(employeeChecklistEntities).orElse(emptyList()).stream()
-			.map(EmployeeChecklistMapper::toOngoingEmployeeChecklist)
-			.toList();
-	}
-
-	public static OngoingEmployeeChecklist toOngoingEmployeeChecklist(final EmployeeChecklistEntity employeeChecklistEntity) {
-		return ofNullable(employeeChecklistEntity).map(entity -> OngoingEmployeeChecklist.builder()
-			.withEmployeeName(entity.getEmployee().getFirstName() + " " + entity.getEmployee().getLastName())
-			.withEmployeeUsername(entity.getEmployee().getUsername())
-			.withManagerName(entity.getEmployee().getManager().getFirstName() + " " + entity.getEmployee().getManager().getLastName())
-			.withOrganizationName(entity.getEmployee().getCompany().getOrganizationName())
-			.withDelegatedTo(entity.getDelegates().stream().map(e -> e.getFirstName() + " " + e.getLastName()).toList())
-			.withEmploymentDate(entity.getEmployee().getStartDate())
-			.withPurgeDate(entity.getEndDate())
+	public static OngoingEmployeeChecklist toOngoingEmployeeChecklist(final OngoingEmployeeChecklistProjection ongoingEmployeeChecklistProjection) {
+		return ofNullable(ongoingEmployeeChecklistProjection).map(projection -> OngoingEmployeeChecklist.builder()
+			.withEmployeeName(projection.getEmployeeName())
+			.withEmployeeUsername(projection.getEmployeeUsername())
+			.withManagerName(projection.getManagerName())
+			.withDepartmentName(projection.getDepartmentName())
+			.withDelegatedTo(projection.getDelegatedTo())
+			.withEmploymentDate(projection.getEmploymentDate())
+			.withPurgeDate(projection.getPurgeDate())
 			.build())
 			.orElse(null);
 	}

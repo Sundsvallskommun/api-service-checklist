@@ -10,7 +10,7 @@ import lombok.Data;
 
 @Data
 @Builder(setterPrefix = "with")
-@Schema(description = "Model for ongoing employee checklist", accessMode = READ_ONLY)
+@Schema(description = "Model for summarized information for an ongoing employee checklist", accessMode = READ_ONLY)
 public class OngoingEmployeeChecklist {
 
 	@Schema(description = "The employee first name and last name concatenated", example = "John Doe")
@@ -23,7 +23,7 @@ public class OngoingEmployeeChecklist {
 	private String managerName;
 
 	@Schema(description = "The organization name", example = "Organization XYZ")
-	private String organizationName;
+	private String departmentName;
 
 	@Schema(description = "The names of the person(s) which have been delegated the checklist", example = "John Doe")
 	private List<String> delegatedTo;

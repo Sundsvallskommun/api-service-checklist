@@ -67,7 +67,7 @@ class EmployeeChecklistResource {
 		this.employeeChecklistService = employeeChecklistService;
 	}
 
-	@Operation(summary = "Fetches a paginated response of ongoing employee checklists", responses = {
+	@Operation(summary = "Fetches a paginated response of ongoing employee checklists, this only contains summarized information about each ongoing employee checklist", responses = {
 		@ApiResponse(responseCode = "200",
 			description = "Successful Operation",
 			content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = OngoingEmployeeChecklists.class))),

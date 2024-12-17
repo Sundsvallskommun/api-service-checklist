@@ -4,7 +4,7 @@
 			"employeeName": "Anton Nyberg",
 			"employeeUsername": "nemp6loyee",
 			"managerName": "J Man Ager",
-			"delegatedTo": [],
+			"departmentName": "Sub organization 5335",
 			"employmentDate": "2024-01-01",
 			"purgeDate": "2124-07-01"
 		},
@@ -12,7 +12,7 @@
 			"employeeName": "Fredrik Karlsson",
 			"employeeUsername": "oemp6loyee",
 			"managerName": "J Man Ager",
-			"delegatedTo": [],
+			"departmentName": "Sub organization 5335",
 			"employmentDate": "2024-01-01",
 			"purgeDate": "2124-07-01"
 		}
@@ -21,7 +21,7 @@
 		"page": 2,
 		"limit": 2,
 		"count": 2,
-		"totalRecords": 8,
-		"totalPages": 4
+		"totalRecords": 4,
+		"totalPages": 2
 	}
 }

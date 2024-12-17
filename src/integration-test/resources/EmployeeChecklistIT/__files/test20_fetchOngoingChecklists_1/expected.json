@@ -4,7 +4,7 @@
 			"employeeName": "Lars Pettersson",
 			"employeeUsername": "lemp6loyee",
 			"managerName": "J Man Ager",
-			"delegatedTo": [],
+			"departmentName": "Sub organization 5335",
 			"employmentDate": "2024-01-01",
 			"purgeDate": "2124-07-01"
 		},
@@ -12,7 +12,7 @@
 			"employeeName": "Lars Bertilsson",
 			"employeeUsername": "memp6loyee",
 			"managerName": "J Man Ager",
-			"delegatedTo": [],
+			"departmentName": "Sub organization 5335",
 			"employmentDate": "2024-01-01",
 			"purgeDate": "2124-07-01"
 		},
@@ -20,7 +20,7 @@
 			"employeeName": "Anton Nyberg",
 			"employeeUsername": "nemp6loyee",
 			"managerName": "J Man Ager",
-			"delegatedTo": [],
+			"departmentName": "Sub organization 5335",
 			"employmentDate": "2024-01-01",
 			"purgeDate": "2124-07-01"
 		},
@@ -28,7 +28,7 @@
 			"employeeName": "Fredrik Karlsson",
 			"employeeUsername": "oemp6loyee",
 			"managerName": "J Man Ager",
-			"delegatedTo": [],
+			"departmentName": "Sub organization 5335",
 			"employmentDate": "2024-01-01",
 			"purgeDate": "2124-07-01"
 		}

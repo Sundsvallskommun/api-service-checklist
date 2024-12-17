@@ -27,6 +27,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -60,6 +62,7 @@ import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
+import se.sundsvall.checklist.integration.db.repository.projection.OngoingEmployeeChecklistProjection;
 import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
 
 @ExtendWith(MockitoExtension.class)
@@ -78,6 +81,9 @@ class EmployeeChecklistServiceTest {
 
 	@Mock
 	private SortorderService sortorderServiceMock;
+
+	@Captor
+	private ArgumentCaptor<PageRequest> pageRequestArgumentCaptor;
 
 	@InjectMocks
 	private EmployeeChecklistService service;
@@ -99,7 +105,7 @@ class EmployeeChecklistServiceTest {
 		pagingBase.setPage(1);
 		pagingBase.setLimit(10);
 		final var pageable = PageRequest.of(pagingBase.getPage() - 1, pagingBase.getLimit(), pagingBase.sort());
-		Page<EmployeeChecklistEntity> pagedChecklists = new PageImpl<>(List.of(), pageable, 10);
+		Page<OngoingEmployeeChecklistProjection> pagedChecklists = new PageImpl<>(List.of(), pageable, 10);
 
 		when(employeeChecklistIntegrationMock.fetchAllOngoingEmployeeChecklists(eq(MUNICIPALITY_ID), any(PageRequest.class))).thenReturn(pagedChecklists);
 
@@ -114,7 +120,8 @@ class EmployeeChecklistServiceTest {
 			assertThat(meta.getPage()).isEqualTo(pagingBase.getPage());
 		});
 
-		verify(employeeChecklistIntegrationMock).fetchAllOngoingEmployeeChecklists(eq(MUNICIPALITY_ID), any(PageRequest.class));
+		verify(employeeChecklistIntegrationMock).fetchAllOngoingEmployeeChecklists(eq(MUNICIPALITY_ID), pageRequestArgumentCaptor.capture());
+		assertThat(pageRequestArgumentCaptor.getValue()).usingRecursiveComparison().isEqualTo(pageable);
 	}
 
 	@Test
