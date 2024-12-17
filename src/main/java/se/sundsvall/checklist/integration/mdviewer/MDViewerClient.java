@@ -4,6 +4,7 @@ import static se.sundsvall.checklist.configuration.CacheConfiguration.MDVIEWER_C
 import static se.sundsvall.checklist.integration.mdviewer.configuration.MDViewerConfiguration.CLIENT_ID;
 
 import generated.se.sundsvall.mdviewer.Organization;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import java.util.List;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import se.sundsvall.checklist.integration.mdviewer.configuration.MDViewerConfiguration;
 
+@CircuitBreaker(name = CLIENT_ID)
 @FeignClient(name = CLIENT_ID, url = "${integration.mdviewer.url}", configuration = MDViewerConfiguration.class)
 public interface MDViewerClient {
 

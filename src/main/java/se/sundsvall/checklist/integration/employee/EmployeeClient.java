@@ -5,6 +5,7 @@ import static se.sundsvall.checklist.integration.employee.configuration.Employee
 
 import generated.se.sundsvall.employee.Employee;
 import generated.se.sundsvall.employee.PortalPersonData;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.cache.annotation.Cacheable;
@@ -14,12 +15,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import se.sundsvall.checklist.integration.employee.configuration.EmployeeConfiguration;
 
+@CircuitBreaker(name = CLIENT_ID)
 @FeignClient(name = CLIENT_ID, url = "${integration.employee.url}", configuration = EmployeeConfiguration.class, dismiss404 = true)
 public interface EmployeeClient {
 
 	/**
 	 * Uses the employments endpoint which has more information than the newemployments endpoint.
-	 * 
+	 *
 	 * @param  filterString with filter
 	 * @return              List of employees
 	 */
@@ -30,7 +32,7 @@ public interface EmployeeClient {
 
 	/**
 	 * Get all new employees from the employee service.
-	 * 
+	 *
 	 * @param  filterString with filter
 	 * @return              List of employees
 	 */
@@ -41,7 +43,7 @@ public interface EmployeeClient {
 
 	/**
 	 * Get a specific employee by email
-	 * 
+	 *
 	 * @param  email email of the employee
 	 * @return       {@link Optional<PortalPersonData>} with possible information about the employee
 	 */
