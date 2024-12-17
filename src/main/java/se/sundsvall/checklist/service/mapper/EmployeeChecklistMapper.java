@@ -86,6 +86,7 @@ public final class EmployeeChecklistMapper {
 		return ofNullable(request)
 			.map(r -> CustomTaskEntity.builder()
 				.withHeading(r.getHeading())
+				.withHeadingReference(r.getHeadingReference())
 				.withEmployeeChecklist(employeeChecklistEntity)
 				.withPhase(phaseEntity)
 				.withQuestionType(r.getQuestionType())
@@ -99,6 +100,7 @@ public final class EmployeeChecklistMapper {
 
 	public static CustomTaskEntity updateCustomTaskEntity(CustomTaskEntity entity, CustomTaskUpdateRequest request) {
 		ofNullable(request.getHeading()).ifPresent(entity::setHeading);
+		ofNullable(request.getHeadingReference()).ifPresent(entity::setHeadingReference);
 		ofNullable(request.getQuestionType()).ifPresent(entity::setQuestionType);
 		ofNullable(request.getSortOrder()).ifPresent(entity::setSortOrder);
 		ofNullable(request.getText()).ifPresent(entity::setText);
@@ -173,6 +175,7 @@ public final class EmployeeChecklistMapper {
 			.map(entity -> EmployeeChecklistTask.builder()
 				.withId(entity.getId())
 				.withHeading(entity.getHeading())
+				.withHeadingReference(entity.getHeadingReference())
 				.withText(entity.getText())
 				.withSortOrder(entity.getSortOrder())
 				.withRoleType(entity.getRoleType())
@@ -187,6 +190,7 @@ public final class EmployeeChecklistMapper {
 			.map(entity -> EmployeeChecklistTask.builder()
 				.withId(entity.getId())
 				.withHeading(entity.getHeading())
+				.withHeadingReference(entity.getHeadingReference())
 				.withText(entity.getText())
 				.withSortOrder(entity.getSortOrder())
 				.withRoleType(entity.getRoleType())
@@ -200,6 +204,7 @@ public final class EmployeeChecklistMapper {
 			.map(entity -> CustomTask.builder()
 				.withId(entity.getId())
 				.withHeading(entity.getHeading())
+				.withHeadingReference(entity.getHeadingReference())
 				.withText(entity.getText())
 				.withSortOrder(entity.getSortOrder())
 				.withRoleType(entity.getRoleType())

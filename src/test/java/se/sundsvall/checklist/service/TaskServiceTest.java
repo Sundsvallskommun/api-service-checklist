@@ -115,6 +115,7 @@ class TaskServiceTest {
 		assertThat(result).isNotNull().satisfies(task -> {
 			assertThat(task.getId()).isEqualTo(taskEntity.getId());
 			assertThat(task.getHeading()).isEqualTo(taskEntity.getHeading());
+			assertThat(task.getHeadingReference()).isEqualTo(taskEntity.getHeadingReference());
 			assertThat(task.getText()).isEqualTo(taskEntity.getText());
 		});
 
@@ -160,6 +161,7 @@ class TaskServiceTest {
 		assertThat(result).isNotNull().isInstanceOf(Task.class);
 		assertThat(taskEntityCaptor.getValue()).satisfies(entity -> {
 			assertThat(entity.getHeading()).isEqualTo(createRequest.getHeading());
+			assertThat(entity.getHeadingReference()).isEqualTo(createRequest.getHeadingReference());
 			assertThat(entity.getText()).isEqualTo(createRequest.getText());
 			assertThat(entity.getRoleType()).isEqualTo(createRequest.getRoleType());
 			assertThat(entity.getQuestionType()).isEqualTo(createRequest.getQuestionType());
@@ -207,6 +209,7 @@ class TaskServiceTest {
 		assertThat(result).isNotNull().isInstanceOf(Task.class);
 		assertThat(taskEntityCaptor.getValue()).satisfies(entity -> {
 			assertThat(entity.getHeading()).isEqualTo(updateRequest.getHeading());
+			assertThat(entity.getHeadingReference()).isEqualTo(updateRequest.getHeadingReference());
 			assertThat(entity.getText()).isEqualTo(updateRequest.getText());
 			assertThat(entity.getRoleType()).isEqualTo(updateRequest.getRoleType());
 			assertThat(entity.getQuestionType()).isEqualTo(updateRequest.getQuestionType());

@@ -1,6 +1,7 @@
 {
 	"updatedBy": "someUser",
 	"heading": "string",
+	"headingReference": "referenceToSomething",
 	"sortOrder": 3,
 	"permission": "SUPERADMIN",
 	"text": "string",

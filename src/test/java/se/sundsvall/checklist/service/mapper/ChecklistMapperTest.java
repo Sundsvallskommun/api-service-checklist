@@ -34,6 +34,7 @@ class ChecklistMapperTest {
 		// Arrange
 		final var phaseEntity = PhaseEntity.builder().build();
 		final var heading = "heading";
+		final var headingReference = "headingReference";
 		final var permission = Permission.SUPERADMIN;
 		final var questionType = QuestionType.COMPLETED_OR_NOT_RELEVANT;
 		final var roleType = RoleType.MANAGER_FOR_NEW_EMPLOYEE;
@@ -43,6 +44,7 @@ class ChecklistMapperTest {
 
 		final var request = TaskCreateRequest.builder()
 			.withHeading(heading)
+			.withHeadingReference(headingReference)
 			.withPermission(permission)
 			.withQuestionType(questionType)
 			.withRoleType(roleType)
@@ -57,6 +59,7 @@ class ChecklistMapperTest {
 		// Assert
 		assertThat(entity.getCreated()).isNull();
 		assertThat(entity.getHeading()).isEqualTo(heading);
+		assertThat(entity.getHeadingReference()).isEqualTo(headingReference);
 		assertThat(entity.getId()).isNull();
 		assertThat(entity.getPermission()).isEqualTo(permission);
 		assertThat(entity.getQuestionType()).isEqualTo(questionType);
@@ -222,6 +225,7 @@ class ChecklistMapperTest {
 		final var entity = createTaskEntity();
 		final var request = TaskUpdateRequest.builder()
 			.withHeading("new heading")
+			.withHeadingReference("new heading reference")
 			.withText("new text")
 			.withRoleType(MANAGER_FOR_NEW_EMPLOYEE)
 			.withPermission(SUPERADMIN)
@@ -231,6 +235,7 @@ class ChecklistMapperTest {
 
 		assertThat(entity).satisfies(e -> {
 			assertThat(e.getHeading()).isNotEqualTo("new heading");
+			assertThat(e.getHeadingReference()).isNotEqualTo("new heading reference");
 			assertThat(e.getText()).isNotEqualTo("new text");
 			assertThat(e.getRoleType()).isNotEqualTo(MANAGER_FOR_NEW_EMPLOYEE);
 			assertThat(e.getPermission()).isNotEqualTo(SUPERADMIN);
@@ -242,6 +247,7 @@ class ChecklistMapperTest {
 
 		assertThat(result).isEqualTo(entity).satisfies(r -> {
 			assertThat(r.getHeading()).isEqualTo("new heading");
+			assertThat(r.getHeadingReference()).isEqualTo("new heading reference");
 			assertThat(r.getText()).isEqualTo("new text");
 			assertThat(r.getRoleType()).isEqualTo(MANAGER_FOR_NEW_EMPLOYEE);
 			assertThat(r.getPermission()).isEqualTo(SUPERADMIN);

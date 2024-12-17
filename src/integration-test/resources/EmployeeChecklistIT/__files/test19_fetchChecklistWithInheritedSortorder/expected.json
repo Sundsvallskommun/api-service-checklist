@@ -41,6 +41,7 @@
 				{
 					"fulfilmentStatus": "EMPTY",
 					"heading": "Description of task for dept 5536",
+					"headingReference": "http://www.address-to-click-for-5536-task.web",
 					"sortOrder": 9,
 					"id": "368c4c0b-ccb9-443b-9e38-9da52f0b4b95",
 					"text": "Text for dept 5536 task",

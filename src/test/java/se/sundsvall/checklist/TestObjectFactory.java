@@ -128,6 +128,7 @@ public final class TestObjectFactory {
 			.withPermission(ADMIN)
 			.withQuestionType(YES_OR_NO)
 			.withHeading(heading)
+			.withHeadingReference("http://%s".formatted(heading))
 			.withText("Test text")
 			.withPhase(phaseEntity)
 			.build();
@@ -160,6 +161,7 @@ public final class TestObjectFactory {
 		return CustomTaskEntity.builder()
 			.withId(UUID.randomUUID().toString())
 			.withHeading("Test heading")
+			.withHeadingReference("http:://some.customtaskreference.web")
 			.withQuestionType(YES_OR_NO)
 			.withPhase(createPhaseEntity())
 			.withText("Test text")
@@ -305,6 +307,7 @@ public final class TestObjectFactory {
 	public static TaskCreateRequest createTaskCreateRequest(final Consumer<TaskCreateRequest> modifier) {
 		final var request = TaskCreateRequest.builder()
 			.withHeading("Test heading")
+			.withHeadingReference("Test heading reference")
 			.withText("Test text")
 			.withRoleType(MANAGER_FOR_NEW_EMPLOYEE)
 			.withPermission(ADMIN)
@@ -326,6 +329,7 @@ public final class TestObjectFactory {
 	public static TaskUpdateRequest createTaskUpdateRequest() {
 		return TaskUpdateRequest.builder()
 			.withHeading("new heading")
+			.withHeadingReference("new heading reference")
 			.withText("new text")
 			.withRoleType(NEW_EMPLOYEE)
 			.withPermission(ADMIN)
