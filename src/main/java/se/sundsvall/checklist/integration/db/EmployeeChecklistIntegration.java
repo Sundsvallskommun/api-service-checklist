@@ -14,12 +14,10 @@ import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toManager
 import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toOrganizationEntity;
 import static se.sundsvall.checklist.service.mapper.OrganizationMapper.updateEmployeeEntity;
 import static se.sundsvall.checklist.service.util.ServiceUtils.getMainEmployment;
+import static se.sundsvall.checklist.service.util.ServiceUtils.translateApiSortparameters;
 import static se.sundsvall.checklist.service.util.StringUtils.toReadableString;
 import static se.sundsvall.checklist.service.util.VerificationUtils.verifyUnlockedEmployeeChecklist;
 
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.Employment;
-import generated.se.sundsvall.employee.Manager;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,6 +25,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,10 +34,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.zalando.problem.Problem;
 import org.zalando.problem.ThrowableProblem;
+
+import generated.se.sundsvall.employee.Employee;
+import generated.se.sundsvall.employee.Employment;
+import generated.se.sundsvall.employee.Manager;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.Mentor;
+import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistFilters;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
@@ -58,7 +62,6 @@ import se.sundsvall.checklist.integration.db.repository.EmployeeRepository;
 import se.sundsvall.checklist.integration.db.repository.ManagerRepository;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
 import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
-import se.sundsvall.checklist.integration.db.repository.projection.OngoingEmployeeChecklistProjection;
 import se.sundsvall.checklist.service.OrganizationTree;
 import se.sundsvall.checklist.service.OrganizationTree.OrganizationLine;
 
@@ -368,8 +371,9 @@ public class EmployeeChecklistIntegration {
 	 * @param  pageable       the page request
 	 * @return                a page of ongoing employee checklists
 	 */
-	public Page<OngoingEmployeeChecklistProjection> fetchAllOngoingEmployeeChecklists(final String municipalityId, final PageRequest pageable) {
-		var today = LocalDate.now();
-		return employeeChecklistRepository.findAllByChecklistsMunicipalityIdAndStartDateIsBeforeAndEndDateIsAfter(municipalityId, today, today, pageable);
+	public Page<EmployeeChecklistEntity> fetchAllOngoingEmployeeChecklists(final String municipalityId, final OngoingEmployeeChecklistFilters filters, final PageRequest pageable) {
+		final var today = LocalDate.now();
+
+		return employeeChecklistRepository.findAllByChecklistsMunicipalityIdAndStartDateIsBeforeAndEndDateIsAfter(municipalityId, today, today, filters, translateApiSortparameters(pageable));
 	}
 }

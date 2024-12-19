@@ -36,7 +36,7 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.Mentor;
 import se.sundsvall.checklist.api.model.OngoingEmployeeChecklists;
-import se.sundsvall.checklist.api.model.ParameterPagingBase;
+import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistFilters;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 import se.sundsvall.checklist.service.EmployeeChecklistService;
@@ -59,7 +59,7 @@ class EmployeeChecklistResourceTest {
 	private EmployeeChecklistService serviceMock;
 
 	@Captor
-	private ArgumentCaptor<ParameterPagingBase> parameterPagingBaseCaptor;
+	private ArgumentCaptor<OngoingEmployeeChecklistFilters> ongoingEmployeeChecklistFiltersCaptor;
 
 	@Autowired
 	private WebTestClient webTestClient;
@@ -72,7 +72,7 @@ class EmployeeChecklistResourceTest {
 		final var limit = 10;
 		final var mockedResponse = OngoingEmployeeChecklists.builder().build();
 
-		when(serviceMock.getOngoingEmployeeChecklists(eq(MUNICIPALITY_ID), any(ParameterPagingBase.class))).thenReturn(mockedResponse);
+		when(serviceMock.getOngoingEmployeeChecklists(eq(MUNICIPALITY_ID), any(OngoingEmployeeChecklistFilters.class))).thenReturn(mockedResponse);
 
 		// Act
 		var response = webTestClient.get()
@@ -91,8 +91,8 @@ class EmployeeChecklistResourceTest {
 		// Assert and verify
 
 		assertThat(response).isEqualTo(mockedResponse);
-		verify(serviceMock).getOngoingEmployeeChecklists(eq(MUNICIPALITY_ID), parameterPagingBaseCaptor.capture());
-		assertThat(parameterPagingBaseCaptor.getValue()).satisfies(pagingBase -> {
+		verify(serviceMock).getOngoingEmployeeChecklists(eq(MUNICIPALITY_ID), ongoingEmployeeChecklistFiltersCaptor.capture());
+		assertThat(ongoingEmployeeChecklistFiltersCaptor.getValue()).satisfies(pagingBase -> {
 			assertThat(pagingBase.getPage()).isEqualTo(page);
 			assertThat(pagingBase.getLimit()).isEqualTo(limit);
 			assertThat(pagingBase.getSortDirection()).isEqualTo(Sort.Direction.DESC);

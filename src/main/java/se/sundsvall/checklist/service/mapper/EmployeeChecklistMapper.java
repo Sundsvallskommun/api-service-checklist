@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.springframework.util.CollectionUtils;
+
 import se.sundsvall.checklist.api.model.CustomTask;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
@@ -24,13 +27,13 @@ import se.sundsvall.checklist.api.model.OngoingEmployeeChecklist;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
+import se.sundsvall.checklist.integration.db.model.DelegateEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
 import se.sundsvall.checklist.integration.db.model.FulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
-import se.sundsvall.checklist.integration.db.repository.projection.OngoingEmployeeChecklistProjection;
 
 public final class EmployeeChecklistMapper {
 
@@ -115,15 +118,15 @@ public final class EmployeeChecklistMapper {
 	// API mappings
 	// -----------------------------
 
-	public static OngoingEmployeeChecklist toOngoingEmployeeChecklist(final OngoingEmployeeChecklistProjection ongoingEmployeeChecklistProjection) {
-		return ofNullable(ongoingEmployeeChecklistProjection).map(projection -> OngoingEmployeeChecklist.builder()
-			.withEmployeeName(projection.getEmployeeName())
-			.withEmployeeUsername(projection.getEmployeeUsername())
-			.withManagerName(projection.getManagerName())
-			.withDepartmentName(projection.getDepartmentName())
-			.withDelegatedTo(projection.getDelegatedTo())
-			.withEmploymentDate(projection.getEmploymentDate())
-			.withPurgeDate(projection.getPurgeDate())
+	public static OngoingEmployeeChecklist toOngoingEmployeeChecklist(final EmployeeChecklistEntity employeeChecklistEntity) {
+		return ofNullable(employeeChecklistEntity).map(entity -> OngoingEmployeeChecklist.builder()
+			.withEmployeeName(entity.getEmployee().getFullName())
+			.withEmployeeUsername(entity.getEmployee().getUsername())
+			.withManagerName(entity.getEmployee().getManager().getFullName())
+			.withDepartmentName(entity.getEmployee().getDepartment().getOrganizationName())
+			.withDelegatedTo(CollectionUtils.isEmpty(entity.getDelegates()) ? null : entity.getDelegates().stream().map(DelegateEntity::getFullName).toList())
+			.withEmploymentDate(entity.getStartDate())
+			.withPurgeDate(entity.getEndDate())
 			.build())
 			.orElse(null);
 	}

@@ -12,10 +12,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.buildUuidEmployeeFilter;
 
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.Employment;
-import generated.se.sundsvall.employee.Manager;
-import generated.se.sundsvall.employee.PortalPersonData;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -23,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,6 +35,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
+
+import generated.se.sundsvall.employee.Employee;
+import generated.se.sundsvall.employee.Employment;
+import generated.se.sundsvall.employee.Manager;
+import generated.se.sundsvall.employee.PortalPersonData;
 import se.sundsvall.checklist.api.model.CustomTask;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
@@ -47,7 +49,7 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistResponse.Detail;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.Mentor;
-import se.sundsvall.checklist.api.model.ParameterPagingBase;
+import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistFilters;
 import se.sundsvall.checklist.integration.db.EmployeeChecklistIntegration;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
@@ -62,7 +64,6 @@ import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
-import se.sundsvall.checklist.integration.db.repository.projection.OngoingEmployeeChecklistProjection;
 import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
 
 @ExtendWith(MockitoExtension.class)
@@ -101,26 +102,26 @@ class EmployeeChecklistServiceTest {
 	@Test
 	void getOngoingEmployeeChecklists() {
 		// Arrange
-		final var pagingBase = new ParameterPagingBase();
-		pagingBase.setPage(1);
-		pagingBase.setLimit(10);
-		final var pageable = PageRequest.of(pagingBase.getPage() - 1, pagingBase.getLimit(), pagingBase.sort());
-		Page<OngoingEmployeeChecklistProjection> pagedChecklists = new PageImpl<>(List.of(), pageable, 10);
+		final var filters = new OngoingEmployeeChecklistFilters();
+		filters.setPage(1);
+		filters.setLimit(10);
+		final var pageable = PageRequest.of(filters.getPage() - 1, filters.getLimit(), filters.sort());
+		final Page<EmployeeChecklistEntity> pagedChecklists = new PageImpl<>(List.of(), pageable, 10);
 
-		when(employeeChecklistIntegrationMock.fetchAllOngoingEmployeeChecklists(eq(MUNICIPALITY_ID), any(PageRequest.class))).thenReturn(pagedChecklists);
+		when(employeeChecklistIntegrationMock.fetchAllOngoingEmployeeChecklists(eq(MUNICIPALITY_ID), any(OngoingEmployeeChecklistFilters.class), any(PageRequest.class))).thenReturn(pagedChecklists);
 
 		// Act
-		final var result = service.getOngoingEmployeeChecklists(MUNICIPALITY_ID, pagingBase);
+		final var result = service.getOngoingEmployeeChecklists(MUNICIPALITY_ID, filters);
 
 		// Assert and verify
 		assertThat(result).isNotNull();
 		assertThat(result.getChecklists()).isNotNull().isEmpty();
 		assertThat(result.getMetadata()).isNotNull().satisfies(meta -> {
-			assertThat(meta.getLimit()).isEqualTo(pagingBase.getLimit());
-			assertThat(meta.getPage()).isEqualTo(pagingBase.getPage());
+			assertThat(meta.getLimit()).isEqualTo(filters.getLimit());
+			assertThat(meta.getPage()).isEqualTo(filters.getPage());
 		});
 
-		verify(employeeChecklistIntegrationMock).fetchAllOngoingEmployeeChecklists(eq(MUNICIPALITY_ID), pageRequestArgumentCaptor.capture());
+		verify(employeeChecklistIntegrationMock).fetchAllOngoingEmployeeChecklists(eq(MUNICIPALITY_ID), any(OngoingEmployeeChecklistFilters.class), pageRequestArgumentCaptor.capture());
 		assertThat(pageRequestArgumentCaptor.getValue()).usingRecursiveComparison().isEqualTo(pageable);
 	}
 

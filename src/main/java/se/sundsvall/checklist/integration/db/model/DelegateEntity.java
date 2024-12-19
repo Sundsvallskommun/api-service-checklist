@@ -1,5 +1,7 @@
 package se.sundsvall.checklist.integration.db.model;
 
+import org.hibernate.annotations.Formula;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -47,6 +49,9 @@ public class DelegateEntity {
 
 	@Column(name = "last_name", nullable = false)
 	private String lastName;
+
+	@Formula("concat_ws( ' ', first_name, last_name ) ")
+	private String fullName;
 
 	@Column(name = "email", nullable = false)
 	private String email;
