@@ -1,6 +1,7 @@
 package se.sundsvall.checklist.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -30,6 +31,8 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistResponse.Detail;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.Mentor;
+import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistParameters;
+import se.sundsvall.checklist.api.model.OngoingEmployeeChecklists;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 import se.sundsvall.checklist.service.EmployeeChecklistService;
@@ -53,6 +56,27 @@ class EmployeeChecklistResourceTest {
 
 	@Autowired
 	private WebTestClient webTestClient;
+
+	@Test
+	void fetchAllOngoingEmployeeChecklists() {
+		final var path = "/ongoing";
+		final var mockedResponse = OngoingEmployeeChecklists.builder().build();
+
+		when(serviceMock.getOngoingEmployeeChecklists(any(OngoingEmployeeChecklistParameters.class))).thenReturn(mockedResponse);
+
+		final var response = webTestClient.get()
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID)))
+			.exchange()
+			.expectStatus().isOk()
+			.expectBody(OngoingEmployeeChecklists.class)
+			.returnResult()
+			.getResponseBody();
+
+		assertThat(response).isEqualTo(mockedResponse);
+
+		verify(serviceMock).getOngoingEmployeeChecklists(any(OngoingEmployeeChecklistParameters.class));
+		verifyNoMoreInteractions(serviceMock);
+	}
 
 	@Test
 	void fetchChecklistForEmployee() {

@@ -20,9 +20,11 @@ import se.sundsvall.checklist.api.model.EmployeeChecklist;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhase;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.Mentor;
+import se.sundsvall.checklist.api.model.OngoingEmployeeChecklist;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
+import se.sundsvall.checklist.integration.db.model.DelegateEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
 import se.sundsvall.checklist.integration.db.model.FulfilmentEntity;
@@ -112,6 +114,25 @@ public final class EmployeeChecklistMapper {
 	// -----------------------------
 	// API mappings
 	// -----------------------------
+
+	public static OngoingEmployeeChecklist mapToOngoingEmployeeChecklist(final EmployeeChecklistEntity employeeChecklist) {
+		return ofNullable(employeeChecklist).map(checklist -> OngoingEmployeeChecklist.builder()
+			.withEmployeeName(checklist.getEmployee().getFirstName() + " " + checklist.getEmployee().getLastName())
+			.withEmployeeUsername(checklist.getEmployee().getUsername())
+			.withDepartmentName(checklist.getEmployee().getDepartment().getOrganizationName())
+			.withManagerName(checklist.getEmployee().getManager().getFirstName() + " " + checklist.getEmployee().getManager().getLastName())
+			.withDelegatedTo(mapToListOfNames(checklist.getDelegates()))
+			.withEmploymentDate(checklist.getEmployee().getStartDate())
+			.withPurgeDate(checklist.getEndDate())
+			.build())
+			.orElse(null);
+	}
+
+	public static List<String> mapToListOfNames(final List<DelegateEntity> delegateEntities) {
+		return ofNullable(delegateEntities).orElse(emptyList()).stream()
+			.map(delegate -> delegate.getFirstName() + " " + delegate.getLastName())
+			.toList();
+	}
 
 	public static EmployeeChecklist toEmployeeChecklist(final EmployeeChecklistEntity employeeChecklistEntity) {
 		return ofNullable(employeeChecklistEntity)

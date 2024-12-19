@@ -27,6 +27,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -36,6 +38,7 @@ import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.Mentor;
+import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistParameters;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
@@ -355,4 +358,9 @@ public class EmployeeChecklistIntegration {
 			.filter(checklist -> Objects.equals(checklist.getLifeCycle(), ACTIVE))
 			.findAny();
 	}
+
+	public Page<EmployeeChecklistEntity> fetchAllOngoingEmployeeChecklists(final OngoingEmployeeChecklistParameters parameters, final PageRequest pageable) {
+		return employeeChecklistRepository.findAllByOngoingEmployeeChecklistParameters(parameters, pageable);
+	}
+
 }

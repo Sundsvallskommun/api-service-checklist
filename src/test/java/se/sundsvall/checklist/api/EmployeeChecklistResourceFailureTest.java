@@ -57,6 +57,59 @@ class EmployeeChecklistResourceFailureTest {
 	}
 
 	@Test
+	void fetchAllOngoingEmployeeChecklistsInvalidPathValues() {
+		// Arrange
+		final var path = "/ongoing";
+
+		// Act
+		final var response = webTestClient.get()
+			.uri(builder -> builder.path(BASE_PATH + path)
+				.build(Map.of("municipalityId", INVALID)))
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert and verify
+		assertThat(response).isNotNull().satisfies(r -> {
+			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
+			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
+			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+				.containsExactlyInAnyOrder(
+					tuple("fetchAllOngoingEmployeeChecklists.municipalityId", "not a valid municipality ID"));
+		});
+	}
+
+	@Test
+	void fetchAlOngoingEmployeeChecklistsInvalidPagingParameters_1() {
+		// Arrange
+		final var path = "/ongoing";
+
+		// Act
+		final var response = webTestClient.get()
+			.uri(builder -> builder.path(BASE_PATH + path)
+				.queryParam("page", "-10")
+				.queryParam("limit", "-10")
+				.build(Map.of("municipalityId", MUNICIPALITY_ID)))
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert and verify
+		assertThat(response).isNotNull().satisfies(r -> {
+			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
+			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
+			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+				.containsExactlyInAnyOrder(
+					tuple("page", "must be greater than or equal to 1"),
+					tuple("limit", "must be greater than or equal to 1"));
+		});
+	}
+
+	@Test
 	void deleteEmployeeChecklistInvalidPathValues() {
 		// Arrange
 		final var path = "/{uuid}";
