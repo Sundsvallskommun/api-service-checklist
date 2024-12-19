@@ -41,24 +41,27 @@ public class SpecificationBuilder<T> {
 	 * Method builds an equal filter if value is not null. If value is null, method returns
 	 * an always-true predicate (meaning no filtering will be applied for sent in attribute)
 	 *
-	 * @param  attribute name that will be used in filter
-	 * @param  value     value (or null) to compare against
-	 * @return           Specification<T> matching sent in comparison
+	 * @param  level1Attribute  name that will be used for level 1 in filter
+	 * @param  level2AAttribute name that will be used for level 2 in filter
+	 * @param  value            value (or null) to compare against
+	 * @return                  Specification<T> matching sent in comparison
 	 */
-	public Specification<T> buildLikeFilter(String attribute, String subAttribute, String value) {
-		return (entity, cq, cb) -> nonNull(value) ? cb.like(cb.lower(entity.get(attribute).get(subAttribute)), "%" + value + "%".toLowerCase()) : cb.and();
+	public Specification<T> buildLikeFilter(String level1Attribute, String level2Attribute, String value) {
+		return (entity, cq, cb) -> nonNull(value) ? cb.like(cb.lower(entity.get(level1Attribute).get(level2Attribute)), "%" + value + "%".toLowerCase()) : cb.and();
 	}
 
 	/**
 	 * Method builds an equal filter if value is not null. If value is null, method returns
 	 * an always-true predicate (meaning no filtering will be applied for sent in attribute)
 	 *
-	 * @param  attribute name that will be used in filter
-	 * @param  value     value (or null) to compare against
-	 * @return           Specification<T> matching sent in comparison
+	 * @param  level1Attribute  name that will be used for level 1 in filter
+	 * @param  level2AAttribute name that will be used for level 2 in filter
+	 * @param  level3AAttribute name that will be used for level 2 in filter
+	 * @param  value            value (or null) to compare against
+	 * @return                  Specification<T> matching sent in comparison
 	 */
-	public Specification<T> buildLikeFilter(String attribute, String subAttribute, String leafAttribute, String value) {
-		return (entity, cq, cb) -> nonNull(value) ? cb.like(cb.lower(entity.get(attribute).get(subAttribute).get(leafAttribute)), "%" + value + "%".toLowerCase()) : cb.and();
+	public Specification<T> buildLikeFilter(String level1Attribute, String level2Attribute, String level3Attribute, String value) {
+		return (entity, cq, cb) -> nonNull(value) ? cb.like(cb.lower(entity.get(level1Attribute).get(level2Attribute).get(level3Attribute)), "%" + value + "%".toLowerCase()) : cb.and();
 	}
 
 	/**
