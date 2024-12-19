@@ -12,6 +12,10 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.buildUuidEmployeeFilter;
 
+import generated.se.sundsvall.employee.Employee;
+import generated.se.sundsvall.employee.Employment;
+import generated.se.sundsvall.employee.Manager;
+import generated.se.sundsvall.employee.PortalPersonData;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -19,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,11 +38,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
-
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.Employment;
-import generated.se.sundsvall.employee.Manager;
-import generated.se.sundsvall.employee.PortalPersonData;
 import se.sundsvall.checklist.api.model.CustomTask;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;

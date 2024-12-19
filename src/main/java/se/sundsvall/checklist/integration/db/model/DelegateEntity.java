@@ -1,7 +1,5 @@
 package se.sundsvall.checklist.integration.db.model;
 
-import org.hibernate.annotations.Formula;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,6 +17,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Formula;
 
 @Getter
 @Setter

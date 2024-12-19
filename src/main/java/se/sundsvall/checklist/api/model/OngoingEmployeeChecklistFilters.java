@@ -1,7 +1,6 @@
 package se.sundsvall.checklist.api.model;
 
 import java.time.LocalDate;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;

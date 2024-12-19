@@ -2,12 +2,6 @@ package se.sundsvall.checklist.integration.db.model;
 
 import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
 
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-
-import org.hibernate.annotations.Formula;
-import org.hibernate.annotations.TimeZoneStorage;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,12 +16,16 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.TimeZoneStorage;
 import se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition;
 
 @Getter

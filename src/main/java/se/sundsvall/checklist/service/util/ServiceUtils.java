@@ -7,20 +7,18 @@ import static se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus
 import static se.sundsvall.checklist.service.util.TaskType.COMMON;
 import static se.sundsvall.checklist.service.util.TaskType.CUSTOM;
 
+import generated.se.sundsvall.employee.Employee;
+import generated.se.sundsvall.employee.Employment;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.zalando.problem.Problem;
-
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.Employment;
 import se.sundsvall.checklist.api.model.EmployeeChecklist;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhase;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;

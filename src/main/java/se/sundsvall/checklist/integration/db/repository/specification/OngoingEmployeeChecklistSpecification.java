@@ -1,7 +1,6 @@
 package se.sundsvall.checklist.integration.db.repository.specification;
 
 import org.springframework.data.jpa.domain.Specification;
-
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 
 public interface OngoingEmployeeChecklistSpecification {
