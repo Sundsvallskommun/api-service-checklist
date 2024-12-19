@@ -16,6 +16,8 @@ import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.
 import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.buildUuidEmployeeFilter;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toCustomTask;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.updateCustomTaskEntity;
+import static se.sundsvall.checklist.service.mapper.PagingAndSortingMapper.toPageRequest;
+import static se.sundsvall.checklist.service.mapper.PagingAndSortingMapper.toPagingMetaData;
 import static se.sundsvall.checklist.service.util.EmployeeChecklistDecorator.decorateWithCustomTasks;
 import static se.sundsvall.checklist.service.util.EmployeeChecklistDecorator.decorateWithFulfilment;
 import static se.sundsvall.checklist.service.util.ServiceUtils.calculateTaskType;
@@ -33,7 +35,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -51,8 +53,8 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistResponse.Detail;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.Mentor;
+import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistParameters;
 import se.sundsvall.checklist.api.model.OngoingEmployeeChecklists;
-import se.sundsvall.checklist.api.model.ParameterPagingBase;
 import se.sundsvall.checklist.integration.db.EmployeeChecklistIntegration;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
@@ -63,7 +65,6 @@ import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
 import se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper;
 import se.sundsvall.checklist.service.util.ServiceUtils;
 import se.sundsvall.checklist.service.util.TaskType;
-import se.sundsvall.dept44.models.api.paging.PagingAndSortingMetaData;
 
 @Service
 public class EmployeeChecklistService {
@@ -361,17 +362,16 @@ public class EmployeeChecklistService {
 			.build();
 	}
 
-	public OngoingEmployeeChecklists getOngoingEmployeeChecklists(final String municipalityId, final ParameterPagingBase pagingBase) {
-		var pageable = PageRequest.of(pagingBase.getPage() - 1, pagingBase.getLimit(), pagingBase.sort());
+	public OngoingEmployeeChecklists getOngoingEmployeeChecklists(final OngoingEmployeeChecklistParameters parameters) {
+		Page<EmployeeChecklistEntity> page = employeeChecklistIntegration.fetchAllOngoingEmployeeChecklists(parameters, toPageRequest(parameters));
 
-		var ongoingEmployeeChecklists = employeeChecklistIntegration.fetchAllOngoingEmployeeChecklists(municipalityId, pageable);
-		var checklists = ongoingEmployeeChecklists.stream()
-			.map(EmployeeChecklistMapper::toOngoingEmployeeChecklist)
+		var checklists = page.stream()
+			.map(EmployeeChecklistMapper::mapToOngoingEmployeeChecklist)
 			.toList();
 
 		return OngoingEmployeeChecklists.builder()
 			.withChecklists(checklists)
-			.withMetadata(new PagingAndSortingMetaData().withPageData(ongoingEmployeeChecklists))
+			.withMetadata(toPagingMetaData(page))
 			.build();
 	}
 }

@@ -20,7 +20,6 @@ import static se.sundsvall.checklist.service.util.VerificationUtils.verifyUnlock
 import generated.se.sundsvall.employee.Employee;
 import generated.se.sundsvall.employee.Employment;
 import generated.se.sundsvall.employee.Manager;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +38,7 @@ import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.Mentor;
+import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistParameters;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
@@ -58,7 +58,6 @@ import se.sundsvall.checklist.integration.db.repository.EmployeeRepository;
 import se.sundsvall.checklist.integration.db.repository.ManagerRepository;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
 import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
-import se.sundsvall.checklist.integration.db.repository.projection.OngoingEmployeeChecklistProjection;
 import se.sundsvall.checklist.service.OrganizationTree;
 import se.sundsvall.checklist.service.OrganizationTree.OrganizationLine;
 
@@ -360,16 +359,8 @@ public class EmployeeChecklistIntegration {
 			.findAny();
 	}
 
-	/**
-	 * Fetches all ongoing employee checklists for a specific municipality. An ongoing employee checklist is an employee
-	 * checklist that started before today and ends after today.
-	 *
-	 * @param  municipalityId the id of the municipality
-	 * @param  pageable       the page request
-	 * @return                a page of ongoing employee checklists
-	 */
-	public Page<OngoingEmployeeChecklistProjection> fetchAllOngoingEmployeeChecklists(final String municipalityId, final PageRequest pageable) {
-		var today = LocalDate.now();
-		return employeeChecklistRepository.findAllByChecklistsMunicipalityIdAndStartDateIsBeforeAndEndDateIsAfter(municipalityId, today, today, pageable);
+	public Page<EmployeeChecklistEntity> fetchAllOngoingEmployeeChecklists(final OngoingEmployeeChecklistParameters parameters, final PageRequest pageable) {
+		return employeeChecklistRepository.findAllByOngoingEmployeeChecklistParameters(parameters, pageable);
 	}
+
 }

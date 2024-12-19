@@ -5,6 +5,9 @@
 			"employeeUsername": "lemp6loyee",
 			"managerName": "J Man Ager",
 			"departmentName": "Sub organization 5335",
+			"delegatedTo": [
+				"Frank Doe"
+			],
 			"employmentDate": "2024-01-01",
 			"purgeDate": "2124-07-01"
 		},
@@ -13,6 +16,9 @@
 			"employeeUsername": "memp6loyee",
 			"managerName": "J Man Ager",
 			"departmentName": "Sub organization 5335",
+			"delegatedTo": [
+				"Johnny Doe"
+			],
 			"employmentDate": "2024-01-01",
 			"purgeDate": "2124-07-01"
 		},
@@ -21,6 +27,10 @@
 			"employeeUsername": "nemp6loyee",
 			"managerName": "J Man Ager",
 			"departmentName": "Sub organization 5335",
+			"delegatedTo": [
+				"Hank Doe",
+				"Patrik Franco"
+			],
 			"employmentDate": "2024-01-01",
 			"purgeDate": "2124-07-01"
 		},
@@ -29,12 +39,15 @@
 			"employeeUsername": "oemp6loyee",
 			"managerName": "J Man Ager",
 			"departmentName": "Sub organization 5335",
+			"delegatedTo": [
+				"John Doe"
+			],
 			"employmentDate": "2024-01-01",
 			"purgeDate": "2124-07-01"
 		}
 	],
 	"_meta": {
-		"page": 1,
+		"page": 0,
 		"limit": 100,
 		"count": 4,
 		"totalRecords": 4,

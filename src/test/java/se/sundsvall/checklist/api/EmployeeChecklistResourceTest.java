@@ -2,7 +2,6 @@ package se.sundsvall.checklist.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -13,11 +12,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.jdbc.Sql;
@@ -35,8 +31,8 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistResponse.Detail;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.Mentor;
+import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistParameters;
 import se.sundsvall.checklist.api.model.OngoingEmployeeChecklists;
-import se.sundsvall.checklist.api.model.ParameterPagingBase;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 import se.sundsvall.checklist.service.EmployeeChecklistService;
@@ -58,46 +54,28 @@ class EmployeeChecklistResourceTest {
 	@MockitoBean
 	private EmployeeChecklistService serviceMock;
 
-	@Captor
-	private ArgumentCaptor<ParameterPagingBase> parameterPagingBaseCaptor;
-
 	@Autowired
 	private WebTestClient webTestClient;
 
 	@Test
 	void fetchAllOngoingEmployeeChecklists() {
-		// Arrange
 		final var path = "/ongoing";
-		final var page = 1;
-		final var limit = 10;
 		final var mockedResponse = OngoingEmployeeChecklists.builder().build();
 
-		when(serviceMock.getOngoingEmployeeChecklists(eq(MUNICIPALITY_ID), any(ParameterPagingBase.class))).thenReturn(mockedResponse);
+		when(serviceMock.getOngoingEmployeeChecklists(any(OngoingEmployeeChecklistParameters.class))).thenReturn(mockedResponse);
 
-		// Act
-		var response = webTestClient.get()
-			.uri(builder -> builder.path(BASE_PATH + path)
-				.queryParam("page", page)
-				.queryParam("limit", limit)
-				.queryParam("sortDirection", Sort.Direction.DESC)
-				.queryParam("sortBy", List.of("employee.firstName", "employee.lastName"))
-				.build(Map.of("municipalityId", MUNICIPALITY_ID)))
+		final var response = webTestClient.get()
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID)))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody(OngoingEmployeeChecklists.class)
 			.returnResult()
 			.getResponseBody();
 
-		// Assert and verify
-
 		assertThat(response).isEqualTo(mockedResponse);
-		verify(serviceMock).getOngoingEmployeeChecklists(eq(MUNICIPALITY_ID), parameterPagingBaseCaptor.capture());
-		assertThat(parameterPagingBaseCaptor.getValue()).satisfies(pagingBase -> {
-			assertThat(pagingBase.getPage()).isEqualTo(page);
-			assertThat(pagingBase.getLimit()).isEqualTo(limit);
-			assertThat(pagingBase.getSortDirection()).isEqualTo(Sort.Direction.DESC);
-			assertThat(pagingBase.getSortBy()).containsExactly("employee.firstName", "employee.lastName");
-		});
+
+		verify(serviceMock).getOngoingEmployeeChecklists(any(OngoingEmployeeChecklistParameters.class));
+		verifyNoMoreInteractions(serviceMock);
 	}
 
 	@Test

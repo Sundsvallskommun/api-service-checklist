@@ -37,11 +37,13 @@ values (1, 'YES_OR_NO', now(), now(), 'someUser', 'Description of manager task',
         'MANAGER_FOR_NEW_EMPLOYEE', 'e20598a4-6b32-459e-8c15-febbd4c5868e', '7272d1fc-540e-4394-afe2-e133ca642e91',
         'Text for manager task');
 
-insert into task (sort_order, question_type, created, updated, last_saved_by, heading, heading_reference, id, role_type, checklist_id,
+insert into task (sort_order, question_type, created, updated, last_saved_by, heading, heading_reference, id, role_type,
+                  checklist_id,
                   phase_id,
                   text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
 values (1, 'YES_OR_NO_WITH_TEXT', now(), now(), 'someUser', 'Description of first employee task',
-        'http://www.address-to-click.web', 'd250a20c-a616-4147-bfe0-19a0d12f3df0', 'NEW_EMPLOYEE', 'e20598a4-6b32-459e-8c15-febbd4c5868e',
+        'http://www.address-to-click.web', 'd250a20c-a616-4147-bfe0-19a0d12f3df0', 'NEW_EMPLOYEE',
+        'e20598a4-6b32-459e-8c15-febbd4c5868e',
         '3e9780a7-96f3-4d07-80ee-a9634b786a38', 'Text for first employee task');
 
 insert into task (sort_order, question_type, created, updated, last_saved_by, heading, id, role_type, checklist_id,
@@ -83,11 +85,13 @@ insert into checklist (municipality_id, version, created, updated, last_saved_by
 values ('2281', 1, now(), now(), 'someUser', '68849473-59aa-4ae6-b4bd-7f046e857984',
         '11ecf84e-cb11-426f-acd9-081330f28f7c', 'ACTIVE', 'Checklist for Sub organization 5336');
 
-insert into task (sort_order, question_type, created, updated, last_saved_by, heading, heading_reference, id, role_type, checklist_id,
+insert into task (sort_order, question_type, created, updated, last_saved_by, heading, heading_reference, id, role_type,
+                  checklist_id,
                   phase_id,
                   text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
 values (9, 'YES_OR_NO', now(), now(), 'someUser', 'Description of task for dept 5536',
-        'http://www.address-to-click-for-5536-task.web', '368c4c0b-ccb9-443b-9e38-9da52f0b4b95', 'NEW_EMPLOYEE', '68849473-59aa-4ae6-b4bd-7f046e857984',
+        'http://www.address-to-click-for-5536-task.web', '368c4c0b-ccb9-443b-9e38-9da52f0b4b95', 'NEW_EMPLOYEE',
+        '68849473-59aa-4ae6-b4bd-7f046e857984',
         'd2c92810-3c46-4161-af54-7ae8b3c9d0b3', 'Text for dept 5536 task');
 
 -- --------------------------------------------------------------------------------------
@@ -121,11 +125,13 @@ values (1, 'YES_OR_NO', now(), now(), 'someUser', 'Description of new manager ta
         '0da1dfa2-5196-45c2-b605-162a323b9b5e', 'NEW_MANAGER', '8c66e24b-3845-47ae-af74-c4611db8be7c',
         '539b074d-d654-49ec-9dce-220f8a5ba7bb', 'Text for task to be performed by new manager');
 
-insert into task (sort_order, question_type, created, updated, last_saved_by, heading, heading_reference, id, role_type, checklist_id,
+insert into task (sort_order, question_type, created, updated, last_saved_by, heading, heading_reference, id, role_type,
+                  checklist_id,
                   phase_id,
                   text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
 values (2, 'YES_OR_NO', now(), now(), 'someUser', 'Description of managers manager task',
-        'http://www.manager-manager-task-address.web', 'e930c70d-a961-4b71-89b4-935d47db982f', 'MANAGER_FOR_NEW_MANAGER', '8c66e24b-3845-47ae-af74-c4611db8be7c',
+        'http://www.manager-manager-task-address.web', 'e930c70d-a961-4b71-89b4-935d47db982f',
+        'MANAGER_FOR_NEW_MANAGER', '8c66e24b-3845-47ae-af74-c4611db8be7c',
         'd2c92810-3c46-4161-af54-7ae8b3c9d0b3', 'Text for task to be performed by new managers manager');
 
 insert into custom_sortorder (id, municipality_id, organization_number, component_type, component_id, position)
@@ -501,6 +507,11 @@ insert into referred_checklist (employee_checklist_id, checklist_id)
 values ('01ca9112-001b-4f12-b866-8d59ef1c25c4', 'e20598a4-6b32-459e-8c15-febbd4c5868e'),
        ('01ca9112-001b-4f12-b866-8d59ef1c25c4', '8c66e24b-3845-47ae-af74-c4611db8be7c');
 
+insert into delegate (id, party_id, username, first_name, last_name, email, manager_id, employee_checklist_id)
+values ('1b6e83ec-35a7-469e-8137-d1bd044c92ad', 'b7c9f932-a7f3-4bc8-9cc6-f085077db34a', 'dele0gate',
+        'Frank', 'Doe', 'johndoe@email.com', '1dcffa46-c500-4696-a862-04867df207d2',
+        '01ca9112-001b-4f12-b866-8d59ef1c25c4');
+
 -- Employee M
 insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name,
                       manager_id, title, username, employment_position)
@@ -517,6 +528,12 @@ values ('2124-07-01', '2124-10-01', '2024-01-01', false, '2024-01-01 12:00:00.00
 insert into referred_checklist (employee_checklist_id, checklist_id)
 values ('02ca9112-001b-4f12-b866-8d59ef1c25c4', 'e20598a4-6b32-459e-8c15-febbd4c5868e'),
        ('02ca9112-001b-4f12-b866-8d59ef1c25c4', '8c66e24b-3845-47ae-af74-c4611db8be7c');
+
+-- Delegation of employee checklist
+insert into delegate (id, party_id, username, first_name, last_name, email, manager_id, employee_checklist_id)
+values ('3b6e83ec-35a7-469e-8133-d1bd044c92ad', 'b3c9f954-a7f3-4bc8-9cc6-f085077db34a', 'dele0gate',
+        'Johnny', 'Doe', 'johndoe@email.com', '1dcffa46-c500-4696-a862-04867df207d2',
+        '02ca9112-001b-4f12-b866-8d59ef1c25c4');
 
 -- Employee N
 insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name,
@@ -535,6 +552,15 @@ insert into referred_checklist (employee_checklist_id, checklist_id)
 values ('03ca9112-001b-4f12-b866-8d59ef1c25c4', 'e20598a4-6b32-459e-8c15-febbd4c5868e'),
        ('03ca9112-001b-4f12-b866-8d59ef1c25c4', '8c66e24b-3845-47ae-af74-c4611db8be7c');
 
+-- Delegation of employee checklist
+insert into delegate (id, party_id, username, first_name, last_name, email, manager_id, employee_checklist_id)
+values ('3b6e83ec-35a7-469e-8137-d1bd044c92ad', 'b3c9f934-a7f3-4bc8-9cc6-f085077db34a', 'dele0gate',
+        'Hank', 'Doe', 'johndoe@email.com', '1dcffa46-c500-4696-a862-04867df207d2',
+        '03ca9112-001b-4f12-b866-8d59ef1c25c4'),
+       ('5b6e83ec-35a7-469e-8137-d1bd044c92ad', 'b3c9f934-a7f3-4bc8-9cc6-f085077db33a', 'dele1gate',
+        'Patrik', 'Franco', 'patrikfranco@email.com', '1dcffa46-c500-4696-a862-04867df207d2',
+        '03ca9112-001b-4f12-b866-8d59ef1c25c4');
+
 -- Employee O
 insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name,
                       manager_id, title, username, employment_position)
@@ -551,4 +577,10 @@ values ('2124-07-01', '2124-10-01', '2024-01-01', false, '2024-01-01 12:00:00.00
 insert into referred_checklist (employee_checklist_id, checklist_id)
 values ('04ca9112-001b-4f12-b866-8d59ef1c25c4', 'e20598a4-6b32-459e-8c15-febbd4c5868e'),
        ('04ca9112-001b-4f12-b866-8d59ef1c25c4', '8c66e24b-3845-47ae-af74-c4611db8be7c');
+
+-- Delegation of employee checklist
+insert into delegate (id, party_id, username, first_name, last_name, email, manager_id, employee_checklist_id)
+values ('4b6e83ec-35a7-469e-8137-d1bd044c92ad', 'b3c9f934-a7f3-4bc8-9cc6-f085077db32a', 'dele0gate',
+        'John', 'Doe', 'johndoe@email.com', '1dcffa46-c500-4696-a862-04867df207d2',
+        '04ca9112-001b-4f12-b866-8d59ef1c25c4');
 

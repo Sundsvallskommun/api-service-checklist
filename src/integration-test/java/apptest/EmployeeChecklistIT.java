@@ -400,4 +400,18 @@ class EmployeeChecklistIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 	}
 
+	/**
+	 * Fetch ongoing checklists, test that filter by employee name works as expected.
+	 */
+	@Test
+	void test24_fetchOngoingChecklists_5() {
+		setupCall()
+			.withServicePath(PATH_PREFIX + "/ongoing?employeeName=Fred")
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(EXPECTED_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
 }

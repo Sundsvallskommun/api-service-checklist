@@ -1,7 +1,6 @@
 package se.sundsvall.checklist.service.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 import static se.sundsvall.checklist.TestObjectFactory.createCustomTaskEntity;
 import static se.sundsvall.checklist.TestObjectFactory.createEmployeeChecklistEntity;
 import static se.sundsvall.checklist.TestObjectFactory.createPhaseEntity;
@@ -20,7 +19,6 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.mockito.Mockito;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
@@ -33,40 +31,8 @@ import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
-import se.sundsvall.checklist.integration.db.repository.projection.OngoingEmployeeChecklistProjection;
 
 class EmployeeChecklistMapperTest {
-
-	@Test
-	void toOngoingEmployeeChecklist() {
-		var employeeName = "Sven Karlsson";
-		var employeeUsername = "sve123kar";
-		var managerName = "Kalle Karlsson";
-		var departmentName = "Avdelning";
-		var delegatedTo = List.of("Sven", "Kalle", "Lars");
-		var today = LocalDate.now();
-
-		var projectionMock = Mockito.mock(OngoingEmployeeChecklistProjection.class);
-		when(projectionMock.getEmployeeName()).thenReturn(employeeName);
-		when(projectionMock.getEmployeeUsername()).thenReturn(employeeUsername);
-		when(projectionMock.getManagerName()).thenReturn(managerName);
-		when(projectionMock.getDepartmentName()).thenReturn(departmentName);
-		when(projectionMock.getDelegatedTo()).thenReturn(delegatedTo);
-		when(projectionMock.getEmploymentDate()).thenReturn(today);
-		when(projectionMock.getPurgeDate()).thenReturn(today);
-
-		var ongoingEmployeeChecklist = EmployeeChecklistMapper.toOngoingEmployeeChecklist(projectionMock);
-
-		assertThat(ongoingEmployeeChecklist).isNotNull().satisfies(checklist -> {
-			assertThat(checklist.getEmployeeName()).isEqualTo(employeeName);
-			assertThat(checklist.getEmployeeUsername()).isEqualTo(employeeUsername);
-			assertThat(checklist.getManagerName()).isEqualTo(managerName);
-			assertThat(checklist.getDepartmentName()).isEqualTo(departmentName);
-			assertThat(checklist.getDelegatedTo()).isEqualTo(delegatedTo);
-			assertThat(checklist.getEmploymentDate()).isEqualTo(today);
-			assertThat(checklist.getPurgeDate()).isEqualTo(today);
-		});
-	}
 
 	@ParameterizedTest
 	@EnumSource(EmploymentPosition.class)

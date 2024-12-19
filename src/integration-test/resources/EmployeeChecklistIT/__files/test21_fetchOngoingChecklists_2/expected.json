@@ -5,6 +5,10 @@
 			"employeeUsername": "nemp6loyee",
 			"managerName": "J Man Ager",
 			"departmentName": "Sub organization 5335",
+			"delegatedTo": [
+				"Hank Doe",
+				"Patrik Franco"
+			],
 			"employmentDate": "2024-01-01",
 			"purgeDate": "2124-07-01"
 		},
@@ -13,12 +17,15 @@
 			"employeeUsername": "oemp6loyee",
 			"managerName": "J Man Ager",
 			"departmentName": "Sub organization 5335",
+			"delegatedTo": [
+				"John Doe"
+			],
 			"employmentDate": "2024-01-01",
 			"purgeDate": "2124-07-01"
 		}
 	],
 	"_meta": {
-		"page": 2,
+		"page": 1,
 		"limit": 2,
 		"count": 2,
 		"totalRecords": 4,

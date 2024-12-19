@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "1.0"
 servers:
-  - url: http://localhost:59957
+  - url: http://localhost:63397
     description: Generated server url
 tags:
   - name: Phase resources
@@ -2103,7 +2103,7 @@ paths:
           description: Pagination model
           required: true
           schema:
-            $ref: "#/components/schemas/ParameterPagingBase"
+            $ref: "#/components/schemas/OngoingEmployeeChecklistParameters"
       responses:
         "200":
           description: Successful Operation
@@ -2465,9 +2465,9 @@ components:
             type: object
         status:
           $ref: "#/components/schemas/StatusType"
-        detail:
-          type: string
         title:
+          type: string
+        detail:
           type: string
     StatusType:
       type: object
@@ -2600,9 +2600,9 @@ components:
             type: object
         status:
           $ref: "#/components/schemas/StatusType"
-        detail:
-          type: string
         title:
+          type: string
+        detail:
           type: string
         suppressed:
           type: array
@@ -3539,7 +3539,7 @@ components:
       enum:
         - ASC
         - DESC
-    ParameterPagingBase:
+    OngoingEmployeeChecklistParameters:
       type: object
       properties:
         page:
@@ -3564,6 +3564,10 @@ components:
             example: propertyName
         sortDirection:
           $ref: "#/components/schemas/Direction"
+        employeeName:
+          type: string
+        municipalityId:
+          type: string
     EmployeeChecklist:
       type: object
       properties:

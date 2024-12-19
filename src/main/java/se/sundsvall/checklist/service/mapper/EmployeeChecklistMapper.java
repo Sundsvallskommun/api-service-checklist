@@ -24,13 +24,13 @@ import se.sundsvall.checklist.api.model.OngoingEmployeeChecklist;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
+import se.sundsvall.checklist.integration.db.model.DelegateEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
 import se.sundsvall.checklist.integration.db.model.FulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
-import se.sundsvall.checklist.integration.db.repository.projection.OngoingEmployeeChecklistProjection;
 
 public final class EmployeeChecklistMapper {
 
@@ -115,17 +115,23 @@ public final class EmployeeChecklistMapper {
 	// API mappings
 	// -----------------------------
 
-	public static OngoingEmployeeChecklist toOngoingEmployeeChecklist(final OngoingEmployeeChecklistProjection ongoingEmployeeChecklistProjection) {
-		return ofNullable(ongoingEmployeeChecklistProjection).map(projection -> OngoingEmployeeChecklist.builder()
-			.withEmployeeName(projection.getEmployeeName())
-			.withEmployeeUsername(projection.getEmployeeUsername())
-			.withManagerName(projection.getManagerName())
-			.withDepartmentName(projection.getDepartmentName())
-			.withDelegatedTo(projection.getDelegatedTo())
-			.withEmploymentDate(projection.getEmploymentDate())
-			.withPurgeDate(projection.getPurgeDate())
+	public static OngoingEmployeeChecklist mapToOngoingEmployeeChecklist(final EmployeeChecklistEntity employeeChecklist) {
+		return ofNullable(employeeChecklist).map(checklist -> OngoingEmployeeChecklist.builder()
+			.withEmployeeName(checklist.getEmployee().getFirstName() + " " + checklist.getEmployee().getLastName())
+			.withEmployeeUsername(checklist.getEmployee().getUsername())
+			.withDepartmentName(checklist.getEmployee().getDepartment().getOrganizationName())
+			.withManagerName(checklist.getEmployee().getManager().getFirstName() + " " + checklist.getEmployee().getManager().getLastName())
+			.withDelegatedTo(mapToListOfNames(checklist.getDelegates()))
+			.withEmploymentDate(checklist.getEmployee().getStartDate())
+			.withPurgeDate(checklist.getEndDate())
 			.build())
 			.orElse(null);
+	}
+
+	public static List<String> mapToListOfNames(final List<DelegateEntity> delegateEntities) {
+		return ofNullable(delegateEntities).orElse(emptyList()).stream()
+			.map(delegate -> delegate.getFirstName() + " " + delegate.getLastName())
+			.toList();
 	}
 
 	public static EmployeeChecklist toEmployeeChecklist(final EmployeeChecklistEntity employeeChecklistEntity) {

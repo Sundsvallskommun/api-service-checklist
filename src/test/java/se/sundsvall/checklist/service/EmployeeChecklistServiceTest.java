@@ -27,14 +27,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
@@ -47,22 +44,23 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistResponse.Detail;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.Mentor;
-import se.sundsvall.checklist.api.model.ParameterPagingBase;
+import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistParameters;
 import se.sundsvall.checklist.integration.db.EmployeeChecklistIntegration;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
+import se.sundsvall.checklist.integration.db.model.DelegateEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
 import se.sundsvall.checklist.integration.db.model.FulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.ManagerEntity;
+import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
-import se.sundsvall.checklist.integration.db.repository.projection.OngoingEmployeeChecklistProjection;
 import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
 
 @ExtendWith(MockitoExtension.class)
@@ -82,9 +80,6 @@ class EmployeeChecklistServiceTest {
 	@Mock
 	private SortorderService sortorderServiceMock;
 
-	@Captor
-	private ArgumentCaptor<PageRequest> pageRequestArgumentCaptor;
-
 	@InjectMocks
 	private EmployeeChecklistService service;
 
@@ -96,32 +91,6 @@ class EmployeeChecklistServiceTest {
 	@AfterEach
 	void assertNoMoreInteractions() {
 		verifyNoMoreInteractions(employeeChecklistIntegrationMock, customTaskRepositoryMock, employeeIntegrationMock);
-	}
-
-	@Test
-	void getOngoingEmployeeChecklists() {
-		// Arrange
-		final var pagingBase = new ParameterPagingBase();
-		pagingBase.setPage(1);
-		pagingBase.setLimit(10);
-		final var pageable = PageRequest.of(pagingBase.getPage() - 1, pagingBase.getLimit(), pagingBase.sort());
-		Page<OngoingEmployeeChecklistProjection> pagedChecklists = new PageImpl<>(List.of(), pageable, 10);
-
-		when(employeeChecklistIntegrationMock.fetchAllOngoingEmployeeChecklists(eq(MUNICIPALITY_ID), any(PageRequest.class))).thenReturn(pagedChecklists);
-
-		// Act
-		final var result = service.getOngoingEmployeeChecklists(MUNICIPALITY_ID, pagingBase);
-
-		// Assert and verify
-		assertThat(result).isNotNull();
-		assertThat(result.getChecklists()).isNotNull().isEmpty();
-		assertThat(result.getMetadata()).isNotNull().satisfies(meta -> {
-			assertThat(meta.getLimit()).isEqualTo(pagingBase.getLimit());
-			assertThat(meta.getPage()).isEqualTo(pagingBase.getPage());
-		});
-
-		verify(employeeChecklistIntegrationMock).fetchAllOngoingEmployeeChecklists(eq(MUNICIPALITY_ID), pageRequestArgumentCaptor.capture());
-		assertThat(pageRequestArgumentCaptor.getValue()).usingRecursiveComparison().isEqualTo(pageable);
 	}
 
 	@Test
@@ -1026,6 +995,65 @@ class EmployeeChecklistServiceTest {
 		assertThat(response.getDetails()).isNullOrEmpty();
 
 		verify(employeeIntegrationMock).getEmployeeInformation("{\"ShowOnlyNewEmployees\":false,\"PersonId\":\"" + employeeUuid.toString() + "\",\"EventInfo\":[\"Mover\",\"Corporate\",\"Company\",\"Rehire,Corporate\"]}");
+	}
+
+	@Test
+	void getOngoingEmployeeChecklists() {
+		var parameters = new OngoingEmployeeChecklistParameters().withMunicipalityId("2281");
+		var department = OrganizationEntity.builder()
+			.withOrganizationName("Drak huset")
+			.build();
+
+		var manager = ManagerEntity.builder()
+			.withFirstName("Johnny")
+			.withLastName("Bravo")
+			.build();
+
+		var employee = EmployeeEntity.builder()
+			.withFirstName("Mini")
+			.withLastName("LUS")
+			.withUsername("mini01lus")
+			.withDepartment(department)
+			.withStartDate(LocalDate.now())
+			.withManager(manager)
+			.build();
+
+		var delegate = DelegateEntity.builder()
+			.withFirstName("John")
+			.withLastName("Doe")
+			.build();
+
+		var employeeChecklist = EmployeeChecklistEntity.builder()
+			.withEmployee(employee)
+			.withDelegates(List.of(delegate))
+			.withEndDate(LocalDate.now().plusDays(5))
+			.build();
+
+		Page<EmployeeChecklistEntity> pageResult = new PageImpl<>(List.of(employeeChecklist));
+		when(employeeChecklistIntegrationMock.fetchAllOngoingEmployeeChecklists(any(), any())).thenReturn(pageResult);
+
+		var result = service.getOngoingEmployeeChecklists(parameters);
+
+		assertThat(result).isNotNull();
+		assertThat(result.getChecklists()).hasSize(1).allSatisfy(checklist -> {
+			assertThat(checklist.getEmployeeName()).isEqualTo("Mini LUS");
+			assertThat(checklist.getEmployeeUsername()).isEqualTo("mini01lus");
+			assertThat(checklist.getManagerName()).isEqualTo("Johnny Bravo");
+			assertThat(checklist.getDepartmentName()).isEqualTo("Drak huset");
+			assertThat(checklist.getEmploymentDate()).isEqualTo(LocalDate.now());
+			assertThat(checklist.getPurgeDate()).isEqualTo(LocalDate.now().plusDays(5));
+			assertThat(checklist.getDelegatedTo()).containsExactly("John Doe");
+		});
+
+		assertThat(result.getMetadata()).satisfies(meta -> {
+			assertThat(meta.getPage()).isEqualTo(pageResult.getNumber());
+			assertThat(meta.getLimit()).isEqualTo(pageResult.getSize());
+			assertThat(meta.getCount()).isEqualTo(pageResult.getTotalElements());
+			assertThat(meta.getTotalPages()).isEqualTo(pageResult.getTotalPages());
+			assertThat(meta.getTotalRecords()).isEqualTo(pageResult.getTotalElements());
+		});
+
+		verify(employeeChecklistIntegrationMock).fetchAllOngoingEmployeeChecklists(any(), any());
 	}
 
 	private static Employee createEmployee(final String emailAddress, final UUID employeeUuid, final UUID managerUuid, final int companyId, final int orgId, final String loginName) {
