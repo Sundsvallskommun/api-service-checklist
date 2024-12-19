@@ -8,6 +8,12 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class SpecificationBuilder<T> {
 
+	private static final String EMPLOYEE = "employee";
+	private static final String COMPANY = "company";
+	private static final String FIRST_NAME = "firstName";
+	private static final String LAST_NAME = "lastName";
+	private static final String MUNICIPALITY_ID = "municipalityId";
+
 	/**
 	 * Retrieves the given entities employee attributes firstname and lastname and concatenates them to a full name. Then it
 	 * compares the full name to the given value using a like ignore case predicate.
@@ -21,8 +27,8 @@ public class SpecificationBuilder<T> {
 				return null;
 			}
 
-			Expression<String> firstNameExpression = entity.get("employee").get("firstName");
-			Expression<String> lastNameExpression = entity.get("employee").get("lastName");
+			Expression<String> firstNameExpression = entity.get(EMPLOYEE).get(FIRST_NAME);
+			Expression<String> lastNameExpression = entity.get(EMPLOYEE).get(LAST_NAME);
 
 			var fullNameExpression = cb.concat(
 				cb.concat(cb.lower(firstNameExpression), cb.literal(" ")),
@@ -44,7 +50,7 @@ public class SpecificationBuilder<T> {
 			if (value == null) {
 				return null;
 			}
-			return cb.equal(entity.get("employee").get("company").get("municipalityId"), value);
+			return cb.equal(entity.get(EMPLOYEE).get(COMPANY).get(MUNICIPALITY_ID), value);
 		};
 	}
 
