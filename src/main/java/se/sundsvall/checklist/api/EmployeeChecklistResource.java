@@ -42,6 +42,8 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistResponse;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.Mentor;
+import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistParameters;
+import se.sundsvall.checklist.api.model.OngoingEmployeeChecklists;
 import se.sundsvall.checklist.service.EmployeeChecklistService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
@@ -61,8 +63,20 @@ class EmployeeChecklistResource {
 
 	private final EmployeeChecklistService employeeChecklistService;
 
-	EmployeeChecklistResource(EmployeeChecklistService employeeChecklistService) {
+	EmployeeChecklistResource(final EmployeeChecklistService employeeChecklistService) {
 		this.employeeChecklistService = employeeChecklistService;
+	}
+
+	@Operation(summary = "Fetches a paginated response of ongoing employee checklists, this only contains summarized information about each ongoing employee checklist", responses = {
+		@ApiResponse(responseCode = "200",
+			description = "Successful Operation",
+			content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = OngoingEmployeeChecklists.class))),
+	})
+	@GetMapping("/ongoing")
+	ResponseEntity<OngoingEmployeeChecklists> fetchAllOngoingEmployeeChecklists(
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "pagingBase", description = "Pagination model", schema = @Schema(implementation = OngoingEmployeeChecklistParameters.class)) @Valid final OngoingEmployeeChecklistParameters pagingBase) {
+		return ok(employeeChecklistService.getOngoingEmployeeChecklists(pagingBase.withMunicipalityId(municipalityId)));
 	}
 
 	@Operation(summary = "Fetch checklist where user acts as employee", description = "Fetch a users checklist where the user has the role of employee", responses = {

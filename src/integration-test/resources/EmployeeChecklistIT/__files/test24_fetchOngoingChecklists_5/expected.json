@@ -1,0 +1,22 @@
+{
+	"checklists": [
+		{
+			"employeeName": "Fredrik Karlsson",
+			"employeeUsername": "oemp6loyee",
+			"managerName": "J Man Ager",
+			"departmentName": "Sub organization 5335",
+			"delegatedTo": [
+				"John Doe"
+			],
+			"employmentDate": "2024-01-01",
+			"purgeDate": "2124-07-01"
+		}
+	],
+	"_meta": {
+		"page": 0,
+		"limit": 100,
+		"count": 1,
+		"totalRecords": 1,
+		"totalPages": 1
+	}
+}

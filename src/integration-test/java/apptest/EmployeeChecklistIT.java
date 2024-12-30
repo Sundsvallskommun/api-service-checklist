@@ -16,12 +16,10 @@ import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.test.context.jdbc.Sql;
-
 import se.sundsvall.checklist.Application;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
 import se.sundsvall.checklist.integration.db.model.DelegateEntity;
@@ -345,4 +343,75 @@ class EmployeeChecklistIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 
 	}
+
+	/**
+	 * Fetch ongoing checklists with default pagination and sorting.
+	 */
+	@Test
+	void test20_fetchOngoingChecklists_1() {
+		setupCall()
+			.withServicePath(PATH_PREFIX + "/ongoing")
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(EXPECTED_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	/**
+	 * Fetch ongoing checklists, test that pagination works as expected.
+	 */
+	@Test
+	void test21_fetchOngoingChecklists_2() {
+		setupCall()
+			.withServicePath(PATH_PREFIX + "/ongoing?page=2&limit=2")
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(EXPECTED_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	/**
+	 * Fetch ongoing checklists, test that sort direction works as expected.
+	 */
+	@Test
+	void test22_fetchOngoingChecklists_3() {
+		setupCall()
+			.withServicePath(PATH_PREFIX + "/ongoing?sortDirection=DESC")
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(EXPECTED_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	/**
+	 * Fetch ongoing checklists, test that sort by works as expected.
+	 */
+	@Test
+	void test23_fetchOngoingChecklists_4() {
+		setupCall()
+			.withServicePath(PATH_PREFIX + "/ongoing?sortBy=employeeName&sortDirection=DESC")
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(EXPECTED_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	/**
+	 * Fetch ongoing checklists, test that filter by employee name works as expected.
+	 */
+	@Test
+	void test24_fetchOngoingChecklists_5() {
+		setupCall()
+			.withServicePath(PATH_PREFIX + "/ongoing?employeeName=Fred")
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(EXPECTED_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
 }
