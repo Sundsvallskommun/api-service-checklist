@@ -19,6 +19,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.zalando.problem.Status;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
@@ -483,5 +484,19 @@ class EmployeeChecklistMapperTest {
 	@Test
 	void toCustomTaskFromNull() {
 		assertThat(EmployeeChecklistMapper.toCustomTask(null)).isNull();
+	}
+
+	@Test
+	void toDetail() {
+		final var bean = EmployeeChecklistMapper.toDetail(Status.I_AM_A_TEAPOT, "Stout and firm");
+
+		assertThat(bean).hasNoNullFieldsOrProperties();
+		assertThat(bean.getStatus()).isEqualTo(Status.I_AM_A_TEAPOT);
+		assertThat(bean.getInformation()).isEqualTo("Stout and firm");
+	}
+
+	@Test
+	void toDetailFromNullValues() {
+		assertThat(EmployeeChecklistMapper.toDetail(null, null)).hasAllNullFieldsOrProperties();
 	}
 }
