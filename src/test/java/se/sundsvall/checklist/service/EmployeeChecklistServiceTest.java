@@ -938,6 +938,56 @@ class EmployeeChecklistServiceTest {
 	}
 
 	@Test
+	void initiateEmployeeChecklists_invalidFormOfEmployment() {
+		// Arrange
+		final var emailAddress = "emailAddress";
+		final var employeeUuid = UUID.randomUUID();
+		final var managerUuid = UUID.randomUUID();
+		final var companyId = 1;
+		final var orgId = 1225;
+		final var loginName = "loginName";
+		final var employee = createEmployee(emailAddress, employeeUuid, managerUuid, companyId, orgId, loginName);
+		employee.getEmployments().getFirst().formOfEmploymentId("invalid").eventType("joiner");
+
+		when(employeeIntegrationMock.getNewEmployees(any())).thenReturn(List.of(employee));
+
+		// Act
+		final var response = service.initiateEmployeeChecklists(MUNICIPALITY_ID);
+
+		// Assert and verify
+		assertThat(response.getSummary()).isEqualTo("1 potential problems occurred when importing 1 employees");
+		assertThat(response.getDetails()).extracting(Detail::getStatus, Detail::getInformation)
+			.containsExactly(tuple(Status.NOT_ACCEPTABLE, "Not Acceptable: Employee with loginname loginName does not have a main employment with an employment form that validates for creating an employee checklist."));
+
+		verify(employeeIntegrationMock).getNewEmployees("{\"HireDateFrom\":\"%s\"}".formatted(LocalDate.now().minusDays(30).format(ISO_DATE)));
+	}
+
+	@Test
+	void initiateEmployeeChecklists_invalidEventType() {
+		// Arrange
+		final var emailAddress = "emailAddress";
+		final var employeeUuid = UUID.randomUUID();
+		final var managerUuid = UUID.randomUUID();
+		final var companyId = 1;
+		final var orgId = 1225;
+		final var loginName = "loginName";
+		final var employee = createEmployee(emailAddress, employeeUuid, managerUuid, companyId, orgId, loginName);
+		employee.getEmployments().getFirst().formOfEmploymentId("9").eventType("invalid");
+
+		when(employeeIntegrationMock.getNewEmployees(any())).thenReturn(List.of(employee));
+
+		// Act
+		final var response = service.initiateEmployeeChecklists(MUNICIPALITY_ID);
+
+		// Assert and verify
+		assertThat(response.getSummary()).isEqualTo("1 potential problems occurred when importing 1 employees");
+		assertThat(response.getDetails()).extracting(Detail::getStatus, Detail::getInformation)
+			.containsExactly(tuple(Status.NOT_ACCEPTABLE, "Not Acceptable: Employee with loginname loginName does not have a main employment with an event type that validates for creating an employee checklist."));
+
+		verify(employeeIntegrationMock).getNewEmployees("{\"HireDateFrom\":\"%s\"}".formatted(LocalDate.now().minusDays(30).format(ISO_DATE)));
+	}
+
+	@Test
 	void initiateEmployeeChecklists_noNewEmployeesFound() {
 		// Act
 		final var response = service.initiateEmployeeChecklists(MUNICIPALITY_ID);
@@ -997,19 +1047,54 @@ class EmployeeChecklistServiceTest {
 		verify(employeeIntegrationMock).getEmployeeInformation("{\"ShowOnlyNewEmployees\":false,\"PersonId\":\"" + employeeUuid.toString() + "\",\"EventInfo\":[\"Mover\",\"Corporate\",\"Company\",\"Rehire,Corporate\"]}");
 	}
 
+	@Test // Should pass as form of employment and event type should not be verified when initiating a specific employee checklist
+	void initiateSpecificEmployeeChecklist_invalidFormOfEmploymentAndEventType() {
+		// Arrange
+		final var emailAddress = "emailAddress";
+		final var employeeUuid = UUID.randomUUID();
+		final var managerUuid = UUID.randomUUID();
+		final var companyId = 1;
+		final var orgId = 1225;
+		final var loginName = "loginName";
+		final var employee = createEmployee(emailAddress, employeeUuid, managerUuid, companyId, orgId, loginName);
+		final var orgTree = "2|12|OrgLevel 2¤3|122|OrgLevel 3¤4|" + orgId + "|OrgLevel 4";
+		final var information = "All is good in the neighborhood";
+		final var portalPersonData = new PortalPersonData()
+			.companyId(companyId)
+			.orgTree(orgTree);
+
+		employee.getEmployments().getFirst().formOfEmploymentId("invalid").eventType("invalid");
+
+		when(employeeIntegrationMock.getEmployeeInformation(any())).thenReturn(List.of(employee));
+		when(employeeIntegrationMock.getEmployeeByEmail(emailAddress)).thenReturn(Optional.of(portalPersonData));
+		when(employeeChecklistIntegrationMock.initiateEmployee(eq(MUNICIPALITY_ID), any(), any())).thenReturn(information);
+
+		// Act
+		final var response = service.initiateSpecificEmployeeChecklist(MUNICIPALITY_ID, employeeUuid.toString());
+
+		// Assert and verify
+		assertThat(response.getSummary()).isEqualTo("Successful import of 1 employees");
+		assertThat(response.getDetails()).extracting(Detail::getStatus, Detail::getInformation)
+			.containsExactly(tuple(Status.OK, information));
+
+		verify(employeeIntegrationMock).getEmployeeInformation("{\"ShowOnlyNewEmployees\":false,\"PersonId\":\"" + employeeUuid.toString() + "\",\"EventInfo\":[\"Mover\",\"Corporate\",\"Company\",\"Rehire,Corporate\"]}");
+		verify(employeeIntegrationMock).getEmployeeByEmail(emailAddress);
+		verify(employeeChecklistIntegrationMock).initiateEmployee(eq(MUNICIPALITY_ID), eq(employee), any());
+	}
+
 	@Test
 	void getOngoingEmployeeChecklists() {
-		var parameters = new OngoingEmployeeChecklistParameters().withMunicipalityId("2281");
-		var department = OrganizationEntity.builder()
+		final var parameters = new OngoingEmployeeChecklistParameters().withMunicipalityId("2281");
+		final var department = OrganizationEntity.builder()
 			.withOrganizationName("Drak huset")
 			.build();
 
-		var manager = ManagerEntity.builder()
+		final var manager = ManagerEntity.builder()
 			.withFirstName("Johnny")
 			.withLastName("Bravo")
 			.build();
 
-		var employee = EmployeeEntity.builder()
+		final var employee = EmployeeEntity.builder()
 			.withFirstName("Mini")
 			.withLastName("LUS")
 			.withUsername("mini01lus")
@@ -1018,21 +1103,21 @@ class EmployeeChecklistServiceTest {
 			.withManager(manager)
 			.build();
 
-		var delegate = DelegateEntity.builder()
+		final var delegate = DelegateEntity.builder()
 			.withFirstName("John")
 			.withLastName("Doe")
 			.build();
 
-		var employeeChecklist = EmployeeChecklistEntity.builder()
+		final var employeeChecklist = EmployeeChecklistEntity.builder()
 			.withEmployee(employee)
 			.withDelegates(List.of(delegate))
 			.withEndDate(LocalDate.now().plusDays(5))
 			.build();
 
-		Page<EmployeeChecklistEntity> pageResult = new PageImpl<>(List.of(employeeChecklist));
+		final Page<EmployeeChecklistEntity> pageResult = new PageImpl<>(List.of(employeeChecklist));
 		when(employeeChecklistIntegrationMock.fetchAllOngoingEmployeeChecklists(any(), any())).thenReturn(pageResult);
 
-		var result = service.getOngoingEmployeeChecklists(parameters);
+		final var result = service.getOngoingEmployeeChecklists(parameters);
 
 		assertThat(result).isNotNull();
 		assertThat(result.getChecklists()).hasSize(1).allSatisfy(checklist -> {
@@ -1062,6 +1147,7 @@ class EmployeeChecklistServiceTest {
 			.personId(employeeUuid)
 			.employments(List.of(new Employment()
 				.formOfEmploymentId("1")
+				.eventType("Joiner")
 				.isMainEmployment(true)
 				.companyId(companyId)
 				.orgId(orgId)

@@ -1,21 +1,29 @@
 {
-	"summary": "2 potential problems occurred when importing 4 employees",
+	"summary": "4 potential problems occurred when importing 6 employees",
 	"details": [
 		{
-			"information": "Employee with loginname pau55rod processed successfully.",
-			"status": 200
+			"status": 200,
+			"information": "Employee with loginname pau55rod processed successfully."
 		},
 		{
-			"information": "Not Found: Employee with username hen22snu is missing information regarding organizational structure.",
-			"status": 404
+			"status": 404,
+			"information": "Not Found: Employee with username hen22snu is missing information regarding organizational structure."
 		},
 		{
-			"information": "Not Found: Creation of checklist not possible for employee with loginname cha66spa as the main employment for the employee lacks information about the manager.",
-			"status": 404
+			"status": 404,
+			"information": "Not Found: Creation of checklist not possible for employee with loginname cha66spa as the main employment for the employee lacks information about the manager."
 		},
 		{
-			"information": "Employee with loginname aemp0loyee already has an employee checklist.",
-			"status": 200
+			"status": 200,
+			"information": "Employee with loginname aemp0loyee already has an employee checklist."
+		},
+		{
+			"status": 406,
+			"information": "Not Acceptable: Employee with loginname cha77tat does not have a main employment with an event type that validates for creating an employee checklist."
+		},
+		{
+			"status": 406,
+			"information": "Not Acceptable: Employee with loginname sca88joh does not have a main employment with an employment form that validates for creating an employee checklist."
 		}
 	]
 }

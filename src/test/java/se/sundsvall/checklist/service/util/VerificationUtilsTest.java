@@ -1,21 +1,23 @@
 package se.sundsvall.checklist.service.util;
 
+import static java.util.Optional.ofNullable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.zalando.problem.Status.NOT_ACCEPTABLE;
 import static org.zalando.problem.Status.NOT_FOUND;
 
 import generated.se.sundsvall.employee.Employee;
 import generated.se.sundsvall.employee.Employment;
 import generated.se.sundsvall.employee.Manager;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
@@ -29,28 +31,27 @@ class VerificationUtilsTest {
 		final var orgId = 1;
 		final var companyId = 2;
 		final var formOfEmploymentId = "1";
+		final var eventType = "Joiner";
 		final var managerUuid = UUID.randomUUID();
 
 		return Stream.of(
-			Arguments.of(createEmployee(null, loginName, emailAddress, orgId, companyId, formOfEmploymentId, true, true, managerUuid),
+			Arguments.of(createEmployee(null, loginName, emailAddress, orgId, companyId, formOfEmploymentId, eventType, true, true, managerUuid),
 				"Creation of checklist not possible for employee with loginname %s as the employee does not have any personid.".formatted(loginName)),
-			Arguments.of(createEmployee(employeeUuid, null, emailAddress, orgId, companyId, formOfEmploymentId, true, true, managerUuid),
+			Arguments.of(createEmployee(employeeUuid, null, emailAddress, orgId, companyId, formOfEmploymentId, eventType, true, true, managerUuid),
 				"Creation of checklist not possible for employee with personid %s as the employee does not have any loginname.".formatted(employeeUuid)),
-			Arguments.of(createEmployee(employeeUuid, loginName, null, orgId, companyId, formOfEmploymentId, true, true, managerUuid),
+			Arguments.of(createEmployee(employeeUuid, loginName, null, orgId, companyId, formOfEmploymentId, eventType, true, true, managerUuid),
 				"Creation of checklist not possible for employee with loginname %s as the employee does not have any email address.".formatted(loginName)),
-			Arguments.of(createEmployee(employeeUuid, loginName, emailAddress, null, companyId, formOfEmploymentId, true, true, managerUuid),
+			Arguments.of(createEmployee(employeeUuid, loginName, emailAddress, null, companyId, formOfEmploymentId, eventType, true, true, managerUuid),
 				"Creation of checklist not possible for employee with loginname %s as the main employment for the employee lacks neccessary department information.".formatted(loginName)),
-			Arguments.of(createEmployee(employeeUuid, loginName, emailAddress, orgId, null, formOfEmploymentId, true, true, managerUuid),
+			Arguments.of(createEmployee(employeeUuid, loginName, emailAddress, orgId, null, formOfEmploymentId, eventType, true, true, managerUuid),
 				"Creation of checklist not possible for employee with loginname %s as the main employment for the employee lacks neccessary company information.".formatted(loginName)),
-			Arguments.of(createEmployee(employeeUuid, loginName, emailAddress, orgId, companyId, null, true, true, managerUuid),
-				"Creation of checklist not possible for employee with loginname %s as the main employment for the employee lacks information about the employment form.".formatted(loginName)),
-			Arguments.of(createEmployee(employeeUuid, loginName, emailAddress, orgId, companyId, formOfEmploymentId, null, true, managerUuid),
+			Arguments.of(createEmployee(employeeUuid, loginName, emailAddress, orgId, companyId, formOfEmploymentId, eventType, null, true, managerUuid),
 				"Creation of checklist not possible for employee with loginname %s as the employee does not have any main employment.".formatted(loginName)),
-			Arguments.of(createEmployee(employeeUuid, loginName, emailAddress, orgId, companyId, formOfEmploymentId, false, true, managerUuid),
+			Arguments.of(createEmployee(employeeUuid, loginName, emailAddress, orgId, companyId, formOfEmploymentId, eventType, false, true, managerUuid),
 				"Creation of checklist not possible for employee with loginname %s as the employee does not have any main employment.".formatted(loginName)),
-			Arguments.of(createEmployee(employeeUuid, loginName, emailAddress, orgId, companyId, formOfEmploymentId, true, true, null),
+			Arguments.of(createEmployee(employeeUuid, loginName, emailAddress, orgId, companyId, formOfEmploymentId, eventType, true, true, null),
 				"Creation of checklist not possible for employee with loginname %s as the personid is missing for the manager connected to the main employment of the employee.".formatted(loginName)),
-			Arguments.of(createEmployee(employeeUuid, loginName, emailAddress, orgId, companyId, formOfEmploymentId, true, false, null),
+			Arguments.of(createEmployee(employeeUuid, loginName, emailAddress, orgId, companyId, formOfEmploymentId, eventType, true, false, null),
 				"Creation of checklist not possible for employee with loginname %s as the main employment for the employee lacks information about the manager.".formatted(loginName)));
 	}
 
@@ -61,6 +62,60 @@ class VerificationUtilsTest {
 
 		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo(NOT_FOUND.getReasonPhrase() + ": " + expectedMessage);
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {
+		"joiner", "Joiner", "JOINER"
+	})
+	void testValidEmployment(String eventType) {
+		final var employee = new Employee()
+			.loginname("<loginName>")
+			.employments(List.of(new Employment().isMainEmployment(true).formOfEmploymentId("1").eventType(eventType)));
+
+		assertDoesNotThrow(() -> VerificationUtils.verifyValidEmployment(employee));
+
+	}
+
+	@Test
+	void testValidEmploymentWhenNoMainEmployment() {
+		final var employee = new Employee();
+		final var e = assertThrows(ThrowableProblem.class, () -> VerificationUtils.verifyValidEmployment(employee));
+
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
+		assertThat(e.getMessage()).isEqualTo(NOT_FOUND.getReasonPhrase() + ": The employee does not have any main employment.");
+	}
+
+	@Test
+	void testValidEmploymentWhenNoEventType() {
+		final var employee = new Employee()
+			.employments(List.of(new Employment().isMainEmployment(true)));
+		final var e = assertThrows(ThrowableProblem.class, () -> VerificationUtils.verifyValidEmployment(employee));
+
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
+		assertThat(e.getMessage()).isEqualTo(NOT_FOUND.getReasonPhrase() + ": The main employment for the employee lacks event type information.");
+	}
+
+	@Test
+	void testValidEmploymentWhenNotValidFormOfEmployment() {
+		final var employee = new Employee()
+			.loginname("<loginName>")
+			.employments(List.of(new Employment().isMainEmployment(true).formOfEmploymentId("notValid").eventType("someType")));
+		final var e = assertThrows(ThrowableProblem.class, () -> VerificationUtils.verifyValidEmployment(employee));
+
+		assertThat(e.getStatus()).isEqualTo(NOT_ACCEPTABLE);
+		assertThat(e.getMessage()).isEqualTo(NOT_ACCEPTABLE.getReasonPhrase() + ": Employee with loginname <loginName> does not have a main employment with an employment form that validates for creating an employee checklist.");
+	}
+
+	@Test
+	void testValidEmploymentWhenNotValidEventType() {
+		final var employee = new Employee()
+			.loginname("<loginName>")
+			.employments(List.of(new Employment().isMainEmployment(true).formOfEmploymentId("1").eventType("notValid")));
+		final var e = assertThrows(ThrowableProblem.class, () -> VerificationUtils.verifyValidEmployment(employee));
+
+		assertThat(e.getStatus()).isEqualTo(NOT_ACCEPTABLE);
+		assertThat(e.getMessage()).isEqualTo(NOT_ACCEPTABLE.getReasonPhrase() + ": Employee with loginname <loginName> does not have a main employment with an event type that validates for creating an employee checklist.");
 	}
 
 	@Test
@@ -84,8 +139,9 @@ class VerificationUtilsTest {
 		final var orgId = 1;
 		final var companyId = 2;
 		final var formOfEmploymentId = "1";
+		final var eventType = "Joiner";
 		final var managerUuid = UUID.randomUUID();
-		final var employee = createEmployee(employeeUuid, loginName, emailAddress, orgId, companyId, formOfEmploymentId, true, true, managerUuid);
+		final var employee = createEmployee(employeeUuid, loginName, emailAddress, orgId, companyId, formOfEmploymentId, eventType, true, true, managerUuid);
 
 		assertDoesNotThrow(() -> VerificationUtils.verifyMandatoryInformation(employee));
 	}
@@ -109,29 +165,30 @@ class VerificationUtilsTest {
 		assertThat(e.getMessage()).isEqualTo("Bad Request: Employee checklist with id %s is locked and can not be modified.".formatted(employeeChecklistId));
 	}
 
-	private static Employee createEmployee(UUID employeeUuid, String loginName, String emailAddress, Integer orgId, Integer companyId, String formOfEmployment, Boolean isMainEmployment, Boolean hasManager, UUID managerUuid) {
+	private static Employee createEmployee(UUID employeeUuid, String loginName, String emailAddress, Integer orgId, Integer companyId, String formOfEmployment, String eventType, Boolean isMainEmployment, Boolean hasManager, UUID managerUuid) {
 		final var employee = new Employee();
-		Optional.ofNullable(employeeUuid).ifPresent(employee::personId);
-		Optional.ofNullable(emailAddress).ifPresent(employee::emailAddress);
-		Optional.ofNullable(loginName).ifPresent(employee::loginname);
-		Optional.ofNullable(isMainEmployment).ifPresent(v -> {
-			employee.employments(List.of(createEmployment(isMainEmployment, orgId, companyId, formOfEmployment, hasManager, managerUuid)));
+		ofNullable(employeeUuid).ifPresent(employee::personId);
+		ofNullable(emailAddress).ifPresent(employee::emailAddress);
+		ofNullable(loginName).ifPresent(employee::loginname);
+		ofNullable(isMainEmployment).ifPresent(v -> {
+			employee.employments(List.of(createEmployment(isMainEmployment, orgId, companyId, formOfEmployment, eventType, hasManager, managerUuid)));
 		});
 
 		return employee;
 	}
 
-	private static Employment createEmployment(Boolean isMainEmployment, Integer orgId, Integer companyId, String formOfEmployment, Boolean hasManager, UUID managerId) {
+	private static Employment createEmployment(Boolean isMainEmployment, Integer orgId, Integer companyId, String formOfEmployment, String eventType, Boolean hasManager, UUID managerId) {
 		final var employment = new Employment();
 
-		Optional.ofNullable(isMainEmployment).ifPresent(employment::isMainEmployment);
-		Optional.ofNullable(orgId).ifPresent(employment::orgId);
-		Optional.ofNullable(companyId).ifPresent(employment::companyId);
-		Optional.ofNullable(formOfEmployment).ifPresent(employment::formOfEmploymentId);
-		Optional.ofNullable(hasManager).ifPresent(create -> {
+		ofNullable(isMainEmployment).ifPresent(employment::isMainEmployment);
+		ofNullable(orgId).ifPresent(employment::orgId);
+		ofNullable(companyId).ifPresent(employment::companyId);
+		ofNullable(formOfEmployment).ifPresent(employment::formOfEmploymentId);
+		ofNullable(eventType).ifPresent(employment::eventType);
+		ofNullable(hasManager).ifPresent(create -> {
 			if (create) {
 				employment.manager(new Manager());
-				Optional.ofNullable(managerId).ifPresent(p -> employment.getManager().personId(p));
+				ofNullable(managerId).ifPresent(p -> employment.getManager().personId(p));
 			}
 
 		});

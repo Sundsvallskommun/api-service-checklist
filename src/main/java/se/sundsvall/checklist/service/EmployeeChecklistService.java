@@ -15,6 +15,7 @@ import static se.sundsvall.checklist.integration.db.model.enums.RoleType.NEW_MAN
 import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.buildDefaultNewEmployeeFilter;
 import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.buildUuidEmployeeFilter;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toCustomTask;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toDetail;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.updateCustomTaskEntity;
 import static se.sundsvall.checklist.service.mapper.PagingAndSortingMapper.toPageRequest;
 import static se.sundsvall.checklist.service.mapper.PagingAndSortingMapper.toPagingMetaData;
@@ -24,6 +25,7 @@ import static se.sundsvall.checklist.service.util.ServiceUtils.calculateTaskType
 import static se.sundsvall.checklist.service.util.ServiceUtils.fetchEntity;
 import static se.sundsvall.checklist.service.util.VerificationUtils.verifyMandatoryInformation;
 import static se.sundsvall.checklist.service.util.VerificationUtils.verifyUnlockedEmployeeChecklist;
+import static se.sundsvall.checklist.service.util.VerificationUtils.verifyValidEmployment;
 
 import generated.se.sundsvall.employee.Employee;
 import java.time.Duration;
@@ -35,12 +37,10 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.zalando.problem.Problem;
-import org.zalando.problem.StatusType;
 import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.checklist.api.model.CustomTask;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
@@ -49,7 +49,6 @@ import se.sundsvall.checklist.api.model.EmployeeChecklist;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhase;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse;
-import se.sundsvall.checklist.api.model.EmployeeChecklistResponse.Detail;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.Mentor;
@@ -283,7 +282,8 @@ public class EmployeeChecklistService {
 
 	/**
 	 * Fetch a specific employee from employee integration (regardless of other data than uuid, for example if it is a new
-	 * or old employee) and initiate checklists for him or her.
+	 * or old employee, what employment type the employee has, if he or she is a joiner or not) and initiate checklists for
+	 * him or her.
 	 */
 	public EmployeeChecklistResponse initiateSpecificEmployeeChecklist(String municipalityId, String uuid) {
 		final var filter = buildUuidEmployeeFilter(uuid);
@@ -294,7 +294,7 @@ public class EmployeeChecklistService {
 			return buildNoMatchResponse();
 		}
 
-		return processEmployees(municipalityId, employees);
+		return processEmployees(municipalityId, employees, false);
 	}
 
 	/**
@@ -309,12 +309,12 @@ public class EmployeeChecklistService {
 			return buildNoMatchResponse();
 		}
 
-		return processEmployees(municipalityId, employees);
+		return processEmployees(municipalityId, employees, true);
 	}
 
-	private EmployeeChecklistResponse processEmployees(String municipalityId, final List<Employee> employees) {
+	private EmployeeChecklistResponse processEmployees(String municipalityId, final List<Employee> employees, boolean verifyValidEmployment) {
 		LOGGER.info("Found {} employees, creating checklists for these employees", employees.size());
-		final var employeeChecklistResponse = createEmployeeChecklist(municipalityId, employees);
+		final var employeeChecklistResponse = createEmployeeChecklist(municipalityId, employees, verifyValidEmployment);
 		final var errors = ofNullable(employeeChecklistResponse.getDetails()).orElse(emptyList())
 			.stream()
 			.filter(detail -> notEqual(OK, detail.getStatus()))
@@ -325,34 +325,33 @@ public class EmployeeChecklistService {
 		return employeeChecklistResponse;
 	}
 
-	private EmployeeChecklistResponse createEmployeeChecklist(String municipalityId, final List<Employee> employees) {
+	private EmployeeChecklistResponse createEmployeeChecklist(String municipalityId, final List<Employee> employees, boolean verifyValidEmployment) {
 		final var emplyeeChecklistResponse = new EmployeeChecklistResponse();
 
 		employees.forEach(employee -> {
 			try {
 				// Verify that employee contains all mandatory information needed to create an employee checklist
 				verifyMandatoryInformation(employee);
+				if (verifyValidEmployment) {
+					// Verify that the employment is valid for creating an employee checklist (this is only done
+					// for automatic import of new employees, not when manually importing a specific employee)
+					verifyValidEmployment(employee);
+				}
 
 				final var portalPersonData = employeeIntegration.getEmployeeByEmail(employee.getEmailAddress())
 					.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ORGANIZATIONAL_STRUCTURE_DATA_NOT_FOUND.formatted(employee.getLoginname())));
 
 				final var result = employeeChecklistIntegration.initiateEmployee(municipalityId, employee, OrganizationTree.map(portalPersonData.getCompanyId(), portalPersonData.getOrgTree()));
-				emplyeeChecklistResponse.getDetails().add(createDetail(OK, result));
+				emplyeeChecklistResponse.getDetails().add(toDetail(OK, result));
 			} catch (final ThrowableProblem e) {
-				emplyeeChecklistResponse.getDetails().add(createDetail(e.getStatus(), e.getMessage()));
+				emplyeeChecklistResponse.getDetails().add(toDetail(e.getStatus(), e.getMessage()));
 			} catch (final Exception e) {
 				LOGGER.error("Exception occured when creating employee checklist", e);
-				emplyeeChecklistResponse.getDetails().add(createDetail(INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR.getReasonPhrase() + ": " + e.getMessage()));
+				emplyeeChecklistResponse.getDetails().add(toDetail(INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR.getReasonPhrase() + ": " + e.getMessage()));
 			}
 		});
 
 		return emplyeeChecklistResponse;
-	}
-
-	private Detail createDetail(StatusType status, String message) {
-		return Detail.builder()
-			.withInformation(message)
-			.withStatus(status).build();
 	}
 
 	private EmployeeChecklistResponse buildNoMatchResponse() {
@@ -363,9 +362,9 @@ public class EmployeeChecklistService {
 	}
 
 	public OngoingEmployeeChecklists getOngoingEmployeeChecklists(final OngoingEmployeeChecklistParameters parameters) {
-		Page<EmployeeChecklistEntity> page = employeeChecklistIntegration.fetchAllOngoingEmployeeChecklists(parameters, toPageRequest(parameters));
+		final var page = employeeChecklistIntegration.fetchAllOngoingEmployeeChecklists(parameters, toPageRequest(parameters));
 
-		var checklists = page.stream()
+		final var checklists = page.stream()
 			.map(EmployeeChecklistMapper::mapToOngoingEmployeeChecklist)
 			.toList();
 

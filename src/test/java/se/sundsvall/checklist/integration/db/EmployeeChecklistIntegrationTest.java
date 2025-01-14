@@ -876,29 +876,6 @@ class EmployeeChecklistIntegrationTest {
 	}
 
 	@Test
-	void initiateEmployeeNotValidForChecklist() {
-		// Arrange
-		final var municipalityId = "municipalityId";
-		final var username = "username";
-		final var uuid = UUID.randomUUID();
-		final var employee = new Employee()
-			.loginname(username)
-			.personId(uuid)
-			.addEmploymentsItem(
-				new Employment()
-					.isMainEmployment(true)
-					.formOfEmploymentId("999"));
-
-		// Act
-		final var e = assertThrows(ThrowableProblem.class, () -> integration.initiateEmployee(municipalityId, employee, null));
-
-		// Verify and assert
-		verify(employeeRepositoryMock).existsById(uuid.toString());
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_ACCEPTABLE);
-		assertThat(e.getMessage()).isEqualTo("Not Acceptable: Employee with loginname username does not have an employment type that validates for creating an employee checklist.");
-	}
-
-	@Test
 	void initiateEmployeeWhenOrganizationIsNotPresentInDatabase() {
 		// Arrange
 		final var municipalityId = "municipalityId";
@@ -917,7 +894,6 @@ class EmployeeChecklistIntegrationTest {
 					.orgName(orgName)
 					.companyId(companyId)
 					.isMainEmployment(true)
-					.formOfEmploymentId("1")
 					.manager(new Manager()
 						.personId(managerUuid)));
 		final var orgTree = OrganizationTree.map(companyId, "2|21|Level-2¤3|212|Level-3¤4|" + orgId + "|" + orgName);
@@ -960,7 +936,6 @@ class EmployeeChecklistIntegrationTest {
 					.orgName(orgName)
 					.companyId(companyId)
 					.isMainEmployment(true)
-					.formOfEmploymentId("1")
 					.manager(new Manager()
 						.personId(managerUuid)));
 		final var orgTree = OrganizationTree.map(companyId, "2|21|Level-2¤3|212|Level-3¤4|" + orgId + "|" + orgName);
@@ -1008,7 +983,6 @@ class EmployeeChecklistIntegrationTest {
 					.orgName(orgName)
 					.companyId(companyId)
 					.isMainEmployment(true)
-					.formOfEmploymentId("1")
 					.manager(new Manager()
 						.personId(managerUuid)));
 		final var orgTree = OrganizationTree.map(companyId, "2|21|Level-2¤3|212|Level-3¤4|" + orgId + "|" + orgName);
@@ -1061,7 +1035,6 @@ class EmployeeChecklistIntegrationTest {
 					.orgName(orgName)
 					.companyId(companyId)
 					.isMainEmployment(true)
-					.formOfEmploymentId("1")
 					.manager(new Manager()
 						.personId(managerUuid)));
 		final var orgTree = OrganizationTree.map(companyId, "2|21|Level-2¤3|212|Level-3¤4|" + orgId + "|" + orgName);
@@ -1128,7 +1101,6 @@ class EmployeeChecklistIntegrationTest {
 					.orgName(orgName)
 					.companyId(companyId)
 					.isMainEmployment(true)
-					.formOfEmploymentId("1")
 					.manager(new Manager()
 						.personId(managerUuid)));
 		final var orgTree = OrganizationTree.map(companyId, "2|21|Level-2¤3|212|Level-3¤4|" + orgId + "|" + orgName);

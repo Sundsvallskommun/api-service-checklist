@@ -2,7 +2,6 @@ package se.sundsvall.checklist.integration.db;
 
 import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
-import static org.zalando.problem.Status.NOT_ACCEPTABLE;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.ACTIVE;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toCustomFulfilmentEntity;
@@ -18,7 +17,6 @@ import static se.sundsvall.checklist.service.util.StringUtils.toReadableString;
 import static se.sundsvall.checklist.service.util.VerificationUtils.verifyUnlockedEmployeeChecklist;
 
 import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.Employment;
 import generated.se.sundsvall.employee.Manager;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,7 +24,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
@@ -65,12 +62,10 @@ import se.sundsvall.checklist.service.OrganizationTree.OrganizationLine;
 public class EmployeeChecklistIntegration {
 	private static final String EMPLOYEE_HAS_CHECKLIST = "Employee with loginname %s already has an employee checklist.";
 	private static final String EMPLOYEE_SUCCESSFULLY_PROCESSED = "Employee with loginname %s processed successfully.";
-	private static final String EMPLOYMENT_TYPE_NOT_VALID_FOR_CHECKLIST = "Employee with loginname %s does not have an employment type that validates for creating an employee checklist.";
 	private static final String NO_MATCHING_CHECKLIST_FOUND = "No checklist was found for any id in the organization tree for employee %s. Search has been performed for id %s.";
 	private static final String NO_MATCHING_EMPLOYEE_CHECKLIST_FOUND = "Employee checklist with id %s was not found within municipality %s.";
 	private static final String NO_MATCHING_PHASE_FOUND = "Phase with id %s was not found within municipality %s.";
 	private static final String NO_FULFILMENT_INFORMATION_FOUND = "No fulfilment information found for task with id %s in employee checklist with id %s.";
-	private static final List<String> VALID_EMPLOYMENT_FORMS_FOR_CHECKLIST = List.of("1", "2", "9"); // Permanent employment ("1"), temporary monthly paid employment ("2") and probationary employment ("9")
 
 	private final DelegateRepository delegateRepository;
 	private final EmployeeRepository employeeRepository;
@@ -296,9 +291,8 @@ public class EmployeeChecklistIntegration {
 		if (employeeRepository.existsById(employee.getPersonId().toString())) {
 			return EMPLOYEE_HAS_CHECKLIST.formatted(employee.getLoginname());
 		}
-		if (!isValidForChecklist(employee)) {
-			throw Problem.valueOf(NOT_ACCEPTABLE, EMPLOYMENT_TYPE_NOT_VALID_FOR_CHECKLIST.formatted(employee.getLoginname()));
-		}
+
+		// Fetch main employment and create employee entity
 		final var employment = getMainEmployment(employee);
 		final var employeeEntity = toEmployeeEntity(employee);
 
@@ -314,13 +308,6 @@ public class EmployeeChecklistIntegration {
 		initiateEmployeeChecklist(municipalityId, persistedEmployee, orgTree);
 
 		return EMPLOYEE_SUCCESSFULLY_PROCESSED.formatted(employee.getLoginname());
-	}
-
-	private boolean isValidForChecklist(Employee employee) {
-		return Stream.of(getMainEmployment(employee))
-			.map(Employment::getFormOfEmploymentId)
-			.filter(StringUtils::isNotBlank)
-			.anyMatch(VALID_EMPLOYMENT_FORMS_FOR_CHECKLIST::contains);
 	}
 
 	private ManagerEntity retrieveManagerEntity(Manager manager) {
