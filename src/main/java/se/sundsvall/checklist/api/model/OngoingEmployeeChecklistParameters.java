@@ -1,5 +1,6 @@
 package se.sundsvall.checklist.api.model;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -18,6 +19,7 @@ public class OngoingEmployeeChecklistParameters extends AbstractParameterPagingA
 
 	private String employeeName;
 
+	@Hidden // Only used internally, shouldn't be visible in the API specification
 	private String municipalityId;
 
 }
