@@ -236,6 +236,7 @@ public class PortingService {
 		checklistEntity.setCreated(null);
 		checklistEntity.setUpdated(null);
 		checklistEntity.setMunicipalityId(null);
+		checklistEntity.setOrganization(null);
 
 		return checklistEntity;
 	}

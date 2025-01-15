@@ -49,6 +49,21 @@ public class SortingUtils {
 	}
 
 	/**
+	 * Helper method for applying custom sort order to a list of tasks
+	 *
+	 * @param tasks      the list of tasks to apply custom sort order to
+	 * @param customSort the custom sort order to apply
+	 */
+	public static void applyCustomSortorder(final List<Task> tasks, final List<SortorderEntity> customSort) {
+		customSort.stream()
+			.filter(entity -> TASK == entity.getComponentType())
+			.forEach(entity -> ofNullable(tasks).orElse(emptyList()).stream()
+				.filter(task -> task.getId().equals(entity.getComponentId()))
+				.findAny()
+				.ifPresent(task -> task.setSortOrder(entity.getPosition())));
+	}
+
+	/**
 	 * Helper method for arranging phases and their respective tasks in the correct order for employee checklists
 	 *
 	 * @param  phases the list of phases to sort

@@ -216,6 +216,99 @@ class SortorderServiceTest {
 	}
 
 	@Test
+	void applySortingForChecklists() {
+		final var checklist = Checklist.builder()
+			.withPhases(
+				List.of(Phase.builder()
+					.withId(COMPONENT_ID1)
+					.withSortOrder(1)
+					.withTasks(
+						List.of(Task.builder()
+							.withId(COMPONENT_ID2)
+							.withSortOrder(2)
+							.build()))
+					.build()))
+			.build();
+
+		when(mdViewerClientMock.getCompanies()).thenReturn(List.of(companyMock, companyMock));
+		when(companyMock.getCompanyId()).thenReturn(1, 2);
+		when(mdViewerClientMock.getOrganizationsForCompany(1)).thenReturn(Collections.emptyList());
+		when(mdViewerClientMock.getOrganizationsForCompany(2)).thenReturn(List.of(organizationMock));
+		when(organizationMock.getCompanyId()).thenReturn(2);
+		when(organizationMock.getOrgId()).thenReturn(ORGANIZATION_NUMBER);
+		when(sortorderRepositoryMock.findAllByMunicipalityIdAndOrganizationNumber(MUNICIPALITY_ID, ORGANIZATION_NUMBER)).thenReturn(createCustomorder());
+
+		final var result = service.applySortingToChecklists(MUNICIPALITY_ID, ORGANIZATION_NUMBER, List.of(checklist));
+
+		assertThat(result).extracting(Checklist::getPhases).satisfiesExactly(phases -> {
+			assertThat(phases.getFirst().getSortOrder()).isEqualTo(10);
+			assertThat(phases.getFirst().getTasks().getFirst().getSortOrder()).isEqualTo(20);
+		});
+	}
+
+	@Test
+	void applySortingForChecklistsWhenNoCustomSort() {
+		final var checklist = Checklist.builder()
+			.withPhases(
+				List.of(Phase.builder()
+					.withId(COMPONENT_ID1)
+					.withSortOrder(1)
+					.withTasks(
+						List.of(Task.builder()
+							.withId(COMPONENT_ID2)
+							.withSortOrder(2)
+							.build()))
+					.build()))
+			.build();
+
+		when(mdViewerClientMock.getCompanies()).thenReturn(List.of(companyMock, companyMock));
+		when(companyMock.getCompanyId()).thenReturn(1, 2);
+		when(mdViewerClientMock.getOrganizationsForCompany(1)).thenReturn(Collections.emptyList());
+		when(mdViewerClientMock.getOrganizationsForCompany(2)).thenReturn(List.of(organizationMock));
+		when(organizationMock.getCompanyId()).thenReturn(2);
+		when(organizationMock.getOrgId()).thenReturn(ORGANIZATION_NUMBER);
+
+		final var result = service.applySortingToChecklists(MUNICIPALITY_ID, ORGANIZATION_NUMBER, List.of(checklist));
+
+		assertThat(result).extracting(Checklist::getPhases).satisfiesExactly(phases -> {
+			assertThat(phases.getFirst().getSortOrder()).isEqualTo(1);
+			assertThat(phases.getFirst().getTasks().getFirst().getSortOrder()).isEqualTo(2);
+		});
+
+		verify(sortorderRepositoryMock).findAllByMunicipalityIdAndOrganizationNumber(MUNICIPALITY_ID, ORGANIZATION_NUMBER);
+	}
+
+	@Test
+	void applySortingForChecklistsWhenNoMatchingOrganization() {
+		final var checklist = Checklist.builder()
+			.withPhases(
+				List.of(Phase.builder()
+					.withId(COMPONENT_ID1)
+					.withSortOrder(1)
+					.withTasks(
+						List.of(Task.builder()
+							.withId(COMPONENT_ID2)
+							.withSortOrder(2)
+							.build()))
+					.build()))
+			.build();
+
+		when(mdViewerClientMock.getCompanies()).thenReturn(List.of(companyMock, companyMock));
+		when(companyMock.getCompanyId()).thenReturn(1, 2);
+		when(mdViewerClientMock.getOrganizationsForCompany(1)).thenReturn(Collections.emptyList());
+		when(mdViewerClientMock.getOrganizationsForCompany(2)).thenReturn(List.of(organizationMock));
+
+		final var result = service.applySortingToChecklists(MUNICIPALITY_ID, ORGANIZATION_NUMBER, List.of(checklist));
+
+		assertThat(result).extracting(Checklist::getPhases).satisfiesExactly(phases -> {
+			assertThat(phases.getFirst().getSortOrder()).isEqualTo(1);
+			assertThat(phases.getFirst().getTasks().getFirst().getSortOrder()).isEqualTo(2);
+		});
+
+		verify(sortorderRepositoryMock, never()).findAllByMunicipalityIdAndOrganizationNumber(MUNICIPALITY_ID, ORGANIZATION_NUMBER);
+	}
+
+	@Test
 	void applySortingForChecklist() {
 		final var checklist = Checklist.builder()
 			.withPhases(
@@ -238,28 +331,56 @@ class SortorderServiceTest {
 		when(organizationMock.getOrgId()).thenReturn(ORGANIZATION_NUMBER);
 		when(sortorderRepositoryMock.findAllByMunicipalityIdAndOrganizationNumber(MUNICIPALITY_ID, ORGANIZATION_NUMBER)).thenReturn(createCustomorder());
 
-		final var result = service.applySorting(MUNICIPALITY_ID, ORGANIZATION_NUMBER, List.of(checklist));
+		final var result = service.applySortingToChecklist(MUNICIPALITY_ID, ORGANIZATION_NUMBER, checklist);
 
-		assertThat(result).extracting(Checklist::getPhases).satisfiesExactly(phases -> {
-			assertThat(phases.getFirst().getSortOrder()).isEqualTo(10);
-			assertThat(phases.getFirst().getTasks().getFirst().getSortOrder()).isEqualTo(20);
+		assertThat(result.getPhases()).satisfiesExactly(phase -> {
+			assertThat(phase.getSortOrder()).isEqualTo(10);
+			assertThat(phase.getTasks().getFirst().getSortOrder()).isEqualTo(20);
 		});
 	}
 
 	@Test
-	void applySortingForChecklistWhenNoCustomSort() {
-		final var checklist = Checklist.builder()
-			.withPhases(
-				List.of(Phase.builder()
-					.withId(COMPONENT_ID1)
-					.withSortOrder(1)
-					.withTasks(
-						List.of(Task.builder()
-							.withId(COMPONENT_ID2)
-							.withSortOrder(2)
-							.build()))
-					.build()))
-			.build();
+	void applySortingToTasks() {
+		final var tasks = List.of(
+			Task.builder()
+				.withId(COMPONENT_ID1)
+				.withSortOrder(1)
+				.build(),
+			Task.builder()
+				.withId(COMPONENT_ID2)
+				.withSortOrder(2)
+				.build());
+
+		when(mdViewerClientMock.getCompanies()).thenReturn(List.of(companyMock, companyMock));
+		when(companyMock.getCompanyId()).thenReturn(1, 2);
+		when(mdViewerClientMock.getOrganizationsForCompany(1)).thenReturn(Collections.emptyList());
+		when(mdViewerClientMock.getOrganizationsForCompany(2)).thenReturn(List.of(organizationMock));
+		when(organizationMock.getCompanyId()).thenReturn(2);
+		when(organizationMock.getOrgId()).thenReturn(ORGANIZATION_NUMBER);
+		when(sortorderRepositoryMock.findAllByMunicipalityIdAndOrganizationNumber(MUNICIPALITY_ID, ORGANIZATION_NUMBER)).thenReturn(createCustomorderForTasks());
+
+		final var result = service.applySortingToTasks(MUNICIPALITY_ID, ORGANIZATION_NUMBER, tasks);
+
+		assertThat(result).hasSize(2).satisfiesExactly(task -> {
+			assertThat(task.getSortOrder()).isEqualTo(10);
+			assertThat(task.getId()).isEqualTo(COMPONENT_ID2);
+		}, task -> {
+			assertThat(task.getSortOrder()).isEqualTo(20);
+			assertThat(task.getId()).isEqualTo(COMPONENT_ID1);
+		});
+	}
+
+	@Test
+	void applySortingToTasksWhenNoCustomSort() {
+		final var tasks = List.of(
+			Task.builder()
+				.withId(COMPONENT_ID1)
+				.withSortOrder(1)
+				.build(),
+			Task.builder()
+				.withId(COMPONENT_ID2)
+				.withSortOrder(2)
+				.build());
 
 		when(mdViewerClientMock.getCompanies()).thenReturn(List.of(companyMock, companyMock));
 		when(companyMock.getCompanyId()).thenReturn(1, 2);
@@ -268,44 +389,64 @@ class SortorderServiceTest {
 		when(organizationMock.getCompanyId()).thenReturn(2);
 		when(organizationMock.getOrgId()).thenReturn(ORGANIZATION_NUMBER);
 
-		final var result = service.applySorting(MUNICIPALITY_ID, ORGANIZATION_NUMBER, List.of(checklist));
+		final var result = service.applySortingToTasks(MUNICIPALITY_ID, ORGANIZATION_NUMBER, tasks);
 
-		assertThat(result).extracting(Checklist::getPhases).satisfiesExactly(phases -> {
-			assertThat(phases.getFirst().getSortOrder()).isEqualTo(1);
-			assertThat(phases.getFirst().getTasks().getFirst().getSortOrder()).isEqualTo(2);
+		assertThat(result).hasSize(2).satisfiesExactly(task -> {
+			assertThat(task.getSortOrder()).isEqualTo(1);
+			assertThat(task.getId()).isEqualTo(COMPONENT_ID1);
+		}, task -> {
+			assertThat(task.getSortOrder()).isEqualTo(2);
+			assertThat(task.getId()).isEqualTo(COMPONENT_ID2);
 		});
-
-		verify(sortorderRepositoryMock).findAllByMunicipalityIdAndOrganizationNumber(MUNICIPALITY_ID, ORGANIZATION_NUMBER);
 	}
 
 	@Test
-	void applySortingForChecklistWhenNoMatchingOrganization() {
-		final var checklist = Checklist.builder()
-			.withPhases(
-				List.of(Phase.builder()
-					.withId(COMPONENT_ID1)
-					.withSortOrder(1)
-					.withTasks(
-						List.of(Task.builder()
-							.withId(COMPONENT_ID2)
-							.withSortOrder(2)
-							.build()))
-					.build()))
-			.build();
+	void applySortingToTasksWhenNoMatchingOrganization() {
+		final var tasks = List.of(
+			Task.builder()
+				.withId(COMPONENT_ID1)
+				.withSortOrder(1)
+				.build(),
+			Task.builder()
+				.withId(COMPONENT_ID2)
+				.withSortOrder(2)
+				.build());
 
 		when(mdViewerClientMock.getCompanies()).thenReturn(List.of(companyMock, companyMock));
 		when(companyMock.getCompanyId()).thenReturn(1, 2);
 		when(mdViewerClientMock.getOrganizationsForCompany(1)).thenReturn(Collections.emptyList());
 		when(mdViewerClientMock.getOrganizationsForCompany(2)).thenReturn(List.of(organizationMock));
 
-		final var result = service.applySorting(MUNICIPALITY_ID, ORGANIZATION_NUMBER, List.of(checklist));
+		final var result = service.applySortingToTasks(MUNICIPALITY_ID, ORGANIZATION_NUMBER, tasks);
 
-		assertThat(result).extracting(Checklist::getPhases).satisfiesExactly(phases -> {
-			assertThat(phases.getFirst().getSortOrder()).isEqualTo(1);
-			assertThat(phases.getFirst().getTasks().getFirst().getSortOrder()).isEqualTo(2);
+		assertThat(result).hasSize(2).satisfiesExactly(task -> {
+			assertThat(task.getSortOrder()).isEqualTo(1);
+			assertThat(task.getId()).isEqualTo(COMPONENT_ID1);
+		}, task -> {
+			assertThat(task.getSortOrder()).isEqualTo(2);
+			assertThat(task.getId()).isEqualTo(COMPONENT_ID2);
 		});
+	}
 
-		verify(sortorderRepositoryMock, never()).findAllByMunicipalityIdAndOrganizationNumber(MUNICIPALITY_ID, ORGANIZATION_NUMBER);
+	@Test
+	void applySortingToTask() {
+		final var task = Task.builder()
+			.withId(COMPONENT_ID1)
+			.withSortOrder(1)
+			.build();
+
+		when(mdViewerClientMock.getCompanies()).thenReturn(List.of(companyMock, companyMock));
+		when(companyMock.getCompanyId()).thenReturn(1, 2);
+		when(mdViewerClientMock.getOrganizationsForCompany(1)).thenReturn(Collections.emptyList());
+		when(mdViewerClientMock.getOrganizationsForCompany(2)).thenReturn(List.of(organizationMock));
+		when(organizationMock.getCompanyId()).thenReturn(2);
+		when(organizationMock.getOrgId()).thenReturn(ORGANIZATION_NUMBER);
+		when(sortorderRepositoryMock.findAllByMunicipalityIdAndOrganizationNumber(MUNICIPALITY_ID, ORGANIZATION_NUMBER)).thenReturn(createCustomorderForTasks());
+
+		final var result = service.applySortingToTask(MUNICIPALITY_ID, ORGANIZATION_NUMBER, task);
+
+		assertThat(result).isSameAs(task);
+		assertThat(result.getSortOrder()).isEqualTo(20);
 	}
 
 	@Test
@@ -360,6 +501,20 @@ class SortorderServiceTest {
 				.withComponentId(COMPONENT_ID2)
 				.withComponentType(ComponentType.TASK)
 				.withPosition(20)
+				.build());
+	}
+
+	private static List<SortorderEntity> createCustomorderForTasks() {
+		return List.of(
+			SortorderEntity.builder()
+				.withComponentId(COMPONENT_ID1)
+				.withComponentType(ComponentType.TASK)
+				.withPosition(20)
+				.build(),
+			SortorderEntity.builder()
+				.withComponentId(COMPONENT_ID2)
+				.withComponentType(ComponentType.TASK)
+				.withPosition(10)
 				.build());
 	}
 }

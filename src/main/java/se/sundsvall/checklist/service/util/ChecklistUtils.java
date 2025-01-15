@@ -52,7 +52,6 @@ public class ChecklistUtils {
 				task.setId(null);
 				task.setCreated(null);
 				task.setUpdated(null);
-				task.setPhase(task.getPhase());
 			});
 
 		return entity;

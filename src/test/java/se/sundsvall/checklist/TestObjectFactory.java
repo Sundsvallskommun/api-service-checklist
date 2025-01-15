@@ -93,6 +93,9 @@ public final class TestObjectFactory {
 			.withTasks(new ArrayList<>(List.of(createTaskEntity(phaseEntity, "Heading-1"), createTaskEntity(phaseEntity, "Heading-2"))))
 			.withCreated(OffsetDateTime.now().minusWeeks(1))
 			.withUpdated(OffsetDateTime.now())
+			.withOrganization(OrganizationEntity.builder()
+				.withMunicipalityId("municipalityId")
+				.withOrganizationNumber(123).build())
 			.build();
 	}
 
@@ -152,6 +155,7 @@ public final class TestObjectFactory {
 			.withOrganizationNumber(1234)
 			.withCreated(OffsetDateTime.now().minusWeeks(1))
 			.withUpdated(OffsetDateTime.now())
+			.withMunicipalityId("municipalityId")
 			.withCommunicationChannels(Set.of(EMAIL))
 			.withChecklists(new ArrayList<>(List.of()))
 			.build();

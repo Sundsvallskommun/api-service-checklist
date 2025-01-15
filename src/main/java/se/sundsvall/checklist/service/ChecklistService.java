@@ -2,6 +2,7 @@ package se.sundsvall.checklist.service;
 
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static org.zalando.problem.Status.BAD_REQUEST;
+import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.ACTIVE;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATED;
@@ -14,6 +15,7 @@ import static se.sundsvall.checklist.service.util.SortingUtils.getChecklistItemI
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
@@ -21,6 +23,7 @@ import se.sundsvall.checklist.api.model.Checklist;
 import se.sundsvall.checklist.api.model.ChecklistCreateRequest;
 import se.sundsvall.checklist.api.model.ChecklistUpdateRequest;
 import se.sundsvall.checklist.integration.db.ChecklistBuilder;
+import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
 import se.sundsvall.checklist.service.util.ChecklistUtils;
@@ -32,6 +35,7 @@ public class ChecklistService {
 	private static final String CHECKLIST_NAME_ALREADY_EXIST = "Checklist with name '%s' already exists in municipality %s";
 	private static final String CHECKLIST_NOT_CONNECTED_TO_ORGANIZATION = "No organization is connected to checklist with id %s";
 	private static final String ORGANIZATION_NOT_FOUND = "Organization with organization number %s does not exist within municipality %s";
+	private static final String CHECKLIST_PROCESS_ERROR = "Error occured when processing checklist with id %s";
 	private static final String CHECKLIST_CANNOT_BE_DELETED = "Cannot delete checklist with lifecycle %s";
 	private static final String CHECKLIST_DRAFT_IN_PROGRESS = "Checklist already has a draft version in progress preventing another draft version from being created";
 	private static final String ORGANIZATION_HAS_EXISTING_CHECKLIST = "Organization %s already has a defined checklist and can therefor not create a new checklist";
@@ -58,13 +62,13 @@ public class ChecklistService {
 
 	public List<Checklist> getChecklists(final String municipalityId) {
 		return checklistRepository.findAllByMunicipalityId(municipalityId).stream()
-			.map(checklistBuilder::buildChecklist)
+			.map(this::toChecklistWithAppliedSortOrder)
 			.toList();
 	}
 
 	public Checklist getChecklist(final String municipalityId, final String id) {
 		return checklistRepository.findByIdAndMunicipalityId(id, municipalityId)
-			.map(checklistBuilder::buildChecklist)
+			.map(this::toChecklistWithAppliedSortOrder)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND.formatted(municipalityId)));
 	}
 
@@ -101,9 +105,13 @@ public class ChecklistService {
 			throw Problem.valueOf(BAD_REQUEST, CHECKLIST_DRAFT_IN_PROGRESS);
 		}
 
-		// Prepare and save new version in database
+		// Prepare by disconnecting origin from the organization (needed to not have circular references when cloning)
+		origin.setOrganization(null);
+		// Clone and save new version in database
 		final var copy = checklistRepository.save(checklistUtils.clone(origin));
-
+		// Reconnect the organization to the original checklist and also connect it to the new version
+		origin.setOrganization(organization);
+		copy.setOrganization(organization);
 		// Connect new version to organization
 		organization.getChecklists().add(copy);
 
@@ -111,7 +119,7 @@ public class ChecklistService {
 		final var translationMap = findMatchingTaskIds(copy, origin);
 		sortorderService.copySortorderItems(translationMap);
 
-		return toChecklist(copy);
+		return toChecklistWithAppliedSortOrder(copy);
 	}
 
 	@Transactional
@@ -121,7 +129,8 @@ public class ChecklistService {
 		checklistRepository.findByNameAndMunicipalityIdAndLifeCycle(entity.getName(), municipalityId, ACTIVE)
 			.ifPresent(ch -> ch.setLifeCycle(DEPRECATED));
 		entity.setLifeCycle(ACTIVE);
-		return toChecklist(checklistRepository.save(entity));
+
+		return toChecklistWithAppliedSortOrder(checklistRepository.saveAndFlush(entity));
 	}
 
 	@Transactional
@@ -147,8 +156,19 @@ public class ChecklistService {
 	}
 
 	public Checklist updateChecklist(final String municipalityId, final String id, final ChecklistUpdateRequest request) {
-		return checklistRepository.findByIdAndMunicipalityId(id, municipalityId)
-			.map(entity -> checklistBuilder.buildChecklist(checklistRepository.save(updateChecklistEntity(entity, request))))
+		final var entity = checklistRepository.findByIdAndMunicipalityId(id, municipalityId)
+			.map(e -> checklistRepository.save(updateChecklistEntity(e, request)))
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND.formatted(municipalityId)));
+
+		return toChecklistWithAppliedSortOrder(entity);
 	}
+
+	private Checklist toChecklistWithAppliedSortOrder(final ChecklistEntity entity) {
+		return Stream.of(entity)
+			.map(checklistBuilder::buildChecklist)
+			.map(checklist -> sortorderService.applySortingToChecklist(entity.getOrganization().getMunicipalityId(), entity.getOrganization().getOrganizationNumber(), checklist))
+			.findAny()
+			.orElseThrow(() -> Problem.valueOf(INTERNAL_SERVER_ERROR, CHECKLIST_PROCESS_ERROR.formatted(entity.getId())));
+	}
+
 }
