@@ -54,6 +54,18 @@ class PortingIT extends AbstractAppTest {
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(EXPECTED_FILE)
 			.sendRequestAndVerifyResponse();
+
+		// Verify no changes has been made to the entity of the exported checklist
+		transactionTemplate.executeWithoutResult(status -> {
+			final var organization = organizationRepository.findByOrganizationNumberAndMunicipalityId(1, MUNCIPALITY_ID).orElseThrow();
+			assertThat(organization.getChecklists()).hasSize(2).satisfiesOnlyOnce(ch -> {
+				assertThat(ch.getVersion()).isEqualTo(1);
+				assertThat(ch.getName()).isEqualTo("TEST01_02_CHECKLIST");
+				assertThat(ch.getDisplayName()).isEqualTo("Deprecated checklist");
+				assertThat(ch.getLifeCycle()).isEqualTo(LifeCycle.DEPRECATED);
+				assertThat(ch.getOrganization().getOrganizationNumber()).isEqualTo(1);
+			});
+		});
 	}
 
 	@Test
