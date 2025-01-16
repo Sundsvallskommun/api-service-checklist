@@ -1131,7 +1131,7 @@ class EmployeeChecklistServiceTest {
 		});
 
 		assertThat(result.getMetadata()).satisfies(meta -> {
-			assertThat(meta.getPage()).isEqualTo(pageResult.getNumber());
+			assertThat(meta.getPage()).isEqualTo(pageResult.getNumber() + 1);
 			assertThat(meta.getLimit()).isEqualTo(pageResult.getSize());
 			assertThat(meta.getCount()).isEqualTo(pageResult.getTotalElements());
 			assertThat(meta.getTotalPages()).isEqualTo(pageResult.getTotalPages());
