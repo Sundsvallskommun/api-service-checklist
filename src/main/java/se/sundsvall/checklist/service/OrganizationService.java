@@ -71,7 +71,7 @@ public class OrganizationService {
 
 		// Find and apply requested custom sorting
 		ofNullable(applySortFor).ifPresent(orgNumber -> organization.setChecklists(
-			sortorderService.applySorting(entity.getMunicipalityId(), orgNumber, organization.getChecklists())));
+			sortorderService.applySortingToChecklists(entity.getMunicipalityId(), orgNumber, organization.getChecklists())));
 
 		return organization;
 	}

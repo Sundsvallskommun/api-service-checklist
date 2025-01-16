@@ -3,6 +3,8 @@ package se.sundsvall.checklist.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -75,12 +77,14 @@ class TaskServiceTest {
 	void getTasksInPhase() {
 		when(mockChecklistRepository.findByIdAndMunicipalityId(checklistEntity.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(checklistEntity));
 		when(mockPhaseRepository.existsByIdAndMunicipalityId(phaseEntity.getId(), MUNICIPALITY_ID)).thenReturn(true);
+		when(mockSortorderService.applySortingToTasks(eq(MUNICIPALITY_ID), eq(checklistEntity.getOrganization().getOrganizationNumber()), anyList())).thenAnswer(inv -> inv.getArgument(2));
 
 		final var result = taskService.getTasks(MUNICIPALITY_ID, checklistEntity.getId(), phaseEntity.getId());
 
 		assertThat(result).isNotEmpty().hasSize(2);
 		verify(mockChecklistRepository).findByIdAndMunicipalityId(checklistEntity.getId(), MUNICIPALITY_ID);
 		verify(mockPhaseRepository).existsByIdAndMunicipalityId(phaseEntity.getId(), MUNICIPALITY_ID);
+		verify(mockSortorderService).applySortingToTasks(eq(MUNICIPALITY_ID), eq(checklistEntity.getOrganization().getOrganizationNumber()), anyList());
 	}
 
 	@Test
@@ -109,6 +113,7 @@ class TaskServiceTest {
 	void getTaskInPhase() {
 		when(mockChecklistRepository.findByIdAndMunicipalityId(checklistEntity.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(checklistEntity));
 		when(mockPhaseRepository.existsByIdAndMunicipalityId(phaseEntity.getId(), MUNICIPALITY_ID)).thenReturn(true);
+		when(mockSortorderService.applySortingToTask(eq(MUNICIPALITY_ID), eq(checklistEntity.getOrganization().getOrganizationNumber()), any(Task.class))).thenAnswer(inv -> inv.getArgument(2));
 
 		final var result = taskService.getTask(MUNICIPALITY_ID, checklistEntity.getId(), phaseEntity.getId(), taskEntity.getId());
 
@@ -121,6 +126,7 @@ class TaskServiceTest {
 
 		verify(mockChecklistRepository).findByIdAndMunicipalityId(checklistEntity.getId(), MUNICIPALITY_ID);
 		verify(mockPhaseRepository).existsByIdAndMunicipalityId(phaseEntity.getId(), MUNICIPALITY_ID);
+		verify(mockSortorderService).applySortingToTask(eq(MUNICIPALITY_ID), eq(checklistEntity.getOrganization().getOrganizationNumber()), any(Task.class));
 	}
 
 	@Test
@@ -199,12 +205,14 @@ class TaskServiceTest {
 		when(mockChecklistRepository.findByIdAndMunicipalityId(checklistEntity.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(checklistEntity));
 		when(mockPhaseRepository.existsByIdAndMunicipalityId(phaseEntity.getId(), MUNICIPALITY_ID)).thenReturn(true);
 		when(mockTaskRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+		when(mockSortorderService.applySortingToTask(eq(MUNICIPALITY_ID), eq(checklistEntity.getOrganization().getOrganizationNumber()), any(Task.class))).thenAnswer(inv -> inv.getArgument(2));
 
 		final var result = taskService.updateTask(MUNICIPALITY_ID, checklistEntity.getId(), phaseEntity.getId(), taskEntity.getId(), updateRequest);
 
 		verify(mockChecklistRepository).findByIdAndMunicipalityId(checklistEntity.getId(), MUNICIPALITY_ID);
 		verify(mockPhaseRepository).existsByIdAndMunicipalityId(phaseEntity.getId(), MUNICIPALITY_ID);
 		verify(mockTaskRepository).save(taskEntityCaptor.capture());
+		verify(mockSortorderService).applySortingToTask(eq(MUNICIPALITY_ID), eq(checklistEntity.getOrganization().getOrganizationNumber()), any(Task.class));
 
 		assertThat(result).isNotNull().isInstanceOf(Task.class);
 		assertThat(taskEntityCaptor.getValue()).satisfies(entity -> {

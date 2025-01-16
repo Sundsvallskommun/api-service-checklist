@@ -48,9 +48,11 @@ public class TaskService {
 		final var checklist = getChecklist(municipalityId, checklistId);
 		verifyPhaseIsPresent(municipalityId, phaseId); // This is here to verify that sent in phase id is present in database
 
-		return toTasks(checklist.getTasks().stream()
+		final var tasks = toTasks(checklist.getTasks().stream()
 			.filter(task -> task.getPhase().getId().equals(phaseId))
 			.toList());
+
+		return sortorderService.applySortingToTasks(municipalityId, checklist.getOrganization().getOrganizationNumber(), tasks);
 	}
 
 	public Task getTask(final String municipalityId, final String checklistId, final String phaseId, final String taskId) {
@@ -58,7 +60,7 @@ public class TaskService {
 		verifyPhaseIsPresent(municipalityId, phaseId); // This is here to verify that sent in phase id is present in database
 		final var task = getTaskInPhase(checklist, phaseId, taskId);
 
-		return toTask(task);
+		return sortorderService.applySortingToTask(municipalityId, checklist.getOrganization().getOrganizationNumber(), toTask(task));
 	}
 
 	@Transactional
@@ -77,7 +79,8 @@ public class TaskService {
 		verifyPhaseIsPresent(municipalityId, phaseId); // This is here to verify that sent in phase id is present in database
 		final var task = getTaskInPhase(checklist, phaseId, taskId);
 
-		return toTask(taskRepository.save(updateTaskEntity(task, request)));
+		final var updatedTask = toTask(taskRepository.save(updateTaskEntity(task, request)));
+		return sortorderService.applySortingToTask(municipalityId, checklist.getOrganization().getOrganizationNumber(), updatedTask);
 	}
 
 	@Transactional

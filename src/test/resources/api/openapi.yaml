@@ -3566,8 +3566,6 @@ components:
           $ref: "#/components/schemas/Direction"
         employeeName:
           type: string
-        municipalityId:
-          type: string
     EmployeeChecklist:
       type: object
       properties:

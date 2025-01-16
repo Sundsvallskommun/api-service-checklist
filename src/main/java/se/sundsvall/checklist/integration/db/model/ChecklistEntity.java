@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -72,6 +73,12 @@ public class ChecklistEntity {
 
 	@Column(name = "last_saved_by", nullable = false)
 	private String lastSavedBy;
+
+	@ManyToOne(cascade = {
+		CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE
+	})
+	@JoinColumn(name = "organization_id")
+	private OrganizationEntity organization;
 
 	@Builder.Default
 	@OneToMany(cascade = {

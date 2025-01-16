@@ -10,6 +10,7 @@ import static se.sundsvall.checklist.service.mapper.SortorderMapper.toTaskItem;
 import static se.sundsvall.checklist.service.util.SortingUtils.applyCustomSortorder;
 import static se.sundsvall.checklist.service.util.SortingUtils.sortEmployeeChecklistPhases;
 import static se.sundsvall.checklist.service.util.SortingUtils.sortPhases;
+import static se.sundsvall.checklist.service.util.SortingUtils.sortTasks;
 
 import generated.se.sundsvall.mdviewer.Organization;
 import java.util.Iterator;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import se.sundsvall.checklist.api.model.Checklist;
 import se.sundsvall.checklist.api.model.EmployeeChecklist;
 import se.sundsvall.checklist.api.model.SortorderRequest;
+import se.sundsvall.checklist.api.model.Task;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
 import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
@@ -93,14 +95,14 @@ public class SortorderService {
 	}
 
 	/**
-	 * Method for applying custom sorting to checklist "templates"
+	 * Method for applying custom sorting to a list of checklist templates
 	 *
 	 * @param  municipalityId     id for municipality where to find checklist and custom sort
 	 * @param  organizationNumber number for the organization that the custom sort should be based on
 	 * @param  checklists         the checklists that will be sorted
 	 * @return                    list of checklists where custom sortorder has been applied
 	 */
-	public List<Checklist> applySorting(final String municipalityId, final Integer organizationNumber, final List<Checklist> checklists) {
+	public List<Checklist> applySortingToChecklists(final String municipalityId, final Integer organizationNumber, final List<Checklist> checklists) {
 		ofNullable(findOrganization(mdViewerClient.getCompanies().iterator(), organizationNumber))
 			.map(org -> findClosestCustomSort(municipalityId, org))
 			.ifPresent(customSort -> recalculateSortorder(checklists, customSort));
@@ -108,11 +110,53 @@ public class SortorderService {
 		return checklists;
 	}
 
+	/**
+	 * Method for applying custom sorting to a checklist template
+	 *
+	 * @param  municipalityId     id for municipality where to find checklist and custom sort
+	 * @param  organizationNumber number for the organization that the custom sort should be based on
+	 * @param  checklist          the checklist that will be sorted
+	 * @return                    checklist where custom sortorder has been applied
+	 */
+	public Checklist applySortingToChecklist(final String municipalityId, final Integer organizationNumber, final Checklist checklist) {
+		return applySortingToChecklists(municipalityId, organizationNumber, List.of(checklist)).getFirst();
+	}
+
 	private void recalculateSortorder(final List<Checklist> checklists, List<SortorderEntity> customSort) {
 		ofNullable(checklists).orElse(emptyList()).forEach(checklist -> {
 			applyCustomSortorder(checklist, customSort);
 			checklist.setPhases(sortPhases(checklist.getPhases()));
 		});
+	}
+
+	/**
+	 * Method for applying custom sorting to a list of task templates
+	 *
+	 * @param  municipalityId     id for municipality where to find checklist and custom sort
+	 * @param  organizationNumber number for the organization that the custom sort should be based on
+	 * @param  tasks              the list of tasks that will be sorted
+	 * @return                    list with tasks where custom sortorder has been applied
+	 */
+	public List<Task> applySortingToTasks(final String municipalityId, final Integer organizationNumber, final List<Task> tasks) {
+		return ofNullable(findOrganization(mdViewerClient.getCompanies().iterator(), organizationNumber))
+			.map(org -> findClosestCustomSort(municipalityId, org))
+			.map(customSort -> {
+				applyCustomSortorder(tasks, customSort);
+				return sortTasks(tasks);
+			})
+			.orElse(tasks);
+	}
+
+	/**
+	 * Method for applying custom sort order to a task template
+	 *
+	 * @param  municipalityId     id for municipality where to find checklist and custom sort
+	 * @param  organizationNumber number for the organization that the custom sort should be based on
+	 * @param  task               the task that is to be updated with custom sort order
+	 * @return                    task where custom sortorder has been applied
+	 */
+	public Task applySortingToTask(final String municipalityId, final Integer organizationNumber, final Task task) {
+		return applySortingToTasks(municipalityId, organizationNumber, List.of(task)).getFirst();
 	}
 
 	private Organization findOrganization(final Iterator<Organization> companyIterator, final Integer organizationNumber) {
@@ -138,7 +182,7 @@ public class SortorderService {
 	/**
 	 * Method for applying custom sorting to a employee checklist
 	 *
-	 * @param  employeeChecklistEntity the employee checklist entity holding organizational information need when finding
+	 * @param  employeeChecklistEntity the employee checklist entity holding organizational information, needed when finding
 	 *                                 closest custom sortorder
 	 * @param  employeeChecklist       the employee checklist that will be sorted
 	 * @return                         employee checklist where custom sortorder has been applied
@@ -158,8 +202,7 @@ public class SortorderService {
 	}
 
 	private List<SortorderEntity> findClosestCustomSort(final EmployeeEntity employee) {
-		final var organizations = ofNullable(employee)
-			.map(EmployeeEntity::getCompany)
+		final var organizations = ofNullable(employee.getCompany())
 			.map(OrganizationEntity::getOrganizationNumber)
 			.map(mdViewerClient::getOrganizationsForCompany)
 			.orElse(emptyList());

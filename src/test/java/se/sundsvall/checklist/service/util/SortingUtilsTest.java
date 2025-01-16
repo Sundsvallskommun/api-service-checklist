@@ -169,7 +169,6 @@ class SortingUtilsTest {
 				assertThat(task.getId()).isEqualTo(TASK_ID2);
 				assertThat(task.getSortOrder()).isEqualTo(1);
 			});
-
 	}
 
 	@Test
@@ -191,6 +190,28 @@ class SortingUtilsTest {
 
 		assertThat(checklist.getPhases().getFirst().getSortOrder()).isEqualTo(101);
 		assertThat(checklist.getPhases().getFirst().getTasks().getFirst().getSortOrder()).isEqualTo(202);
+	}
+
+	@Test
+	void applyCustomSortorderToListOfTasks() {
+		final var tasks = List.of(
+			Task.builder()
+				.withId(TASK_ID1)
+				.withSortOrder(1)
+				.build(), Task.builder()
+					.withId(TASK_ID2)
+					.withSortOrder(2)
+					.build());
+
+		SortingUtils.applyCustomSortorder(tasks, createCustomorderForTasks());
+
+		assertThat(tasks).satisfiesExactlyInAnyOrder(task -> {
+			assertThat(task.getId()).isEqualTo(TASK_ID2);
+			assertThat(task.getSortOrder()).isEqualTo(10);
+		}, task -> {
+			assertThat(task.getId()).isEqualTo(TASK_ID1);
+			assertThat(task.getSortOrder()).isEqualTo(20);
+		});
 	}
 
 	@Test
@@ -361,4 +382,22 @@ class SortingUtilsTest {
 				.build());
 	}
 
+	private static List<SortorderEntity> createCustomorderForTasks() {
+		return List.of(
+			SortorderEntity.builder()
+				.withComponentId(TASK_ID1)
+				.withComponentType(TASK)
+				.withPosition(20)
+				.build(),
+			SortorderEntity.builder()
+				.withComponentId(PHASE_ID1)
+				.withComponentType(PHASE)
+				.withPosition(15)
+				.build(),
+			SortorderEntity.builder()
+				.withComponentId(TASK_ID2)
+				.withComponentType(TASK)
+				.withPosition(10)
+				.build());
+	}
 }

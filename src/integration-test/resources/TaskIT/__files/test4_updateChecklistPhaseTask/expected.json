@@ -2,7 +2,7 @@
 	"heading": "string",
 	"headingReference": "referenceToSomething",
 	"created": "2024-01-01T00:00:00+01:00",
-	"sortOrder": 3,
+	"sortOrder": 2,
 	"lastSavedBy": "someUser",
 	"permission": "SUPERADMIN",
 	"id": "414803ef-0074-4f24-b5e5-54c48f7c6ea9",

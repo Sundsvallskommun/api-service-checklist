@@ -62,7 +62,8 @@
 			"name": "Tredje veckan",
 			"id": "3455a5d4-1db8-4a25-a49f-92fdd0c60a14",
 			"updated": "2019-01-01T00:00:00+01:00",
-			"timeToComplete": "P3W"
+			"timeToComplete": "P3W",
+			"tasks": []
 		},
 		{
 			"bodyText": "Dessa uppgifter ska göras andra veckan",
@@ -72,7 +73,8 @@
 			"name": "Andra veckan",
 			"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
 			"updated": "2019-01-01T00:00:00+01:00",
-			"timeToComplete": "P2W"
+			"timeToComplete": "P2W",
+			"tasks": []
 		}
 	]
 }

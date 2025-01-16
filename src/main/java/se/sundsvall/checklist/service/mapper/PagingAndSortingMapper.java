@@ -5,6 +5,7 @@ import static java.util.Optional.ofNullable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,14 +24,14 @@ public final class PagingAndSortingMapper {
 
 	private PagingAndSortingMapper() {}
 
-	public static PagingMetaData toPagingMetaData(Page<?> page1) {
-		return ofNullable(page1)
-			.map(page -> PagingMetaData.create()
-				.withPage(page.getNumber())
-				.withLimit(page.getSize())
-				.withCount(page.getNumberOfElements())
-				.withTotalRecords(page.getTotalElements())
-				.withTotalPages(page.getTotalPages()))
+	public static PagingMetaData toPagingMetaData(Page<?> page) {
+		return ofNullable(page)
+			.map(p -> PagingMetaData.create()
+				.withPage(p.getNumber() + 1) // page number is zero based and needs a + 1
+				.withLimit(p.getSize())
+				.withCount(p.getNumberOfElements())
+				.withTotalRecords(p.getTotalElements())
+				.withTotalPages(p.getTotalPages()))
 			.orElse(null);
 	}
 
@@ -39,8 +40,9 @@ public final class PagingAndSortingMapper {
 			return null;
 		}
 
-		var sortBy = Optional.ofNullable(parameters.getSortBy()).orElse(emptyList()).stream()
+		final var sortBy = Optional.ofNullable(parameters.getSortBy()).orElse(emptyList()).stream()
 			.map(apiToAttributeMapping::get)
+			.filter(Objects::nonNull)
 			.flatMap(List::stream)
 			.toList();
 

@@ -16,10 +16,11 @@ _The service provides administration of the checklists that new employees and th
 
 1. **Clone the repository:**
 
-   ```bash
-   git clone https://github.com/Sundsvallskommun/api-service-checklist.git
-   cd api-service-checklist
-   ```
+```bash
+git clone https://github.com/Sundsvallskommun/api-service-checklist.git
+cd api-service-checklist
+```
+
 2. **Configure the application:**
 
    Before running the application, you need to set up configuration settings.
@@ -35,14 +36,15 @@ _The service provides administration of the checklists that new employees and th
 
    - Using Maven:
 
-     ```bash
-     mvn spring-boot:run
-     ```
-   - Using Gradle:
+```bash
+mvn spring-boot:run
+```
 
-     ```bash
-     gradle bootRun
-     ```
+- Using Gradle:
+
+```bash
+gradle bootRun
+```
 
 ## Dependencies
 
@@ -50,6 +52,8 @@ This microservice depends on the following services:
 
 - **Employee**
   - **Purpose:** Used for reading employee information.
+- **MDViewer**
+  - **Purpose:** Used for reading organizational structure information.
 - **Messaging**
   - **Purpose:** Used for sending emails to employees and managers.
   - **Repository:** [https://github.com/Sundsvallskommun/api-service-messaging](https://github.com/Sundsvallskommun/api-service-messaging)
@@ -71,12 +75,12 @@ Access the API documentation via Swagger UI:
 
 ### API Endpoints
 
-Refer to the [API Documentation](#api-documentation) for detailed information on available endpoints.
+See the [API Documentation](#api-documentation) for detailed information on available endpoints.
 
 ### Example Request
 
 ```bash
-curl -X GET http://localhost:8080/api/resource
+curl -X GET http://localhost:8080/2281/employee-checklists/employee/username
 ```
 
 ## Configuration
@@ -87,40 +91,89 @@ Configuration is crucial for the application to run successfully. Ensure all nec
 
 - **Server Port:**
 
-  ```yaml
-  server:
-    port: 8080
-  ```
-- **Database Settings:**
+```yaml
+server:
+  port: 8080
+```
 
-  ```yaml
-  spring:
-    datasource:
-      url: jdbc:mysql://localhost:3306/your_database
-      username: your_db_username
-      password: your_db_password
-  ```
-- **External Service URLs:**
+- **Database Settings**
 
-  ```yaml
-  integration:
-    service:
-      url: http://dependency_service_url
-      oauth2:
-        client-id: some-client-id
-        client-secret: some-client-secret
+```yaml
+config:
+  datasource:
+    url: jdbc:mysql://localhost:3306/your_database
+    username: your_db_username
+    password: your_db_password
+  sql:
+    init:
+      mode: sql-init-mode (should be set to  'never' in production env)
+  jpa:
+    ddl-auto: auto-setting (should be set to 'validate' in production env)
+    defer-datasource-initialization: false
+```
 
-  service:
-    oauth2:
-      token-url: http://dependecy_service_token_url
-  ```
+- **External Service URLs**
+
+```yaml
+  config:
+    common:
+      token-url: http://dependecy_token_url
+      client-id: some-client-id
+      client-secret: some-client-secret
+
+    integration:
+      employee:
+        url: http://employee_service_url
+        token-url: ${config.common.token-url}
+        client-id: ${config.common.client-id}
+        client-secret: ${config.common.client-secret}
+      mdviewer:
+        url: http://mdviewer_service_url
+        token-url: ${config.common.token-url}
+        client-id: ${config.common.client-id}
+        client-secret: ${config.common.client-secret}
+      messaging:
+        url: http://messaging_service_url
+        token-url: ${config.common.token-url}
+        client-id: ${config.common.client-id}
+        client-secret: ${config.common.client-secret}
+      templating:
+        url: http://templating_service_url
+        token-url: ${config.common.token-url}
+        client-id: ${config.common.client-id}
+        client-secret: ${config.common.client-secret}
+
+```
+
+- ** Other configuration**
+
+```yaml
+  config:
+    schedulers:
+      new-employees:
+        cron: cron expression when scheduler should run
+        fetch-on-startup: true/false, states if new employees shall be fetched or not on service start up
+        delay-on-startup: ISO861 format for delay before new employees are fetched after service start up
+      manager-email:
+        cron: cron expression when scheduler should run
+      lock-employee-checklists:
+        enabled: true/false, states if job to lock old checklists should be executed once per day or not
+
+    manager-email:
+      template: template_name
+      subject: subject-string
+      sender:
+        reply-to: reply-to-address
+        address: sender-address
+        name: sender-name
+```
 
 ### Database Initialization
 
 The project is set up with [Flyway](https://github.com/flyway/flyway) for database migrations. Flyway is disabled by default so you will have to enable it to automatically populate the database schema upon application startup.
 
 ```yaml
-spring:
+config:
   flyway:
     enabled: true
 ```

@@ -1,241 +1,251 @@
 [
 	{
-		"displayName": "Checklista för Elnät",
-		"created": "2019-01-01T00:00:00+01:00",
-		"lastSavedBy": "someUser",
-		"name": "CHECKLIST_ELNAT",
 		"id": "15764278-50c8-4a19-af00-077bfc314fd2",
+		"name": "CHECKLIST_ELNAT",
+		"displayName": "Checklista för Elnät",
 		"version": 1,
 		"lifeCycle": "CREATED",
+		"created": "2019-01-01T00:00:00+01:00",
 		"updated": "2019-01-01T00:00:00+01:00",
+		"lastSavedBy": "someUser",
 		"phases": [
 			{
-				"bodyText": "Dessa uppgifter ska göras första veckan",
-				"created": "2019-01-01T00:00:00+01:00",
-				"sortOrder": 1,
-				"lastSavedBy": "someUser",
-				"name": "Första veckan",
 				"id": "1455a5d4-1db8-4a25-a49f-92fdd0c60a14",
-				"updated": "2019-01-01T00:00:00+01:00",
+				"name": "Första veckan",
+				"bodyText": "Dessa uppgifter ska göras första veckan",
 				"timeToComplete": "P1W",
+				"sortOrder": 1,
 				"tasks": [
 					{
+						"id": "cba82aca-f841-4257-baec-d745e3ab78bf",
 						"heading": "Lunch",
 						"headingReference": "http://www.somelunchbookingsite.web",
-						"created": "2019-01-01T00:00:00+01:00",
-						"sortOrder": 1,
-						"lastSavedBy": "someUser",
-						"id": "cba82aca-f841-4257-baec-d745e3ab78bf",
 						"text": "Boka upp social lunch med chefen",
+						"sortOrder": 1,
 						"roleType": "NEW_EMPLOYEE",
 						"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
-						"updated": "2019-01-01T00:00:00+01:00"
+						"created": "2019-01-01T00:00:00+01:00",
+						"updated": "2019-01-01T00:00:00+01:00",
+						"lastSavedBy": "someUser"
 					},
 					{
-						"heading": "Fika",
-						"created": "2019-01-01T00:00:00+01:00",
-						"sortOrder": 2,
-						"lastSavedBy": "someUser",
 						"id": "aba82aca-f841-4257-baec-d745e3ab78bf",
+						"heading": "Fika",
 						"text": "Bjud på hembakat fika",
+						"sortOrder": 2,
 						"roleType": "NEW_EMPLOYEE",
 						"questionType": "YES_OR_NO",
-						"updated": "2019-01-01T00:00:00+01:00"
+						"created": "2019-01-01T00:00:00+01:00",
+						"updated": "2019-01-01T00:00:00+01:00",
+						"lastSavedBy": "someUser"
 					},
 					{
-						"heading": "Allergi",
-						"created": "2019-01-01T00:00:00+01:00",
-						"sortOrder": 3,
-						"lastSavedBy": "someUser",
 						"id": "bba82aca-f841-4257-baec-d745e3ab78bf",
+						"heading": "Allergi",
 						"text": "Har du några allergier?",
+						"sortOrder": 3,
 						"roleType": "NEW_EMPLOYEE",
 						"questionType": "YES_OR_NO_WITH_TEXT",
-						"updated": "2019-01-01T00:00:00+01:00"
+						"created": "2019-01-01T00:00:00+01:00",
+						"updated": "2019-01-01T00:00:00+01:00",
+						"lastSavedBy": "someUser"
 					}
-				]
+				],
+				"created": "2019-01-01T00:00:00+01:00",
+				"updated": "2019-01-01T00:00:00+01:00",
+				"lastSavedBy": "someUser"
 			},
 			{
-				"bodyText": "Dessa uppgifter ska göras tredje veckan",
-				"created": "2019-01-01T00:00:00+01:00",
-				"sortOrder": 2,
-				"lastSavedBy": "someUser",
-				"name": "Tredje veckan",
 				"id": "3455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+				"name": "Tredje veckan",
+				"bodyText": "Dessa uppgifter ska göras tredje veckan",
+				"timeToComplete": "P3W",
+				"sortOrder": 2,
+				"tasks": [],
+				"created": "2019-01-01T00:00:00+01:00",
 				"updated": "2019-01-01T00:00:00+01:00",
-				"timeToComplete": "P3W"
+				"lastSavedBy": "someUser"
 			},
 			{
-				"bodyText": "Dessa uppgifter ska göras andra veckan",
-				"created": "2019-01-01T00:00:00+01:00",
-				"sortOrder": 3,
-				"lastSavedBy": "someUser",
-				"name": "Andra veckan",
 				"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+				"name": "Andra veckan",
+				"bodyText": "Dessa uppgifter ska göras andra veckan",
+				"timeToComplete": "P2W",
+				"sortOrder": 3,
+				"tasks": [],
+				"created": "2019-01-01T00:00:00+01:00",
 				"updated": "2019-01-01T00:00:00+01:00",
-				"timeToComplete": "P2W"
+				"lastSavedBy": "someUser"
 			}
 		]
 	},
 	{
-		"displayName": "Checklista för Vård och omsorg",
-		"created": "2019-01-01T00:00:00+01:00",
-		"lastSavedBy": "someUser",
-		"name": "CHECKLIST_VOO",
 		"id": "25764278-50c8-4a19-af00-077bfc314fd2",
+		"name": "CHECKLIST_VOO",
+		"displayName": "Checklista för Vård och omsorg",
 		"version": 1,
 		"lifeCycle": "ACTIVE",
+		"created": "2019-01-01T00:00:00+01:00",
 		"updated": "2019-01-01T00:00:00+01:00",
+		"lastSavedBy": "someUser",
 		"phases": [
 			{
-				"bodyText": "Dessa uppgifter ska göras första veckan",
-				"created": "2019-01-01T00:00:00+01:00",
-				"sortOrder": 1,
-				"lastSavedBy": "someUser",
-				"name": "Första veckan",
 				"id": "1455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+				"name": "Första veckan",
+				"bodyText": "Dessa uppgifter ska göras första veckan",
+				"timeToComplete": "P1W",
+				"sortOrder": 1,
+				"tasks": [],
+				"created": "2019-01-01T00:00:00+01:00",
 				"updated": "2019-01-01T00:00:00+01:00",
-				"timeToComplete": "P1W"
+				"lastSavedBy": "someUser"
 			},
 			{
-				"bodyText": "Dessa uppgifter ska göras tredje veckan",
-				"created": "2019-01-01T00:00:00+01:00",
-				"sortOrder": 2,
-				"lastSavedBy": "someUser",
-				"name": "Tredje veckan",
 				"id": "3455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+				"name": "Tredje veckan",
+				"bodyText": "Dessa uppgifter ska göras tredje veckan",
+				"timeToComplete": "P3W",
+				"sortOrder": 2,
+				"tasks": [],
+				"created": "2019-01-01T00:00:00+01:00",
 				"updated": "2019-01-01T00:00:00+01:00",
-				"timeToComplete": "P3W"
+				"lastSavedBy": "someUser"
 			},
 			{
-				"bodyText": "Dessa uppgifter ska göras andra veckan",
-				"created": "2019-01-01T00:00:00+01:00",
-				"sortOrder": 3,
-				"lastSavedBy": "someUser",
-				"name": "Andra veckan",
 				"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+				"name": "Andra veckan",
+				"bodyText": "Dessa uppgifter ska göras andra veckan",
+				"timeToComplete": "P2W",
+				"sortOrder": 3,
+				"tasks": [],
+				"created": "2019-01-01T00:00:00+01:00",
 				"updated": "2019-01-01T00:00:00+01:00",
-				"timeToComplete": "P2W"
+				"lastSavedBy": "someUser"
 			}
 		]
 	},
 	{
-		"displayName": "Pensionerad checklista",
-		"created": "2019-01-01T00:00:00+01:00",
-		"lastSavedBy": "someUser",
-		"name": "RETIRED_LIST",
 		"id": "35764278-50c8-4a19-af00-077bfc314fd2",
+		"name": "RETIRED_LIST",
+		"displayName": "Pensionerad checklista",
 		"version": 1,
 		"lifeCycle": "RETIRED",
+		"created": "2019-01-01T00:00:00+01:00",
 		"updated": "2019-01-01T00:00:00+01:00",
+		"lastSavedBy": "someUser",
 		"phases": [
 			{
-				"bodyText": "Dessa uppgifter ska göras första veckan",
-				"created": "2019-01-01T00:00:00+01:00",
+				"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+				"name": "Andra veckan",
+				"bodyText": "Dessa uppgifter ska göras andra veckan",
+				"timeToComplete": "P2W",
 				"sortOrder": 1,
-				"lastSavedBy": "someUser",
-				"name": "Första veckan",
-				"id": "1455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+				"tasks": [],
+				"created": "2019-01-01T00:00:00+01:00",
 				"updated": "2019-01-01T00:00:00+01:00",
+				"lastSavedBy": "someUser"
+			},
+			{
+				"id": "3455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+				"name": "Tredje veckan",
+				"bodyText": "Dessa uppgifter ska göras tredje veckan",
+				"timeToComplete": "P3W",
+				"sortOrder": 2,
+				"tasks": [],
+				"created": "2019-01-01T00:00:00+01:00",
+				"updated": "2019-01-01T00:00:00+01:00",
+				"lastSavedBy": "someUser"
+			},
+			{
+				"id": "1455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+				"name": "Första veckan",
+				"bodyText": "Dessa uppgifter ska göras första veckan",
 				"timeToComplete": "P1W",
+				"sortOrder": 3,
 				"tasks": [
 					{
-						"heading": "Lunch",
-						"headingReference": "http://www.somelunchbookingsite.web",
-						"created": "2019-01-01T00:00:00+01:00",
-						"sortOrder": 1,
-						"lastSavedBy": "someUser",
-						"id": "fba82aca-f841-4257-baec-d745e3ab78bf",
-						"text": "Boka upp social lunch med chefen",
-						"roleType": "NEW_EMPLOYEE",
-						"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
-						"updated": "2019-01-01T00:00:00+01:00"
-					},
-					{
-						"heading": "Fika",
-						"created": "2019-01-01T00:00:00+01:00",
-						"sortOrder": 2,
-						"lastSavedBy": "someUser",
-						"id": "dba82aca-f841-4257-baec-d745e3ab78bf",
-						"text": "Bjud på hembakat fika",
-						"roleType": "NEW_EMPLOYEE",
-						"questionType": "YES_OR_NO",
-						"updated": "2019-01-01T00:00:00+01:00"
-					},
-					{
-						"heading": "Allergi",
-						"created": "2019-01-01T00:00:00+01:00",
-						"sortOrder": 3,
-						"lastSavedBy": "someUser",
 						"id": "eba82aca-f841-4257-baec-d745e3ab78bf",
+						"heading": "Allergi",
 						"text": "Har du några allergier?",
+						"sortOrder": 1,
 						"roleType": "NEW_EMPLOYEE",
 						"questionType": "YES_OR_NO_WITH_TEXT",
-						"updated": "2019-01-01T00:00:00+01:00"
+						"created": "2019-01-01T00:00:00+01:00",
+						"updated": "2019-01-01T00:00:00+01:00",
+						"lastSavedBy": "someUser"
+					},
+					{
+						"id": "fba82aca-f841-4257-baec-d745e3ab78bf",
+						"heading": "Lunch",
+						"headingReference": "http://www.somelunchbookingsite.web",
+						"text": "Boka upp social lunch med chefen",
+						"sortOrder": 2,
+						"roleType": "NEW_EMPLOYEE",
+						"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
+						"created": "2019-01-01T00:00:00+01:00",
+						"updated": "2019-01-01T00:00:00+01:00",
+						"lastSavedBy": "someUser"
+					},
+					{
+						"id": "dba82aca-f841-4257-baec-d745e3ab78bf",
+						"heading": "Fika",
+						"text": "Bjud på hembakat fika",
+						"sortOrder": 3,
+						"roleType": "NEW_EMPLOYEE",
+						"questionType": "YES_OR_NO",
+						"created": "2019-01-01T00:00:00+01:00",
+						"updated": "2019-01-01T00:00:00+01:00",
+						"lastSavedBy": "someUser"
 					}
-				]
-			},
-			{
-				"bodyText": "Dessa uppgifter ska göras tredje veckan",
+				],
 				"created": "2019-01-01T00:00:00+01:00",
-				"sortOrder": 2,
-				"lastSavedBy": "someUser",
-				"name": "Tredje veckan",
-				"id": "3455a5d4-1db8-4a25-a49f-92fdd0c60a14",
 				"updated": "2019-01-01T00:00:00+01:00",
-				"timeToComplete": "P3W"
-			},
-			{
-				"bodyText": "Dessa uppgifter ska göras andra veckan",
-				"created": "2019-01-01T00:00:00+01:00",
-				"sortOrder": 3,
-				"lastSavedBy": "someUser",
-				"name": "Andra veckan",
-				"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
-				"updated": "2019-01-01T00:00:00+01:00",
-				"timeToComplete": "P2W"
+				"lastSavedBy": "someUser"
 			}
 		]
 	},
 	{
-		"displayName": "Inaktiv lista",
-		"created": "2019-01-01T00:00:00+01:00",
-		"lastSavedBy": "someUser",
-		"name": "LIST_FOR_ACTIVATION",
 		"id": "45764278-50c8-4a19-af00-077bfc314fd2",
+		"name": "LIST_FOR_ACTIVATION",
+		"displayName": "Inaktiv lista",
 		"version": 1,
 		"lifeCycle": "CREATED",
+		"created": "2019-01-01T00:00:00+01:00",
 		"updated": "2019-01-01T00:00:00+01:00",
+		"lastSavedBy": "someUser",
 		"phases": [
 			{
-				"bodyText": "Dessa uppgifter ska göras första veckan",
-				"created": "2019-01-01T00:00:00+01:00",
-				"sortOrder": 1,
-				"lastSavedBy": "someUser",
-				"name": "Första veckan",
 				"id": "1455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+				"name": "Första veckan",
+				"bodyText": "Dessa uppgifter ska göras första veckan",
+				"timeToComplete": "P1W",
+				"sortOrder": 1,
+				"tasks": [],
+				"created": "2019-01-01T00:00:00+01:00",
 				"updated": "2019-01-01T00:00:00+01:00",
-				"timeToComplete": "P1W"
+				"lastSavedBy": "someUser"
 			},
 			{
-				"bodyText": "Dessa uppgifter ska göras tredje veckan",
-				"created": "2019-01-01T00:00:00+01:00",
-				"sortOrder": 2,
-				"lastSavedBy": "someUser",
-				"name": "Tredje veckan",
 				"id": "3455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+				"name": "Tredje veckan",
+				"bodyText": "Dessa uppgifter ska göras tredje veckan",
+				"timeToComplete": "P3W",
+				"sortOrder": 2,
+				"tasks": [],
+				"created": "2019-01-01T00:00:00+01:00",
 				"updated": "2019-01-01T00:00:00+01:00",
-				"timeToComplete": "P3W"
+				"lastSavedBy": "someUser"
 			},
 			{
-				"bodyText": "Dessa uppgifter ska göras andra veckan",
-				"created": "2019-01-01T00:00:00+01:00",
-				"sortOrder": 3,
-				"lastSavedBy": "someUser",
-				"name": "Andra veckan",
 				"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+				"name": "Andra veckan",
+				"bodyText": "Dessa uppgifter ska göras andra veckan",
+				"timeToComplete": "P2W",
+				"sortOrder": 3,
+				"tasks": [],
+				"created": "2019-01-01T00:00:00+01:00",
 				"updated": "2019-01-01T00:00:00+01:00",
-				"timeToComplete": "P2W"
+				"lastSavedBy": "someUser"
 			}
 		]
 	}

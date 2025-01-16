@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -82,6 +83,7 @@ class ChecklistServiceTest {
 		when(checklistRepositoryMock.findAllByMunicipalityId(MUNICIPALITY_ID)).thenReturn(List.of(checklist1, checklist2));
 		when(checklistBuilderMock.buildChecklist(checklist1)).thenReturn(Checklist.builder().withId(checklist1.getId()).build());
 		when(checklistBuilderMock.buildChecklist(checklist2)).thenReturn(Checklist.builder().withId(checklist2.getId()).build());
+		when(sortorderServiceMock.applySortingToChecklist(any(), any(), any(Checklist.class))).thenAnswer(inv -> inv.getArgument(2));
 
 		final var result = checklistService.getChecklists(MUNICIPALITY_ID);
 
@@ -90,6 +92,7 @@ class ChecklistServiceTest {
 		verify(checklistRepositoryMock).findAllByMunicipalityId(MUNICIPALITY_ID);
 		verify(checklistBuilderMock).buildChecklist(checklist1);
 		verify(checklistBuilderMock).buildChecklist(checklist2);
+		verify(sortorderServiceMock, times(2)).applySortingToChecklist(eq(MUNICIPALITY_ID), eq(checklist1.getOrganization().getOrganizationNumber()), any(Checklist.class));
 	}
 
 	@Test
@@ -97,6 +100,7 @@ class ChecklistServiceTest {
 		final var checklist = createChecklistEntity();
 		when(checklistRepositoryMock.findByIdAndMunicipalityId(UUID, MUNICIPALITY_ID)).thenReturn(Optional.of(checklist));
 		when(checklistBuilderMock.buildChecklist(checklist)).thenReturn(Checklist.builder().withId(checklist.getId()).build());
+		when(sortorderServiceMock.applySortingToChecklist(any(), any(), any(Checklist.class))).thenAnswer(inv -> inv.getArgument(2));
 
 		final var result = checklistService.getChecklist(MUNICIPALITY_ID, UUID);
 
@@ -104,6 +108,7 @@ class ChecklistServiceTest {
 
 		verify(checklistRepositoryMock).findByIdAndMunicipalityId(UUID, MUNICIPALITY_ID);
 		verify(checklistBuilderMock).buildChecklist(checklist);
+		verify(sortorderServiceMock).applySortingToChecklist(eq(MUNICIPALITY_ID), eq(checklist.getOrganization().getOrganizationNumber()), any(Checklist.class));
 	}
 
 	@Test
@@ -259,12 +264,14 @@ class ChecklistServiceTest {
 		when(checklistRepositoryMock.findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(entity));
 		when(checklistRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 		when(checklistBuilderMock.buildChecklist(entity)).thenReturn(Checklist.builder().withId(entity.getId()).build());
+		when(sortorderServiceMock.applySortingToChecklist(any(), any(), any(Checklist.class))).thenAnswer(inv -> inv.getArgument(2));
 
 		final var result = checklistService.updateChecklist(MUNICIPALITY_ID, entity.getId(), checklist);
 
 		verify(checklistRepositoryMock).findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID);
 		verify(checklistRepositoryMock).save(checklistEntityCaptor.capture());
 		verify(checklistBuilderMock).buildChecklist(entity);
+		verify(sortorderServiceMock).applySortingToChecklist(eq(MUNICIPALITY_ID), eq(entity.getOrganization().getOrganizationNumber()), any(Checklist.class));
 
 		assertThat(checklistEntityCaptor.getValue()).satisfies(e -> {
 			assertThat(e.getDisplayName()).isEqualTo(checklist.getDisplayName());
@@ -302,6 +309,8 @@ class ChecklistServiceTest {
 		when(organizationRepositoryMock.findByChecklistsIdAndChecklistsMunicipalityId(UUID, MUNICIPALITY_ID)).thenReturn(Optional.of(organizationEntity));
 		when(checklistUtilsMock.clone(checklistEntity)).thenReturn(copyEntity);
 		when(checklistRepositoryMock.save(any())).thenAnswer(invoker -> invoker.getArgument(0));
+		when(checklistBuilderMock.buildChecklist(copyEntity)).thenReturn(Checklist.builder().withId(copyEntity.getId()).build());
+		when(sortorderServiceMock.applySortingToChecklist(any(), any(), any(Checklist.class))).thenAnswer(inv -> inv.getArgument(2));
 
 		final var result = checklistService.createNewVersion(MUNICIPALITY_ID, UUID);
 
@@ -309,6 +318,9 @@ class ChecklistServiceTest {
 		verify(checklistRepositoryMock).existsByNameAndMunicipalityIdAndLifeCycle(checklistEntity.getName(), MUNICIPALITY_ID, CREATED);
 		verify(checklistUtilsMock).clone(checklistEntity);
 		verify(checklistRepositoryMock).save(copyEntity);
+		verify(checklistBuilderMock).buildChecklist(copyEntity);
+		verify(sortorderServiceMock).copySortorderItems(anyMap());
+		verify(sortorderServiceMock).applySortingToChecklist(eq(MUNICIPALITY_ID), eq(organizationEntity.getOrganizationNumber()), any(Checklist.class));
 		verify(sortorderServiceMock).copySortorderItems(sortorderItemsCaptor.capture());
 
 		assertThat(organizationEntity.getChecklists()).hasSize(2).containsExactlyInAnyOrder(checklistEntity, copyEntity);
@@ -317,10 +329,7 @@ class ChecklistServiceTest {
 			copyEntity.getTasks().getFirst().getId(), checklistEntity.getTasks().getFirst().getId(),
 			copyEntity.getTasks().getLast().getId(), checklistEntity.getTasks().getLast().getId()));
 
-		assertThat(result).isNotNull().satisfies(checklist -> {
-			assertThat(checklist.getLifeCycle()).isEqualTo(copyEntity.getLifeCycle());
-			assertThat(checklist.getVersion()).isEqualTo(copyEntity.getVersion());
-		});
+		assertThat(result).isNotNull();
 	}
 
 	@Test
@@ -369,7 +378,9 @@ class ChecklistServiceTest {
 		final var oldVersion = createChecklistEntity();
 		when(checklistRepositoryMock.findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(entity));
 		when(checklistRepositoryMock.findByNameAndMunicipalityIdAndLifeCycle(entity.getName(), MUNICIPALITY_ID, ACTIVE)).thenReturn(Optional.of(oldVersion));
-		when(checklistRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+		when(checklistRepositoryMock.saveAndFlush(any())).thenAnswer(invocation -> invocation.getArgument(0));
+		when(checklistBuilderMock.buildChecklist(entity)).thenReturn(Checklist.builder().withLifeCycle(ACTIVE).build());
+		when(sortorderServiceMock.applySortingToChecklist(any(), any(), any(Checklist.class))).thenAnswer(inv -> inv.getArgument(2));
 
 		final var result = checklistService.activateChecklist(MUNICIPALITY_ID, entity.getId());
 
@@ -379,7 +390,9 @@ class ChecklistServiceTest {
 		assertThat(oldVersion.getLifeCycle()).isEqualTo(DEPRECATED);
 		verify(checklistRepositoryMock).findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID);
 		verify(checklistRepositoryMock).findByNameAndMunicipalityIdAndLifeCycle(entity.getName(), MUNICIPALITY_ID, ACTIVE);
-		verify(checklistRepositoryMock).save(any(ChecklistEntity.class));
+		verify(checklistRepositoryMock).saveAndFlush(any(ChecklistEntity.class));
+		verify(checklistBuilderMock).buildChecklist(entity);
+		verify(sortorderServiceMock).applySortingToChecklist(eq(MUNICIPALITY_ID), eq(entity.getOrganization().getOrganizationNumber()), any(Checklist.class));
 	}
 
 	@Test

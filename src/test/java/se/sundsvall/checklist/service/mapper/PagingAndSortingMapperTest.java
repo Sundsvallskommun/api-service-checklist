@@ -17,17 +17,17 @@ class PagingAndSortingMapperTest {
 
 	@Test
 	void toPagingMetaData() {
-		var page = Mockito.mock(Page.class);
+		final var page = Mockito.mock(Page.class);
 		when(page.getNumber()).thenReturn(1);
 		when(page.getSize()).thenReturn(25);
 		when(page.getNumberOfElements()).thenReturn(25);
 		when(page.getTotalElements()).thenReturn(1200L);
 		when(page.getTotalPages()).thenReturn(48);
 
-		var pagingMetaData = PagingAndSortingMapper.toPagingMetaData(page);
+		final var pagingMetaData = PagingAndSortingMapper.toPagingMetaData(page);
 
 		assertThat(pagingMetaData).isNotNull().satisfies(meta -> {
-			assertThat(meta.getPage()).isEqualTo(1);
+			assertThat(meta.getPage()).isEqualTo(2);
 			assertThat(meta.getLimit()).isEqualTo(25);
 			assertThat(meta.getCount()).isEqualTo(25);
 			assertThat(meta.getTotalRecords()).isEqualTo(1200L);
@@ -35,15 +35,20 @@ class PagingAndSortingMapperTest {
 		});
 	}
 
+	@Test
+	void toPageRequestFromNull() {
+		assertThat(PagingAndSortingMapper.toPageRequest(null)).isNull();
+	}
+
 	@ParameterizedTest
 	@MethodSource(value = "toPageRequestArgumentProvider")
 	void toPageRequest(String sortBy, List<String> expected) {
-		var parameters = new OngoingEmployeeChecklistParameters();
+		final var parameters = new OngoingEmployeeChecklistParameters();
 		parameters.setPage(5);
 		parameters.setLimit(25);
 		parameters.setSortBy(List.of(sortBy));
 
-		var pageRequest = PagingAndSortingMapper.toPageRequest(parameters);
+		final var pageRequest = PagingAndSortingMapper.toPageRequest(parameters);
 
 		assertThat(pageRequest).isNotNull().satisfies(request -> {
 			assertThat(request.getPageNumber()).isEqualTo(parameters.getPage() - 1);
@@ -55,6 +60,7 @@ class PagingAndSortingMapperTest {
 
 	private static Stream<Arguments> toPageRequestArgumentProvider() {
 		return Stream.of(
+			Arguments.of("nonTranslatedValue", List.of("nonTranslatedValue")),
 			Arguments.of("employeeName", List.of("employee_firstName", "employee_lastName")),
 			Arguments.of("managerName", List.of("employee_manager_firstName", "employee_manager_lastName")),
 			Arguments.of("departmentName", List.of("employee_department_organizationName")),
