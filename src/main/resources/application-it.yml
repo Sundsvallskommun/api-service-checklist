@@ -17,6 +17,11 @@ config:
     init:
       mode: never
   integration:
+    eventlog:
+      url: http://localhost:${wiremock.server.port}/api-eventlog
+      token-url: ${config.common.token-url}
+      client-id: ${config.common.client-id}
+      client-secret: ${config.common.client-secret}
     employee:
       url: http://localhost:${wiremock.server.port}/api-employee
       token-url: ${config.common.token-url}

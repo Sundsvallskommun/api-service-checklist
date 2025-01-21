@@ -18,7 +18,7 @@ spring:
       hibernate:
         jdbc:
           batch_size: 10
-          order_inserts: true  
+          order_inserts: true
   sql:
     init:
       mode: ${config.sql.init.mode}
@@ -29,6 +29,8 @@ spring:
     oauth2:
       client:
         provider:
+          eventlog:
+            token-uri: ${config.integration.eventlog.token-url}
           employee:
             token-uri: ${config.integration.employee.token-url}
           mdviewer:
@@ -38,6 +40,11 @@ spring:
           templating:
             token-uri: ${config.integration.templating.token-url}
         registration:
+          eventlog:
+            authorization-grant-type: client_credentials
+            provider: eventlog
+            client-id: ${config.integration.eventlog.client-id}
+            client-secret: ${config.integration.eventlog.client-secret}
           employee:
             authorization-grant-type: client_credentials
             provider: employee
@@ -59,6 +66,10 @@ spring:
             client-id: ${config.integration.templating.client-id}
             client-secret: ${config.integration.templating.client-secret}
 integration:
+  eventlog:
+    url: ${config.integration.eventlog.url}
+    connect-timeout: 5
+    read-timeout: 60
   employee:
     url: ${config.integration.employee.url}
     connect-timeout: 5

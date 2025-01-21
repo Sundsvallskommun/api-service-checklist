@@ -156,6 +156,30 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>eventlog</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/contracts/eventlog/eventlog.yaml</inputSpec>
+							<output>${generated-sources-path}</output>
+							<generatorName>spring</generatorName>
+							<generateApis>false</generateApis>
+							<generateSupportingFiles>false</generateSupportingFiles>
+							<configOptions>
+								<dateLibrary>java8</dateLibrary>
+								<generatePom>false</generatePom>
+								<interfaceOnly>true</interfaceOnly>
+								<sourceFolder>models</sourceFolder>
+								<modelPackage>generated.se.sundsvall.eventlog</modelPackage>
+								<openApiNullable>false</openApiNullable>
+								<useBeanValidation>false</useBeanValidation>
+								<useSwaggerAnnotations>false</useSwaggerAnnotations>
+								<useSpringBoot3>true</useSpringBoot3>
+							</configOptions>
+						</configuration>
+					</execution>
+					<execution>
 						<id>templating-api</id>
 						<goals>
 							<goal>generate</goal>
