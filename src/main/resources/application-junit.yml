@@ -17,6 +17,11 @@ config:
     init:
       mode: never
   integration:
+    eventlog:
+      url: http://eventlog_url
+      token-url: ${config.common.token-url}
+      client-id: ${config.common.client-id}
+      client-secret: ${config.common.client-secret}
     employee:
       url: http://employee_url
       token-url: ${config.common.token-url}
@@ -87,4 +92,3 @@ checklist:
   managed-municipality-ids:
     - value_1
     - value_2
-    
