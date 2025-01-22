@@ -7,15 +7,19 @@ import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.ACTIVE;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATED;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.DEPRECATED;
+import static se.sundsvall.checklist.service.EventService.CHECKLIST_UPDATED;
 import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toChecklist;
 import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toChecklistEntity;
 import static se.sundsvall.checklist.service.mapper.ChecklistMapper.updateChecklistEntity;
 import static se.sundsvall.checklist.service.util.ChecklistUtils.findMatchingTaskIds;
 import static se.sundsvall.checklist.service.util.SortingUtils.getChecklistItemIds;
 
+import generated.se.sundsvall.eventlog.EventType;
+import generated.se.sundsvall.eventlog.PageEvent;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
@@ -45,19 +49,22 @@ public class ChecklistService {
 	private final ChecklistBuilder checklistBuilder;
 	private final ChecklistUtils checklistUtils;
 	private final SortorderService sortorderService;
+	private final EventService eventService;
 
 	public ChecklistService(
 		OrganizationRepository organizationRepository,
 		ChecklistRepository checklistRepository,
 		ChecklistBuilder checklistBuilder,
 		ChecklistUtils checklistUtils,
-		SortorderService sortorderService) {
+		SortorderService sortorderService,
+		EventService eventService) {
 
 		this.organizationRepository = organizationRepository;
 		this.checklistRepository = checklistRepository;
 		this.checklistBuilder = checklistBuilder;
 		this.checklistUtils = checklistUtils;
 		this.sortorderService = sortorderService;
+		this.eventService = eventService;
 	}
 
 	public List<Checklist> getChecklists(final String municipalityId) {
@@ -88,10 +95,12 @@ public class ChecklistService {
 			throw Problem.valueOf(BAD_REQUEST, ORGANIZATION_HAS_EXISTING_CHECKLIST.formatted(organization.getOrganizationNumber()));
 		}
 
-		final var entity = checklistRepository.save(toChecklistEntity(request, municipalityId));
-		organization.getChecklists().add(entity);
+		final var checklistEntity = checklistRepository.save(toChecklistEntity(request, municipalityId));
+		organization.getChecklists().add(checklistEntity);
 		organizationRepository.save(organization);
-		return toChecklist(entity);
+		final var checklist = toChecklist(checklistEntity);
+		eventService.createChecklistEvent(EventType.CREATE, EventService.CHECKLIST_CREATED.formatted(checklistEntity.getId()), checklistEntity, request.getCreatedBy());
+		return checklist;
 	}
 
 	@Transactional
@@ -134,7 +143,7 @@ public class ChecklistService {
 	}
 
 	@Transactional
-	public void deleteChecklist(final String municipalityId, final String id) {
+	public void deleteChecklist(final String municipalityId, final String id, final String user) {
 		final var checklist = checklistRepository.findByIdAndMunicipalityId(id, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND.formatted(municipalityId)));
 
@@ -153,14 +162,17 @@ public class ChecklistService {
 
 		// Remove checklist
 		checklistRepository.delete(checklist);
+		eventService.createChecklistEvent(EventType.DELETE, EventService.CHECKLIST_DELETED.formatted(checklist.getId()), checklist, user);
 	}
 
 	public Checklist updateChecklist(final String municipalityId, final String id, final ChecklistUpdateRequest request) {
-		final var entity = checklistRepository.findByIdAndMunicipalityId(id, municipalityId)
+		final var checklistEntity = checklistRepository.findByIdAndMunicipalityId(id, municipalityId)
 			.map(e -> checklistRepository.save(updateChecklistEntity(e, request)))
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND.formatted(municipalityId)));
 
-		return toChecklistWithAppliedSortOrder(entity);
+		final var checklist = toChecklistWithAppliedSortOrder(checklistEntity);
+		eventService.createChecklistEvent(EventType.UPDATE, CHECKLIST_UPDATED.formatted(checklistEntity.getId()), checklistEntity, request.getUpdatedBy());
+		return checklist;
 	}
 
 	private Checklist toChecklistWithAppliedSortOrder(final ChecklistEntity entity) {
@@ -171,4 +183,11 @@ public class ChecklistService {
 			.orElseThrow(() -> Problem.valueOf(INTERNAL_SERVER_ERROR, CHECKLIST_PROCESS_ERROR.formatted(entity.getId())));
 	}
 
+	public PageEvent getEvents(final String municipalityId, final String checklistId, final Pageable pageable) {
+		if (!checklistRepository.existsByMunicipalityIdAndId(municipalityId, checklistId)) {
+			throw Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND.formatted(municipalityId));
+		}
+
+		return eventService.getChecklistEvents(municipalityId, checklistId, pageable);
+	}
 }

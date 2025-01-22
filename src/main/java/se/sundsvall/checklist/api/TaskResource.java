@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -118,12 +119,13 @@ class TaskResource {
 	})
 	@DeleteMapping(value = "/{taskId}", produces = ALL_VALUE)
 	ResponseEntity<Void> deleteChecklistPhaseTask(
+		@Parameter(name = "x-user", description = "Which user sent the request") @RequestHeader(name = "x-user", required = false) final String user,
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,
 		@Parameter(name = "phaseId", description = "Phase id", example = "9ee6a504-555f-4db7-bf21-2bb8a96f2b85") @PathVariable @ValidUuid final String phaseId,
 		@Parameter(name = "taskId", description = "Task id", example = "55904052-0db0-4622-850c-3273ee60def4") @PathVariable @ValidUuid final String taskId) {
 
-		taskService.deleteTask(municipalityId, checklistId, phaseId, taskId);
+		taskService.deleteTask(municipalityId, checklistId, phaseId, taskId, user);
 		return noContent().header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 }

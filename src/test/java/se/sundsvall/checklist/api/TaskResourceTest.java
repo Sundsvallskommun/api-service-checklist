@@ -117,14 +117,16 @@ class TaskResourceTest {
 	@Test
 	void deleteChecklistPhaseTaskTest() {
 		final var taskId = randomUUID().toString();
+		final var user = "Chuck Norris";
 
 		webTestClient.delete()
 			.uri(builder -> builder.path(BASE_PATH + "/{taskId}").build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID, "phaseId", SUB_ID, "taskId", taskId)))
+			.header("x-user", user)
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectBody().isEmpty();
 
-		verify(mockTaskService).deleteTask(MUNICIPALITY_ID, ID, SUB_ID, taskId);
+		verify(mockTaskService).deleteTask(MUNICIPALITY_ID, ID, SUB_ID, taskId, user);
 		verifyNoMoreInteractions(mockTaskService);
 	}
 
