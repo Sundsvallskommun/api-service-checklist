@@ -184,7 +184,7 @@ public class ChecklistService {
 	}
 
 	public PageEvent getEvents(final String municipalityId, final String checklistId, final Pageable pageable) {
-		if (!checklistRepository.existsByMunicipalityIdAndId(municipalityId, checklistId)) {
+		if (!checklistRepository.existsByIdAndMunicipalityId(checklistId, municipalityId)) {
 			throw Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND.formatted(municipalityId));
 		}
 

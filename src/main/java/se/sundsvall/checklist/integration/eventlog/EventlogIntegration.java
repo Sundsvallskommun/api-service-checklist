@@ -32,7 +32,6 @@ public class EventlogIntegration {
 		} catch (Exception e) {
 			// This exception should not be thrown to the client.
 			LOG.error("Could not create event for checklist: {}", event.getLogKey(), e);
-			LOG.error("Event: {}", event);
 		}
 	}
 

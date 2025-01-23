@@ -16,7 +16,7 @@ public interface ChecklistRepository extends JpaRepository<ChecklistEntity, Stri
 
 	boolean existsByNameAndMunicipalityIdAndLifeCycle(final String name, final String municipalityId, final LifeCycle lifeCycle);
 
-	boolean existsByMunicipalityIdAndId(final String municipalityId, final String id);
+	boolean existsByIdAndMunicipalityId(final String id, final String municipalityId);
 
 	List<ChecklistEntity> findAllByMunicipalityId(final String municipalityId);
 
