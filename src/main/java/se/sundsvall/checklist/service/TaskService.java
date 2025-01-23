@@ -104,8 +104,9 @@ public class TaskService {
 		verifyPhaseIsPresent(municipalityId, phaseId); // This is here to verify that sent in phase id is present in database
 		final var task = getTaskInPhase(checklist, phaseId, taskId);
 
-		sortorderService.deleteSortorderItem(taskId);
+		checklist.getTasks().remove(task); // The task needs to be removed from the checklist to be able to delete it
 		taskRepository.delete(task);
+		sortorderService.deleteSortorderItem(taskId);
 		eventService.createChecklistEvent(DELETE, TASK_REMOVED.formatted(taskId), checklist, user);
 	}
 

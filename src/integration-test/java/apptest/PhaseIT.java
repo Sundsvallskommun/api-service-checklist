@@ -1,5 +1,6 @@
 package apptest;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
@@ -13,9 +14,11 @@ import static org.springframework.http.HttpStatus.OK;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
 import se.sundsvall.checklist.Application;
+import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
@@ -30,6 +33,9 @@ class PhaseIT extends AbstractAppTest {
 	private static final String PATH = "/2281/phases";
 	private static final String REQUEST_FILE = "request.json";
 	private static final String EXPECTED_FILE = "expected.json";
+
+	@Autowired
+	private PhaseRepository phaseRepository;
 
 	@Test
 	void test1_fetchPhases() {
@@ -76,21 +82,31 @@ class PhaseIT extends AbstractAppTest {
 
 	@Test
 	void test5_deletePhaseWithTasks() {
+		assertThat(phaseRepository.existsById(PHASE_ID)).isTrue();
+
 		setupCall()
 			.withServicePath(PATH + "/" + PHASE_ID)
 			.withHttpMethod(DELETE)
 			.withExpectedResponseStatus(CONFLICT)
 			.withExpectedResponse(EXPECTED_FILE)
 			.sendRequestAndVerifyResponse();
+
+		assertThat(phaseRepository.existsById(PHASE_ID)).isTrue();
 	}
 
 	@Test
 	void test6_deletePhaseWithoutTasks() {
+		final var phaseId = "38f2b2cc-1fc8-42ee-a752-fae751c1a858";
+
+		assertThat(phaseRepository.existsById(phaseId)).isTrue();
+
 		setupCall()
 			.withServicePath("/2282/phases/38f2b2cc-1fc8-42ee-a752-fae751c1a858")
 			.withHttpMethod(DELETE)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
+
+		assertThat(phaseRepository.existsById(phaseId)).isFalse();
 	}
 }
