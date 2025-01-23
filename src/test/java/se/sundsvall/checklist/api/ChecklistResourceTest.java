@@ -166,14 +166,16 @@ class ChecklistResourceTest {
 
 	@Test
 	void deleteChecklist() {
+		var user = "Chuck Norris";
 		// Act
 		webTestClient.delete()
 			.uri(builder -> builder.path("/{municipalityId}/checklists/{checklistId}").build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID)))
+			.header("x-user", user)
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectBody().isEmpty();
 
 		// Assert and verify
-		verify(mockService).deleteChecklist(MUNICIPALITY_ID, ID);
+		verify(mockService).deleteChecklist(MUNICIPALITY_ID, ID, user);
 	}
 }
