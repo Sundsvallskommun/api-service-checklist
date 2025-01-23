@@ -48,6 +48,6 @@ public class Checklist {
 	@Schema(description = "The id of the user that last modified the checklist")
 	private String lastSavedBy;
 
-	@ArraySchema(arraySchema = @Schema(implementation = Task.class, description = "Phases in the checklist", accessMode = READ_ONLY))
+	@ArraySchema(arraySchema = @Schema(implementation = Phase.class, description = "Phases in the checklist", accessMode = READ_ONLY))
 	private List<Phase> phases;
 }

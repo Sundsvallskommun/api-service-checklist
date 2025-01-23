@@ -1,5 +1,6 @@
 package apptest;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
@@ -11,8 +12,10 @@ import static org.springframework.http.HttpStatus.OK;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import se.sundsvall.checklist.Application;
+import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
@@ -28,6 +31,9 @@ class ChecklistIT extends AbstractAppTest {
 	private static final String PATH = "/2281/checklists";
 	private static final String REQUEST_FILE = "request.json";
 	private static final String EXPECTED_FILE = "expected.json";
+
+	@Autowired
+	private ChecklistRepository checklistRepository;
 
 	@Test
 	void test1_fetchAllChecklists() {
@@ -118,12 +124,16 @@ class ChecklistIT extends AbstractAppTest {
 
 	@Test
 	void test7_deleteChecklist() {
+		assertThat(checklistRepository.existsById(CHECKLIST_ID)).isTrue();
+
 		setupCall()
 			.withServicePath(PATH + "/" + CHECKLIST_ID)
 			.withHttpMethod(DELETE)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
+
+		assertThat(checklistRepository.existsById(CHECKLIST_ID)).isFalse();
 	}
 
 }

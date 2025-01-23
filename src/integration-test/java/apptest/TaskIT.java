@@ -1,5 +1,6 @@
 package apptest;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.HttpMethod.DELETE;
@@ -14,9 +15,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
 import se.sundsvall.checklist.Application;
+import se.sundsvall.checklist.integration.db.repository.TaskRepository;
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
@@ -34,6 +37,9 @@ class TaskIT extends AbstractAppTest {
 	private static final String PATH = "/2281/checklists/" + CHECKLIST_ID + "/phases/" + PHASE_ID + "/tasks";
 	private static final String REQUEST_FILE = "request.json";
 	private static final String EXPECTED_FILE = "expected.json";
+
+	@Autowired
+	private TaskRepository taskRepository;
 
 	@Test
 	void test1_fetchChecklistPhaseTasks() {
@@ -83,12 +89,16 @@ class TaskIT extends AbstractAppTest {
 
 	@Test
 	void test5_deleteChecklistPhaseTask() {
+		assertThat(taskRepository.existsById(TASK_ID)).isTrue();
+
 		setupCall()
 			.withServicePath(PATH + "/" + TASK_ID)
 			.withHttpMethod(DELETE)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
+
+		assertThat(taskRepository.existsById(TASK_ID)).isFalse();
 	}
 
 }
