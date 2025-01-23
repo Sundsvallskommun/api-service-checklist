@@ -4,6 +4,7 @@ import static java.time.OffsetDateTime.now;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
+import static org.assertj.core.groups.Tuple.tuple;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 
 import java.time.LocalDate;
@@ -46,6 +47,7 @@ class EmployeeChecklistRepositoryTest {
 		assertThat(UUID.fromString(result.getId())).isNotNull();
 		assertThat(result.getCreated()).isCloseTo(now(), within(2, SECONDS));
 		assertThat(result.getUpdated()).isNull();
+		assertThat(result.isCompleted()).isFalse();
 	}
 
 	@Test
@@ -73,11 +75,11 @@ class EmployeeChecklistRepositoryTest {
 
 		assertThat(result)
 			.hasSize(3)
-			.extracting(EmployeeChecklistEntity::getId)
+			.extracting(EmployeeChecklistEntity::getId, EmployeeChecklistEntity::isCompleted)
 			.containsExactlyInAnyOrder(
-				"f5960058-fad8-4825-85f3-b0fdb518adc5",
-				"223a076f-441d-4a30-b5d0-f2bfd5ab250b",
-				"f853e2b1-a144-4305-b05e-ee8d6dc6d005");
+				tuple("f5960058-fad8-4825-85f3-b0fdb518adc5", true),
+				tuple("223a076f-441d-4a30-b5d0-f2bfd5ab250b", false),
+				tuple("f853e2b1-a144-4305-b05e-ee8d6dc6d005", true));
 	}
 
 	@Test

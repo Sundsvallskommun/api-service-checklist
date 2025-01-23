@@ -164,9 +164,9 @@ values ('2024-01-01', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'bd4
         '02817ff3-632a-4228-9c31-25ad8124568c', 'Cleaner', 'aemp0loyee', 'EMPLOYEE');
 
 -- Employee checklist
-insert into employee_checklist (end_date, expiration_date, start_date, locked, created, updated, correspondence_id,
+insert into employee_checklist (end_date, expiration_date, start_date, completed, locked, created, updated, correspondence_id,
                                 employee_id, id)
-values ('2024-07-01', '2024-10-01', '2024-01-01', false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
+values ('2024-07-01', '2024-10-01', '2024-01-01', true, false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
         '1810c9c4-7281-44de-9930-426d9f065f4d', 'f853e2b1-a144-4305-b05e-ee8d6dc6d005');
 
 insert into referred_checklist (employee_checklist_id, checklist_id)
@@ -191,9 +191,9 @@ values ('2024-01-06', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'bd4
         '02817ff3-632a-4228-9c31-25ad8124568c', 'Loather', 'bemp0loyee', 'EMPLOYEE');
 
 -- Employee checklist
-insert into employee_checklist (end_date, expiration_date, start_date, locked, created, updated, correspondence_id,
+insert into employee_checklist (end_date, expiration_date, start_date, completed, locked, created, updated, correspondence_id,
                                 employee_id, id)
-values ('2024-07-06', '2024-10-06', '2024-01-06', false, '2024-01-06 12:00:00.000', '2024-01-06 12:00:00.000', NULL,
+values ('2024-07-06', '2024-10-06', '2024-01-06', false, false, '2024-01-06 12:00:00.000', '2024-01-06 12:00:00.000', NULL,
         '8122705b-e0e6-4055-b301-eba21986e219', 'f5960058-fad8-4825-85f3-b0fdb518adc5');
 
 insert into referred_checklist (employee_checklist_id, checklist_id)
@@ -228,9 +228,9 @@ values ('2024-01-06', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', '176
         '02817ff3-632a-4228-9c31-25ad8124568c', 'New manager', 'cman1agr', 'MANAGER');
 
 -- Employee checklist
-insert into employee_checklist (end_date, expiration_date, start_date, locked, created, updated, correspondence_id,
+insert into employee_checklist (end_date, expiration_date, start_date, completed, locked, created, updated, correspondence_id,
                                 employee_id, id)
-values ('2024-07-06', '2024-10-06', '2024-01-06', false, '2024-01-06 12:00:00.000', '2024-01-06 12:00:00.000', NULL,
+values ('2024-07-06', '2024-10-06', '2024-01-06', false, false, '2024-01-06 12:00:00.000', '2024-01-06 12:00:00.000', NULL,
         'ae93a63e-d975-4cd9-8e28-4cc9ea8b4d96', '2e2bb099-560c-450e-8f20-764498a37983');
 
 insert into referred_checklist (employee_checklist_id, checklist_id)
@@ -272,9 +272,9 @@ values ('2024-01-01', now(), subdate(now(), INTERVAL 1 DAY), 'cfcb03b1-7344-4352
         'Loyee', 'b1cf6779-f2a2-4236-89c6-0ba9beab70c7', 'Growler', 'cemp3loyee', 'EMPLOYEE');
 
 -- Employee checklist
-insert into employee_checklist (end_date, expiration_date, start_date, locked, created, updated, correspondence_id,
+insert into employee_checklist (end_date, expiration_date, start_date, completed, locked, created, updated, correspondence_id,
                                 employee_id, id)
-values ('2024-07-01', '2024-10-01', '2024-01-01', false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
+values ('2024-07-01', '2024-10-01', '2024-01-01', true, false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
         '702323a9-f542-4081-a780-a1396068c8c9', 'c179d5e1-0c5d-4eba-9f27-aca5011263c5');
 
 insert into referred_checklist (employee_checklist_id, checklist_id)
@@ -301,9 +301,9 @@ values ('2024-01-01', now(), subdate(now(), INTERVAL 1 DAY), 'cfcb03b1-7344-4352
         'Loyee', '749fa5bb-438d-47cf-ab1c-0664e9951210', 'Muggler', 'demp4loyee', 'EMPLOYEE');
 
 -- Employee checklist
-insert into employee_checklist (end_date, expiration_date, start_date, locked, created, updated, correspondence_id,
+insert into employee_checklist (end_date, expiration_date, start_date, completed, locked, created, updated, correspondence_id,
                                 employee_id, id)
-values ('2024-07-01', '2024-10-01', '2024-01-01', false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
+values ('2024-07-01', '2024-10-01', '2024-01-01', true, false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
         'fe34e2a9-5723-4734-91dc-42a664c5432f', 'fda66ff0-d554-4501-a16d-1b0b6e1825c3');
 
 insert into referred_checklist (employee_checklist_id, checklist_id)
@@ -329,9 +329,9 @@ values ('2024-01-01', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'bd4
         '9d2adcf6-9234-4faf-a6c9-0c1c7518b534', 'Struggler', 'eemp5loyee', 'EMPLOYEE');
 
 -- Employee checklist
-insert into employee_checklist (end_date, expiration_date, start_date, locked, created, updated, correspondence_id,
+insert into employee_checklist (end_date, expiration_date, start_date, completed, locked, created, updated, correspondence_id,
                                 employee_id, id)
-values ('2024-07-01', '2024-10-01', '2024-01-01', false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
+values ('2024-07-01', '2024-10-01', '2024-01-01', true, false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
         'bfd69468-bd32-4b84-a3b0-c5e1742a5a34', '8fcc1fc7-bcda-4db6-9375-ff99961ef011');
 
 insert into referred_checklist (employee_checklist_id, checklist_id)
@@ -346,9 +346,9 @@ values ('2024-01-01', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'bd4
         'f59918bc-a8f1-4f97-abe3-9f80f26e6bf2', 'Juggler', 'femp6loyee', 'EMPLOYEE');
 
 -- Employee checklist
-insert into employee_checklist (end_date, expiration_date, start_date, locked, created, updated, correspondence_id,
+insert into employee_checklist (end_date, expiration_date, start_date, completed, locked, created, updated, correspondence_id,
                                 employee_id, id)
-values ('2024-07-01', '2024-10-01', '2024-01-01', false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
+values ('2024-07-01', '2024-10-01', '2024-01-01', true, false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
         '87b0d9c2-c06e-409d-b77e-63f427e0dbc2', 'e4474a9b-1a57-49b8-bec8-2e50db600fbb');
 
 insert into referred_checklist (employee_checklist_id, checklist_id)
@@ -368,9 +368,9 @@ values ('2024-01-01', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'bd4
         'f59918bc-a8f1-4f97-abe3-9f80f26e6bf2', 'Muggler', 'iemp6loyee', 'EMPLOYEE');
 
 -- Employee checklist
-insert into employee_checklist (end_date, expiration_date, start_date, locked, created, updated, correspondence_id,
+insert into employee_checklist (end_date, expiration_date, start_date, completed, locked, created, updated, correspondence_id,
                                 employee_id, id)
-values ('2024-07-01', '2024-10-01', '2024-01-01', false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
+values ('2024-07-01', '2024-10-01', '2024-01-01', true, false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
         '7bc7707c-2a82-44fb-bbf6-fe00f9ec11c6', '426c7fbf-e943-45c8-980c-f8cfd4268767');
 
 insert into referred_checklist (employee_checklist_id, checklist_id)
@@ -396,9 +396,9 @@ values ('2024-01-01', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'bd4
         '9dcffa46-c500-4696-a862-04867df207d0', 'Slugger', 'gemp6loyee', 'EMPLOYEE');
 
 -- Employee checklist
-insert into employee_checklist (end_date, expiration_date, start_date, locked, created, updated, correspondence_id,
+insert into employee_checklist (end_date, expiration_date, start_date, completed, locked, created, updated, correspondence_id,
                                 employee_id, id)
-values ('2024-07-01', '2024-10-01', '2024-01-01', false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
+values ('2024-07-01', '2024-10-01', '2024-01-01', true, false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
         'f1abc7a4-ad20-4c74-a5d7-3d4833405a96', '855e7d4e-af50-4fd3-b81d-a71299f38d1a');
 
 insert into referred_checklist (employee_checklist_id, checklist_id)
@@ -428,9 +428,9 @@ values ('2024-01-01', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'bd4
         '9dcffa46-c500-4696-a862-04867df207d0', 'Snuggler', 'hemp7loyee', 'EMPLOYEE');
 
 -- Employee checklist
-insert into employee_checklist (end_date, expiration_date, start_date, locked, created, updated, correspondence_id,
+insert into employee_checklist (end_date, expiration_date, start_date, completed, locked, created, updated, correspondence_id,
                                 employee_id, id)
-values ('2024-07-01', '2024-10-01', '2024-01-01', false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
+values ('2024-07-01', '2024-10-01', '2024-01-01', true, false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
         'd59ded65-bdf8-49e9-837d-3ca12be93970', '51ca9112-001b-4f12-b866-8d59ef1c25c4');
 
 insert into referred_checklist (employee_checklist_id, checklist_id)
@@ -452,9 +452,9 @@ values ('2024-01-01', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'bd4
         '9dcffa46-c500-4696-a862-04867df207d0', 'Snuggler', 'jemp7loyee', 'EMPLOYEE');
 
 -- Employee checklist
-insert into employee_checklist (end_date, expiration_date, start_date, locked, created, updated, correspondence_id,
+insert into employee_checklist (end_date, expiration_date, start_date, completed, locked, created, updated, correspondence_id,
                                 employee_id, id, mentor_name, mentor_user_id)
-values ('2024-07-01', '2024-10-01', '2024-01-01', false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
+values ('2024-07-01', '2024-10-01', '2024-01-01', true, false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
         '619d40cd-025f-4c13-a8f2-e08715f70d56', 'cca064da-ab15-4276-8fbb-e8ba07b28718', 'someMentorName',
         'someMentorUserId');
 
@@ -470,9 +470,9 @@ values ('2024-01-01', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', '11e
         '9dcffa46-c500-4696-a862-04867df207d0', 'Struggler', 'kemp8loyee', 'EMPLOYEE');
 
 -- Employee checklist
-insert into employee_checklist (end_date, expiration_date, start_date, locked, created, updated, correspondence_id,
+insert into employee_checklist (end_date, expiration_date, start_date, completed, locked, created, updated, correspondence_id,
                                 employee_id, id, mentor_name, mentor_user_id)
-values ('2024-07-01', '2024-10-01', '2024-01-01', false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
+values ('2024-07-01', '2024-10-01', '2024-01-01', true, false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
         '9fcfa7e5-fcec-4b1b-b254-8ee29d3017cd', '87f45fed-b64c-4e81-8a3a-282df548bc38', NULL, NULL);
 
 insert into referred_checklist (employee_checklist_id, checklist_id)
@@ -498,9 +498,9 @@ values ('2024-01-01', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'bd4
         '1dcffa46-c500-4696-a862-04867df207d2', 'Slugger', 'lemp6loyee', 'EMPLOYEE');
 
 -- Employee checklist
-insert into employee_checklist (end_date, expiration_date, start_date, locked, created, updated, correspondence_id,
+insert into employee_checklist (end_date, expiration_date, start_date, completed, locked, created, updated, correspondence_id,
                                 employee_id, id)
-values ('2124-07-01', '2124-10-01', '2024-01-01', false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
+values ('2124-07-01', '2124-10-01', '2024-01-01', false, false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
         'f1abc7a4-ad20-4c74-a5d7-3d4833405a01', '01ca9112-001b-4f12-b866-8d59ef1c25c4');
 
 insert into referred_checklist (employee_checklist_id, checklist_id)
@@ -520,9 +520,9 @@ values ('2024-01-01', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'bd4
         '1dcffa46-c500-4696-a862-04867df207d2', 'Slugger', 'memp6loyee', 'EMPLOYEE');
 
 -- Employee checklist
-insert into employee_checklist (end_date, expiration_date, start_date, locked, created, updated, correspondence_id,
+insert into employee_checklist (end_date, expiration_date, start_date, completed, locked, created, updated, correspondence_id,
                                 employee_id, id)
-values ('2124-07-01', '2124-10-01', '2024-01-01', false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
+values ('2124-07-01', '2124-10-01', '2024-01-01', false, false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
         'f1abc7a4-ad20-4c74-a5d7-3d4833405a02', '02ca9112-001b-4f12-b866-8d59ef1c25c4');
 
 insert into referred_checklist (employee_checklist_id, checklist_id)
@@ -543,9 +543,9 @@ values ('2024-01-01', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'bd4
         '1dcffa46-c500-4696-a862-04867df207d2', 'Slugger', 'nemp6loyee', 'EMPLOYEE');
 
 -- Employee checklist
-insert into employee_checklist (end_date, expiration_date, start_date, locked, created, updated, correspondence_id,
+insert into employee_checklist (end_date, expiration_date, start_date, completed, locked, created, updated, correspondence_id,
                                 employee_id, id)
-values ('2124-07-01', '2124-10-01', '2024-01-01', false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
+values ('2124-07-01', '2124-10-01', '2024-01-01', false, false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
         'f1abc7a4-ad20-4c74-a5d7-3d4833405a03', '03ca9112-001b-4f12-b866-8d59ef1c25c4');
 
 insert into referred_checklist (employee_checklist_id, checklist_id)
@@ -569,9 +569,9 @@ values ('2024-01-01', now(), now(), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1', 'bd4
         '1dcffa46-c500-4696-a862-04867df207d2', 'Slugger', 'oemp6loyee', 'EMPLOYEE');
 
 -- Employee checklist
-insert into employee_checklist (end_date, expiration_date, start_date, locked, created, updated, correspondence_id,
+insert into employee_checklist (end_date, expiration_date, start_date, completed, locked, created, updated, correspondence_id,
                                 employee_id, id)
-values ('2124-07-01', '2124-10-01', '2024-01-01', false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
+values ('2124-07-01', '2124-10-01', '2024-01-01', false, false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
         'f1abc7a4-ad20-4c74-a5d7-3d4833405a04', '04ca9112-001b-4f12-b866-8d59ef1c25c4');
 
 insert into referred_checklist (employee_checklist_id, checklist_id)
