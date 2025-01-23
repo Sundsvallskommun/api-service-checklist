@@ -170,7 +170,7 @@ class ChecklistResourceTest {
 		// Act
 		webTestClient.delete()
 			.uri(builder -> builder.path("/{municipalityId}/checklists/{checklistId}").build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID)))
-			.header("x-user", user)
+			.header("x-userid", user)
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectBody().isEmpty();

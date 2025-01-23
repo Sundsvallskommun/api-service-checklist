@@ -6,7 +6,28 @@
 			}
 		},
 		"method": "POST",
-		"urlPathPattern": "/api-eventlog/2281/.*"
+		"urlPathPattern": "/api-eventlog/2281/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+		"bodyPatterns": [
+			{
+				"equalToJson": {
+					"logKey": "${json-unit.any-string}",
+					"type": "CREATE",
+					"municipalityId": "2281",
+					"message": "Uppgift Name of the task tillagd i fas Phase 1",
+					"owner": "Checklist",
+					"created": "${json-unit.any-string}",
+					"sourceType": "ChecklistEntity",
+					"metadata": [
+						{
+							"value": "someUser",
+							"key": "UserId"
+						}
+					]
+				},
+				"ignoreArrayOrder": true,
+				"contains": ""
+			}
+		]
 	},
 	"response": {
 		"headers": {

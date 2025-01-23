@@ -9,7 +9,6 @@ import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
 
-import generated.se.sundsvall.eventlog.PageEvent;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
@@ -39,6 +38,7 @@ import org.zalando.problem.violations.ConstraintViolationProblem;
 import se.sundsvall.checklist.api.model.Checklist;
 import se.sundsvall.checklist.api.model.ChecklistCreateRequest;
 import se.sundsvall.checklist.api.model.ChecklistUpdateRequest;
+import se.sundsvall.checklist.api.model.Events;
 import se.sundsvall.checklist.service.ChecklistService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
@@ -141,11 +141,11 @@ class ChecklistResource {
 	})
 	@DeleteMapping(value = "/{checklistId}", produces = ALL_VALUE)
 	ResponseEntity<Void> deleteChecklist(
-		@Parameter(name = "x-user", description = "Which user sent the request") @RequestHeader(name = "x-user", required = false) final String user,
+		@Parameter(name = "x-userid", description = "Which user sent the request") @RequestHeader(name = "x-userid", required = false) final String userId,
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId) {
 
-		checklistService.deleteChecklist(municipalityId, checklistId, user);
+		checklistService.deleteChecklist(municipalityId, checklistId, userId);
 		return noContent().header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 
@@ -155,7 +155,7 @@ class ChecklistResource {
 		@ApiResponse(responseCode = "502", description = "Bad Gateway", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 	})
 	@GetMapping(value = "/{checklistId}/events", produces = APPLICATION_JSON_VALUE)
-	ResponseEntity<PageEvent> getChecklistEvents(
+	ResponseEntity<Events> getChecklistEvents(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId,
 		@ParameterObject final Pageable pageable) {

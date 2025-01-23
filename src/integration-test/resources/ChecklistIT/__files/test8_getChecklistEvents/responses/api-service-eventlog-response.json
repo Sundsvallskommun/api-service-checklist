@@ -1,0 +1,67 @@
+{
+	"totalElements": 2,
+	"totalPages": 1,
+	"pageable": {
+		"paged": true,
+		"pageNumber": 1,
+		"pageSize": 10,
+		"offset": 0,
+		"sort": {
+			"sorted": true,
+			"unsorted": false,
+			"empty": false
+		},
+		"unpaged": false
+	},
+	"first": true,
+	"last": false,
+	"size": 10,
+	"content": [
+		{
+			"logKey": "12345",
+			"type": "CREATE",
+			"municipalityId": "2281",
+			"message": "An event has been created.",
+			"expires": "2025-01-30T15:30:00Z",
+			"owner": "user123",
+			"created": "2025-01-23T10:00:00Z",
+			"historyReference": "ref001",
+			"sourceType": "ChecklistEntity",
+			"metadata": [
+				{
+					"key": "priority",
+					"value": "high"
+				},
+				{
+					"key": "category",
+					"value": "system"
+				}
+			]
+		},
+		{
+			"logKey": "12345",
+			"type": "UPDATE",
+			"municipalityId": "2281",
+			"message": "An event has been updated.",
+			"expires": "2025-02-01T10:00:00Z",
+			"owner": "user124",
+			"created": "2025-01-22T09:30:00Z",
+			"historyReference": "ref002",
+			"sourceType": "ChecklistEntity",
+			"metadata": [
+				{
+					"key": "priority",
+					"value": "medium"
+				}
+			]
+		}
+	],
+	"number": 1,
+	"sort": {
+		"sorted": true,
+		"unsorted": false,
+		"empty": false
+	},
+	"numberOfElements": 2,
+	"empty": false
+}

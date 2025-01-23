@@ -31,8 +31,8 @@ public interface EventlogClient {
 	 */
 	@PostMapping(path = "/{municipalityId}/{logKey}", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
 	ResponseEntity<Void> createEvent(
-		@PathVariable(name = "municipalityId") String municipalityId,
-		@PathVariable(name = "logKey") String logKey,
+		@PathVariable String municipalityId,
+		@PathVariable String logKey,
 		@RequestBody Event event);
 
 	/**
@@ -45,8 +45,8 @@ public interface EventlogClient {
 	 */
 	@GetMapping(path = "/{municipalityId}/{logKey}", produces = APPLICATION_JSON_VALUE)
 	PageEvent getEvents(
-		@PathVariable("municipalityId") String municipalityId,
-		@PathVariable("logKey") String logKey,
+		@PathVariable String municipalityId,
+		@PathVariable String logKey,
 		@QueryMap Pageable pageable);
 
 }

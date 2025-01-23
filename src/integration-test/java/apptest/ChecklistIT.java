@@ -128,12 +128,23 @@ class ChecklistIT extends AbstractAppTest {
 
 		setupCall()
 			.withServicePath(PATH + "/" + CHECKLIST_ID)
+			.withHeader("x-userid", "someUser")
 			.withHttpMethod(DELETE)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();
 
 		assertThat(checklistRepository.existsById(CHECKLIST_ID)).isFalse();
+	}
+
+	@Test
+	void test8_getChecklistEvents() {
+		setupCall()
+			.withServicePath("/2281/checklists/" + CHECKLIST_ID + "/events?page=0&size=10")
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponse(EXPECTED_FILE)
+			.sendRequestAndVerifyResponse();
 	}
 
 }
