@@ -81,8 +81,7 @@ class EventlogMapperTest {
 
 		var result = EventlogMapper.toEvents(events);
 
-		assertThat(result).hasSize(2);
-		assertThat(result).allSatisfy(res -> {
+		assertThat(result).hasSize(2).allSatisfy(res -> {
 			assertThat(res.getEventType()).isEqualTo(event.getType().toString());
 			assertThat(res.getCreated()).isEqualTo(event.getCreated());
 			assertThat(res.getHistoryReference()).isEqualTo(event.getHistoryReference());
@@ -127,12 +126,10 @@ class EventlogMapperTest {
 
 		var result = EventlogMapper.toMetadata(metadataList);
 
-		assertThat(result).hasSize(2);
-		assertThat(result).allSatisfy(res -> {
+		assertThat(result).hasSize(2).allSatisfy(res -> {
 			assertThat(res.getKey()).isEqualTo(metadata.getKey());
 			assertThat(res.getValue()).isEqualTo(metadata.getValue());
 		});
-
 	}
 
 	/**

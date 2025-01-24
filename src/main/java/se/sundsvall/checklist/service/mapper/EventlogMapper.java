@@ -34,7 +34,7 @@ public final class EventlogMapper {
 
 	public static Events toEvents(final PageEvent pageEvent) {
 		var events = new Events();
-		events.setEvents(toEvents(pageEvent.getContent()));
+		events.setEventList(toEvents(pageEvent.getContent()));
 
 		events.setPage(pageEvent.getPageable().getPageNumber());
 		events.setCount(pageEvent.getNumberOfElements());
