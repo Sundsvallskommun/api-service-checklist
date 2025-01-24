@@ -25,7 +25,6 @@ import se.sundsvall.checklist.integration.db.repository.DelegateRepository;
 import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistRepository;
 import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
 import se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper;
-import se.sundsvall.checklist.service.util.ServiceUtils;
 
 @Service
 public class DelegationService {
@@ -89,7 +88,6 @@ public class DelegationService {
 			.map(ob -> decorateWithCustomTasks(ob, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(ob.getId(), municipalityId)))
 			.map(ob -> decorateWithFulfilment(ob, fetchEntity(delegatedEmployeeChecklistEntities, ob.getId())))
 			.map(this::decorateWithDelegateInformation)
-			.map(ServiceUtils::calculateCompleted)
 			.toList();
 	}
 

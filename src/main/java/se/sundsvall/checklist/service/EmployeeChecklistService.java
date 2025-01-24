@@ -62,7 +62,6 @@ import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
 import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
 import se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper;
-import se.sundsvall.checklist.service.util.ServiceUtils;
 import se.sundsvall.checklist.service.util.TaskType;
 
 @Service
@@ -103,7 +102,6 @@ public class EmployeeChecklistService {
 			.map(this::initializeWithEmptyFulfilment)
 			.map(list -> decorateWithFulfilment(list, employeeChecklist))
 			.map(this::decorateWithDelegateInformation)
-			.map(ServiceUtils::calculateCompleted)
 			.map(this::removeManagerTasks)
 			.map(list -> sortorderService.applySorting(employeeChecklist, list));
 	}
@@ -121,7 +119,6 @@ public class EmployeeChecklistService {
 			.map(this::initializeWithEmptyFulfilment)
 			.map(list -> decorateWithFulfilment(list, fetchEntity(employeeChecklists, list.getId())))
 			.map(this::decorateWithDelegateInformation)
-			.map(ServiceUtils::calculateCompleted)
 			.map(list -> sortorderService.applySorting(fetchEntity(employeeChecklists, list.getId()), list))
 			.toList();
 	}

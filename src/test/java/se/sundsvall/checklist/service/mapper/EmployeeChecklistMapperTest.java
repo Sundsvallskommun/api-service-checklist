@@ -63,6 +63,8 @@ class EmployeeChecklistMapperTest {
 		assertThat(entity.getId()).isNull();
 		assertThat(entity.getStartDate()).isEqualTo(startDate);
 		assertThat(entity.getUpdated()).isNull();
+		assertThat(entity.isCompleted()).isFalse();
+		assertThat(entity.isLocked()).isFalse();
 	}
 
 	@ParameterizedTest
@@ -91,6 +93,8 @@ class EmployeeChecklistMapperTest {
 		assertThat(entity.getId()).isNull();
 		assertThat(entity.getStartDate()).isEqualTo(LocalDate.now());
 		assertThat(entity.getUpdated()).isNull();
+		assertThat(entity.isCompleted()).isFalse();
+		assertThat(entity.isLocked()).isFalse();
 	}
 
 	@Test
@@ -125,7 +129,7 @@ class EmployeeChecklistMapperTest {
 
 	@Test
 	void toEmployeeChecklistTest() {
-		final var entity = createEmployeeChecklistEntity(true);
+		final var entity = createEmployeeChecklistEntity(true, true);
 
 		final var result = toEmployeeChecklist(entity);
 
@@ -139,6 +143,7 @@ class EmployeeChecklistMapperTest {
 			assertThat(r.getEndDate()).isEqualTo(entity.getEndDate());
 			assertThat(r.getExpirationDate()).isEqualTo(entity.getExpirationDate());
 			assertThat(r.isLocked()).isEqualTo(entity.isLocked());
+			assertThat(r.getCompleted()).isEqualTo(entity.isCompleted());
 			assertThat(r.getMentor()).isNotNull().satisfies(mentor -> {
 				assertThat(mentor.getUserId()).isEqualTo(entity.getMentor().getUserId());
 				assertThat(mentor.getName()).isEqualTo(entity.getMentor().getName());

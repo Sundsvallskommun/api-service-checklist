@@ -152,6 +152,7 @@ public final class EmployeeChecklistMapper {
 				.withStartDate(entity.getStartDate())
 				.withEndDate(entity.getEndDate())
 				.withExpirationDate(entity.getExpirationDate())
+				.withCompleted(entity.isCompleted())
 				.withLocked(entity.isLocked())
 				.withMentor(ofNullable(employeeChecklistEntity.getMentor())
 					.map(mentorEntity -> Mentor.builder()

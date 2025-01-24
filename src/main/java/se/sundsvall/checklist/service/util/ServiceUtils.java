@@ -9,15 +9,18 @@ import static se.sundsvall.checklist.service.util.TaskType.CUSTOM;
 
 import generated.se.sundsvall.employee.Employee;
 import generated.se.sundsvall.employee.Employment;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.zalando.problem.Problem;
-import se.sundsvall.checklist.api.model.EmployeeChecklist;
-import se.sundsvall.checklist.api.model.EmployeeChecklistPhase;
-import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
+import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
+import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
+import se.sundsvall.checklist.integration.db.model.FulfilmentEntity;
+import se.sundsvall.checklist.integration.db.model.TaskEntity;
 
 public final class ServiceUtils {
 	private static final String NO_MATCHING_EMPLOYEE_CHECKLIST_TASK_FOUND = "Task with id %s was not found in employee checklist with id %s.";
@@ -55,15 +58,38 @@ public final class ServiceUtils {
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NO_MAIN_EMPLOYMENT_FOUND.formatted(employee.getLoginname())));
 	}
 
-	public static EmployeeChecklist calculateCompleted(EmployeeChecklist employeeChecklist) {
-		employeeChecklist.setCompleted(
-			employeeChecklist.getPhases().stream()
-				.map(EmployeeChecklistPhase::getTasks)
-				.flatMap(List::stream)
-				.map(EmployeeChecklistTask::getFulfilmentStatus)
-				.allMatch(s -> Objects.nonNull(s) && !Objects.equals(s, EMPTY))); // All tasks shall have a status with either TRUE or FALSE as value
+	/**
+	 * Method checks if all tasks in the employee checklist are marked as completed
+	 *
+	 * @param  employeeChecklist the employee onboarding to check
+	 * @return                   true if all tasks are completed, false otherwise
+	 */
+	public static boolean allTasksAreCompleted(EmployeeChecklistEntity employeeChecklist) {
+		// Collect task ids from all tasks and custom tasks in the employee checklist
+		final var taskIds = ofNullable(employeeChecklist.getChecklists()).orElse(emptyList()).stream()
+			.map(ChecklistEntity::getTasks)
+			.flatMap(List::stream)
+			.map(TaskEntity::getId)
+			.collect(Collectors.toCollection(ArrayList::new));
 
-		return employeeChecklist;
+		taskIds.addAll(ofNullable(employeeChecklist.getCustomTasks()).orElse(emptyList()).stream()
+			.map(CustomTaskEntity::getId)
+			.toList());
+
+		// Collect task ids for all task and custom tasks marked as completed by the employee or manager
+		final var completedTaskIds = ofNullable(employeeChecklist.getFulfilments()).orElse(emptyList()).stream()
+			.filter(fulfilment -> !Objects.equals(fulfilment.getCompleted(), EMPTY)) // // tasks shall have a status with either TRUE or FALSE as value to be considered as completed
+			.map(FulfilmentEntity::getTask)
+			.map(TaskEntity::getId)
+			.collect(Collectors.toCollection(ArrayList::new));
+
+		completedTaskIds.addAll(ofNullable(employeeChecklist.getCustomFulfilments()).orElse(emptyList()).stream()
+			.filter(fulfilment -> !Objects.equals(fulfilment.getCompleted(), EMPTY)) // // tasks shall have a status with either TRUE or FALSE as value to be considered as completed
+			.map(CustomFulfilmentEntity::getCustomTask)
+			.map(CustomTaskEntity::getId)
+			.toList());
+
+		return completedTaskIds.containsAll(taskIds);
 	}
 
 	public static Optional<EmployeeChecklistEntity> fetchEntity(List<EmployeeChecklistEntity> entities, String id) {

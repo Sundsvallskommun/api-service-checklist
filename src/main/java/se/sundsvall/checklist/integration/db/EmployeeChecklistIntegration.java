@@ -12,6 +12,7 @@ import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toEmploye
 import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toManagerEntity;
 import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toOrganizationEntity;
 import static se.sundsvall.checklist.service.mapper.OrganizationMapper.updateEmployeeEntity;
+import static se.sundsvall.checklist.service.util.ServiceUtils.allTasksAreCompleted;
 import static se.sundsvall.checklist.service.util.ServiceUtils.getMainEmployment;
 import static se.sundsvall.checklist.service.util.StringUtils.toReadableString;
 import static se.sundsvall.checklist.service.util.VerificationUtils.verifyUnlockedEmployeeChecklist;
@@ -139,6 +140,11 @@ public class EmployeeChecklistIntegration {
 			.filter(task -> Objects.equals(task.getPhase().getId(), phaseId))
 			.forEach(task -> updateCustomTask(employeeChecklist, task, request.getTasksFulfilmentStatus(), request.getUpdatedBy()));
 
+		// Set completed on employee checklist if not already completed and all tasks are considered completed
+		if (!employeeChecklist.isCompleted() && allTasksAreCompleted(employeeChecklist)) {
+			employeeChecklist.setCompleted(true);
+		}
+
 		return employeeChecklistRepository.save(employeeChecklist);
 	}
 
@@ -182,6 +188,12 @@ public class EmployeeChecklistIntegration {
 			.findAny()
 			.ifPresent(task -> {
 				updateCommonTask(employeeChecklist, task, request);
+
+				// Set completed on employee checklist if not already completed and all tasks are considered completed
+				if (!employeeChecklist.isCompleted() && allTasksAreCompleted(employeeChecklist)) {
+					employeeChecklist.setCompleted(true);
+				}
+
 				employeeChecklistRepository.save(employeeChecklist);
 			});
 
@@ -212,6 +224,12 @@ public class EmployeeChecklistIntegration {
 			.findAny()
 			.ifPresent(task -> {
 				updateCustomTask(employeeChecklist, task, request);
+
+				// Set completed on employee checklist if not already completed and all tasks are considered completed
+				if (!employeeChecklist.isCompleted() && allTasksAreCompleted(employeeChecklist)) {
+					employeeChecklist.setCompleted(true);
+				}
+
 				employeeChecklistRepository.save(employeeChecklist);
 			});
 
@@ -278,7 +296,7 @@ public class EmployeeChecklistIntegration {
 	}
 
 	/**
-	 * Method for creating an employee checklist based on nearest organizational checklist.
+	 * Method for creating an employee checklist based on closest organizational checklist.
 	 *
 	 * @param  municipalityId   the id of the municipality where the employee belongs
 	 * @param  employee         the employee to onboard

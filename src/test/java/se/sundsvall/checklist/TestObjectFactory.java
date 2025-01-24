@@ -58,10 +58,10 @@ public final class TestObjectFactory {
 	private TestObjectFactory() {}
 
 	public static EmployeeChecklistEntity createEmployeeChecklistEntity() {
-		return createEmployeeChecklistEntity(false);
+		return createEmployeeChecklistEntity(false, false);
 	}
 
-	public static EmployeeChecklistEntity createEmployeeChecklistEntity(boolean locked) {
+	public static EmployeeChecklistEntity createEmployeeChecklistEntity(boolean locked, boolean completed) {
 		return EmployeeChecklistEntity.builder()
 			.withId(UUID.randomUUID().toString())
 			.withEmployee(createEmployeeEntity())
@@ -73,6 +73,7 @@ public final class TestObjectFactory {
 			.withStartDate(LocalDate.now().plusDays(3))
 			.withExpirationDate(LocalDate.now().plusDays(10))
 			.withLocked(locked)
+			.withCompleted(completed)
 			.withCreated(OffsetDateTime.now().minusWeeks(1))
 			.withUpdated(OffsetDateTime.now())
 			.withMentor(MentorEntity.builder()
@@ -468,7 +469,7 @@ public final class TestObjectFactory {
 	}
 
 	public static Event createEvent() {
-		var event = new Event();
+		final var event = new Event();
 		event.setCreated(OffsetDateTime.now());
 		event.setMunicipalityId("municipalityId");
 		event.setLogKey("logKey");
