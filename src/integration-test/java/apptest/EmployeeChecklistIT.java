@@ -16,10 +16,12 @@ import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.test.context.jdbc.Sql;
+
 import se.sundsvall.checklist.Application;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
 import se.sundsvall.checklist.integration.db.model.DelegateEntity;
@@ -116,7 +118,7 @@ class EmployeeChecklistIT extends AbstractAppTest {
 		final var employeeChecklistId = "8fcc1fc7-bcda-4db6-9375-ff99961ef011";
 		final var employeeId = "bfd69468-bd32-4b84-a3b0-c5e1742a5a34";
 		final var managerId = "9d2adcf6-9234-4faf-a6c9-0c1c7518b534";
-		final var filter = Example.of(EmployeeChecklistEntity.builder().withId(employeeChecklistId).build());
+		final var filter = Example.of(EmployeeChecklistEntity.builder().withCompleted(true).withId(employeeChecklistId).build());
 
 		assertThat(employeeChecklistRepository.count(filter)).isOne();
 		assertThat(employeeRepository.existsById(employeeId)).isTrue();
@@ -141,7 +143,7 @@ class EmployeeChecklistIT extends AbstractAppTest {
 		final var employeeId = "87b0d9c2-c06e-409d-b77e-63f427e0dbc2";
 		final var managerId = "f59918bc-a8f1-4f97-abe3-9f80f26e6bf2";
 		final var delegateId = "fcfff6b0-d66f-4f09-a77c-7b02979fbe07";
-		final var employeeChecklistFilter = Example.of(EmployeeChecklistEntity.builder().withId(employeeChecklistId).build());
+		final var employeeChecklistFilter = Example.of(EmployeeChecklistEntity.builder().withCompleted(true).withId(employeeChecklistId).build());
 		final var delegateFilter = Example.of(DelegateEntity.builder().withId(delegateId).build());
 
 		assertThat(employeeChecklistRepository.count(employeeChecklistFilter)).isOne();

@@ -91,6 +91,7 @@
     ) engine=InnoDB;
 
     create table employee_checklist (
+        completed bit,
         end_date date,
         expiration_date date,
         locked bit,

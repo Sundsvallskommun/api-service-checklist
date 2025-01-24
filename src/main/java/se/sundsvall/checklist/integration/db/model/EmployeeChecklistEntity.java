@@ -68,6 +68,9 @@ public class EmployeeChecklistEntity {
 	@Column(name = "expiration_date")
 	private LocalDate expirationDate;
 
+	@Column(name = "completed")
+	private boolean completed;
+
 	@Column(name = "locked")
 	private boolean locked;
 

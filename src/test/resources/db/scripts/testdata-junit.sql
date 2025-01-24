@@ -35,10 +35,10 @@ INSERT INTO correspondence (attempts, sent, id, message_id, recipient, communica
 VALUES (1, now(), 'a1cef4fc-75f8-4dbe-a2d7-8530358c6789', '4c42ded9-773d-4807-bb89-de1faee3e231', 'a.manager@5535.com', 'EMAIL', 'SENT');
 
 
-INSERT INTO employee_checklist (end_date, expiration_date, start_date, locked, created, updated, correspondence_id, employee_id, id)
-VALUES ('2023-07-01', '2023-10-01', '2023-01-01', TRUE, '2023-01-01 12:00:00.000', '2023-01-01 12:00:00.000', 'a1cef4fc-75f8-4dbe-a2d7-8530358c6789', '1810c9c4-7281-44de-9930-426d9f065f4d', 'f853e2b1-a144-4305-b05e-ee8d6dc6d005'),
-       ('2024-07-01', '2024-10-01', '2024-01-01', FALSE, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL, 'f0fd9029-d484-477a-8634-b5b7e0291d76', '223a076f-441d-4a30-b5d0-f2bfd5ab250b'),
-       ('2023-07-01', '2023-10-01', '2023-01-01', FALSE, '2023-01-01 12:00:00.000', '2023-01-01 12:00:00.000', NULL, '8122705b-e0e6-4055-b301-eba21986e219', 'f5960058-fad8-4825-85f3-b0fdb518adc5');
+INSERT INTO employee_checklist (end_date, expiration_date, start_date, completed, locked, created, updated, correspondence_id, employee_id, id)
+VALUES ('2023-07-01', '2023-10-01', '2023-01-01', TRUE, TRUE, '2023-01-01 12:00:00.000', '2023-01-01 12:00:00.000', 'a1cef4fc-75f8-4dbe-a2d7-8530358c6789', '1810c9c4-7281-44de-9930-426d9f065f4d', 'f853e2b1-a144-4305-b05e-ee8d6dc6d005'),
+       ('2024-07-01', '2024-10-01', '2024-01-01', FALSE, FALSE, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL, 'f0fd9029-d484-477a-8634-b5b7e0291d76', '223a076f-441d-4a30-b5d0-f2bfd5ab250b'),
+       ('2023-07-01', '2023-10-01', '2023-01-01', TRUE, FALSE, '2023-01-01 12:00:00.000', '2023-01-01 12:00:00.000', NULL, '8122705b-e0e6-4055-b301-eba21986e219', 'f5960058-fad8-4825-85f3-b0fdb518adc5');
 
 INSERT INTO referred_checklist (employee_checklist_id, checklist_id)
 VALUES ('f853e2b1-a144-4305-b05e-ee8d6dc6d005', '25764278-50c8-4a19-af00-077bfc314fd2'),
