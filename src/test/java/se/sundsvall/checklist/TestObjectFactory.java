@@ -14,6 +14,9 @@ import generated.se.sundsvall.employee.Employee;
 import generated.se.sundsvall.employee.Employment;
 import generated.se.sundsvall.employee.Manager;
 import generated.se.sundsvall.employee.PortalPersonData;
+import generated.se.sundsvall.eventlog.Event;
+import generated.se.sundsvall.eventlog.EventType;
+import generated.se.sundsvall.eventlog.Metadata;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -88,6 +91,7 @@ public final class TestObjectFactory {
 			.withId(UUID.randomUUID().toString())
 			.withMunicipalityId("municipalityId")
 			.withName("Test checklist template")
+			.withDisplayName("Test display name")
 			.withVersion(1)
 			.withLifeCycle(CREATED)
 			.withTasks(new ArrayList<>(List.of(createTaskEntity(phaseEntity, "Heading-1"), createTaskEntity(phaseEntity, "Heading-2"))))
@@ -461,5 +465,22 @@ public final class TestObjectFactory {
 							.build()))
 					.build()))
 			.build();
+	}
+
+	public static Event createEvent() {
+		var event = new Event();
+		event.setCreated(OffsetDateTime.now());
+		event.setMunicipalityId("municipalityId");
+		event.setLogKey("logKey");
+		event.setType(EventType.CREATE);
+		event.setMessage("message");
+		event.setOwner("owner");
+		event.setSourceType("sourceType");
+		event.addMetadataItem(createMetadata());
+		return event;
+	}
+
+	public static Metadata createMetadata() {
+		return new Metadata("user", "userId");
 	}
 }

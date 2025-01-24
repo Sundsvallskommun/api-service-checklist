@@ -81,7 +81,7 @@ public class TaskService {
 		checklistRepository.save(checklist);
 
 		final var task = toTask(taskEntity);
-		eventService.createChecklistEvent(CREATE, TASK_ADDED.formatted(taskEntity.getId()), checklist, request.getCreatedBy());
+		eventService.createChecklistEvent(CREATE, TASK_ADDED.formatted(taskEntity.getHeading(), phase.getName()), checklist, request.getCreatedBy());
 		return task;
 	}
 
@@ -94,12 +94,12 @@ public class TaskService {
 
 		final var sortedTask = sortorderService.applySortingToTask(municipalityId, checklist.getOrganization().getOrganizationNumber(), updatedTask);
 
-		eventService.createChecklistEvent(UPDATE, TASK_CHANGED.formatted(taskId), checklist, request.getUpdatedBy());
+		eventService.createChecklistEvent(UPDATE, TASK_CHANGED.formatted(task.getHeading(), task.getPhase().getName()), checklist, request.getUpdatedBy());
 		return sortedTask;
 	}
 
 	@Transactional
-	public void deleteTask(final String municipalityId, final String checklistId, final String phaseId, final String taskId, final String user) {
+	public void deleteTask(final String municipalityId, final String checklistId, final String phaseId, final String taskId, final String userId) {
 		final var checklist = getChecklist(municipalityId, checklistId);
 		verifyPhaseIsPresent(municipalityId, phaseId); // This is here to verify that sent in phase id is present in database
 		final var task = getTaskInPhase(checklist, phaseId, taskId);
@@ -107,7 +107,7 @@ public class TaskService {
 		checklist.getTasks().remove(task); // The task needs to be removed from the checklist to be able to delete it
 		taskRepository.delete(task);
 		sortorderService.deleteSortorderItem(taskId);
-		eventService.createChecklistEvent(DELETE, TASK_REMOVED.formatted(taskId), checklist, user);
+		eventService.createChecklistEvent(DELETE, TASK_REMOVED.formatted(task.getHeading(), task.getPhase().getName()), checklist, userId);
 	}
 
 	private ChecklistEntity getChecklist(final String municipalityId, final String id) {

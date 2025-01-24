@@ -11,11 +11,11 @@ import static se.sundsvall.checklist.service.EventService.CHECKLIST_UPDATED;
 import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toChecklist;
 import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toChecklistEntity;
 import static se.sundsvall.checklist.service.mapper.ChecklistMapper.updateChecklistEntity;
+import static se.sundsvall.checklist.service.mapper.EventlogMapper.toEvents;
 import static se.sundsvall.checklist.service.util.ChecklistUtils.findMatchingTaskIds;
 import static se.sundsvall.checklist.service.util.SortingUtils.getChecklistItemIds;
 
 import generated.se.sundsvall.eventlog.EventType;
-import generated.se.sundsvall.eventlog.PageEvent;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -26,6 +26,7 @@ import org.zalando.problem.Problem;
 import se.sundsvall.checklist.api.model.Checklist;
 import se.sundsvall.checklist.api.model.ChecklistCreateRequest;
 import se.sundsvall.checklist.api.model.ChecklistUpdateRequest;
+import se.sundsvall.checklist.api.model.Events;
 import se.sundsvall.checklist.integration.db.ChecklistBuilder;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
@@ -99,7 +100,7 @@ public class ChecklistService {
 		organization.getChecklists().add(checklistEntity);
 		organizationRepository.save(organization);
 		final var checklist = toChecklist(checklistEntity);
-		eventService.createChecklistEvent(EventType.CREATE, EventService.CHECKLIST_CREATED.formatted(checklistEntity.getId()), checklistEntity, request.getCreatedBy());
+		eventService.createChecklistEvent(EventType.CREATE, EventService.CHECKLIST_CREATED.formatted(checklistEntity.getDisplayName()), checklistEntity, request.getCreatedBy());
 		return checklist;
 	}
 
@@ -143,7 +144,7 @@ public class ChecklistService {
 	}
 
 	@Transactional
-	public void deleteChecklist(final String municipalityId, final String id, final String user) {
+	public void deleteChecklist(final String municipalityId, final String id, final String userId) {
 		final var checklist = checklistRepository.findByIdAndMunicipalityId(id, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND.formatted(municipalityId)));
 
@@ -162,7 +163,7 @@ public class ChecklistService {
 
 		// Remove checklist
 		checklistRepository.delete(checklist);
-		eventService.createChecklistEvent(EventType.DELETE, EventService.CHECKLIST_DELETED.formatted(checklist.getId()), checklist, user);
+		eventService.createChecklistEvent(EventType.DELETE, EventService.CHECKLIST_DELETED.formatted(checklist.getDisplayName()), checklist, userId);
 	}
 
 	public Checklist updateChecklist(final String municipalityId, final String id, final ChecklistUpdateRequest request) {
@@ -171,7 +172,7 @@ public class ChecklistService {
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND.formatted(municipalityId)));
 
 		final var checklist = toChecklistWithAppliedSortOrder(checklistEntity);
-		eventService.createChecklistEvent(EventType.UPDATE, CHECKLIST_UPDATED.formatted(checklistEntity.getId()), checklistEntity, request.getUpdatedBy());
+		eventService.createChecklistEvent(EventType.UPDATE, CHECKLIST_UPDATED.formatted(checklistEntity.getDisplayName()), checklistEntity, request.getUpdatedBy());
 		return checklist;
 	}
 
@@ -183,11 +184,11 @@ public class ChecklistService {
 			.orElseThrow(() -> Problem.valueOf(INTERNAL_SERVER_ERROR, CHECKLIST_PROCESS_ERROR.formatted(entity.getId())));
 	}
 
-	public PageEvent getEvents(final String municipalityId, final String checklistId, final Pageable pageable) {
+	public Events getEvents(final String municipalityId, final String checklistId, final Pageable pageable) {
 		if (!checklistRepository.existsByIdAndMunicipalityId(checklistId, municipalityId)) {
 			throw Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND.formatted(municipalityId));
 		}
 
-		return eventService.getChecklistEvents(municipalityId, checklistId, pageable);
+		return toEvents(eventService.getChecklistEvents(municipalityId, checklistId, pageable));
 	}
 }

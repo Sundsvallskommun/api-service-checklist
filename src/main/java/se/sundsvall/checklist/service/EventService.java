@@ -12,9 +12,9 @@ import se.sundsvall.checklist.integration.eventlog.EventlogIntegration;
 @Service
 public class EventService {
 
-	public static final String TASK_ADDED = "Uppgift %s tillagd";
-	public static final String TASK_CHANGED = "Uppgift %s ändrad";
-	public static final String TASK_REMOVED = "Uppgift %s bortplockad";
+	public static final String TASK_ADDED = "Uppgift %s tillagd i fas %s";
+	public static final String TASK_CHANGED = "Uppgift %s ändrad i fas %s";
+	public static final String TASK_REMOVED = "Uppgift %s bortplockad från fas %s";
 	public static final String CHECKLIST_CREATED = "Checklista %s skapad";
 	public static final String CHECKLIST_UPDATED = "Checklista %s uppdaterad";
 	public static final String CHECKLIST_DELETED = "Checklista %s raderad";
@@ -25,8 +25,8 @@ public class EventService {
 		this.eventlogIntegration = eventlogIntegration;
 	}
 
-	public void createChecklistEvent(final EventType eventType, final String message, final ChecklistEntity checklistEntity, final String user) {
-		var event = toEvent(eventType, message, checklistEntity, user);
+	public void createChecklistEvent(final EventType eventType, final String message, final ChecklistEntity checklistEntity, final String userId) {
+		var event = toEvent(eventType, message, checklistEntity, userId);
 		eventlogIntegration.createEvent(event);
 	}
 

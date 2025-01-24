@@ -1,0 +1,45 @@
+{
+	"page": 1,
+	"limit": 10,
+	"count": 2,
+	"totalRecords": 2,
+	"totalPages": 1,
+	"eventList": [
+		{
+			"logKey": "12345",
+			"eventType": "CREATE",
+			"municipalityId": "2281",
+			"message": "An event has been created.",
+			"owner": "user123",
+			"historyReference": "ref001",
+			"sourceType": "ChecklistEntity",
+			"created": "2025-01-23T10:00:00Z",
+			"metadata": [
+				{
+					"key": "priority",
+					"value": "high"
+				},
+				{
+					"key": "category",
+					"value": "system"
+				}
+			]
+		},
+		{
+			"logKey": "12345",
+			"eventType": "UPDATE",
+			"municipalityId": "2281",
+			"message": "An event has been updated.",
+			"owner": "user124",
+			"historyReference": "ref002",
+			"sourceType": "ChecklistEntity",
+			"created": "2025-01-22T09:30:00Z",
+			"metadata": [
+				{
+					"key": "priority",
+					"value": "medium"
+				}
+			]
+		}
+	]
+}
