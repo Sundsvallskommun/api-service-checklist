@@ -3,7 +3,7 @@ package se.sundsvall.checklist.service.util;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus.EMPTY;
+import static se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus.TRUE;
 import static se.sundsvall.checklist.service.util.TaskType.COMMON;
 import static se.sundsvall.checklist.service.util.TaskType.CUSTOM;
 
@@ -78,13 +78,13 @@ public final class ServiceUtils {
 
 		// Collect task ids for all task and custom tasks marked as completed by the employee or manager
 		final var completedTaskIds = ofNullable(employeeChecklist.getFulfilments()).orElse(emptyList()).stream()
-			.filter(fulfilment -> !Objects.equals(fulfilment.getCompleted(), EMPTY)) // // tasks shall have a status with either TRUE or FALSE as value to be considered as completed
+			.filter(fulfilment -> Objects.equals(fulfilment.getCompleted(), TRUE)) // // tasks shall have status TRUE as value to be considered as completed
 			.map(FulfilmentEntity::getTask)
 			.map(TaskEntity::getId)
 			.collect(Collectors.toCollection(ArrayList::new));
 
 		completedTaskIds.addAll(ofNullable(employeeChecklist.getCustomFulfilments()).orElse(emptyList()).stream()
-			.filter(fulfilment -> !Objects.equals(fulfilment.getCompleted(), EMPTY)) // // tasks shall have a status with either TRUE or FALSE as value to be considered as completed
+			.filter(fulfilment -> Objects.equals(fulfilment.getCompleted(), TRUE)) // // tasks shall have status TRUE as value to be considered as completed
 			.map(CustomFulfilmentEntity::getCustomTask)
 			.map(CustomTaskEntity::getId)
 			.toList());

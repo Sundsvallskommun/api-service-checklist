@@ -8,6 +8,9 @@ import generated.se.sundsvall.employee.Employment;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.EnumSource.Mode;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
@@ -105,16 +108,16 @@ class ServiceUtilsTest {
 	}
 
 	@Test
-	void allTasksAreCompletedWhenAllFulfilmentsAreTrueOrFalse() {
+	void allTasksAreCompletedWhenAllFulfilmentsAreTrue() {
 		final var task1 = TaskEntity.builder().withId("task_1").build();
 		final var task2 = TaskEntity.builder().withId("task_2").build();
 		final var customTask1 = CustomTaskEntity.builder().withId("task_3").build();
 		final var customTask2 = CustomTaskEntity.builder().withId("task_4").build();
 
 		final var fulfilment_task1 = FulfilmentEntity.builder().withTask(task1).withCompleted(FulfilmentStatus.TRUE).build();
-		final var fulfilment_task2 = FulfilmentEntity.builder().withTask(task2).withCompleted(FulfilmentStatus.FALSE).build();
+		final var fulfilment_task2 = FulfilmentEntity.builder().withTask(task2).withCompleted(FulfilmentStatus.TRUE).build();
 		final var fulfilment_custom_task1 = CustomFulfilmentEntity.builder().withCustomTask(customTask1).withCompleted(FulfilmentStatus.TRUE).build();
-		final var fulfilment_custom_task2 = CustomFulfilmentEntity.builder().withCustomTask(customTask2).withCompleted(FulfilmentStatus.FALSE).build();
+		final var fulfilment_custom_task2 = CustomFulfilmentEntity.builder().withCustomTask(customTask2).withCompleted(FulfilmentStatus.TRUE).build();
 
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
 			.withChecklists(List.of(ChecklistEntity.builder().withTasks(List.of(task1, task2)).build()))
@@ -126,14 +129,15 @@ class ServiceUtilsTest {
 		assertThat(ServiceUtils.allTasksAreCompleted(employeeChecklistEntity)).isTrue();
 	}
 
-	@Test
-	void allTasksAreCompletedWhenFulfilmentsHaveEmptyValue() {
+	@ParameterizedTest
+	@EnumSource(value = FulfilmentStatus.class, mode = Mode.EXCLUDE, names = "TRUE")
+	void allTasksAreNotCompletedWhenFulfilmentsHaveFalseOrEmptyValue(FulfilmentStatus fulfilmentStatus) {
 		final var task1 = TaskEntity.builder().withId("task_1").build();
 		final var task2 = TaskEntity.builder().withId("task_2").build();
 		final var customTask1 = CustomTaskEntity.builder().withId("task_3").build();
 
-		final var fulfilment_task1 = FulfilmentEntity.builder().withTask(task1).withCompleted(FulfilmentStatus.EMPTY).build();
-		final var fulfilment_task2 = FulfilmentEntity.builder().withTask(task2).withCompleted(FulfilmentStatus.FALSE).build();
+		final var fulfilment_task1 = FulfilmentEntity.builder().withTask(task1).withCompleted(fulfilmentStatus).build();
+		final var fulfilment_task2 = FulfilmentEntity.builder().withTask(task2).withCompleted(FulfilmentStatus.TRUE).build();
 		final var fulfilment_custom_task1 = CustomFulfilmentEntity.builder().withCustomTask(customTask1).withCompleted(FulfilmentStatus.TRUE).build();
 
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
@@ -146,15 +150,16 @@ class ServiceUtilsTest {
 		assertThat(ServiceUtils.allTasksAreCompleted(employeeChecklistEntity)).isFalse();
 	}
 
-	@Test
-	void allTasksAreCompletedWhenCustomFulfilmentsHaveEmptyValue() {
+	@ParameterizedTest
+	@EnumSource(value = FulfilmentStatus.class, mode = Mode.EXCLUDE, names = "TRUE")
+	void allTasksAreNotCompletedWhenCustomFulfilmentsHaveFalseOrEmptyValue(FulfilmentStatus fulfilmentStatus) {
 		final var task1 = TaskEntity.builder().withId("task_1").build();
 		final var customTask1 = CustomTaskEntity.builder().withId("task_3").build();
 		final var customTask2 = CustomTaskEntity.builder().withId("task_4").build();
 
 		final var fulfilment_task1 = FulfilmentEntity.builder().withTask(task1).withCompleted(FulfilmentStatus.TRUE).build();
-		final var fulfilment_custom_task1 = CustomFulfilmentEntity.builder().withCustomTask(customTask1).withCompleted(FulfilmentStatus.FALSE).build();
-		final var fulfilment_custom_task2 = CustomFulfilmentEntity.builder().withCustomTask(customTask2).withCompleted(FulfilmentStatus.EMPTY).build();
+		final var fulfilment_custom_task1 = CustomFulfilmentEntity.builder().withCustomTask(customTask1).withCompleted(FulfilmentStatus.TRUE).build();
+		final var fulfilment_custom_task2 = CustomFulfilmentEntity.builder().withCustomTask(customTask2).withCompleted(fulfilmentStatus).build();
 
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
 			.withChecklists(List.of(ChecklistEntity.builder().withTasks(List.of(task1)).build()))
@@ -167,12 +172,12 @@ class ServiceUtilsTest {
 	}
 
 	@Test
-	void allTasksAreCompletedWhenTasksHasNoFulfilmentsData() {
+	void allTasksAreNotCompletedWhenTasksHasNoFulfilmentsData() {
 		final var task1 = TaskEntity.builder().withId("task_1").build();
 		final var task2 = TaskEntity.builder().withId("task_2").build();
 		final var customTask1 = CustomTaskEntity.builder().withId("task_3").build();
 
-		final var fulfilment_task1 = FulfilmentEntity.builder().withTask(task1).withCompleted(FulfilmentStatus.FALSE).build();
+		final var fulfilment_task1 = FulfilmentEntity.builder().withTask(task1).withCompleted(FulfilmentStatus.TRUE).build();
 		final var fulfilment_custom_task1 = CustomFulfilmentEntity.builder().withCustomTask(customTask1).withCompleted(FulfilmentStatus.TRUE).build();
 
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
@@ -186,12 +191,12 @@ class ServiceUtilsTest {
 	}
 
 	@Test
-	void allTasksAreCompletedWhenCustomTasksHasNoFulfilmentsData() {
+	void allTasksAreNotCompletedWhenCustomTasksHasNoFulfilmentsData() {
 		final var task1 = TaskEntity.builder().withId("task_1").build();
 		final var customTask1 = CustomTaskEntity.builder().withId("task_3").build();
 		final var customTask2 = CustomTaskEntity.builder().withId("task_4").build();
 
-		final var fulfilment_task1 = FulfilmentEntity.builder().withTask(task1).withCompleted(FulfilmentStatus.FALSE).build();
+		final var fulfilment_task1 = FulfilmentEntity.builder().withTask(task1).withCompleted(FulfilmentStatus.TRUE).build();
 		final var fulfilment_custom_task1 = CustomFulfilmentEntity.builder().withCustomTask(customTask1).withCompleted(FulfilmentStatus.TRUE).build();
 
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()

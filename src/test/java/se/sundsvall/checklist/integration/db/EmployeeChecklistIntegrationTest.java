@@ -27,12 +27,15 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.Mentor;
+import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistParameters;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
@@ -80,6 +83,9 @@ class EmployeeChecklistIntegrationTest {
 
 	@Mock
 	private PhaseRepository phaseRepositoryMock;
+
+	@Mock
+	private Page<EmployeeChecklistEntity> pagedEmployeeChecklistMock;
 
 	@InjectMocks
 	private EmployeeChecklistIntegration integration;
@@ -243,7 +249,7 @@ class EmployeeChecklistIntegrationTest {
 	}
 
 	@ParameterizedTest
-	@EnumSource(value = FulfilmentStatus.class, mode = Mode.EXCLUDE, names = "EMPTY")
+	@EnumSource(value = FulfilmentStatus.class, mode = Mode.INCLUDE, names = "TRUE")
 	void updateAllTasksInPhaseWhenNoPresentFulfilmentExistsLeedingToChecklistCompleted(FulfilmentStatus fulfilmentStatus) {
 		// Arrange
 		final var municipalityId = "municipalityId";
@@ -296,7 +302,7 @@ class EmployeeChecklistIntegrationTest {
 	}
 
 	@ParameterizedTest
-	@EnumSource(value = FulfilmentStatus.class, mode = Mode.EXCLUDE, names = "EMPTY")
+	@EnumSource(value = FulfilmentStatus.class, mode = Mode.EXCLUDE, names = "TRUE")
 	void updateAllTasksInPhaseWhenPresentFulfilmentExistsandChecklistNotCompleted(FulfilmentStatus fulfilmentStatus) {
 		// Arrange
 		final var municipalityId = "municipalityId";
@@ -513,7 +519,7 @@ class EmployeeChecklistIntegrationTest {
 	}
 
 	@ParameterizedTest
-	@EnumSource(value = FulfilmentStatus.class, mode = Mode.EXCLUDE, names = "EMPTY")
+	@EnumSource(value = FulfilmentStatus.class, mode = Mode.INCLUDE, names = "TRUE")
 	void updateCommonTaskFulfilmentWhenNoPresentFulfilmentExistsLeedingToChecklistCompleted(FulfilmentStatus fulfilmentStatus) {
 		// Arrange
 		final var municipalityId = "municipalityId";
@@ -556,7 +562,7 @@ class EmployeeChecklistIntegrationTest {
 	}
 
 	@ParameterizedTest
-	@EnumSource(value = FulfilmentStatus.class, mode = Mode.EXCLUDE, names = "EMPTY")
+	@EnumSource(value = FulfilmentStatus.class, mode = Mode.EXCLUDE, names = "TRUE")
 	void updateCommonTaskFulfilmentWhenPresentFulfilmentExistsandChecklistNotCompleted(FulfilmentStatus fulfilmentStatus) {
 		// Arrange
 		final var municipalityId = "municipalityId";
@@ -709,7 +715,7 @@ class EmployeeChecklistIntegrationTest {
 	}
 
 	@ParameterizedTest
-	@EnumSource(value = FulfilmentStatus.class, mode = Mode.EXCLUDE, names = "EMPTY")
+	@EnumSource(value = FulfilmentStatus.class, mode = Mode.INCLUDE, names = "TRUE")
 	void updateCustomTaskFulfilmentWhenNoPresentFulfilmentExistsLeedingToChecklistCompleted(FulfilmentStatus fulfilmentStatus) {
 		// Arrange
 		final var municipalityId = "municipalityId";
@@ -747,7 +753,7 @@ class EmployeeChecklistIntegrationTest {
 	}
 
 	@ParameterizedTest
-	@EnumSource(value = FulfilmentStatus.class, mode = Mode.EXCLUDE, names = "EMPTY")
+	@EnumSource(value = FulfilmentStatus.class, mode = Mode.EXCLUDE, names = "TRUE")
 	void updateCustomTaskFulfilmentWhenPresentFulfilmentExistsAndChecklistNotCompleted(FulfilmentStatus fulfilmentStatus) {
 		// Arrange
 		final var municipalityId = "municipalityId";
@@ -1365,6 +1371,23 @@ class EmployeeChecklistIntegrationTest {
 		assertThat(employeeChecklistEntityCaptor.getValue().getCustomTasks()).isNullOrEmpty();
 		assertThat(employeeChecklistEntityCaptor.getValue().getFulfilments()).isNullOrEmpty();
 		assertThat(result).isEqualTo("Employee with loginname username processed successfully.");
+	}
+
+	@Test
+	void fetchAllOngoingEmployeeChecklists() {
+		final var page = PageRequest.of(2, 3);
+		final var result = List.of(EmployeeChecklistEntity.builder().build());
+		final var parameters = new OngoingEmployeeChecklistParameters()
+			.withEmployeeName("employeeName")
+			.withMunicipalityId("municipalityId");
+
+		when(pagedEmployeeChecklistMock.getContent()).thenReturn(result);
+		when(employeeChecklistsRepositoryMock.findAllByOngoingEmployeeChecklistParameters(any(), any())).thenReturn(pagedEmployeeChecklistMock);
+
+		final var response = integration.fetchAllOngoingEmployeeChecklists(parameters, page);
+
+		assertThat(response.getContent()).isEqualTo(result);
+		verify(employeeChecklistsRepositoryMock).findAllByOngoingEmployeeChecklistParameters(parameters, page);
 	}
 
 	@AfterEach
