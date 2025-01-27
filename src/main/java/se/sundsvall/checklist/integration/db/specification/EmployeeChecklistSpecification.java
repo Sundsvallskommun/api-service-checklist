@@ -1,6 +1,5 @@
 package se.sundsvall.checklist.integration.db.specification;
 
-import java.time.LocalDate;
 import org.springframework.data.jpa.domain.Specification;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 
@@ -20,12 +19,8 @@ public interface EmployeeChecklistSpecification {
 		return BUILDER.buildEmployeeNameFilter(employeeName);
 	}
 
-	static Specification<EmployeeChecklistEntity> withStartDateEqualOrBefore(final LocalDate startDate) {
-		return BUILDER.buildStartDateEqualOrBeforeFilter("startDate", startDate);
-	}
-
-	static Specification<EmployeeChecklistEntity> withEndDateEqualOrAfter(final LocalDate endDate) {
-		return BUILDER.buildEndDateAfterFilter("endDate", endDate);
+	static Specification<EmployeeChecklistEntity> withNonCompletedChecklists() {
+		return BUILDER.buildNotCompletedFilter();
 	}
 
 }

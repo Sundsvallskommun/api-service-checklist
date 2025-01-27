@@ -1,13 +1,11 @@
 package se.sundsvall.checklist.integration.db.specification;
 
-import static java.util.Objects.nonNull;
-
 import jakarta.persistence.criteria.Expression;
-import java.time.LocalDate;
 import org.springframework.data.jpa.domain.Specification;
 
 public class SpecificationBuilder<T> {
 
+	private static final String COMPLETED = "completed";
 	private static final String EMPLOYEE = "employee";
 	private static final String COMPANY = "company";
 	private static final String FIRST_NAME = "firstName";
@@ -27,15 +25,24 @@ public class SpecificationBuilder<T> {
 				return null;
 			}
 
-			Expression<String> firstNameExpression = entity.get(EMPLOYEE).get(FIRST_NAME);
-			Expression<String> lastNameExpression = entity.get(EMPLOYEE).get(LAST_NAME);
+			final Expression<String> firstNameExpression = entity.get(EMPLOYEE).get(FIRST_NAME);
+			final Expression<String> lastNameExpression = entity.get(EMPLOYEE).get(LAST_NAME);
 
-			var fullNameExpression = cb.concat(
+			final var fullNameExpression = cb.concat(
 				cb.concat(cb.lower(firstNameExpression), cb.literal(" ")),
 				cb.lower(lastNameExpression));
 
 			return cb.like(fullNameExpression, "%" + value.toLowerCase() + "%");
 		};
+	}
+
+	/**
+	 * Creates filter to only receive entities that are not completed.
+	 *
+	 * @return a specification that filters out completed entities
+	 */
+	public Specification<T> buildNotCompletedFilter() {
+		return (entity, cq, cb) -> cb.equal(entity.get(COMPLETED), false);
 	}
 
 	/**
@@ -52,14 +59,6 @@ public class SpecificationBuilder<T> {
 			}
 			return cb.equal(entity.get(EMPLOYEE).get(COMPANY).get(MUNICIPALITY_ID), value);
 		};
-	}
-
-	public Specification<T> buildStartDateEqualOrBeforeFilter(final String attribute, final LocalDate value) {
-		return (entity, cq, cb) -> nonNull(value) ? cb.lessThanOrEqualTo(entity.get(attribute), value) : cb.and();
-	}
-
-	public Specification<T> buildEndDateAfterFilter(final String attribute, final LocalDate value) {
-		return (entity, cq, cb) -> nonNull(value) ? cb.greaterThanOrEqualTo(entity.get(attribute), value) : cb.and();
 	}
 
 	/**

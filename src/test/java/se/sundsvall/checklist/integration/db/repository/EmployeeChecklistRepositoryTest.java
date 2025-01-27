@@ -15,8 +15,10 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
+import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistParameters;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus;
 
@@ -125,5 +127,14 @@ class EmployeeChecklistRepositoryTest {
 		assertThat(repository.findByIdAndChecklistsMunicipalityId("223a076f-441d-4a30-b5d0-f2bfd5ab250b", "2281")).isPresent();
 		assertThat(repository.findByIdAndChecklistsMunicipalityId("4bcdbe73-fff5-4f19-bb34-0c755423e473", "2281")).isEmpty();
 		assertThat(repository.findByIdAndChecklistsMunicipalityId("223a076f-441d-4a30-b5d0-f2bfd5ab250b", "2262")).isEmpty();
+	}
+
+	@Test
+	void findAllByOngoingEmployeeChecklistParameters() {
+		final var result = repository.findAllByOngoingEmployeeChecklistParameters(new OngoingEmployeeChecklistParameters().withMunicipalityId("2281"), PageRequest.ofSize(100));
+
+		assertThat(result).hasSize(1)
+			.extracting(EmployeeChecklistEntity::getId)
+			.containsExactly("223a076f-441d-4a30-b5d0-f2bfd5ab250b");
 	}
 }
