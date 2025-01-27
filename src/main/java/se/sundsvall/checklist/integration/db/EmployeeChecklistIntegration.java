@@ -140,10 +140,7 @@ public class EmployeeChecklistIntegration {
 			.filter(task -> Objects.equals(task.getPhase().getId(), phaseId))
 			.forEach(task -> updateCustomTask(employeeChecklist, task, request.getTasksFulfilmentStatus(), request.getUpdatedBy()));
 
-		// Set completed on employee checklist if not already completed and all tasks are considered completed
-		if (!employeeChecklist.isCompleted() && allTasksAreCompleted(employeeChecklist)) {
-			employeeChecklist.setCompleted(true);
-		}
+		calculateCompletedChecklist(employeeChecklist);
 
 		return employeeChecklistRepository.save(employeeChecklist);
 	}
@@ -188,11 +185,7 @@ public class EmployeeChecklistIntegration {
 			.findAny()
 			.ifPresent(task -> {
 				updateCommonTask(employeeChecklist, task, request);
-
-				// Set completed on employee checklist if not already completed and all tasks are considered completed
-				if (!employeeChecklist.isCompleted() && allTasksAreCompleted(employeeChecklist)) {
-					employeeChecklist.setCompleted(true);
-				}
+				calculateCompletedChecklist(employeeChecklist);
 
 				employeeChecklistRepository.save(employeeChecklist);
 			});
@@ -224,11 +217,7 @@ public class EmployeeChecklistIntegration {
 			.findAny()
 			.ifPresent(task -> {
 				updateCustomTask(employeeChecklist, task, request);
-
-				// Set completed on employee checklist if not already completed and all tasks are considered completed
-				if (!employeeChecklist.isCompleted() && allTasksAreCompleted(employeeChecklist)) {
-					employeeChecklist.setCompleted(true);
-				}
+				calculateCompletedChecklist(employeeChecklist);
 
 				employeeChecklistRepository.save(employeeChecklist);
 			});
@@ -328,6 +317,17 @@ public class EmployeeChecklistIntegration {
 		return EMPLOYEE_SUCCESSFULLY_PROCESSED.formatted(employee.getLoginname());
 	}
 
+	/**
+	 * Fetch all ongoing employee checklists matching the given filter parameters.
+	 *
+	 * @param  parameters filter parameters to apply
+	 * @param  pageable   pagination parameters to apply
+	 * @return            a paged result of ongoing employye checklists matching the provided parameters
+	 */
+	public Page<EmployeeChecklistEntity> fetchAllOngoingEmployeeChecklists(final OngoingEmployeeChecklistParameters parameters, final PageRequest pageable) {
+		return employeeChecklistRepository.findAllByOngoingEmployeeChecklistParameters(parameters, pageable);
+	}
+
 	private ManagerEntity retrieveManagerEntity(Manager manager) {
 		return managerRepository.findById(manager.getPersonId().toString())
 			.orElse(toManagerEntity(manager));
@@ -364,8 +364,9 @@ public class EmployeeChecklistIntegration {
 			.findAny();
 	}
 
-	public Page<EmployeeChecklistEntity> fetchAllOngoingEmployeeChecklists(final OngoingEmployeeChecklistParameters parameters, final PageRequest pageable) {
-		return employeeChecklistRepository.findAllByOngoingEmployeeChecklistParameters(parameters, pageable);
+	private void calculateCompletedChecklist(final EmployeeChecklistEntity employeeChecklist) {
+		if (!employeeChecklist.isCompleted() && allTasksAreCompleted(employeeChecklist)) {
+			employeeChecklist.setCompleted(true);
+		}
 	}
-
 }
