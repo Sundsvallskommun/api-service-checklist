@@ -114,16 +114,16 @@ class ServiceUtilsTest {
 		final var customTask1 = CustomTaskEntity.builder().withId("task_3").build();
 		final var customTask2 = CustomTaskEntity.builder().withId("task_4").build();
 
-		final var fulfilment_task1 = FulfilmentEntity.builder().withTask(task1).withCompleted(FulfilmentStatus.TRUE).build();
-		final var fulfilment_task2 = FulfilmentEntity.builder().withTask(task2).withCompleted(FulfilmentStatus.TRUE).build();
-		final var fulfilment_custom_task1 = CustomFulfilmentEntity.builder().withCustomTask(customTask1).withCompleted(FulfilmentStatus.TRUE).build();
-		final var fulfilment_custom_task2 = CustomFulfilmentEntity.builder().withCustomTask(customTask2).withCompleted(FulfilmentStatus.TRUE).build();
+		final var fulfilmentTask1 = FulfilmentEntity.builder().withTask(task1).withCompleted(FulfilmentStatus.TRUE).build();
+		final var fulfilmentTask2 = FulfilmentEntity.builder().withTask(task2).withCompleted(FulfilmentStatus.TRUE).build();
+		final var fulfilmentCustomTask1 = CustomFulfilmentEntity.builder().withCustomTask(customTask1).withCompleted(FulfilmentStatus.TRUE).build();
+		final var fulfilmentCustomTask2 = CustomFulfilmentEntity.builder().withCustomTask(customTask2).withCompleted(FulfilmentStatus.TRUE).build();
 
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
 			.withChecklists(List.of(ChecklistEntity.builder().withTasks(List.of(task1, task2)).build()))
-			.withFulfilments(List.of(fulfilment_task1, fulfilment_task2))
+			.withFulfilments(List.of(fulfilmentTask1, fulfilmentTask2))
 			.withCustomTasks(List.of(customTask1, customTask2))
-			.withCustomFulfilments(List.of(fulfilment_custom_task1, fulfilment_custom_task2))
+			.withCustomFulfilments(List.of(fulfilmentCustomTask1, fulfilmentCustomTask2))
 			.build();
 
 		assertThat(ServiceUtils.allTasksAreCompleted(employeeChecklistEntity)).isTrue();
@@ -136,15 +136,15 @@ class ServiceUtilsTest {
 		final var task2 = TaskEntity.builder().withId("task_2").build();
 		final var customTask1 = CustomTaskEntity.builder().withId("task_3").build();
 
-		final var fulfilment_task1 = FulfilmentEntity.builder().withTask(task1).withCompleted(fulfilmentStatus).build();
-		final var fulfilment_task2 = FulfilmentEntity.builder().withTask(task2).withCompleted(FulfilmentStatus.TRUE).build();
-		final var fulfilment_custom_task1 = CustomFulfilmentEntity.builder().withCustomTask(customTask1).withCompleted(FulfilmentStatus.TRUE).build();
+		final var fulfilmentTask1 = FulfilmentEntity.builder().withTask(task1).withCompleted(fulfilmentStatus).build();
+		final var fulfilmentTask2 = FulfilmentEntity.builder().withTask(task2).withCompleted(FulfilmentStatus.TRUE).build();
+		final var fulfilmentCustomTask1 = CustomFulfilmentEntity.builder().withCustomTask(customTask1).withCompleted(FulfilmentStatus.TRUE).build();
 
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
 			.withChecklists(List.of(ChecklistEntity.builder().withTasks(List.of(task1, task2)).build()))
-			.withFulfilments(List.of(fulfilment_task1, fulfilment_task2))
+			.withFulfilments(List.of(fulfilmentTask1, fulfilmentTask2))
 			.withCustomTasks(List.of(customTask1))
-			.withCustomFulfilments(List.of(fulfilment_custom_task1))
+			.withCustomFulfilments(List.of(fulfilmentCustomTask1))
 			.build();
 
 		assertThat(ServiceUtils.allTasksAreCompleted(employeeChecklistEntity)).isFalse();
@@ -157,15 +157,15 @@ class ServiceUtilsTest {
 		final var customTask1 = CustomTaskEntity.builder().withId("task_3").build();
 		final var customTask2 = CustomTaskEntity.builder().withId("task_4").build();
 
-		final var fulfilment_task1 = FulfilmentEntity.builder().withTask(task1).withCompleted(FulfilmentStatus.TRUE).build();
-		final var fulfilment_custom_task1 = CustomFulfilmentEntity.builder().withCustomTask(customTask1).withCompleted(FulfilmentStatus.TRUE).build();
-		final var fulfilment_custom_task2 = CustomFulfilmentEntity.builder().withCustomTask(customTask2).withCompleted(fulfilmentStatus).build();
+		final var fulfilmentTask1 = FulfilmentEntity.builder().withTask(task1).withCompleted(FulfilmentStatus.TRUE).build();
+		final var fulfilmentCustomTask1 = CustomFulfilmentEntity.builder().withCustomTask(customTask1).withCompleted(FulfilmentStatus.TRUE).build();
+		final var fulfilmentCustomTask2 = CustomFulfilmentEntity.builder().withCustomTask(customTask2).withCompleted(fulfilmentStatus).build();
 
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
 			.withChecklists(List.of(ChecklistEntity.builder().withTasks(List.of(task1)).build()))
-			.withFulfilments(List.of(fulfilment_task1))
+			.withFulfilments(List.of(fulfilmentTask1))
 			.withCustomTasks(List.of(customTask1, customTask2))
-			.withCustomFulfilments(List.of(fulfilment_custom_task1, fulfilment_custom_task2))
+			.withCustomFulfilments(List.of(fulfilmentCustomTask1, fulfilmentCustomTask2))
 			.build();
 
 		assertThat(ServiceUtils.allTasksAreCompleted(employeeChecklistEntity)).isFalse();
@@ -177,14 +177,14 @@ class ServiceUtilsTest {
 		final var task2 = TaskEntity.builder().withId("task_2").build();
 		final var customTask1 = CustomTaskEntity.builder().withId("task_3").build();
 
-		final var fulfilment_task1 = FulfilmentEntity.builder().withTask(task1).withCompleted(FulfilmentStatus.TRUE).build();
-		final var fulfilment_custom_task1 = CustomFulfilmentEntity.builder().withCustomTask(customTask1).withCompleted(FulfilmentStatus.TRUE).build();
+		final var fulfilmentTask1 = FulfilmentEntity.builder().withTask(task1).withCompleted(FulfilmentStatus.TRUE).build();
+		final var fulfilmentCustomTask1 = CustomFulfilmentEntity.builder().withCustomTask(customTask1).withCompleted(FulfilmentStatus.TRUE).build();
 
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
 			.withChecklists(List.of(ChecklistEntity.builder().withTasks(List.of(task1, task2)).build()))
-			.withFulfilments(List.of(fulfilment_task1))
+			.withFulfilments(List.of(fulfilmentTask1))
 			.withCustomTasks(List.of(customTask1))
-			.withCustomFulfilments(List.of(fulfilment_custom_task1))
+			.withCustomFulfilments(List.of(fulfilmentCustomTask1))
 			.build();
 
 		assertThat(ServiceUtils.allTasksAreCompleted(employeeChecklistEntity)).isFalse();
@@ -196,14 +196,14 @@ class ServiceUtilsTest {
 		final var customTask1 = CustomTaskEntity.builder().withId("task_3").build();
 		final var customTask2 = CustomTaskEntity.builder().withId("task_4").build();
 
-		final var fulfilment_task1 = FulfilmentEntity.builder().withTask(task1).withCompleted(FulfilmentStatus.TRUE).build();
-		final var fulfilment_custom_task1 = CustomFulfilmentEntity.builder().withCustomTask(customTask1).withCompleted(FulfilmentStatus.TRUE).build();
+		final var fulfilmentTask1 = FulfilmentEntity.builder().withTask(task1).withCompleted(FulfilmentStatus.TRUE).build();
+		final var fulfilmentCustomTask1 = CustomFulfilmentEntity.builder().withCustomTask(customTask1).withCompleted(FulfilmentStatus.TRUE).build();
 
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
 			.withChecklists(List.of(ChecklistEntity.builder().withTasks(List.of(task1)).build()))
-			.withFulfilments(List.of(fulfilment_task1))
+			.withFulfilments(List.of(fulfilmentTask1))
 			.withCustomTasks(List.of(customTask1, customTask2))
-			.withCustomFulfilments(List.of(fulfilment_custom_task1))
+			.withCustomFulfilments(List.of(fulfilmentCustomTask1))
 			.build();
 
 		assertThat(ServiceUtils.allTasksAreCompleted(employeeChecklistEntity)).isFalse();
