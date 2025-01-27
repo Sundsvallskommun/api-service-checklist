@@ -12,6 +12,7 @@ import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toEmploye
 import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toManagerEntity;
 import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toOrganizationEntity;
 import static se.sundsvall.checklist.service.mapper.OrganizationMapper.updateEmployeeEntity;
+import static se.sundsvall.checklist.service.util.ServiceUtils.allTasksAreCompleted;
 import static se.sundsvall.checklist.service.util.ServiceUtils.getMainEmployment;
 import static se.sundsvall.checklist.service.util.StringUtils.toReadableString;
 import static se.sundsvall.checklist.service.util.VerificationUtils.verifyUnlockedEmployeeChecklist;
@@ -139,6 +140,8 @@ public class EmployeeChecklistIntegration {
 			.filter(task -> Objects.equals(task.getPhase().getId(), phaseId))
 			.forEach(task -> updateCustomTask(employeeChecklist, task, request.getTasksFulfilmentStatus(), request.getUpdatedBy()));
 
+		calculateCompletedChecklist(employeeChecklist);
+
 		return employeeChecklistRepository.save(employeeChecklist);
 	}
 
@@ -182,6 +185,8 @@ public class EmployeeChecklistIntegration {
 			.findAny()
 			.ifPresent(task -> {
 				updateCommonTask(employeeChecklist, task, request);
+				calculateCompletedChecklist(employeeChecklist);
+
 				employeeChecklistRepository.save(employeeChecklist);
 			});
 
@@ -212,6 +217,8 @@ public class EmployeeChecklistIntegration {
 			.findAny()
 			.ifPresent(task -> {
 				updateCustomTask(employeeChecklist, task, request);
+				calculateCompletedChecklist(employeeChecklist);
+
 				employeeChecklistRepository.save(employeeChecklist);
 			});
 
@@ -278,7 +285,7 @@ public class EmployeeChecklistIntegration {
 	}
 
 	/**
-	 * Method for creating an employee checklist based on nearest organizational checklist.
+	 * Method for creating an employee checklist based on closest organizational checklist.
 	 *
 	 * @param  municipalityId   the id of the municipality where the employee belongs
 	 * @param  employee         the employee to onboard
@@ -308,6 +315,17 @@ public class EmployeeChecklistIntegration {
 		initiateEmployeeChecklist(municipalityId, persistedEmployee, orgTree);
 
 		return EMPLOYEE_SUCCESSFULLY_PROCESSED.formatted(employee.getLoginname());
+	}
+
+	/**
+	 * Fetch all ongoing employee checklists matching the given filter parameters.
+	 *
+	 * @param  parameters filter parameters to apply
+	 * @param  pageable   pagination parameters to apply
+	 * @return            a paged result of ongoing employye checklists matching the provided parameters
+	 */
+	public Page<EmployeeChecklistEntity> fetchAllOngoingEmployeeChecklists(final OngoingEmployeeChecklistParameters parameters, final PageRequest pageable) {
+		return employeeChecklistRepository.findAllByOngoingEmployeeChecklistParameters(parameters, pageable);
 	}
 
 	private ManagerEntity retrieveManagerEntity(Manager manager) {
@@ -346,8 +364,9 @@ public class EmployeeChecklistIntegration {
 			.findAny();
 	}
 
-	public Page<EmployeeChecklistEntity> fetchAllOngoingEmployeeChecklists(final OngoingEmployeeChecklistParameters parameters, final PageRequest pageable) {
-		return employeeChecklistRepository.findAllByOngoingEmployeeChecklistParameters(parameters, pageable);
+	private void calculateCompletedChecklist(final EmployeeChecklistEntity employeeChecklist) {
+		if (!employeeChecklist.isCompleted() && allTasksAreCompleted(employeeChecklist)) {
+			employeeChecklist.setCompleted(true);
+		}
 	}
-
 }

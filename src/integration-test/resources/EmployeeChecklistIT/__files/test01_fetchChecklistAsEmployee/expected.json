@@ -9,7 +9,7 @@
 	"endDate": "2024-07-01",
 	"created": "2024-01-01T12:00:00+01:00",
 	"id": "f853e2b1-a144-4305-b05e-ee8d6dc6d005",
-	"completed": false,
+	"completed": true,
 	"employee": {
 		"firstName": "A Emp",
 		"lastName": "Loyee",
