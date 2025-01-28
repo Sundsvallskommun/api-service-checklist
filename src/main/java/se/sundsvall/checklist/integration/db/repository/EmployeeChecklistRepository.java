@@ -2,9 +2,8 @@ package se.sundsvall.checklist.integration.db.repository;
 
 import static se.sundsvall.checklist.integration.db.specification.EmployeeChecklistSpecification.distinct;
 import static se.sundsvall.checklist.integration.db.specification.EmployeeChecklistSpecification.withEmployeeName;
-import static se.sundsvall.checklist.integration.db.specification.EmployeeChecklistSpecification.withEndDateEqualOrAfter;
 import static se.sundsvall.checklist.integration.db.specification.EmployeeChecklistSpecification.withMunicipalityId;
-import static se.sundsvall.checklist.integration.db.specification.EmployeeChecklistSpecification.withStartDateEqualOrBefore;
+import static se.sundsvall.checklist.integration.db.specification.EmployeeChecklistSpecification.withNonCompletedChecklists;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import java.time.LocalDate;
@@ -38,8 +37,7 @@ public interface EmployeeChecklistRepository extends JpaRepository<EmployeeCheck
 		return findAll(Specification
 			.where(withMunicipalityId(parameters.getMunicipalityId()))
 			.and(withEmployeeName(parameters.getEmployeeName()))
-			.and(withStartDateEqualOrBefore(LocalDate.now()))
-			.and(withEndDateEqualOrAfter(LocalDate.now()))
+			.and(withNonCompletedChecklists())
 			.and(distinct()),
 			pageable);
 	}
