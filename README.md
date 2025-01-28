@@ -145,19 +145,19 @@ config:
 
 ```
 
-- ** Other configuration**
+- ** Configuration of schedulers**
 
 ```yaml
   config:
     schedulers:
       new-employees:
-        cron: cron expression when scheduler should run
+        cron: cron expression when scheduler should run (or "-" to disable it)
         fetch-on-startup: true/false, states if new employees shall be fetched or not on service start up
         delay-on-startup: ISO861 format for delay before new employees are fetched after service start up
       manager-email:
-        cron: cron expression when scheduler should run
+        cron: cron expression when scheduler should run (or "-" to disable it)
       lock-employee-checklists:
-        enabled: true/false, states if job to lock old checklists should be executed once per day or not
+        cron: cron expression when scheduler should run (or "-" to disable it)
 
     manager-email:
       template: template_name

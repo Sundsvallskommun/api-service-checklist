@@ -110,20 +110,24 @@ logbook:
 # Config of schedulers etc
 #===========================
 checklist:
+  employee-update-interval: P1D
   managed-municipality-ids:
     - 2281
   new-employees:
-    cron: ${config.schedulers.new-employees.cron}
     fetch-on-startup: ${config.schedulers.new-employees.fetch-on-startup:true}
     delay-on-startup: ${config.schedulers.new-employees.delay-on-startup}
-    shedlock-lock-at-most-for: PT2M
+    cron: ${config.schedulers.new-employees.cron:-}
+    name: fetchNewEmployees
+    lockAtMostFor: PT2M
+    maximumExecutionTime: PT2M
   manager-email:
-    cron: ${config.schedulers.manager-email.cron}
+    cron: ${config.schedulers.manager-email.cron:-}
+    name: sendEmailToManagers
+    lockAtMostFor: PT2M
+    maximumExecutionTime: PT2M
     email-template: ${config.manager-email.template}
-    shedlock-lock-at-most-for: PT2M
   lock-employee-checklists:
-    enabled: ${config.schedulers.lock-employee-checklists.enabled:true}
-    # How often to check for expired checklists and inactivate them
-    periodical-invocation: P1D
-    shedlock-lock-at-most-for: PT2M
-  employee-update-interval: P1D
+    cron: ${config.schedulers.lock-employee-checklists.cron:-}
+    name: lockEmployeeChecklists
+    lockAtMostFor: PT2M
+    maximumExecutionTime: PT2M

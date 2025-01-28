@@ -7,17 +7,15 @@ import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceSt
 import static se.sundsvall.checklist.service.mapper.CorrespondenceMapper.toCorrespondenceEntity;
 
 import java.util.Optional;
-import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistRepository;
 import se.sundsvall.checklist.service.CommunicationService;
-import se.sundsvall.dept44.requestid.RequestId;
+import se.sundsvall.dept44.scheduling.Dept44Scheduled;
 
 @Component
 public class ManagerEmailScheduler {
@@ -36,24 +34,22 @@ public class ManagerEmailScheduler {
 		this.properties = properties;
 	}
 
-	@Scheduled(cron = "${checklist.manager-email.cron}")
-	@SchedulerLock(name = "sendEmail", lockAtMostFor = "${checklist.manager-email.shedlock-lock-at-most-for}")
+	@Dept44Scheduled(
+		name = "${checklist.manager-email.name}",
+		cron = "${checklist.manager-email.cron}",
+		lockAtMostFor = "${checklist.manager-email.lockAtMostFor}",
+		maximumExecutionTime = "${checklist.manager-email.maximumExecutionTime}")
 	public void execute() {
-		try {
-			RequestId.init();
-			LOGGER.info(LOG_SEND_MANAGER_EMAIL_STARTED);
+		LOGGER.info(LOG_SEND_MANAGER_EMAIL_STARTED);
 
-			if (isEmpty(properties.managedMunicipalityIds())) {
-				throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "No managed municipalities was found, please verify service properties.");
-			}
-
-			properties.managedMunicipalityIds()
-				.forEach(this::handleEmailCommunication);
-
-			LOGGER.info(LOG_SEND_MANAGER_EMAIL_ENDED);
-		} finally {
-			RequestId.reset();
+		if (isEmpty(properties.managedMunicipalityIds())) {
+			throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "No managed municipalities was found, please verify service properties.");
 		}
+
+		properties.managedMunicipalityIds()
+			.forEach(this::handleEmailCommunication);
+
+		LOGGER.info(LOG_SEND_MANAGER_EMAIL_ENDED);
 	}
 
 	private void handleEmailCommunication(String municipalityId) {
