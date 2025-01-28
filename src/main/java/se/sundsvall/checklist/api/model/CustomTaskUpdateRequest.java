@@ -27,7 +27,7 @@ public class CustomTaskUpdateRequest {
 	@Schema(description = "The body text of the task", example = "Detta är en beskrivning av ett uppdrag", accessMode = WRITE_ONLY)
 	private String text;
 
-	@Schema(description = "The question type of the task", accessMode = WRITE_ONLY)
+	@Schema(description = "The question type of the task")
 	private QuestionType questionType;
 
 	@Schema(description = "The sort order for the task", accessMode = WRITE_ONLY)

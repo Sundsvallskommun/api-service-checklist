@@ -36,10 +36,10 @@ public class EmployeeChecklistTask {
 	@Schema(description = "The sort order for the task", accessMode = READ_ONLY)
 	private Integer sortOrder;
 
-	@Schema(description = "The role type of the task", accessMode = READ_ONLY)
+	@Schema(description = "The role type of the task")
 	private RoleType roleType;
 
-	@Schema(description = "The question type of the task", accessMode = READ_ONLY)
+	@Schema(description = "The question type of the task")
 	private QuestionType questionType;
 
 	@Schema(description = "Tells if the task is only applies to the current checklist or not", accessMode = READ_ONLY)
@@ -48,7 +48,7 @@ public class EmployeeChecklistTask {
 	@Schema(description = "The task response text", example = "Jag har bjudit på fika", accessMode = READ_ONLY)
 	private String responseText;
 
-	@Schema(description = "The status of the task fulfilment", example = "TRUE", accessMode = READ_ONLY)
+	@Schema(description = "The status of the task fulfilment", example = "TRUE")
 	private FulfilmentStatus fulfilmentStatus;
 
 	@Schema(description = "The date and time the task was last updated", example = "2023-11-22T15:30:00+03:00", accessMode = READ_ONLY)

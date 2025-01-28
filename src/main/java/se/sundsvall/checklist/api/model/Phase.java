@@ -34,7 +34,7 @@ public class Phase {
 	@Schema(description = "The time to complete the phase", example = "P1M", accessMode = READ_ONLY)
 	private String timeToComplete;
 
-	@Schema(description = "The permission needed to administrate the phase", accessMode = READ_ONLY)
+	@Schema(description = "The permission needed to administrate the phase")
 	private Permission permission;
 
 	@Schema(description = "The sort order of the phase", example = "1", accessMode = READ_ONLY)

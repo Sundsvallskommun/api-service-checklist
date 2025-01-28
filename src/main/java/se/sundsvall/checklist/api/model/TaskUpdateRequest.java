@@ -32,13 +32,13 @@ public class TaskUpdateRequest {
 	@Schema(description = "The sort order of the task", example = "1", accessMode = WRITE_ONLY)
 	private Integer sortOrder;
 
-	@Schema(description = "The role type of the task", example = "EMPLOYEE", accessMode = WRITE_ONLY)
+	@Schema(description = "The role type of the task")
 	private RoleType roleType;
 
-	@Schema(description = "The permission needed to administrate the task", accessMode = WRITE_ONLY)
+	@Schema(description = "The permission needed to administrate the task")
 	private Permission permission;
 
-	@Schema(description = "The question type of the task", accessMode = WRITE_ONLY)
+	@Schema(description = "The question type of the task")
 	private QuestionType questionType;
 
 	@Schema(description = "The id of the user updating the task", example = "joe01doe", accessMode = WRITE_ONLY)
