@@ -29,7 +29,7 @@ public class PhaseUpdateRequest {
 	@ValidPeriod(nullable = true)
 	private String timeToComplete;
 
-	@Schema(description = "The permission needed to administrate the phase", accessMode = WRITE_ONLY)
+	@Schema(description = "The permission needed to administrate the phase")
 	private Permission permission;
 
 	@Schema(description = "The sort order of the phase", example = "1", accessMode = WRITE_ONLY)

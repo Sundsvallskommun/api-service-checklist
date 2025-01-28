@@ -35,15 +35,15 @@ public class TaskCreateRequest {
 	@NotNull
 	private Integer sortOrder;
 
-	@Schema(description = "The role type of the task", example = "EMPLOYEE", accessMode = WRITE_ONLY)
+	@Schema(description = "The role type of the task", example = "NEW_EMPLOYEE")
 	@NotNull
 	private RoleType roleType;
 
-	@Schema(description = "The permission needed to administrate the task", accessMode = WRITE_ONLY)
+	@Schema(description = "The permission needed to administrate the task")
 	@NotNull
 	private Permission permission;
 
-	@Schema(description = "The question type of the task", example = "YES_OR_NO", accessMode = WRITE_ONLY)
+	@Schema(description = "The question type of the task", example = "YES_OR_NO")
 	@NotNull
 	private QuestionType questionType;
 

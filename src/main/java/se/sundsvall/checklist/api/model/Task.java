@@ -37,13 +37,13 @@ public class Task {
 	@Schema(description = "The sort order of the task", example = "1", accessMode = READ_ONLY)
 	private int sortOrder;
 
-	@Schema(description = "The role type eligable for the task", example = "EMPLOYEE", accessMode = READ_ONLY)
+	@Schema(description = "The role type eligable for the task")
 	private RoleType roleType;
 
-	@Schema(description = "The question type of the task", accessMode = READ_ONLY)
+	@Schema(description = "The question type of the task")
 	private QuestionType questionType;
 
-	@Schema(description = "The permission needed to administrate the task", accessMode = READ_ONLY)
+	@Schema(description = "The permission needed to administrate the task")
 	private Permission permission;
 
 	@Schema(description = "The date and time the task was created", example = "2023-11-22T15:30:00+03:00", accessMode = READ_ONLY)

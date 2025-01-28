@@ -2751,7 +2751,6 @@ components:
     Permission:
       type: string
       description: The permission needed to administrate the phase
-      writeOnly: true
       enum:
         - SUPERADMIN
         - ADMIN
@@ -2861,7 +2860,6 @@ components:
     QuestionType:
       type: string
       description: The question type of the task
-      writeOnly: true
       enum:
         - YES_OR_NO
         - YES_OR_NO_WITH_TEXT
@@ -2921,7 +2919,6 @@ components:
     RoleType:
       type: string
       description: The role type of the task
-      readOnly: true
       enum:
         - NEW_EMPLOYEE
         - NEW_MANAGER

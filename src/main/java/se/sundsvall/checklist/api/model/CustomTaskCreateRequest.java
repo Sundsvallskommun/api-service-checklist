@@ -29,7 +29,7 @@ public class CustomTaskCreateRequest {
 	@Schema(description = "The body text of the task", example = "Detta är en beskrivning av ett uppdrag", accessMode = WRITE_ONLY)
 	private String text;
 
-	@Schema(description = "The question type of the task", accessMode = WRITE_ONLY)
+	@Schema(description = "The question type of the task")
 	@NotNull
 	private QuestionType questionType;
 

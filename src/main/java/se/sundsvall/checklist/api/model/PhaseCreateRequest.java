@@ -31,7 +31,7 @@ public class PhaseCreateRequest {
 	@ValidPeriod
 	private String timeToComplete;
 
-	@Schema(description = "The permission needed to administrate the phase", accessMode = WRITE_ONLY)
+	@Schema(description = "The permission needed to administrate the phase")
 	@NotNull
 	private Permission permission;
 
