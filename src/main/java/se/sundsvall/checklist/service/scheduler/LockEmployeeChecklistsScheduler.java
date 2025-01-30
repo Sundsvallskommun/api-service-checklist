@@ -24,7 +24,7 @@ public class LockEmployeeChecklistsScheduler {
 	private static final String LOG_LOCK_EMPLOYEE_CHECKLISTS_STARTED = "Beginning execution for locking expired employee checklists";
 	private static final String LOG_LOCKING_EMPLOYEE_CHECKLIST = "Locking employee checklist with id: {}";
 	private static final String LOG_LOCK_EMPLOYEE_CHECKLISTS_ENDED = "Ended execution for locking expired employee checklists";
-	private static final String LOG_PROCESSING_MUNCIPALITY = "Processing municipality {}";
+	private static final String LOG_PROCESSING_MUNICIPALITY = "Processing municipality {}";
 
 	private final EmployeeChecklistRepository employeeChecklistRepository;
 	private final ChecklistProperties properties;
@@ -35,9 +35,9 @@ public class LockEmployeeChecklistsScheduler {
 	}
 
 	/**
-	 * Locks old employee checklists. When creating an employee checklist, the expiration date is set in the
-	 * column "expirationDate" in the database and the job locks all employee checklists that have an expiration
-	 * date that is before todays date.
+	 * Locks old employee checklists. When creating an employee checklist, the expiration date is set in the column
+	 * "expirationDate" in the database and the job locks all employee checklists that have an expiration date that is
+	 * before todays date.
 	 */
 	@Transactional
 	@Dept44Scheduled(
@@ -59,9 +59,9 @@ public class LockEmployeeChecklistsScheduler {
 	}
 
 	private void lockChecklists(String municipalityId) {
-		LOGGER.info(LOG_PROCESSING_MUNCIPALITY, municipalityId);
+		LOGGER.info(LOG_PROCESSING_MUNICIPALITY, municipalityId);
 
-		employeeChecklistRepository.findAllByChecklistsMunicipalityIdAndExpirationDateIsBeforeAndLockedIsFalse(municipalityId, LocalDate.now()).stream()
+		employeeChecklistRepository.findAllByChecklistsMunicipalityIdAndExpirationDateIsBeforeAndLockedIsFalse(municipalityId, LocalDate.now())
 			.forEach(entity -> {
 				LOGGER.info(LOG_LOCKING_EMPLOYEE_CHECKLIST, entity.getId());
 				entity.setLocked(true);

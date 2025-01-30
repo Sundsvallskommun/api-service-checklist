@@ -14,15 +14,15 @@ import se.sundsvall.checklist.service.EmployeeChecklistService;
 import se.sundsvall.dept44.scheduling.Dept44Scheduled;
 
 /**
- * Scheduler for fetching and persisting new employees from the employee service and creating a checklist
- * for each new employee.
+ * Scheduler for fetching and persisting new employees from the employee service and creating a checklist for each new
+ * employee.
  */
 @Component
 public class RetrieveNewEmployeesScheduler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RetrieveNewEmployeesScheduler.class);
 	private static final String LOG_USER_IMPORT_STARTED = "Beginning import of new users from Employee to persistance layer";
 	private static final String LOG_USER_IMPORT_ENDED = "Ending import of new users from Employee to persistance layer";
-	private static final String LOG_PROCESSING_MUNCIPALITY = "Processing municipality {}";
+	private static final String LOG_PROCESSING_MUNICIPALITY = "Processing municipality {}";
 
 	private final ChecklistProperties properties;
 	private final EmployeeChecklistService employeeChecklistService;
@@ -51,7 +51,7 @@ public class RetrieveNewEmployeesScheduler {
 	}
 
 	private void handleInitiationForEmployees(String municipalityId) {
-		LOGGER.info(LOG_PROCESSING_MUNCIPALITY, municipalityId);
+		LOGGER.info(LOG_PROCESSING_MUNICIPALITY, municipalityId);
 
 		final var result = employeeChecklistService.initiateEmployeeChecklists(municipalityId);
 		LOGGER.info(result.getSummary());

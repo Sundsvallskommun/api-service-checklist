@@ -323,12 +323,12 @@ class EmployeeChecklistServiceTest {
 	}
 
 	@Test
-	void deleteEmployeChecklist() {
+	void deleteEmployeeChecklist() {
 		// Arrange
 		final var employeeChecklistId = UUID.randomUUID().toString();
 
 		// Act
-		service.deleteEmployeChecklist(MUNICIPALITY_ID, employeeChecklistId);
+		service.deleteEmployeeChecklist(MUNICIPALITY_ID, employeeChecklistId);
 
 		// Assert and verify
 		verify(employeeChecklistIntegrationMock).deleteEmployeeChecklist(MUNICIPALITY_ID, employeeChecklistId);
@@ -1047,7 +1047,8 @@ class EmployeeChecklistServiceTest {
 		verify(employeeIntegrationMock).getEmployeeInformation("{\"ShowOnlyNewEmployees\":false,\"PersonId\":\"" + employeeUuid.toString() + "\",\"EventInfo\":[\"Mover\",\"Corporate\",\"Company\",\"Rehire,Corporate\"]}");
 	}
 
-	@Test // Should pass as form of employment and event type should not be verified when initiating a specific employee checklist
+	@Test
+	// Should pass as form of employment and event type should not be verified when initiating a specific employee checklist
 	void initiateSpecificEmployeeChecklist_invalidFormOfEmploymentAndEventType() {
 		// Arrange
 		final var emailAddress = "emailAddress";

@@ -303,11 +303,11 @@ public class EmployeeChecklistIntegration {
 		final var employment = getMainEmployment(employee);
 		final var employeeEntity = toEmployeeEntity(employee);
 
-		// Attach existing organizational units to the employee (or create new unit if not present in the persistant layer)
+		// Attach existing organizational units to the employee (or create new unit if not present in the persistent layer)
 		employeeEntity.setCompany(retrieveOrganizationEntity(municipalityId, employment.getCompanyId(), null));
 		employeeEntity.setDepartment(retrieveOrganizationEntity(municipalityId, employment.getOrgId(), employment.getOrgName()));
 
-		// Attach existing manager to the employee (or create new manager if not present in the persistant layer)
+		// Attach existing manager to the employee (or create new manager if not present in the persistent layer)
 		employeeEntity.setManager(retrieveManagerEntity(employment.getManager()));
 
 		// Persist employee and create checklist for him/her

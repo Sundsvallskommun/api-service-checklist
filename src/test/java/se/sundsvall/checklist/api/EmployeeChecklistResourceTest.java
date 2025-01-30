@@ -159,7 +159,7 @@ class EmployeeChecklistResourceTest {
 			.expectBody().isEmpty();
 
 		// Assert and verify
-		verify(serviceMock).deleteEmployeChecklist(MUNICIPALITY_ID, ID);
+		verify(serviceMock).deleteEmployeeChecklist(MUNICIPALITY_ID, ID);
 		verifyNoMoreInteractions(serviceMock);
 	}
 
