@@ -91,7 +91,7 @@ public class EmployeeChecklistService {
 		this.employeeInformationUpdateInterval = employeeInformationUpdateInterval;
 	}
 
-	public Optional<EmployeeChecklist> fetchChecklistForEmployee(String municipalityId, String username) {
+	public Optional<EmployeeChecklist> fetchChecklistForEmployee(final String municipalityId, final String username) {
 		final var employeeChecklist = employeeChecklistIntegration.fetchOptionalEmployeeChecklist(municipalityId, username);
 
 		return employeeChecklist
@@ -106,7 +106,7 @@ public class EmployeeChecklistService {
 			.map(list -> sortorderService.applySorting(employeeChecklist, list));
 	}
 
-	public List<EmployeeChecklist> fetchChecklistsForManager(String municipalityId, String username) {
+	public List<EmployeeChecklist> fetchChecklistsForManager(final String municipalityId, final String username) {
 		final var employeeChecklists = employeeChecklistIntegration.fetchEmployeeChecklistsForManager(municipalityId, username);
 
 		return employeeChecklists
@@ -123,7 +123,7 @@ public class EmployeeChecklistService {
 			.toList();
 	}
 
-	private EmployeeChecklist initializeWithEmptyFulfilment(EmployeeChecklist employeeChecklist) {
+	private EmployeeChecklist initializeWithEmptyFulfilment(final EmployeeChecklist employeeChecklist) {
 		ofNullable(employeeChecklist.getPhases()).orElse(emptyList()).stream()
 			.map(EmployeeChecklistPhase::getTasks)
 			.flatMap(List::stream)
@@ -132,7 +132,7 @@ public class EmployeeChecklistService {
 		return employeeChecklist;
 	}
 
-	private EmployeeChecklistEntity handleUpdatedEmployeeInformation(EmployeeChecklistEntity employeeChecklist) {
+	private EmployeeChecklistEntity handleUpdatedEmployeeInformation(final EmployeeChecklistEntity employeeChecklist) {
 		if (ofNullable(employeeChecklist.getEmployee().getUpdated()).orElse(OffsetDateTime.MIN).isBefore(OffsetDateTime.now().minus(employeeInformationUpdateInterval))) {
 			final var filter = buildUuidEmployeeFilter(employeeChecklist.getEmployee().getId());
 			employeeIntegration.getEmployeeInformation(filter).stream()
@@ -143,12 +143,12 @@ public class EmployeeChecklistService {
 		return employeeChecklist;
 	}
 
-	private EmployeeChecklist decorateWithDelegateInformation(EmployeeChecklist employeeChecklist) {
+	private EmployeeChecklist decorateWithDelegateInformation(final EmployeeChecklist employeeChecklist) {
 		employeeChecklist.setDelegatedTo(employeeChecklistIntegration.fetchDelegateEmails(employeeChecklist.getId()));
 		return employeeChecklist;
 	}
 
-	private EmployeeChecklist removeManagerTasks(EmployeeChecklist employeeChecklist) {
+	private EmployeeChecklist removeManagerTasks(final EmployeeChecklist employeeChecklist) {
 		employeeChecklist.getPhases().forEach(ph -> ph.getTasks().removeIf(
 			task -> MANAGER_FOR_NEW_EMPLOYEE == task.getRoleType() || MANAGER_FOR_NEW_MANAGER == task.getRoleType()));
 		employeeChecklist.getPhases().removeIf(ph -> CollectionUtils.isEmpty(ph.getTasks()));
@@ -156,7 +156,7 @@ public class EmployeeChecklistService {
 		return employeeChecklist;
 	}
 
-	private EmployeeChecklist removeObsoleteTasks(EmployeeChecklist employeeChecklist, Optional<EmployeeChecklistEntity> employeeChecklistEntity) {
+	private EmployeeChecklist removeObsoleteTasks(final EmployeeChecklist employeeChecklist, final Optional<EmployeeChecklistEntity> employeeChecklistEntity) {
 		employeeChecklistEntity
 			.filter(entity -> EMPLOYEE == entity.getEmployee().getEmploymentPosition())
 			.ifPresent(entity -> {
@@ -168,7 +168,7 @@ public class EmployeeChecklistService {
 		return employeeChecklist;
 	}
 
-	public void deleteEmployeChecklist(String municipalityId, String employeeChecklistId) {
+	public void deleteEmployeeChecklist(final String municipalityId, final String employeeChecklistId) {
 		employeeChecklistIntegration.deleteEmployeeChecklist(municipalityId, employeeChecklistId);
 	}
 
@@ -185,7 +185,7 @@ public class EmployeeChecklistService {
 		return toCustomTask(employeeChecklistIntegration.createCustomTask(municipalityId, employeeChecklistId, phaseId, request));
 	}
 
-	public CustomTask readCustomTask(String municipalityId, String employeeChecklistId, String taskId) {
+	public CustomTask readCustomTask(final String municipalityId, final String employeeChecklistId, final String taskId) {
 		return customTaskRepository.findById(taskId)
 			.filter(customTask -> Objects.equals(employeeChecklistId, customTask.getEmployeeChecklist().getId()))
 			.filter(customTask -> Objects.equals(municipalityId, customTask.getEmployeeChecklist().getChecklists().getFirst().getMunicipalityId()))
@@ -193,7 +193,7 @@ public class EmployeeChecklistService {
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CUSTOM_TASK_NOT_FOUND.formatted(employeeChecklistId, taskId)));
 	}
 
-	public CustomTask updateCustomTask(String municipalityId, String employeeChecklistId, String taskId, CustomTaskUpdateRequest request) {
+	public CustomTask updateCustomTask(final String municipalityId, final String employeeChecklistId, final String taskId, final CustomTaskUpdateRequest request) {
 		final var entity = customTaskRepository.findById(taskId)
 			.filter(customTask -> Objects.equals(employeeChecklistId, customTask.getEmployeeChecklist().getId()))
 			.filter(customTask -> Objects.equals(municipalityId, customTask.getEmployeeChecklist().getChecklists().getFirst().getMunicipalityId()))
@@ -207,7 +207,7 @@ public class EmployeeChecklistService {
 	}
 
 	@Transactional
-	public void deleteCustomTask(String municipalityId, String employeeChecklistId, String taskId) {
+	public void deleteCustomTask(final String municipalityId, final String employeeChecklistId, final String taskId) {
 		final var entity = customTaskRepository.findById(taskId)
 			.filter(customTask -> Objects.equals(employeeChecklistId, customTask.getEmployeeChecklist().getId()))
 			.filter(customTask -> Objects.equals(municipalityId, customTask.getEmployeeChecklist().getChecklists().getFirst().getMunicipalityId()))
@@ -221,7 +221,7 @@ public class EmployeeChecklistService {
 		customTaskRepository.delete(entity);
 	}
 
-	public EmployeeChecklistPhase updateAllTasksInPhase(String municipalityId, String employeeChecklistId, String phaseId, EmployeeChecklistPhaseUpdateRequest request) {
+	public EmployeeChecklistPhase updateAllTasksInPhase(final String municipalityId, final String employeeChecklistId, final String phaseId, final EmployeeChecklistPhaseUpdateRequest request) {
 		final var employeeChecklist = employeeChecklistIntegration.updateAllFulfilmentForAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request);
 
 		return allTasksAsStream(employeeChecklist)
@@ -240,13 +240,13 @@ public class EmployeeChecklistService {
 			.flatMap(List::stream);
 	}
 
-	private List<TaskEntity> getTasksInPhase(List<TaskEntity> tasks, String phaseId) {
+	private List<TaskEntity> getTasksInPhase(final List<TaskEntity> tasks, final String phaseId) {
 		return ofNullable(tasks).orElse(emptyList()).stream()
 			.filter(task -> Objects.equals(task.getPhase().getId(), phaseId))
 			.toList();
 	}
 
-	public EmployeeChecklistTask updateTaskFulfilment(String municipalityId, String employeeChecklistId, String taskId, EmployeeChecklistTaskUpdateRequest request) {
+	public EmployeeChecklistTask updateTaskFulfilment(final String municipalityId, final String employeeChecklistId, final String taskId, final EmployeeChecklistTaskUpdateRequest request) {
 		final var employeeChecklist = employeeChecklistIntegration.fetchEmployeeChecklist(municipalityId, employeeChecklistId);
 		verifyUnlockedEmployeeChecklist(employeeChecklist);
 
@@ -265,13 +265,13 @@ public class EmployeeChecklistService {
 			.orElse(null); // This will never happen as the custom task is verified to exist in the calculateTaskType method
 	}
 
-	private Optional<TaskEntity> findTask(String taskId, EmployeeChecklistEntity employeeChecklistEntity) {
+	private Optional<TaskEntity> findTask(final String taskId, final EmployeeChecklistEntity employeeChecklistEntity) {
 		return allTasksAsStream(employeeChecklistEntity)
 			.filter(task -> Objects.equals(task.getId(), taskId))
 			.findAny();
 	}
 
-	private Optional<CustomTaskEntity> findCustomTask(String taskId, final List<CustomTaskEntity> tasks) {
+	private Optional<CustomTaskEntity> findCustomTask(final String taskId, final List<CustomTaskEntity> tasks) {
 		return ofNullable(tasks).orElse(emptyList()).stream()
 			.filter(task -> Objects.equals(task.getId(), taskId))
 			.findAny();
@@ -282,7 +282,7 @@ public class EmployeeChecklistService {
 	 * or old employee, what employment type the employee has, if he or she is a joiner or not) and initiate checklists for
 	 * him or her.
 	 */
-	public EmployeeChecklistResponse initiateSpecificEmployeeChecklist(String municipalityId, String uuid) {
+	public EmployeeChecklistResponse initiateSpecificEmployeeChecklist(final String municipalityId, final String uuid) {
 		final var filter = buildUuidEmployeeFilter(uuid);
 		LOGGER.info("Fetching employee with filter: {}", filter);
 
@@ -297,7 +297,7 @@ public class EmployeeChecklistService {
 	/**
 	 * Fetch new employees from employee integration and initiate checklists for them.
 	 */
-	public EmployeeChecklistResponse initiateEmployeeChecklists(String municipalityId) {
+	public EmployeeChecklistResponse initiateEmployeeChecklists(final String municipalityId) {
 		final var filter = buildDefaultNewEmployeeFilter();
 		LOGGER.info("Fetching new employees with filter: {}", filter);
 
@@ -309,7 +309,7 @@ public class EmployeeChecklistService {
 		return processEmployees(municipalityId, employees, true);
 	}
 
-	private EmployeeChecklistResponse processEmployees(String municipalityId, final List<Employee> employees, boolean verifyValidEmployment) {
+	private EmployeeChecklistResponse processEmployees(final String municipalityId, final List<Employee> employees, final boolean verifyValidEmployment) {
 		LOGGER.info("Found {} employees, creating checklists for these employees", employees.size());
 		final var employeeChecklistResponse = createEmployeeChecklist(municipalityId, employees, verifyValidEmployment);
 		final var errors = ofNullable(employeeChecklistResponse.getDetails()).orElse(emptyList())
@@ -322,7 +322,7 @@ public class EmployeeChecklistService {
 		return employeeChecklistResponse;
 	}
 
-	private EmployeeChecklistResponse createEmployeeChecklist(String municipalityId, final List<Employee> employees, boolean verifyValidEmployment) {
+	private EmployeeChecklistResponse createEmployeeChecklist(final String municipalityId, final List<Employee> employees, final boolean verifyValidEmployment) {
 		final var emplyeeChecklistResponse = new EmployeeChecklistResponse();
 
 		employees.forEach(employee -> {
@@ -343,7 +343,7 @@ public class EmployeeChecklistService {
 			} catch (final ThrowableProblem e) {
 				emplyeeChecklistResponse.getDetails().add(toDetail(e.getStatus(), e.getMessage()));
 			} catch (final Exception e) {
-				LOGGER.error("Exception occured when creating employee checklist", e);
+				LOGGER.error("Exception occurred when creating employee checklist", e);
 				emplyeeChecklistResponse.getDetails().add(toDetail(INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR.getReasonPhrase() + ": " + e.getMessage()));
 			}
 		});

@@ -117,6 +117,15 @@
         primary key (id)
     ) engine=InnoDB;
 
+    create table initiation_info (
+        created datetime(6),
+        id varchar(255) not null,
+        information varchar(255),
+        log_id varchar(255),
+        status varchar(255),
+        primary key (id)
+    ) engine=InnoDB;
+
     create table manager (
         created datetime(6),
         updated datetime(6),
