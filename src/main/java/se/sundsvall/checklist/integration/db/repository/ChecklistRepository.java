@@ -4,9 +4,11 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.enums.LifeCycle;
 
+@Repository
 @CircuitBreaker(name = "checklistRepository")
 public interface ChecklistRepository extends JpaRepository<ChecklistEntity, String> {
 

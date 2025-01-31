@@ -28,6 +28,9 @@ public class InitiationInfoEntity {
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private String id;
 
+	@Column(name = "municipality_id")
+	private String municipalityId;
+
 	@Column(name = "log_id")
 	private String logId;
 
