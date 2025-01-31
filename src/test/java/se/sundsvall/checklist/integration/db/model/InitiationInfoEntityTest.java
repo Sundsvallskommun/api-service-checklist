@@ -33,6 +33,7 @@ class InitiationInfoEntityTest {
 	@Test
 	void testBuilder() {
 		final var id = "id";
+		final var municipalityId = "municipalityId";
 		final var logId = "logId";
 		final var information = "information";
 		final var status = "status";
@@ -40,6 +41,7 @@ class InitiationInfoEntityTest {
 
 		final var bean = InitiationInfoEntity.builder()
 			.withId(id)
+			.withMunicipalityId(municipalityId)
 			.withLogId(logId)
 			.withInformation(information)
 			.withStatus(status)
@@ -48,6 +50,7 @@ class InitiationInfoEntityTest {
 
 		assertThat(bean).hasNoNullFieldsOrProperties();
 		assertThat(bean.getId()).isEqualTo(id);
+		assertThat(bean.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(bean.getLogId()).isEqualTo(logId);
 		assertThat(bean.getInformation()).isEqualTo(information);
 		assertThat(bean.getStatus()).isEqualTo(status);

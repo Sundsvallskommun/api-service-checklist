@@ -122,6 +122,7 @@
         id varchar(255) not null,
         information varchar(255),
         log_id varchar(255),
+        municipality_id varchar(255),
         status varchar(255),
         primary key (id)
     ) engine=InnoDB;
