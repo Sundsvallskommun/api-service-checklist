@@ -1,6 +1,7 @@
 package se.sundsvall.checklist.service.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mockStatic;
 import static se.sundsvall.checklist.TestObjectFactory.createCustomTaskEntity;
 import static se.sundsvall.checklist.TestObjectFactory.createEmployeeChecklistEntity;
 import static se.sundsvall.checklist.TestObjectFactory.createPhaseEntity;
@@ -22,6 +23,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.zalando.problem.Status;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
+import se.sundsvall.checklist.api.model.EmployeeChecklistResponse;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
@@ -32,8 +34,28 @@ import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
+import se.sundsvall.dept44.requestid.RequestId;
 
 class EmployeeChecklistMapperTest {
+
+	@Test
+	void toInitiationInfoEntity() {
+		var detail = EmployeeChecklistResponse.Detail.builder()
+			.withStatus(Status.I_AM_A_TEAPOT)
+			.withInformation("Stout and firm")
+			.build();
+		var municipalityId = "municipalityId";
+		mockStatic(RequestId.class).when(RequestId::get).thenReturn("logId");
+
+		var entity = EmployeeChecklistMapper.toInitiationInfoEntity(municipalityId, detail);
+
+		assertThat(entity.getCreated()).isNull();
+		assertThat(entity.getId()).isNull();
+		assertThat(entity.getMunicipalityId()).isEqualTo(municipalityId);
+		assertThat(entity.getLogId()).isEqualTo("logId");
+		assertThat(entity.getInformation()).isEqualTo("Stout and firm");
+		assertThat(entity.getStatus()).isEqualTo("418 I'm a teapot");
+	}
 
 	@ParameterizedTest
 	@EnumSource(EmploymentPosition.class)

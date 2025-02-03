@@ -2,7 +2,6 @@ package se.sundsvall.checklist.service.scheduler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -23,7 +22,6 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistResponse.Detail;
 import se.sundsvall.checklist.integration.db.model.InitiationInfoEntity;
 import se.sundsvall.checklist.integration.db.repository.InitiationRepository;
 import se.sundsvall.checklist.service.EmployeeChecklistService;
-import se.sundsvall.dept44.requestid.RequestId;
 
 @ExtendWith(MockitoExtension.class)
 class RetrieveNewEmployeesSchedulerTest {
@@ -61,7 +59,6 @@ class RetrieveNewEmployeesSchedulerTest {
 					.withStatus(Status.NOT_FOUND)
 					.build()))
 			.build());
-		mockStatic(RequestId.class).when(RequestId::get).thenReturn("logId");
 
 		scheduler.execute();
 
@@ -70,7 +67,6 @@ class RetrieveNewEmployeesSchedulerTest {
 		var initiationInfoEntities = initiationInfoEntityCaptor.getValue();
 		assertThat(initiationInfoEntities).hasSize(2).allSatisfy(initiationInfoEntity -> {
 			assertThat(initiationInfoEntity.getMunicipalityId()).isEqualTo(municipalityId);
-			assertThat(initiationInfoEntity.getLogId()).isEqualTo("logId");
 			assertThat(initiationInfoEntity.getInformation()).isIn("Ok string", "Error string");
 			assertThat(initiationInfoEntity.getStatus()).isIn("200 OK", "404 Not Found");
 		});

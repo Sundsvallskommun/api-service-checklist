@@ -3,6 +3,7 @@ package se.sundsvall.checklist.service.scheduler;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toInitiationInfoEntity;
 
 import java.util.Objects;
 import org.slf4j.Logger;
@@ -10,10 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
-import se.sundsvall.checklist.integration.db.model.InitiationInfoEntity;
 import se.sundsvall.checklist.integration.db.repository.InitiationRepository;
 import se.sundsvall.checklist.service.EmployeeChecklistService;
-import se.sundsvall.dept44.requestid.RequestId;
 import se.sundsvall.dept44.scheduling.Dept44Scheduled;
 
 /**
@@ -61,12 +60,7 @@ public class RetrieveNewEmployeesScheduler {
 		final var result = employeeChecklistService.initiateEmployeeChecklists(municipalityId);
 
 		var initiationResults = result.getDetails().stream()
-			.map(detail -> InitiationInfoEntity.builder()
-				.withMunicipalityId(municipalityId)
-				.withLogId(RequestId.get())
-				.withInformation(detail.getInformation())
-				.withStatus(detail.getStatus().toString())
-				.build())
+			.map(detail -> toInitiationInfoEntity(municipalityId, detail))
 			.toList();
 
 		initiationRepository.saveAll(initiationResults);
