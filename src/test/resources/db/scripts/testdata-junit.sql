@@ -20,7 +20,7 @@ VALUES ('aba82aca-f841-4257-baec-d745e3ab78bf', 'Fika', null, 'Bjud på hembakat
        ('bba82aca-f841-4257-baec-d745e3ab78bf', 'Allergi', null, 'Har du några allergier?', 'NEW_EMPLOYEE', 'YES_OR_NO_WITH_TEXT', '2019-01-01 00:00:00', 1, '2019-01-01 00:00:00', 'someUser', '15764278-50c8-4a19-af00-077bfc314fd2', '1455a5d4-1db8-4a25-a49f-92fdd0c60a14'),
        ('cba82aca-f841-4257-baec-d745e3ab78bf', 'Lunch', 'http://some.lunchbookingsite.ref', 'Boka upp social lunch med chefen', 'NEW_EMPLOYEE', 'COMPLETED_OR_NOT_RELEVANT_WITH_TEXT', '2019-01-01 00:00:00', 1, '2019-01-01 00:00:00', 'someUser', '15764278-50c8-4a19-af00-077bfc314fd2', '1455a5d4-1db8-4a25-a49f-92fdd0c60a14');
 
-
+       
 INSERT INTO manager (created, updated, email, first_name, id, last_name, username)
 VALUES (now(), now(), 'a.manager@5535.com', 'A Man', '02817ff3-632a-4228-9c31-25ad8124568c', 'Ager', 'aman0agr');
 
@@ -40,13 +40,16 @@ VALUES ('2023-07-01', '2023-10-01', '2023-01-01', TRUE, TRUE, '2023-01-01 12:00:
        ('2024-07-01', '2024-10-01', '2024-01-01', FALSE, FALSE, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL, 'f0fd9029-d484-477a-8634-b5b7e0291d76', '223a076f-441d-4a30-b5d0-f2bfd5ab250b'),
        ('2023-07-01', '2023-10-01', '2023-01-01', TRUE, FALSE, '2023-01-01 12:00:00.000', '2023-01-01 12:00:00.000', NULL, '8122705b-e0e6-4055-b301-eba21986e219', 'f5960058-fad8-4825-85f3-b0fdb518adc5');
 
+
 INSERT INTO referred_checklist (employee_checklist_id, checklist_id)
 VALUES ('f853e2b1-a144-4305-b05e-ee8d6dc6d005', '25764278-50c8-4a19-af00-077bfc314fd2'),
        ('223a076f-441d-4a30-b5d0-f2bfd5ab250b', '25764278-50c8-4a19-af00-077bfc314fd2'),
        ('f5960058-fad8-4825-85f3-b0fdb518adc5', '25764278-50c8-4a19-af00-077bfc314fd2');
 
+
 INSERT INTO custom_task (sort_order, created, updated, last_saved_by, heading, heading_reference, id, employee_checklist_id, phase_id, `text`, question_type, role_type)
 VALUES (0, '2024-01-03 12:00:00.000', '2024-01-03 12:00:00.000', 'someUser', 'Custom employee task', 'http://some.customlink.ref', '1b3bfe66-0e6c-4e92-a410-7c620a5461f4', 'f853e2b1-a144-4305-b05e-ee8d6dc6d005', '2455a5d4-1db8-4a25-a49f-92fdd0c60a14', 'Descriptive text for custom task', 'YES_OR_NO', 'NEW_EMPLOYEE');
+
 
 INSERT INTO custom_sortorder (id, municipality_id, organization_number, component_type, component_id, position)
 VALUES -- organizational unit 13
@@ -66,3 +69,8 @@ VALUES -- organizational unit 13
 ('11ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 578, 'TASK', '7c49e4f0-6fc0-433c-89df-ac1460a64bd7', 2),
 ('12ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 578, 'TASK', 'ee5d73c0-db96-4a31-a8eb-2b5129f7428c', 1),
 ('13ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 578, 'TASK', '7121d85d-6eee-49b4-8f1d-db1e165a5c29', 2);
+
+
+INSERT INTO initiation_info (created, id, information, log_id, status, municipality_id)
+VALUES ('2024-01-01 12:00:00.000', 'b6847217-3314-4686-a576-9c2344345ee5', 'Success', '8537d28d-1479-42cf-87df-f79612bbe965', '200', '2281'),
+       ('2024-01-01 12:00:00.000', 'ed71b4a2-3135-445d-b593-6060e9617181', 'Error', '8537d28d-1479-42cf-87df-f79612bbe965', '404', '2281');

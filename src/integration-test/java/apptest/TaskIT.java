@@ -13,9 +13,11 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
+
 import se.sundsvall.checklist.Application;
 import se.sundsvall.checklist.integration.db.repository.TaskRepository;
 import se.sundsvall.dept44.test.AbstractAppTest;
@@ -92,7 +94,7 @@ class TaskIT extends AbstractAppTest {
 		setupCall()
 			.withServicePath(PATH + "/" + TASK_ID)
 			.withHttpMethod(DELETE)
-			.withHeader("x-userid", "someUser")
+			.withHeader("x-issuer", "someUser")
 			.withExpectedResponseStatus(NO_CONTENT)
 			.withExpectedResponseBodyIsNull()
 			.sendRequestAndVerifyResponse();

@@ -20,6 +20,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -61,6 +62,7 @@ import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
+import se.sundsvall.checklist.integration.db.repository.InitiationRepository;
 import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
 
 @ExtendWith(MockitoExtension.class)
@@ -80,6 +82,9 @@ class EmployeeChecklistServiceTest {
 	@Mock
 	private SortorderService sortorderServiceMock;
 
+	@Mock
+	private InitiationRepository initiationRepositoryMock;
+
 	@InjectMocks
 	private EmployeeChecklistService service;
 
@@ -90,7 +95,7 @@ class EmployeeChecklistServiceTest {
 
 	@AfterEach
 	void assertNoMoreInteractions() {
-		verifyNoMoreInteractions(employeeChecklistIntegrationMock, customTaskRepositoryMock, employeeIntegrationMock);
+		verifyNoMoreInteractions(employeeChecklistIntegrationMock, customTaskRepositoryMock, employeeIntegrationMock, sortorderServiceMock, initiationRepositoryMock);
 	}
 
 	@Test
@@ -1140,6 +1145,22 @@ class EmployeeChecklistServiceTest {
 		});
 
 		verify(employeeChecklistIntegrationMock).fetchAllOngoingEmployeeChecklists(any(), any());
+	}
+
+	@Test
+	void getInitiationInformation() {
+		// Arrange
+		when(initiationRepositoryMock.findAllByMunicipalityId(MUNICIPALITY_ID)).thenReturn(Collections.emptyList());
+
+		// Act
+		final var result = service.getInitiationInformation(MUNICIPALITY_ID);
+
+		// Assert and verify
+		assertThat(result).isNotNull();
+		assertThat(result.getSummary()).isEqualTo("The last scheduled execution did not find any employees to initialize checklists for");
+
+		verify(initiationRepositoryMock).findAllByMunicipalityId(MUNICIPALITY_ID);
+
 	}
 
 	private static Employee createEmployee(final String emailAddress, final UUID employeeUuid, final UUID managerUuid, final int companyId, final int orgId, final String loginName) {

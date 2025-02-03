@@ -121,7 +121,7 @@ class TaskResourceTest {
 
 		webTestClient.delete()
 			.uri(builder -> builder.path(BASE_PATH + "/{taskId}").build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID, "phaseId", SUB_ID, "taskId", taskId)))
-			.header("x-userid", user)
+			.header("x-issuer", user)
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectBody().isEmpty();

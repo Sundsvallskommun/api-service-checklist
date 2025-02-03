@@ -620,4 +620,30 @@ class EmployeeChecklistResourceFailureTest {
 					tuple("initiateSpecificEmployeeChecklist.personId", "not a valid UUID"));
 		});
 	}
+
+	@Test
+	void getInitiationinfoInvalidPathValues() {
+		// Arrange
+		final var path = "/initiationinfo";
+
+		// Act
+		final var response = webTestClient.get()
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", INVALID)))
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert and verify
+		assertThat(response).isNotNull().satisfies(r -> {
+			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
+			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
+			assertThat(r.getViolations())
+				.extracting(
+					Violation::getField, Violation::getMessage)
+				.containsExactly(
+					tuple("getInitiationInformation.municipalityId", "not a valid municipality ID"));
+		});
+	}
 }

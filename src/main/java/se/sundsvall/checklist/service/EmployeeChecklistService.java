@@ -16,6 +16,7 @@ import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.
 import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.buildUuidEmployeeFilter;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toCustomTask;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toDetail;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toInitiationInformation;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.updateCustomTaskEntity;
 import static se.sundsvall.checklist.service.mapper.PagingAndSortingMapper.toPageRequest;
 import static se.sundsvall.checklist.service.mapper.PagingAndSortingMapper.toPagingMetaData;
@@ -51,6 +52,7 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
+import se.sundsvall.checklist.api.model.InitiationInformation;
 import se.sundsvall.checklist.api.model.Mentor;
 import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistParameters;
 import se.sundsvall.checklist.api.model.OngoingEmployeeChecklists;
@@ -60,6 +62,7 @@ import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
+import se.sundsvall.checklist.integration.db.repository.InitiationRepository;
 import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
 import se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper;
 import se.sundsvall.checklist.service.util.TaskType;
@@ -72,6 +75,7 @@ public class EmployeeChecklistService {
 	private static final String ERROR_READING_PHASE_FROM_EMPLOYEE_CHECKLIST = "Could not read phase with id %s from employee checklist with id %s.";
 
 	private final CustomTaskRepository customTaskRepository;
+	private final InitiationRepository initiationRepository;
 	private final EmployeeIntegration employeeIntegration;
 	private final EmployeeChecklistIntegration employeeChecklistIntegration;
 	private final SortorderService sortorderService;
@@ -79,12 +83,14 @@ public class EmployeeChecklistService {
 
 	public EmployeeChecklistService(
 		final CustomTaskRepository customTaskRepository,
+		final InitiationRepository initiationRepository,
 		final EmployeeIntegration employeeIntegration,
 		final EmployeeChecklistIntegration employeeChecklistIntegration,
 		final SortorderService sortorderService,
 		@Value("${checklist.employee-update-interval}") final Duration employeeInformationUpdateInterval) {
 
 		this.customTaskRepository = customTaskRepository;
+		this.initiationRepository = initiationRepository;
 		this.employeeIntegration = employeeIntegration;
 		this.employeeChecklistIntegration = employeeChecklistIntegration;
 		this.sortorderService = sortorderService;
@@ -275,6 +281,11 @@ public class EmployeeChecklistService {
 		return ofNullable(tasks).orElse(emptyList()).stream()
 			.filter(task -> Objects.equals(task.getId(), taskId))
 			.findAny();
+	}
+
+	public InitiationInformation getInitiationInformation(final String municipalityId) {
+		final var infos = initiationRepository.findAllByMunicipalityId(municipalityId);
+		return toInitiationInformation(infos);
 	}
 
 	/**
