@@ -141,11 +141,11 @@ class ChecklistResource {
 	})
 	@DeleteMapping(value = "/{checklistId}", produces = ALL_VALUE)
 	ResponseEntity<Void> deleteChecklist(
-		@Parameter(name = "x-userid", description = "Which user sent the request") @RequestHeader(name = "x-userid", required = false) final String userId,
+		@Parameter(name = "x-issuer", description = "User id for the user responsible for the delete request") @RequestHeader(name = "x-issuer", required = false) final String issuer,
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId) {
 
-		checklistService.deleteChecklist(municipalityId, checklistId, userId);
+		checklistService.deleteChecklist(municipalityId, checklistId, issuer);
 		return noContent().header(CONTENT_TYPE, ALL_VALUE).build();
 	}
 

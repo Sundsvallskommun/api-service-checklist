@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
+
 import se.sundsvall.checklist.Application;
 import se.sundsvall.checklist.integration.db.model.SortorderEntity;
 import se.sundsvall.checklist.integration.db.model.enums.ComponentType;
@@ -67,7 +68,7 @@ class CustomSortorderIT extends AbstractAppTest {
 
 		setupCall()
 			.withServicePath("/2281/checklists/15764278-50c8-4a19-af00-077bfc314fd2/phases/1455a5d4-1db8-4a25-a49f-92fdd0c60a14/tasks/aba82aca-f841-4257-baec-d745e3ab78bf")
-			.withHeader("x-userid", "username")
+			.withHeader("x-issuer", "username")
 			.withHttpMethod(DELETE)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.withExpectedResponseBodyIsNull()
@@ -99,7 +100,7 @@ class CustomSortorderIT extends AbstractAppTest {
 
 		setupCall()
 			.withServicePath("/2281/checklists/25764278-50c8-4a19-af00-077bfc314fd2")
-			.withHeader("x-userid", "username")
+			.withHeader("x-issuer", "username")
 			.withHttpMethod(DELETE)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.withExpectedResponseBodyIsNull()

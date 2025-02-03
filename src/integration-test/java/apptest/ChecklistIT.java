@@ -11,9 +11,11 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
+
 import se.sundsvall.checklist.Application;
 import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
 import se.sundsvall.dept44.test.AbstractAppTest;
@@ -128,7 +130,7 @@ class ChecklistIT extends AbstractAppTest {
 
 		setupCall()
 			.withServicePath(PATH + "/" + CHECKLIST_ID)
-			.withHeader("x-userid", "someUser")
+			.withHeader("x-issuer", "someUser")
 			.withHttpMethod(DELETE)
 			.withExpectedResponseStatus(NO_CONTENT)
 			.withExpectedResponseBodyIsNull()
