@@ -41,7 +41,7 @@ VALUES ('2023-07-01', '2023-10-01', '2023-01-01', TRUE, TRUE, '2023-01-01 12:00:
        ('2023-07-01', '2023-10-01', '2023-01-01', TRUE, FALSE, '2023-01-01 12:00:00.000', '2023-01-01 12:00:00.000', NULL, '8122705b-e0e6-4055-b301-eba21986e219', 'f5960058-fad8-4825-85f3-b0fdb518adc5');
 
 
-       INSERT INTO referred_checklist (employee_checklist_id, checklist_id)
+INSERT INTO referred_checklist (employee_checklist_id, checklist_id)
 VALUES ('f853e2b1-a144-4305-b05e-ee8d6dc6d005', '25764278-50c8-4a19-af00-077bfc314fd2'),
        ('223a076f-441d-4a30-b5d0-f2bfd5ab250b', '25764278-50c8-4a19-af00-077bfc314fd2'),
        ('f5960058-fad8-4825-85f3-b0fdb518adc5', '25764278-50c8-4a19-af00-077bfc314fd2');
