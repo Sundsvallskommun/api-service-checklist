@@ -19,6 +19,7 @@ import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklist;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhase;
+import se.sundsvall.checklist.api.model.EmployeeChecklistResponse;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse.Detail;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.Mentor;
@@ -30,9 +31,11 @@ import se.sundsvall.checklist.integration.db.model.DelegateEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
 import se.sundsvall.checklist.integration.db.model.FulfilmentEntity;
+import se.sundsvall.checklist.integration.db.model.InitiationInfoEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
+import se.sundsvall.dept44.requestid.RequestId;
 
 public final class EmployeeChecklistMapper {
 
@@ -41,6 +44,17 @@ public final class EmployeeChecklistMapper {
 	// -----------------------------
 	// Entity mappings
 	// -----------------------------
+
+	public static InitiationInfoEntity toInitiationInfoEntity(String municipalityId, EmployeeChecklistResponse.Detail detail) {
+		return ofNullable(detail)
+			.map(id -> InitiationInfoEntity.builder()
+				.withMunicipalityId(municipalityId)
+				.withLogId(RequestId.get())
+				.withInformation(detail.getInformation())
+				.withStatus(detail.getStatus().toString())
+				.build())
+			.orElse(null);
+	}
 
 	public static FulfilmentEntity toFulfilmentEntity(EmployeeChecklistEntity employeeChecklistEntity, TaskEntity taskEntity, FulfilmentStatus status, String responseText, String lastSavedBy) {
 		if (anyNull(employeeChecklistEntity, taskEntity)) {

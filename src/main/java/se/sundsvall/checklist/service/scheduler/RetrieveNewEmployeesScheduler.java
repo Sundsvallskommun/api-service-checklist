@@ -3,6 +3,7 @@ package se.sundsvall.checklist.service.scheduler;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toInitiationInfoEntity;
 
 import java.util.Objects;
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
+import se.sundsvall.checklist.integration.db.repository.InitiationRepository;
 import se.sundsvall.checklist.service.EmployeeChecklistService;
 import se.sundsvall.dept44.scheduling.Dept44Scheduled;
 
@@ -26,10 +28,12 @@ public class RetrieveNewEmployeesScheduler {
 
 	private final ChecklistProperties properties;
 	private final EmployeeChecklistService employeeChecklistService;
+	private final InitiationRepository initiationRepository;
 
-	public RetrieveNewEmployeesScheduler(EmployeeChecklistService employeeChecklistService, ChecklistProperties properties) {
+	public RetrieveNewEmployeesScheduler(EmployeeChecklistService employeeChecklistService, ChecklistProperties properties, InitiationRepository initiationRepository) {
 		this.employeeChecklistService = employeeChecklistService;
 		this.properties = properties;
+		this.initiationRepository = initiationRepository;
 	}
 
 	@Dept44Scheduled(
@@ -54,6 +58,12 @@ public class RetrieveNewEmployeesScheduler {
 		LOGGER.info(LOG_PROCESSING_MUNICIPALITY, municipalityId);
 
 		final var result = employeeChecklistService.initiateEmployeeChecklists(municipalityId);
+
+		var initiationResults = result.getDetails().stream()
+			.map(detail -> toInitiationInfoEntity(municipalityId, detail))
+			.toList();
+
+		initiationRepository.saveAll(initiationResults);
 		LOGGER.info(result.getSummary());
 		ofNullable(result.getDetails()).orElse(emptyList()).stream()
 			.filter(d -> !Objects.equals(d.getStatus(), Status.OK)) // Only log NOK results
