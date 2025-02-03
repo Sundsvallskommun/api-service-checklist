@@ -41,6 +41,7 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
+import se.sundsvall.checklist.api.model.InitiationInformation;
 import se.sundsvall.checklist.api.model.Mentor;
 import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistParameters;
 import se.sundsvall.checklist.api.model.OngoingEmployeeChecklists;
@@ -207,6 +208,16 @@ class EmployeeChecklistResource {
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId) {
 
 		return ok(employeeChecklistService.initiateEmployeeChecklists(municipalityId));
+	}
+
+	@Operation(summary = "Read execution information from last run to initialize checklists for new employees", description = "Trigger creation of checklists for all known new employees", responses = {
+		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
+	})
+	@GetMapping(value = "/initiationinfo", produces = APPLICATION_JSON_VALUE)
+	ResponseEntity<InitiationInformation> getInitiationInformation(
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId) {
+
+		return ok(employeeChecklistService.getInitiationInformation(municipalityId));
 	}
 
 	@Operation(summary = "Inititalize checklists for a specific employee", description = "Trigger creation of checklist for employee matching sent in person id", responses = {

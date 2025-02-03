@@ -2,6 +2,7 @@ package se.sundsvall.checklist.service.mapper;
 
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toCollection;
 import static org.apache.commons.lang3.ObjectUtils.anyNull;
@@ -10,9 +11,15 @@ import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toStakeho
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.util.CollectionUtils;
+import org.zalando.problem.Status;
 import org.zalando.problem.StatusType;
 import se.sundsvall.checklist.api.model.CustomTask;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
@@ -22,6 +29,7 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistPhase;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse.Detail;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
+import se.sundsvall.checklist.api.model.InitiationInformation;
 import se.sundsvall.checklist.api.model.Mentor;
 import se.sundsvall.checklist.api.model.OngoingEmployeeChecklist;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
@@ -260,4 +268,57 @@ public final class EmployeeChecklistMapper {
 			.withStatus(status).build();
 	}
 
+	public static InitiationInformation toInitiationInformation(final List<InitiationInfoEntity> infos) {
+		final var entries = CollectionUtils.isEmpty(infos) ? 0 : infos.size();
+		final var errors = countErrors(infos);
+
+		return InitiationInformation.builder()
+			.withSummary(createHeader(entries, errors))
+			.withLogId(ofNullable(infos).filter(ObjectUtils::isNotEmpty).map(List::getFirst).map(InitiationInfoEntity::getLogId).orElse(null))
+			.withExecuted(ofNullable(infos).filter(ObjectUtils::isNotEmpty).map(List::getFirst).map(InitiationInfoEntity::getCreated).orElse(null))
+			.withDetails(ofNullable(infos).filter(ObjectUtils::isNotEmpty).map(EmployeeChecklistMapper::toDetails).orElse(null))
+			.build();
+	}
+
+	private static String createHeader(int entries, long errors) {
+		if (entries == 0) {
+			return "The last scheduled execution did not find any employees to initialize checklists for";
+		}
+		return errors > 0 ? "%s potential problems occurred when initializing checklists for %s employees".formatted(errors, entries) : "No problems occurred when initializing checklists for %s employees".formatted(entries);
+	}
+
+	private static List<InitiationInformation.Detail> toDetails(final List<InitiationInfoEntity> infos) {
+		return infos.stream()
+			.map(EmployeeChecklistMapper::toDetail)
+			.sorted(Comparator.comparing(InitiationInformation.Detail::getStatus).reversed())
+			.toList();
+	}
+
+	private static InitiationInformation.Detail toDetail(InitiationInfoEntity i) {
+		return InitiationInformation.Detail.builder()
+			.withStatus(nonNull(i.getStatus()) ? Integer.parseInt(i.getStatus()) : Status.UNPROCESSABLE_ENTITY.getStatusCode())
+			.withInformation(i.getInformation())
+			.build();
+	}
+
+	/**
+	 * Method for calculating reported errors (where null status is also considered as an error)
+	 *
+	 * @param  infos list to evaluate errors in
+	 * @return       total amount of errors (where status null is considered to be an error)
+	 */
+	private static long countErrors(final List<InitiationInfoEntity> infos) {
+		final var errors = ofNullable(infos).orElse(emptyList()).stream()
+			.map(InitiationInfoEntity::getStatus)
+			.filter(Objects::nonNull)
+			.map(Integer::parseInt)
+			.map(HttpStatus::valueOf)
+			.filter(HttpStatus::isError)
+			.count();
+
+		return errors + ofNullable(infos).orElse(emptyList()).stream()
+			.map(InitiationInfoEntity::getStatus)
+			.filter(Objects::isNull)
+			.count();
+	}
 }

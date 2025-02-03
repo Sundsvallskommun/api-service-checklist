@@ -1,6 +1,9 @@
 package se.sundsvall.checklist.service.mapper;
 
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
+import static org.assertj.core.groups.Tuple.tuple;
 import static org.mockito.Mockito.mockStatic;
 import static se.sundsvall.checklist.TestObjectFactory.createCustomTaskEntity;
 import static se.sundsvall.checklist.TestObjectFactory.createEmployeeChecklistEntity;
@@ -15,20 +18,24 @@ import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toStakeho
 
 import generated.se.sundsvall.employee.Manager;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.zalando.problem.Status;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
+import se.sundsvall.checklist.api.model.InitiationInformation;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
+import se.sundsvall.checklist.integration.db.model.InitiationInfoEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition;
@@ -40,14 +47,14 @@ class EmployeeChecklistMapperTest {
 
 	@Test
 	void toInitiationInfoEntity() {
-		var detail = EmployeeChecklistResponse.Detail.builder()
+		final var detail = EmployeeChecklistResponse.Detail.builder()
 			.withStatus(Status.I_AM_A_TEAPOT)
 			.withInformation("Stout and firm")
 			.build();
-		var municipalityId = "municipalityId";
+		final var municipalityId = "municipalityId";
 		mockStatic(RequestId.class).when(RequestId::get).thenReturn("logId");
 
-		var entity = EmployeeChecklistMapper.toInitiationInfoEntity(municipalityId, detail);
+		final var entity = EmployeeChecklistMapper.toInitiationInfoEntity(municipalityId, detail);
 
 		assertThat(entity.getCreated()).isNull();
 		assertThat(entity.getId()).isNull();
@@ -525,5 +532,76 @@ class EmployeeChecklistMapperTest {
 	@Test
 	void toDetailFromNullValues() {
 		assertThat(EmployeeChecklistMapper.toDetail(null, null)).hasAllNullFieldsOrProperties();
+	}
+
+	@ParameterizedTest
+	@NullAndEmptySource
+	void toInitiationInformationFromEmptyList(List<InitiationInfoEntity> entries) {
+		final var bean = EmployeeChecklistMapper.toInitiationInformation(entries);
+
+		assertThat(bean).hasAllNullFieldsOrPropertiesExcept("summary");
+		assertThat(bean.getSummary()).isEqualTo("The last scheduled execution did not find any employees to initialize checklists for");
+	}
+
+	@Test
+	void toInitiationInformationFromListWithOnlySuccess() {
+		final var logId = UUID.randomUUID().toString();
+		final var success = InitiationInfoEntity.builder().withCreated(OffsetDateTime.now()).withLogId(logId).withStatus("200").withInformation("Happy life").build();
+
+		final var bean = EmployeeChecklistMapper.toInitiationInformation(List.of(success));
+
+		assertThat(bean.getSummary()).isEqualTo("No problems occurred when initializing checklists for 1 employees");
+		assertThat(bean.getExecuted()).isCloseTo(OffsetDateTime.now(), within(2, SECONDS));
+		assertThat(bean.getLogId()).isEqualTo(logId);
+		assertThat(bean.getDetails()).hasSize(1)
+			.extracting(
+				InitiationInformation.Detail::getInformation,
+				InitiationInformation.Detail::getStatus)
+			.containsExactly(tuple(
+				"Happy life",
+				200));
+	}
+
+	@Test
+	void toInitiationInformationFromListWithSuccessAndFailure() {
+		final var logId = UUID.randomUUID().toString();
+		final var success = InitiationInfoEntity.builder().withCreated(OffsetDateTime.now()).withLogId(logId).withStatus("200").withInformation("Happy life").build();
+		final var failure = InitiationInfoEntity.builder().withCreated(OffsetDateTime.now()).withLogId(logId).withStatus("404").withInformation("Not wanted").build();
+
+		final var bean = EmployeeChecklistMapper.toInitiationInformation(List.of(success, failure));
+
+		assertThat(bean.getSummary()).isEqualTo("1 potential problems occurred when initializing checklists for 2 employees");
+		assertThat(bean.getExecuted()).isCloseTo(OffsetDateTime.now(), within(2, SECONDS));
+		assertThat(bean.getLogId()).isEqualTo(logId);
+		assertThat(bean.getDetails()).hasSize(2)
+			.extracting(
+				InitiationInformation.Detail::getInformation,
+				InitiationInformation.Detail::getStatus)
+			.containsExactlyInAnyOrder(
+				tuple(
+					"Happy life",
+					200),
+				tuple(
+					"Not wanted",
+					404));
+	}
+
+	@Test
+	void toInitiationInformationFromListWithUnknownFailureStatus() {
+		final var logId = UUID.randomUUID().toString();
+		final var failure = InitiationInfoEntity.builder().withCreated(OffsetDateTime.now()).withLogId(logId).withInformation("Mysterious error").build();
+
+		final var bean = EmployeeChecklistMapper.toInitiationInformation(List.of(failure));
+
+		assertThat(bean.getSummary()).isEqualTo("1 potential problems occurred when initializing checklists for 1 employees");
+		assertThat(bean.getExecuted()).isCloseTo(OffsetDateTime.now(), within(2, SECONDS));
+		assertThat(bean.getLogId()).isEqualTo(logId);
+		assertThat(bean.getDetails()).hasSize(1)
+			.extracting(
+				InitiationInformation.Detail::getInformation,
+				InitiationInformation.Detail::getStatus)
+			.containsExactlyInAnyOrder(tuple(
+				"Mysterious error",
+				422));
 	}
 }

@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,6 +31,7 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistResponse;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse.Detail;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
+import se.sundsvall.checklist.api.model.InitiationInformation;
 import se.sundsvall.checklist.api.model.Mentor;
 import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistParameters;
 import se.sundsvall.checklist.api.model.OngoingEmployeeChecklists;
@@ -413,5 +415,37 @@ class EmployeeChecklistResourceTest {
 		assertThat(response).isEqualTo(mockedResponse);
 
 		verify(serviceMock).initiateSpecificEmployeeChecklist(MUNICIPALITY_ID, ID);
+	}
+
+	@Test
+	void getInitiationinfo() {
+		// Arrange
+		final var path = "/initiationinfo";
+
+		final var mockedResponse = InitiationInformation.builder()
+			.withDetails(List.of(InitiationInformation.Detail.builder()
+				.withInformation("detailed information")
+				.withStatus(123)
+				.build()))
+			.withExecuted(OffsetDateTime.now())
+			.withLogId("logId")
+			.withSummary("summary")
+			.build();
+
+		when(serviceMock.getInitiationInformation(MUNICIPALITY_ID)).thenReturn(mockedResponse);
+
+		// Act
+		final var response = webTestClient.get()
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID)))
+			.exchange()
+			.expectStatus().isOk()
+			.expectBody(InitiationInformation.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert and verify
+		assertThat(response).isEqualTo(mockedResponse);
+
+		verify(serviceMock).getInitiationInformation(MUNICIPALITY_ID);
 	}
 }
