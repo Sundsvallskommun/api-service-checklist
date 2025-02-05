@@ -11,9 +11,9 @@
 			{
 				"equalToJson": {
 					"logKey": "${json-unit.any-string}",
-					"type": "UPDATE",
+					"type": "CREATE",
 					"municipalityId": "2281",
-					"message": "Uppgift 'string' i fas 'Phase 1' har ändrats",
+					"message": "En ny version av checklista 'Pensionerad checklista' har skapats",
 					"owner": "Checklist",
 					"created": "${json-unit.any-string}",
 					"sourceType": "ChecklistEntity",

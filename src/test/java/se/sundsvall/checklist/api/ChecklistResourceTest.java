@@ -103,12 +103,14 @@ class ChecklistResourceTest {
 
 	@Test
 	void createNewVersion() {
+		final var user = "Chuck Norris";
 		final var checklist = TestObjectFactory.createChecklist();
-		when(mockService.createNewVersion(MUNICIPALITY_ID, ID)).thenReturn(checklist);
+		when(mockService.createNewVersion(MUNICIPALITY_ID, ID, user)).thenReturn(checklist);
 
 		// Act
 		webTestClient.post()
 			.uri(builder -> builder.path("/{municipalityId}/checklists/{checklistId}/version").build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID)))
+			.header("x-issuer", user)
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL)
@@ -116,17 +118,20 @@ class ChecklistResourceTest {
 			.expectHeader().valueEquals(LOCATION, "/%s/checklists/%s".formatted(MUNICIPALITY_ID, checklist.getId()));
 
 		// Assert and verify
-		verify(mockService).createNewVersion(MUNICIPALITY_ID, ID);
+		verify(mockService).createNewVersion(MUNICIPALITY_ID, ID, user);
 	}
 
 	@Test
 	void activateChecklist() {
+		final var user = "Chuck Norris";
 		final var mockedResponse = TestObjectFactory.createChecklist();
-		when(mockService.activateChecklist(MUNICIPALITY_ID, ID)).thenReturn(mockedResponse);
+
+		when(mockService.activateChecklist(MUNICIPALITY_ID, ID, user)).thenReturn(mockedResponse);
 
 		// Act
 		final var response = webTestClient.patch()
 			.uri(builder -> builder.path("/{municipalityId}/checklists/{checklistId}/activate").build(Map.of("municipalityId", MUNICIPALITY_ID, "checklistId", ID)))
+			.header("x-issuer", user)
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody(Checklist.class)
@@ -136,7 +141,7 @@ class ChecklistResourceTest {
 		// Assert and verify
 		assertThat(response).isNotNull().isEqualTo(mockedResponse);
 
-		verify(mockService).activateChecklist(MUNICIPALITY_ID, ID);
+		verify(mockService).activateChecklist(MUNICIPALITY_ID, ID, user);
 	}
 
 	@Test

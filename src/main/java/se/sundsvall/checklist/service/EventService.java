@@ -12,12 +12,14 @@ import se.sundsvall.checklist.integration.eventlog.EventlogIntegration;
 @Service
 public class EventService {
 
-	public static final String TASK_ADDED = "Uppgift %s tillagd i fas %s";
-	public static final String TASK_CHANGED = "Uppgift %s ändrad i fas %s";
-	public static final String TASK_REMOVED = "Uppgift %s bortplockad från fas %s";
-	public static final String CHECKLIST_CREATED = "Checklista %s skapad";
-	public static final String CHECKLIST_UPDATED = "Checklista %s uppdaterad";
-	public static final String CHECKLIST_DELETED = "Checklista %s raderad";
+	public static final String TASK_ADDED = "Uppgift '%s' har lagts till i fas '%s'";
+	public static final String TASK_CHANGED = "Uppgift '%s' i fas '%s' har ändrats";
+	public static final String TASK_REMOVED = "Uppgift '%s' har tagits bort från fas '%s'";
+	public static final String CHECKLIST_ACTIVATED = "Checklista '%s' har aktiverats";
+	public static final String CHECKLIST_CREATED = "Checklista '%s' har skapats";
+	public static final String CHECKLIST_NEW_VERSION_CREATED = "En ny version av checklista '%s' har skapats";
+	public static final String CHECKLIST_UPDATED = "Checklista '%s' har uppdaterats";
+	public static final String CHECKLIST_DELETED = "Checklista '%s' har raderats";
 
 	private final EventlogIntegration eventlogIntegration;
 
@@ -26,7 +28,7 @@ public class EventService {
 	}
 
 	public void createChecklistEvent(final EventType eventType, final String message, final ChecklistEntity checklistEntity, final String userId) {
-		var event = toEvent(eventType, message, checklistEntity, userId);
+		final var event = toEvent(eventType, message, checklistEntity, userId);
 		eventlogIntegration.createEvent(event);
 	}
 

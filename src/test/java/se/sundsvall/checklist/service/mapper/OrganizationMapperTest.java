@@ -2,6 +2,7 @@ package se.sundsvall.checklist.service.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.NO_COMMUNICATION;
 import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.EMPLOYEE;
 import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.MANAGER;
 
@@ -198,6 +199,7 @@ class OrganizationMapperTest {
 		assertThat(entity.getOrganizationNumber()).isEqualTo(organizationNumber);
 		assertThat(entity.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(entity.getUpdated()).isNull();
+		assertThat(entity.getCommunicationChannels()).containsExactly(NO_COMMUNICATION);
 	}
 
 	@Test

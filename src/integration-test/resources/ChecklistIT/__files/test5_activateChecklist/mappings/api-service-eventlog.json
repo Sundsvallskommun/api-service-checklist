@@ -13,7 +13,7 @@
 					"logKey": "${json-unit.any-string}",
 					"type": "UPDATE",
 					"municipalityId": "2281",
-					"message": "Uppgift 'string' i fas 'Phase 1' har ändrats",
+					"message": "Checklista 'Inaktiv lista' har aktiverats",
 					"owner": "Checklist",
 					"created": "${json-unit.any-string}",
 					"sourceType": "ChecklistEntity",

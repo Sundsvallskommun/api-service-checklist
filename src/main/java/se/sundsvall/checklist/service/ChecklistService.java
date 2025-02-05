@@ -7,6 +7,9 @@ import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.ACTIVE;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATED;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.DEPRECATED;
+import static se.sundsvall.checklist.service.EventService.CHECKLIST_CREATED;
+import static se.sundsvall.checklist.service.EventService.CHECKLIST_DELETED;
+import static se.sundsvall.checklist.service.EventService.CHECKLIST_NEW_VERSION_CREATED;
 import static se.sundsvall.checklist.service.EventService.CHECKLIST_UPDATED;
 import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toChecklist;
 import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toChecklistEntity;
@@ -99,13 +102,13 @@ public class ChecklistService {
 		final var checklistEntity = checklistRepository.save(toChecklistEntity(request, municipalityId));
 		organization.getChecklists().add(checklistEntity);
 		organizationRepository.save(organization);
-		final var checklist = toChecklist(checklistEntity);
-		eventService.createChecklistEvent(EventType.CREATE, EventService.CHECKLIST_CREATED.formatted(checklistEntity.getDisplayName()), checklistEntity, request.getCreatedBy());
-		return checklist;
+		eventService.createChecklistEvent(EventType.CREATE, CHECKLIST_CREATED.formatted(checklistEntity.getDisplayName()), checklistEntity, request.getCreatedBy());
+
+		return toChecklist(checklistEntity);
 	}
 
 	@Transactional
-	public Checklist createNewVersion(final String municipalityId, final String checklistId) {
+	public Checklist createNewVersion(final String municipalityId, final String checklistId, String userId) {
 		final var origin = checklistRepository.findByIdAndMunicipalityId(checklistId, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND.formatted(municipalityId)));
 		final var organization = organizationRepository.findByChecklistsIdAndChecklistsMunicipalityId(checklistId, municipalityId)
@@ -128,18 +131,20 @@ public class ChecklistService {
 		// Copy possible custom sort order that exists for tasks in the original checklist to new version of the checklist
 		final var translationMap = findMatchingTaskIds(copy, origin);
 		sortorderService.copySortorderItems(translationMap);
+		eventService.createChecklistEvent(EventType.CREATE, CHECKLIST_NEW_VERSION_CREATED.formatted(copy.getDisplayName()), copy, userId);
 
 		return toChecklistWithAppliedSortOrder(copy);
 	}
 
 	@Transactional
-	public Checklist activateChecklist(final String municipalityId, final String checklistId) {
+	public Checklist activateChecklist(final String municipalityId, final String checklistId, final String userId) {
 		final var entity = checklistRepository.findByIdAndMunicipalityId(checklistId, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, CHECKLIST_NOT_FOUND.formatted(municipalityId)));
 		checklistRepository.findByNameAndMunicipalityIdAndLifeCycle(entity.getName(), municipalityId, ACTIVE)
 			.ifPresent(ch -> ch.setLifeCycle(DEPRECATED));
 		entity.setLifeCycle(ACTIVE);
 
+		eventService.createChecklistEvent(EventType.UPDATE, EventService.CHECKLIST_ACTIVATED.formatted(entity.getDisplayName()), entity, userId);
 		return toChecklistWithAppliedSortOrder(checklistRepository.saveAndFlush(entity));
 	}
 
@@ -163,7 +168,7 @@ public class ChecklistService {
 
 		// Remove checklist
 		checklistRepository.delete(checklist);
-		eventService.createChecklistEvent(EventType.DELETE, EventService.CHECKLIST_DELETED.formatted(checklist.getDisplayName()), checklist, userId);
+		eventService.createChecklistEvent(EventType.DELETE, CHECKLIST_DELETED.formatted(checklist.getDisplayName()), checklist, userId);
 	}
 
 	public Checklist updateChecklist(final String municipalityId, final String id, final ChecklistUpdateRequest request) {

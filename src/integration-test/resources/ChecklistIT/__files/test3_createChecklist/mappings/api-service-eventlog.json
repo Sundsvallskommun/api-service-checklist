@@ -13,7 +13,7 @@
 					"logKey": "${json-unit.any-string}",
 					"type": "CREATE",
 					"municipalityId": "2281",
-					"message": "Checklista Display name skapad",
+					"message": "Checklista 'Display name' har skapats",
 					"owner": "Checklist",
 					"created": "${json-unit.any-string}",
 					"sourceType": "ChecklistEntity",

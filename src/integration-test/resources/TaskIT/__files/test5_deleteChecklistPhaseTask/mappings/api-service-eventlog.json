@@ -13,7 +13,7 @@
 					"logKey": "${json-unit.any-string}",
 					"type": "DELETE",
 					"municipalityId": "2281",
-					"message": "Uppgift Task 1 bortplockad från fas Phase 1",
+					"message": "Uppgift 'Task 1' har tagits bort från fas 'Phase 1'",
 					"owner": "Checklist",
 					"created": "${json-unit.any-string}",
 					"sourceType": "ChecklistEntity",
