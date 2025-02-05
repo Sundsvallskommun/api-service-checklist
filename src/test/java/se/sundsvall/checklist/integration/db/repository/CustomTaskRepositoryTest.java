@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
+import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = NONE)
@@ -28,6 +29,7 @@ class CustomTaskRepositoryTest {
 			assertThat(customTask.getId()).isEqualTo("1b3bfe66-0e6c-4e92-a410-7c620a5461f4");
 			assertThat(customTask.getPhase().getId()).isEqualTo("2455a5d4-1db8-4a25-a49f-92fdd0c60a14");
 			assertThat(customTask.getEmployeeChecklist().getId()).isEqualTo("f853e2b1-a144-4305-b05e-ee8d6dc6d005");
+			assertThat(customTask.getRoleType()).isEqualTo(RoleType.MANAGER_FOR_NEW_EMPLOYEE);
 		});
 	}
 

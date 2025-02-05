@@ -1110,7 +1110,7 @@ class EmployeeChecklistIntegrationTest {
 					.isMainEmployment(true)
 					.manager(new Manager()
 						.personId(managerUuid)));
-		final var orgTree = OrganizationTree.map(companyId, "2|21|Level-2¤3|212|Level-3¤4|" + orgId + "|" + orgName);
+		final var orgTree = OrganizationTree.map("1|" + companyId + "|Root¤2|21|Level-2¤3|212|Level-3¤4|" + orgId + "|" + orgName);
 
 		when(employeeRepositoryMock.save(any())).thenReturn(OrganizationMapper.toEmployeeEntity(employee));
 
@@ -1152,7 +1152,7 @@ class EmployeeChecklistIntegrationTest {
 					.isMainEmployment(true)
 					.manager(new Manager()
 						.personId(managerUuid)));
-		final var orgTree = OrganizationTree.map(companyId, "2|21|Level-2¤3|212|Level-3¤4|" + orgId + "|" + orgName);
+		final var orgTree = OrganizationTree.map("1|" + companyId + "|Root¤2|21|Level-2¤3|212|Level-3¤4|" + orgId + "|" + orgName);
 		final var organization = OrganizationEntity.builder()
 			.withId(organizationUuid.toString())
 			.withOrganizationNumber(companyId)
@@ -1199,7 +1199,7 @@ class EmployeeChecklistIntegrationTest {
 					.isMainEmployment(true)
 					.manager(new Manager()
 						.personId(managerUuid)));
-		final var orgTree = OrganizationTree.map(companyId, "2|21|Level-2¤3|212|Level-3¤4|" + orgId + "|" + orgName);
+		final var orgTree = OrganizationTree.map("1|" + companyId + "|Root¤2|21|Level-2¤3|212|Level-3¤4|" + orgId + "|" + orgName);
 		final var organization = OrganizationEntity.builder()
 			.withId(organizationUuid.toString())
 			.withOrganizationNumber(companyId)
@@ -1251,7 +1251,7 @@ class EmployeeChecklistIntegrationTest {
 					.isMainEmployment(true)
 					.manager(new Manager()
 						.personId(managerUuid)));
-		final var orgTree = OrganizationTree.map(companyId, "2|21|Level-2¤3|212|Level-3¤4|" + orgId + "|" + orgName);
+		final var orgTree = OrganizationTree.map("1|" + companyId + "|Root¤2|21|Level-2¤3|212|Level-3¤4|" + orgId + "|" + orgName);
 		final var checklistEntity = ChecklistEntity.builder()
 			.withId(checklistUuid.toString())
 			.withLifeCycle(LifeCycle.ACTIVE)
@@ -1317,7 +1317,7 @@ class EmployeeChecklistIntegrationTest {
 					.isMainEmployment(true)
 					.manager(new Manager()
 						.personId(managerUuid)));
-		final var orgTree = OrganizationTree.map(companyId, "2|21|Level-2¤3|212|Level-3¤4|" + orgId + "|" + orgName);
+		final var orgTree = OrganizationTree.map("1|" + companyId + "|Root¤2|21|Level-2¤3|212|Level-3¤4|" + orgId + "|" + orgName);
 		final var companyChecklistEntity = ChecklistEntity.builder()
 			.withId(checklistUuid.toString())
 			.withLifeCycle(LifeCycle.ACTIVE)
