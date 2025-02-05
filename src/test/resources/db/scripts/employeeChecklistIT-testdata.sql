@@ -200,7 +200,7 @@ insert into referred_checklist (employee_checklist_id, checklist_id)
 values ('f5960058-fad8-4825-85f3-b0fdb518adc5', 'e20598a4-6b32-459e-8c15-febbd4c5868e'),
        ('f5960058-fad8-4825-85f3-b0fdb518adc5', '8c66e24b-3845-47ae-af74-c4611db8be7c');
 
--- Custom task
+-- Custom task for employee
 insert into custom_task (sort_order, created, updated, last_saved_by, heading, id, employee_checklist_id, phase_id,
                          `text`, question_type, role_type)
 values (0, '2024-01-03 12:00:00.000', '2024-01-03 12:00:00.000', 'someUser', 'Custom employee task',
@@ -437,7 +437,7 @@ insert into referred_checklist (employee_checklist_id, checklist_id)
 values ('51ca9112-001b-4f12-b866-8d59ef1c25c4', 'e20598a4-6b32-459e-8c15-febbd4c5868e'),
        ('51ca9112-001b-4f12-b866-8d59ef1c25c4', '8c66e24b-3845-47ae-af74-c4611db8be7c');
 
--- Custom task
+-- Custom task for employee
 insert into custom_task (sort_order, created, updated, last_saved_by, heading, id, employee_checklist_id, phase_id,
                          `text`, question_type, role_type)
 values (0, '2024-01-03 12:00:00.000', '2024-01-03 12:00:00.000', 'someUser', 'First custom employee task',
