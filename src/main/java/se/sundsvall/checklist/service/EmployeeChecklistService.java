@@ -29,6 +29,7 @@ import static se.sundsvall.checklist.service.util.VerificationUtils.verifyUnlock
 import static se.sundsvall.checklist.service.util.VerificationUtils.verifyValidEmployment;
 
 import generated.se.sundsvall.employee.Employee;
+import generated.se.sundsvall.mdviewer.Organization;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -64,6 +65,8 @@ import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
 import se.sundsvall.checklist.integration.db.repository.InitiationRepository;
 import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
+import se.sundsvall.checklist.integration.mdviewer.MDViewerClient;
+import se.sundsvall.checklist.service.OrganizationTree.OrganizationLine;
 import se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper;
 import se.sundsvall.checklist.service.util.TaskType;
 
@@ -79,6 +82,7 @@ public class EmployeeChecklistService {
 	private final EmployeeIntegration employeeIntegration;
 	private final EmployeeChecklistIntegration employeeChecklistIntegration;
 	private final SortorderService sortorderService;
+	private final MDViewerClient mdViewerClient;
 	private final Duration employeeInformationUpdateInterval;
 
 	public EmployeeChecklistService(
@@ -87,6 +91,7 @@ public class EmployeeChecklistService {
 		final EmployeeIntegration employeeIntegration,
 		final EmployeeChecklistIntegration employeeChecklistIntegration,
 		final SortorderService sortorderService,
+		final MDViewerClient mdViewerClient,
 		@Value("${checklist.employee-update-interval}") final Duration employeeInformationUpdateInterval) {
 
 		this.customTaskRepository = customTaskRepository;
@@ -94,6 +99,7 @@ public class EmployeeChecklistService {
 		this.employeeIntegration = employeeIntegration;
 		this.employeeChecklistIntegration = employeeChecklistIntegration;
 		this.sortorderService = sortorderService;
+		this.mdViewerClient = mdViewerClient;
 		this.employeeInformationUpdateInterval = employeeInformationUpdateInterval;
 	}
 
@@ -349,7 +355,22 @@ public class EmployeeChecklistService {
 				final var portalPersonData = employeeIntegration.getEmployeeByEmail(employee.getEmailAddress())
 					.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ORGANIZATIONAL_STRUCTURE_DATA_NOT_FOUND.formatted(employee.getLoginname())));
 
-				final var result = employeeChecklistIntegration.initiateEmployee(municipalityId, employee, OrganizationTree.map(portalPersonData.getCompanyId(), portalPersonData.getOrgTree()));
+				// Calculate employee orgtree from person data information (which does not include the root organization)
+				final var employeeOrgTree = OrganizationTree.map(portalPersonData.getOrgTree());
+
+				// We need to find the root organization connected to the top level in the employees org tree via mdviewer
+				final var organizations = mdViewerClient.getOrganizationsForCompany(portalPersonData.getCompanyId());
+				organizations.stream()
+					.filter(organization -> organization.getOrgId() == Integer.parseInt(employeeOrgTree.getTree().firstEntry().getValue().getOrgId()))
+					.map(Organization::getParentId)
+					.filter(Objects::nonNull)
+					.map(orgId -> organizations.stream().filter(parent -> parent.getOrgId().equals(orgId)).findFirst().orElse(null))
+					.map(parent -> OrganizationLine.builder().withLevel(parent.getTreeLevel()).withOrgId(String.valueOf(parent.getOrgId())).withOrgName(parent.getOrgName()).build())
+					.findAny()
+					.ifPresent(employeeOrgTree::addOrg);
+
+				// Initiate employee checklist
+				final var result = employeeChecklistIntegration.initiateEmployee(municipalityId, employee, employeeOrgTree);
 				emplyeeChecklistResponse.getDetails().add(toDetail(OK, result));
 			} catch (final ThrowableProblem e) {
 				emplyeeChecklistResponse.getDetails().add(toDetail(e.getStatus(), e.getMessage()));
