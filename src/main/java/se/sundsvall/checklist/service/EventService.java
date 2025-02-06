@@ -12,14 +12,14 @@ import se.sundsvall.checklist.integration.eventlog.EventlogIntegration;
 @Service
 public class EventService {
 
-	public static final String TASK_ADDED = "Uppgift '%s' har lagts till i fas '%s'";
-	public static final String TASK_CHANGED = "Uppgift '%s' i fas '%s' har ändrats";
-	public static final String TASK_REMOVED = "Uppgift '%s' har tagits bort från fas '%s'";
-	public static final String CHECKLIST_ACTIVATED = "Checklista '%s' har aktiverats";
-	public static final String CHECKLIST_CREATED = "Checklista '%s' har skapats";
-	public static final String CHECKLIST_NEW_VERSION_CREATED = "En ny version av checklista '%s' har skapats";
-	public static final String CHECKLIST_UPDATED = "Checklista '%s' har uppdaterats";
-	public static final String CHECKLIST_DELETED = "Checklista '%s' har raderats";
+	public static final String TASK_ADDED = "Aktivitet '%s' har lagts till i fas '%s'";
+	public static final String TASK_CHANGED = "Aktivitet '%s' i fas '%s' har ändrats";
+	public static final String TASK_REMOVED = "Aktivitet '%s' har tagits bort från fas '%s'";
+	public static final String CHECKLIST_ACTIVATED = "Mall '%s' har aktiverats";
+	public static final String CHECKLIST_CREATED = "Mall '%s' har skapats";
+	public static final String CHECKLIST_NEW_VERSION_CREATED = "En ny version av mall '%s' har skapats";
+	public static final String CHECKLIST_UPDATED = "Mall '%s' har uppdaterats";
+	public static final String CHECKLIST_DELETED = "Mall '%s' har raderats";
 
 	private final EventlogIntegration eventlogIntegration;
 

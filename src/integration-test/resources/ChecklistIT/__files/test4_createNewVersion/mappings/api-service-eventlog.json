@@ -13,7 +13,7 @@
 					"logKey": "${json-unit.any-string}",
 					"type": "CREATE",
 					"municipalityId": "2281",
-					"message": "En ny version av checklista 'Pensionerad checklista' har skapats",
+					"message": "En ny version av mall 'Pensionerad checklista' har skapats",
 					"owner": "Checklist",
 					"created": "${json-unit.any-string}",
 					"sourceType": "ChecklistEntity",

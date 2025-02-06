@@ -13,7 +13,7 @@
 					"logKey": "${json-unit.any-string}",
 					"type": "DELETE",
 					"municipalityId": "2281",
-					"message": "Checklista 'null' har raderats",
+					"message": "Mall 'null' har raderats",
 					"owner": "Checklist",
 					"created": "${json-unit.any-string}",
 					"sourceType": "ChecklistEntity",

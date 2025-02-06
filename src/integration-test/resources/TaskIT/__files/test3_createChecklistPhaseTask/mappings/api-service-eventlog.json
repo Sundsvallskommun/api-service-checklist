@@ -13,7 +13,7 @@
 					"logKey": "${json-unit.any-string}",
 					"type": "CREATE",
 					"municipalityId": "2281",
-					"message": "Uppgift 'Name of the task' har lagts till i fas 'Phase 1'",
+					"message": "Aktivitet 'Name of the task' har lagts till i fas 'Phase 1'",
 					"owner": "Checklist",
 					"created": "${json-unit.any-string}",
 					"sourceType": "ChecklistEntity",
