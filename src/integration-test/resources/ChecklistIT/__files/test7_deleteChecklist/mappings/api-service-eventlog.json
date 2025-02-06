@@ -13,7 +13,7 @@
 					"logKey": "${json-unit.any-string}",
 					"type": "DELETE",
 					"municipalityId": "2281",
-					"message": "Checklista Checklista för Elnät raderad",
+					"message": "Mall 'Checklista för Elnät' har raderats",
 					"owner": "Checklist",
 					"created": "${json-unit.any-string}",
 					"sourceType": "ChecklistEntity",

@@ -2,7 +2,7 @@ package se.sundsvall.checklist.service.mapper;
 
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
-import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.EMAIL;
+import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.NO_COMMUNICATION;
 import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.EMPLOYEE;
 import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.MANAGER;
 
@@ -84,7 +84,7 @@ public class OrganizationMapper {
 		return OrganizationEntity.builder()
 			.withOrganizationNumber(organizationNumber)
 			.withOrganizationName(organizationName)
-			.withCommunicationChannels(Set.of(EMAIL))
+			.withCommunicationChannels(Set.of(NO_COMMUNICATION)) // By default the notification when a new checklist has been created is disabled
 			.withMunicipalityId(municipalityId)
 			.build();
 	}

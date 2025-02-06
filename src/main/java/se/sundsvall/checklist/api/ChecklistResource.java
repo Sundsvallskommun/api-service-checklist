@@ -102,10 +102,11 @@ class ChecklistResource {
 	})
 	@PostMapping(value = "/{checklistId}/version", produces = ALL_VALUE)
 	ResponseEntity<Void> createNewVersion(
+		@Parameter(name = "x-issuer", description = "User id for the user creating the new version") @RequestHeader(name = "x-issuer", required = false) final String issuer,
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId) {
 
-		final var checklist = checklistService.createNewVersion(municipalityId, checklistId);
+		final var checklist = checklistService.createNewVersion(municipalityId, checklistId, issuer);
 		return created(UriComponentsBuilder.fromPath("/{municipalityId}/checklists" + "/{checklistId}")
 			.buildAndExpand(municipalityId, checklist.getId()).toUri()).header(CONTENT_TYPE, ALL_VALUE).build();
 	}
@@ -116,10 +117,11 @@ class ChecklistResource {
 	})
 	@PatchMapping(value = "/{checklistId}/activate", produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<Checklist> activateChecklist(
+		@Parameter(name = "x-issuer", description = "User id for the user responsible for the activate request") @RequestHeader(name = "x-issuer", required = false) final String issuer,
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "checklistId", description = "Checklist id", example = "85fbcecb-62d9-40c4-9b3d-839e9adcfd8c") @PathVariable @ValidUuid final String checklistId) {
 
-		return ok(checklistService.activateChecklist(municipalityId, checklistId));
+		return ok(checklistService.activateChecklist(municipalityId, checklistId, issuer));
 	}
 
 	@Operation(summary = "Update a checklist", responses = {

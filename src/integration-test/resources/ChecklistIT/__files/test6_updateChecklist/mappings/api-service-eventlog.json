@@ -13,7 +13,7 @@
 					"logKey": "${json-unit.any-string}",
 					"type": "UPDATE",
 					"municipalityId": "2281",
-					"message": "Checklista New display name uppdaterad",
+					"message": "Mall 'New display name' har uppdaterats",
 					"owner": "Checklist",
 					"created": "${json-unit.any-string}",
 					"sourceType": "ChecklistEntity",

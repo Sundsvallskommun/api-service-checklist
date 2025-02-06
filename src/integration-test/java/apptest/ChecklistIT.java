@@ -86,6 +86,7 @@ class ChecklistIT extends AbstractAppTest {
 		// Create new version of checklist
 		setupCall()
 			.withServicePath(PATH + "/" + checklistId + "/version")
+			.withHeader("x-issuer", "someUser")
 			.withHttpMethod(POST)
 			.withExpectedResponseStatus(CREATED)
 			.withExpectedResponseHeader(LOCATION, List.of("^/2281/checklists/(.+)$"))
@@ -107,6 +108,7 @@ class ChecklistIT extends AbstractAppTest {
 		final var createdChecklistId = "45764278-50c8-4a19-af00-077bfc314fd2";
 		setupCall()
 			.withServicePath(PATH + "/" + createdChecklistId + "/activate")
+			.withHeader("x-issuer", "someUser")
 			.withHttpMethod(PATCH)
 			.withExpectedResponseStatus(OK)
 			.withExpectedResponse(EXPECTED_FILE)

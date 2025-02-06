@@ -1,6 +1,8 @@
 package se.sundsvall.checklist.service;
 
+import static generated.se.sundsvall.eventlog.EventType.CREATE;
 import static generated.se.sundsvall.eventlog.EventType.DELETE;
+import static generated.se.sundsvall.eventlog.EventType.UPDATE;
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -20,11 +22,12 @@ import static se.sundsvall.checklist.TestObjectFactory.createOrganizationEntity;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.ACTIVE;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATED;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.DEPRECATED;
+import static se.sundsvall.checklist.service.EventService.CHECKLIST_ACTIVATED;
 import static se.sundsvall.checklist.service.EventService.CHECKLIST_CREATED;
 import static se.sundsvall.checklist.service.EventService.CHECKLIST_DELETED;
+import static se.sundsvall.checklist.service.EventService.CHECKLIST_NEW_VERSION_CREATED;
 import static se.sundsvall.checklist.service.EventService.CHECKLIST_UPDATED;
 
-import generated.se.sundsvall.eventlog.EventType;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -143,7 +146,7 @@ class ChecklistServiceTest {
 		when(checklistRepositoryMock.save(any())).thenReturn(checklistEntity);
 		when(organizationRepositoryMock.findByOrganizationNumberAndMunicipalityId(body.getOrganizationNumber(), MUNICIPALITY_ID)).thenReturn(Optional.of(organizationEntity));
 		when(organizationRepositoryMock.save(organizationEntity)).thenAnswer(invocation -> invocation.getArgument(0));
-		doNothing().when(eventServiceMock).createChecklistEvent(EventType.CREATE, CHECKLIST_CREATED.formatted(checklistEntity.getDisplayName()), checklistEntity, body.getCreatedBy());
+		doNothing().when(eventServiceMock).createChecklistEvent(CREATE, CHECKLIST_CREATED.formatted(checklistEntity.getDisplayName()), checklistEntity, body.getCreatedBy());
 
 		final var result = checklistService.createChecklist(MUNICIPALITY_ID, body);
 
@@ -156,7 +159,7 @@ class ChecklistServiceTest {
 		verify(checklistRepositoryMock).save(any());
 		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(body.getOrganizationNumber(), MUNICIPALITY_ID);
 		verify(organizationRepositoryMock).save(organizationEntity);
-		verify(eventServiceMock).createChecklistEvent(EventType.CREATE, CHECKLIST_CREATED.formatted(checklistEntity.getDisplayName()), checklistEntity, body.getCreatedBy());
+		verify(eventServiceMock).createChecklistEvent(CREATE, CHECKLIST_CREATED.formatted(checklistEntity.getDisplayName()), checklistEntity, body.getCreatedBy());
 	}
 
 	@Test
@@ -289,7 +292,7 @@ class ChecklistServiceTest {
 		when(checklistRepositoryMock.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 		when(checklistBuilderMock.buildChecklist(entity)).thenReturn(Checklist.builder().withId(entity.getId()).build());
 		when(sortorderServiceMock.applySortingToChecklist(any(), any(), any(Checklist.class))).thenAnswer(inv -> inv.getArgument(2));
-		doNothing().when(eventServiceMock).createChecklistEvent(EventType.UPDATE, CHECKLIST_UPDATED.formatted(checklist.getDisplayName()), entity, checklist.getUpdatedBy());
+		doNothing().when(eventServiceMock).createChecklistEvent(UPDATE, CHECKLIST_UPDATED.formatted(checklist.getDisplayName()), entity, checklist.getUpdatedBy());
 
 		final var result = checklistService.updateChecklist(MUNICIPALITY_ID, entity.getId(), checklist);
 
@@ -297,7 +300,7 @@ class ChecklistServiceTest {
 		verify(checklistRepositoryMock).save(checklistEntityCaptor.capture());
 		verify(checklistBuilderMock).buildChecklist(entity);
 		verify(sortorderServiceMock).applySortingToChecklist(eq(MUNICIPALITY_ID), eq(entity.getOrganization().getOrganizationNumber()), any(Checklist.class));
-		verify(eventServiceMock).createChecklistEvent(EventType.UPDATE, CHECKLIST_UPDATED.formatted(checklist.getDisplayName()), entity, checklist.getUpdatedBy());
+		verify(eventServiceMock).createChecklistEvent(UPDATE, CHECKLIST_UPDATED.formatted(checklist.getDisplayName()), entity, checklist.getUpdatedBy());
 
 		assertThat(checklistEntityCaptor.getValue()).satisfies(e -> {
 			assertThat(e.getDisplayName()).isEqualTo(checklist.getDisplayName());
@@ -338,7 +341,7 @@ class ChecklistServiceTest {
 		when(checklistBuilderMock.buildChecklist(copyEntity)).thenReturn(Checklist.builder().withId(copyEntity.getId()).build());
 		when(sortorderServiceMock.applySortingToChecklist(any(), any(), any(Checklist.class))).thenAnswer(inv -> inv.getArgument(2));
 
-		final var result = checklistService.createNewVersion(MUNICIPALITY_ID, UUID);
+		final var result = checklistService.createNewVersion(MUNICIPALITY_ID, UUID, USER);
 
 		verify(checklistRepositoryMock).findByIdAndMunicipalityId(UUID, MUNICIPALITY_ID);
 		verify(checklistRepositoryMock).existsByNameAndMunicipalityIdAndLifeCycle(checklistEntity.getName(), MUNICIPALITY_ID, CREATED);
@@ -348,6 +351,7 @@ class ChecklistServiceTest {
 		verify(sortorderServiceMock).copySortorderItems(anyMap());
 		verify(sortorderServiceMock).applySortingToChecklist(eq(MUNICIPALITY_ID), eq(organizationEntity.getOrganizationNumber()), any(Checklist.class));
 		verify(sortorderServiceMock).copySortorderItems(sortorderItemsCaptor.capture());
+		verify(eventServiceMock).createChecklistEvent(CREATE, CHECKLIST_NEW_VERSION_CREATED.formatted(copyEntity.getDisplayName()), copyEntity, USER);
 
 		assertThat(organizationEntity.getChecklists()).hasSize(2).containsExactlyInAnyOrder(checklistEntity, copyEntity);
 
@@ -360,7 +364,7 @@ class ChecklistServiceTest {
 
 	@Test
 	void createNewVersionChecklistNotFound() {
-		assertThatThrownBy(() -> checklistService.createNewVersion(MUNICIPALITY_ID, UUID))
+		assertThatThrownBy(() -> checklistService.createNewVersion(MUNICIPALITY_ID, UUID, USER))
 			.isInstanceOfAny(Problem.class)
 			.hasMessage("Not Found: Checklist not found within municipality %s".formatted(MUNICIPALITY_ID));
 
@@ -373,7 +377,7 @@ class ChecklistServiceTest {
 
 		when(checklistRepositoryMock.findByIdAndMunicipalityId(entity.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(entity));
 
-		assertThatThrownBy(() -> checklistService.createNewVersion(MUNICIPALITY_ID, entity.getId()))
+		assertThatThrownBy(() -> checklistService.createNewVersion(MUNICIPALITY_ID, entity.getId(), USER))
 			.isInstanceOfAny(Problem.class)
 			.hasMessage("Not Found: No organization is connected to checklist with id %s".formatted(entity.getId()));
 
@@ -389,7 +393,7 @@ class ChecklistServiceTest {
 		when(organizationRepositoryMock.findByChecklistsIdAndChecklistsMunicipalityId(entity.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(OrganizationEntity.builder().build()));
 		when(checklistRepositoryMock.existsByNameAndMunicipalityIdAndLifeCycle(entity.getName(), MUNICIPALITY_ID, CREATED)).thenReturn(true);
 
-		assertThatThrownBy(() -> checklistService.createNewVersion(MUNICIPALITY_ID, entity.getId()))
+		assertThatThrownBy(() -> checklistService.createNewVersion(MUNICIPALITY_ID, entity.getId(), USER))
 			.isInstanceOfAny(Problem.class)
 			.hasMessage("Bad Request: Checklist already has a draft version in progress preventing another draft version from being created");
 
@@ -408,7 +412,7 @@ class ChecklistServiceTest {
 		when(checklistBuilderMock.buildChecklist(entity)).thenReturn(Checklist.builder().withLifeCycle(ACTIVE).build());
 		when(sortorderServiceMock.applySortingToChecklist(any(), any(), any(Checklist.class))).thenAnswer(inv -> inv.getArgument(2));
 
-		final var result = checklistService.activateChecklist(MUNICIPALITY_ID, entity.getId());
+		final var result = checklistService.activateChecklist(MUNICIPALITY_ID, entity.getId(), USER);
 
 		assertThat(result).isNotNull().satisfies(checklistEntity -> {
 			assertThat(checklistEntity.getLifeCycle()).isEqualTo(ACTIVE);
@@ -419,11 +423,12 @@ class ChecklistServiceTest {
 		verify(checklistRepositoryMock).saveAndFlush(any(ChecklistEntity.class));
 		verify(checklistBuilderMock).buildChecklist(entity);
 		verify(sortorderServiceMock).applySortingToChecklist(eq(MUNICIPALITY_ID), eq(entity.getOrganization().getOrganizationNumber()), any(Checklist.class));
+		verify(eventServiceMock).createChecklistEvent(UPDATE, CHECKLIST_ACTIVATED.formatted(entity.getDisplayName()), entity, USER);
 	}
 
 	@Test
 	void activateChecklistNotFound() {
-		assertThatThrownBy(() -> checklistService.activateChecklist(MUNICIPALITY_ID, UUID))
+		assertThatThrownBy(() -> checklistService.activateChecklist(MUNICIPALITY_ID, UUID, USER))
 			.isInstanceOfAny(Problem.class)
 			.hasMessage("Not Found: Checklist not found within municipality %s".formatted(MUNICIPALITY_ID));
 
