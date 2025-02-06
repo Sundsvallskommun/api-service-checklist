@@ -48,7 +48,7 @@ VALUES ('f853e2b1-a144-4305-b05e-ee8d6dc6d005', '25764278-50c8-4a19-af00-077bfc3
 
 
 INSERT INTO custom_task (sort_order, created, updated, last_saved_by, heading, heading_reference, id, employee_checklist_id, phase_id, `text`, question_type, role_type)
-VALUES (0, '2024-01-03 12:00:00.000', '2024-01-03 12:00:00.000', 'someUser', 'Custom employee task', 'http://some.customlink.ref', '1b3bfe66-0e6c-4e92-a410-7c620a5461f4', 'f853e2b1-a144-4305-b05e-ee8d6dc6d005', '2455a5d4-1db8-4a25-a49f-92fdd0c60a14', 'Descriptive text for custom task', 'YES_OR_NO', 'NEW_EMPLOYEE');
+VALUES (0, '2024-01-03 12:00:00.000', '2024-01-03 12:00:00.000', 'someUser', 'Custom employee task', 'http://some.customlink.ref', '1b3bfe66-0e6c-4e92-a410-7c620a5461f4', 'f853e2b1-a144-4305-b05e-ee8d6dc6d005', '2455a5d4-1db8-4a25-a49f-92fdd0c60a14', 'Descriptive text for custom task', 'YES_OR_NO', 'MANAGER_FOR_NEW_EMPLOYEE');
 
 
 INSERT INTO custom_sortorder (id, municipality_id, organization_number, component_type, component_id, position)

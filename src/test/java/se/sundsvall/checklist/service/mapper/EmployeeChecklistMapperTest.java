@@ -10,7 +10,7 @@ import static se.sundsvall.checklist.TestObjectFactory.createEmployeeChecklistEn
 import static se.sundsvall.checklist.TestObjectFactory.createPhaseEntity;
 import static se.sundsvall.checklist.TestObjectFactory.createTaskEntity;
 import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.EMPLOYEE;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.NEW_EMPLOYEE;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_EMPLOYEE;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEmployeeChecklist;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEmployeeChecklistPhase;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEmployeeChecklistTask;
@@ -433,7 +433,7 @@ class EmployeeChecklistMapperTest {
 		assertThat(entity.getEmployeeChecklist()).isEqualTo(employeeChecklistEntity);
 		assertThat(entity.getPhase()).isEqualTo(phaseEntity);
 		assertThat(entity.getQuestionType()).isEqualTo(questionType);
-		assertThat(entity.getRoleType()).isEqualTo(NEW_EMPLOYEE);
+		assertThat(entity.getRoleType()).isEqualTo(MANAGER_FOR_NEW_EMPLOYEE);
 		assertThat(entity.getSortOrder()).isEqualTo(sortOrder);
 		assertThat(entity.getText()).isEqualTo(text);
 		assertThat(entity.getUpdated()).isNull();

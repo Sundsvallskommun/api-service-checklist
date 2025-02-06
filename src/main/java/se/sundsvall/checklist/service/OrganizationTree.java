@@ -21,12 +21,6 @@ public class OrganizationTree {
 
 	private TreeMap<Integer, OrganizationLine> tree = new TreeMap<>();
 
-	public OrganizationTree(int companyId) {
-		// Always add companyId as root to enable recursion when finding the closest checklist to use as prototype for the
-		// employee checklist
-		this.addOrg(OrganizationLine.builder().withLevel(1).withOrgId(String.valueOf(companyId)).build());
-	}
-
 	public void addOrg(OrganizationLine org) {
 		tree.put(org.getLevel(), org);
 	}
@@ -45,18 +39,16 @@ public class OrganizationTree {
 	 * Maps the following (example) organizational string from Employee:
 	 * "2|28|Kommunstyrelsekontoret¤3|440|KS KSK Avdelningar¤4|2835|KS Avd Digital Transformation¤5|2834|KS Avd Digital Transformation¤6|2836|KS Avd Digital Transformation"
 	 * The first number is the level, the second is the orgId and the third is the orgName.
-	 * We map all 6 levels but we're (currently) only interested in level 2 and 3.
 	 * </pre>
 	 *
-	 * @param  companyId          The companyId of the organization, not part of the org-string
 	 * @param  organizationString The org-string to parse
 	 * @return                    An {@link OrganizationTree} object
 	 */
-	public static OrganizationTree map(int companyId, String organizationString) {
+	public static OrganizationTree map(String organizationString) {
 
 		LOGGER.info("Trying to parse into an organization tree: {}", organizationString);
 
-		final var organizationTree = new OrganizationTree(companyId);
+		final var organizationTree = new OrganizationTree();
 
 		final var split = organizationString.split("¤");
 
