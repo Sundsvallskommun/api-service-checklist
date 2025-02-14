@@ -35,7 +35,7 @@
 				{
 					"fulfilmentStatus": "EMPTY",
 					"heading": "Description of new employee task",
-					"sortOrder": 3,
+					"sortOrder": 1000,
 					"id": "a76e9920-261f-42fc-9077-14fb1cdb9871",
 					"text": "Text for task to be performed by new employee",
 					"roleType": "NEW_EMPLOYEE",

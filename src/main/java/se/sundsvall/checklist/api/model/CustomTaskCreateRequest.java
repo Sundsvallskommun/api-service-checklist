@@ -1,6 +1,8 @@
 package se.sundsvall.checklist.api.model;
 
 import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.WRITE_ONLY;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_EMPLOYEE;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.NEW_EMPLOYEE;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -10,7 +12,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import se.sundsvall.checklist.api.validation.RoleTypeSubset;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
+import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 
 @Data
 @NoArgsConstructor
@@ -32,6 +36,12 @@ public class CustomTaskCreateRequest {
 	@Schema(description = "The question type of the task")
 	@NotNull
 	private QuestionType questionType;
+
+	@Schema(description = "The role that shall perform the task", example = "NEW_EMPLOYEE")
+	@RoleTypeSubset(oneOf = {
+		NEW_EMPLOYEE, MANAGER_FOR_NEW_EMPLOYEE
+	})
+	private RoleType roleType;
 
 	@Schema(description = "The sort order for the task", accessMode = WRITE_ONLY)
 	@NotNull

@@ -596,12 +596,6 @@ paths:
       responses:
         "201":
           description: Successful Operation
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "500":
           description: Internal Server Error
           content:
@@ -616,6 +610,12 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/employee-checklists/{employeeChecklistId}/delegate-to/{email}:
     post:
       tags:
@@ -2087,12 +2087,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Correspondence"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "500":
           description: Internal Server Error
           content:
@@ -2107,6 +2101,12 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/Problem"
                 - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/employee-checklists/ongoing:
     get:
       tags:
@@ -2901,6 +2901,8 @@ components:
           example: Detta är en beskrivning av ett uppdrag
         questionType:
           $ref: "#/components/schemas/QuestionType"
+        roleType:
+          $ref: "#/components/schemas/RoleType"
         sortOrder:
           type: integer
           description: The sort order for the task
@@ -2920,6 +2922,15 @@ components:
       - YES_OR_NO_WITH_TEXT
       - COMPLETED_OR_NOT_RELEVANT
       - COMPLETED_OR_NOT_RELEVANT_WITH_TEXT
+    RoleType:
+      type: string
+      description: The role that shall perform the task
+      example: NEW_EMPLOYEE
+      enum:
+      - NEW_EMPLOYEE
+      - NEW_MANAGER
+      - MANAGER_FOR_NEW_EMPLOYEE
+      - MANAGER_FOR_NEW_MANAGER
     CustomTask:
       type: object
       properties:
@@ -2971,14 +2982,6 @@ components:
           readOnly: true
           example: joe01doe
       description: Model for custom task
-    RoleType:
-      type: string
-      description: The role type of the task
-      enum:
-      - NEW_EMPLOYEE
-      - NEW_MANAGER
-      - MANAGER_FOR_NEW_EMPLOYEE
-      - MANAGER_FOR_NEW_MANAGER
     Detail:
       type: object
       properties:
@@ -3487,6 +3490,8 @@ components:
           example: Detta är en beskrivning av ett uppdrag
         questionType:
           $ref: "#/components/schemas/QuestionType"
+        roleType:
+          $ref: "#/components/schemas/RoleType"
         sortOrder:
           type: integer
           description: The sort order for the task

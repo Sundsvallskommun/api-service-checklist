@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -37,6 +39,7 @@ import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistParameters;
 import se.sundsvall.checklist.api.model.OngoingEmployeeChecklists;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
+import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 import se.sundsvall.checklist.service.EmployeeChecklistService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
@@ -165,14 +168,18 @@ class EmployeeChecklistResourceTest {
 		verifyNoMoreInteractions(serviceMock);
 	}
 
-	@Test
-	void createCustomTask() {
+	@ParameterizedTest
+	@EnumSource(value = RoleType.class, names = {
+		"NEW_EMPLOYEE", "MANAGER_FOR_NEW_EMPLOYEE"
+	})
+	void createCustomTask(RoleType roleType) {
 		// Arrange
 		final var mockedResponse = CustomTask.builder().withId(UUID.randomUUID().toString()).build();
 		final var path = "/{employeeChecklistId}/phases/{phaseId}/customtasks";
 		final var request = CustomTaskCreateRequest.builder()
 			.withHeading("heading")
 			.withQuestionType(QuestionType.YES_OR_NO_WITH_TEXT)
+			.withRoleType(roleType)
 			.withText("text")
 			.withSortOrder(1)
 			.withCreatedBy("someUser")

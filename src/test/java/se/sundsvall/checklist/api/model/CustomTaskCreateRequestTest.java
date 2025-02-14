@@ -11,6 +11,7 @@ import static org.hamcrest.CoreMatchers.allOf;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
+import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 
 class CustomTaskCreateRequestTest {
 
@@ -30,6 +31,8 @@ class CustomTaskCreateRequestTest {
 		final var headingReference = "headingReference";
 		final var text = "text";
 		final var questionType = QuestionType.YES_OR_NO;
+		final var roleType = RoleType.NEW_MANAGER;
+
 		final var sortOrder = 911;
 		final var createdBy = "someUser";
 
@@ -38,6 +41,7 @@ class CustomTaskCreateRequestTest {
 			.withHeadingReference(headingReference)
 			.withText(text)
 			.withQuestionType(questionType)
+			.withRoleType(roleType)
 			.withSortOrder(sortOrder)
 			.withCreatedBy(createdBy)
 			.build();
@@ -47,6 +51,7 @@ class CustomTaskCreateRequestTest {
 		assertThat(bean.getHeading()).isEqualTo(heading);
 		assertThat(bean.getHeadingReference()).isEqualTo(headingReference);
 		assertThat(bean.getQuestionType()).isEqualTo(questionType);
+		assertThat(bean.getRoleType()).isEqualTo(roleType);
 		assertThat(bean.getSortOrder()).isEqualTo(sortOrder);
 		assertThat(bean.getText()).isEqualTo(text);
 	}

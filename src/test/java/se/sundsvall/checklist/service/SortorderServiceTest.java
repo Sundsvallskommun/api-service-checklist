@@ -328,6 +328,7 @@ class SortorderServiceTest {
 		when(mdViewerClientMock.getOrganizationsForCompany(1)).thenReturn(Collections.emptyList());
 		when(mdViewerClientMock.getOrganizationsForCompany(2)).thenReturn(List.of(organizationMock));
 		when(organizationMock.getCompanyId()).thenReturn(2);
+		when(organizationMock.getParentId()).thenReturn(1);
 		when(organizationMock.getOrgId()).thenReturn(ORGANIZATION_NUMBER);
 		when(sortorderRepositoryMock.findAllByMunicipalityIdAndOrganizationNumber(MUNICIPALITY_ID, ORGANIZATION_NUMBER)).thenReturn(createCustomorder());
 
