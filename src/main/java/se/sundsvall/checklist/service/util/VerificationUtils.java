@@ -19,7 +19,7 @@ import org.zalando.problem.Problem;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 
 public final class VerificationUtils {
-	private static final String EMPLOYMENT_NOT_VALID_FOR_CHECKLIST = "Employee with loginname %s does not have a main employment with an %s that validates for creating an employee checklist.";
+	private static final String EMPLOYMENT_NOT_VALID_FOR_CHECKLIST = "the employee does not have a main employment with an %s that validates for creating an employee checklist";
 	private static final String EMPLOYEE_CHECKLIST_IS_LOCKED = "Employee checklist with id %s is locked and can not be modified.";
 	private static final List<String> VALID_EMPLOYMENT_FORMS_FOR_CHECKLIST = List.of("1", "2", "9"); // Permanent employment ("1"), temporary monthly paid employment ("2") and probationary employment ("9")
 	private static final String VALID_EVENT_TYPE = "Joiner";
@@ -84,16 +84,16 @@ public final class VerificationUtils {
 	public static void verifyValidEmployment(Employee employee) {
 		final var employment = getMainEmployment(employee);
 		if (isNull(employment)) {
-			throw Problem.valueOf(NOT_FOUND, "The employee does not have any main employment.");
+			throw Problem.valueOf(NOT_FOUND, buildErrorString(employee, List.of("the employee does not have any main employment")));
 		}
 		if (isNull(employment.getEventType())) {
-			throw Problem.valueOf(NOT_FOUND, "The main employment for the employee lacks event type information.");
+			throw Problem.valueOf(NOT_FOUND, buildErrorString(employee, List.of("the main employment for the employee lacks event type information")));
 		}
 		if (!VALID_EMPLOYMENT_FORMS_FOR_CHECKLIST.contains(employment.getFormOfEmploymentId())) {
-			throw Problem.valueOf(NOT_ACCEPTABLE, EMPLOYMENT_NOT_VALID_FOR_CHECKLIST.formatted(employee.getLoginname(), "employment form"));
+			throw Problem.valueOf(NOT_ACCEPTABLE, buildErrorString(employee, List.of(EMPLOYMENT_NOT_VALID_FOR_CHECKLIST.formatted("employment form"))));
 		}
 		if (!equalsIgnoreCase(VALID_EVENT_TYPE, employment.getEventType())) {
-			throw Problem.valueOf(NOT_ACCEPTABLE, EMPLOYMENT_NOT_VALID_FOR_CHECKLIST.formatted(employee.getLoginname(), "event type"));
+			throw Problem.valueOf(NOT_ACCEPTABLE, buildErrorString(employee, List.of(EMPLOYMENT_NOT_VALID_FOR_CHECKLIST.formatted("event type"))));
 		}
 	}
 

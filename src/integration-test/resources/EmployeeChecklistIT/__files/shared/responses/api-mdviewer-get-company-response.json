@@ -15344,6 +15344,20 @@
 		"responsibilityCodePartList": null
 	},
 	{
+		"organizationId": "6b99e6d5-ef86-4175-8743-317a29ba2f12",
+		"isLeafLevel": true,
+		"responsibilityCode": "23810",
+		"companyId": 1,
+		"orgName": "Systerenhet till övrigt verksamhetsstöd",
+		"treeLevel": 6,
+		"orgNameShort": "Övrigt verksamhetsstöd",
+		"abbreviation": null,
+		"concatAbbreviation": null,
+		"orgId": 55351,
+		"parentId": 9330,
+		"responsibilityCodePartList": null
+	},
+	{
 		"organizationId": "ee39cbca-4e56-40cc-bb93-e72cdcb527e4",
 		"isLeafLevel": true,
 		"responsibilityCode": "23811",

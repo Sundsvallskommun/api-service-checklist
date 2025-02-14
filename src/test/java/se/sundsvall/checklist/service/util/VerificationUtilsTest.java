@@ -79,21 +79,24 @@ class VerificationUtilsTest {
 
 	@Test
 	void testValidEmploymentWhenNoMainEmployment() {
-		final var employee = new Employee();
+		final var employee = new Employee().loginname("<loginName>");
 		final var e = assertThrows(ThrowableProblem.class, () -> VerificationUtils.verifyValidEmployment(employee));
 
 		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
-		assertThat(e.getMessage()).isEqualTo(NOT_FOUND.getReasonPhrase() + ": The employee does not have any main employment.");
+		assertThat(e.getMessage()).isEqualTo(NOT_FOUND.getReasonPhrase() + ": Creation of checklist not possible for employee with loginname <loginName> as the employee does not have any main employment.");
 	}
 
 	@Test
 	void testValidEmploymentWhenNoEventType() {
+		final var personId = UUID.randomUUID();
 		final var employee = new Employee()
+			.personId(personId)
 			.employments(List.of(new Employment().isMainEmployment(true)));
 		final var e = assertThrows(ThrowableProblem.class, () -> VerificationUtils.verifyValidEmployment(employee));
 
 		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
-		assertThat(e.getMessage()).isEqualTo(NOT_FOUND.getReasonPhrase() + ": The main employment for the employee lacks event type information.");
+		assertThat(e.getMessage()).isEqualTo(NOT_FOUND.getReasonPhrase()
+			+ ": Creation of checklist not possible for employee with personid %s as the main employment for the employee lacks event type information.".formatted(personId.toString()));
 	}
 
 	@Test
@@ -104,7 +107,8 @@ class VerificationUtilsTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> VerificationUtils.verifyValidEmployment(employee));
 
 		assertThat(e.getStatus()).isEqualTo(NOT_ACCEPTABLE);
-		assertThat(e.getMessage()).isEqualTo(NOT_ACCEPTABLE.getReasonPhrase() + ": Employee with loginname <loginName> does not have a main employment with an employment form that validates for creating an employee checklist.");
+		assertThat(e.getMessage()).isEqualTo(NOT_ACCEPTABLE.getReasonPhrase()
+			+ ": Creation of checklist not possible for employee with loginname <loginName> as the employee does not have a main employment with an employment form that validates for creating an employee checklist.");
 	}
 
 	@Test
@@ -115,7 +119,8 @@ class VerificationUtilsTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> VerificationUtils.verifyValidEmployment(employee));
 
 		assertThat(e.getStatus()).isEqualTo(NOT_ACCEPTABLE);
-		assertThat(e.getMessage()).isEqualTo(NOT_ACCEPTABLE.getReasonPhrase() + ": Employee with loginname <loginName> does not have a main employment with an event type that validates for creating an employee checklist.");
+		assertThat(e.getMessage()).isEqualTo(NOT_ACCEPTABLE.getReasonPhrase()
+			+ ": Creation of checklist not possible for employee with loginname <loginName> as the employee does not have a main employment with an event type that validates for creating an employee checklist.");
 	}
 
 	@Test

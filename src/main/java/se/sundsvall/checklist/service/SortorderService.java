@@ -3,7 +3,6 @@ package se.sundsvall.checklist.service;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static org.springframework.util.CollectionUtils.isEmpty;
 import static se.sundsvall.checklist.service.mapper.SortorderMapper.toSortorderEntities;
 import static se.sundsvall.checklist.service.mapper.SortorderMapper.toSortorderEntity;
 import static se.sundsvall.checklist.service.mapper.SortorderMapper.toTaskItem;
@@ -13,6 +12,7 @@ import static se.sundsvall.checklist.service.util.SortingUtils.sortPhases;
 import static se.sundsvall.checklist.service.util.SortingUtils.sortTasks;
 
 import generated.se.sundsvall.mdviewer.Organization;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -104,7 +104,7 @@ public class SortorderService {
 	 */
 	public List<Checklist> applySortingToChecklists(final String municipalityId, final Integer organizationNumber, final List<Checklist> checklists) {
 		ofNullable(findOrganization(mdViewerClient.getCompanies().iterator(), organizationNumber))
-			.map(org -> findClosestCustomSort(municipalityId, org))
+			.map(org -> aggregateCustomSorts(municipalityId, org))
 			.ifPresent(customSort -> recalculateSortorder(checklists, customSort));
 
 		return checklists;
@@ -139,7 +139,7 @@ public class SortorderService {
 	 */
 	public List<Task> applySortingToTasks(final String municipalityId, final Integer organizationNumber, final List<Task> tasks) {
 		return ofNullable(findOrganization(mdViewerClient.getCompanies().iterator(), organizationNumber))
-			.map(org -> findClosestCustomSort(municipalityId, org))
+			.map(org -> aggregateCustomSorts(municipalityId, org))
 			.map(customSort -> {
 				applyCustomSortorder(tasks, customSort);
 				return sortTasks(tasks);
@@ -166,7 +166,7 @@ public class SortorderService {
 			.orElse(companyIterator.hasNext() ? findOrganization(companyIterator, organizationNumber) : null);
 	}
 
-	private List<SortorderEntity> findClosestCustomSort(final String municipalityId, final Organization organization) {
+	private List<SortorderEntity> aggregateCustomSorts(final String municipalityId, final Organization organization) {
 		final var organizations = ofNullable(findOrganization(mdViewerClient.getCompanies().iterator(), organization.getOrgId()))
 			.map(Organization::getCompanyId)
 			.map(mdViewerClient::getOrganizationsForCompany)
@@ -175,7 +175,7 @@ public class SortorderService {
 		return organizations.stream()
 			.filter(item -> item.getOrgId().equals(organization.getOrgId()))
 			.findAny()
-			.map(org -> findCustomSort(municipalityId, org, organizations))
+			.map(org -> addCustomSort(municipalityId, org, organizations, new ArrayList<>()))
 			.orElse(emptyList());
 	}
 
@@ -190,7 +190,7 @@ public class SortorderService {
 	public EmployeeChecklist applySorting(final Optional<EmployeeChecklistEntity> employeeChecklistEntity, final EmployeeChecklist employeeChecklist) {
 		employeeChecklistEntity
 			.map(EmployeeChecklistEntity::getEmployee)
-			.map(this::findClosestCustomSort)
+			.map(this::aggregateCustomSorts)
 			.ifPresent(customSort -> recalculateSortorder(employeeChecklist, customSort));
 
 		return employeeChecklist;
@@ -201,7 +201,7 @@ public class SortorderService {
 		employeeChecklist.setPhases(sortEmployeeChecklistPhases(employeeChecklist.getPhases()));
 	}
 
-	private List<SortorderEntity> findClosestCustomSort(final EmployeeEntity employee) {
+	private List<SortorderEntity> aggregateCustomSorts(final EmployeeEntity employee) {
 		final var organizations = ofNullable(employee.getCompany())
 			.map(OrganizationEntity::getOrganizationNumber)
 			.map(mdViewerClient::getOrganizationsForCompany)
@@ -210,22 +210,28 @@ public class SortorderService {
 		return organizations.stream()
 			.filter(organization -> organization.getOrgId().equals(employee.getDepartment().getOrganizationNumber()))
 			.findAny()
-			.map(employeeHome -> findCustomSort(employee.getDepartment().getMunicipalityId(), employeeHome, organizations))
+			.map(employeeHome -> addCustomSort(employee.getDepartment().getMunicipalityId(), employeeHome, organizations, new ArrayList<>()))
 			.orElse(emptyList());
 	}
 
-	private List<SortorderEntity> findCustomSort(final String municipalityId, final Organization organization, final List<Organization> organizations) {
+	private List<SortorderEntity> addCustomSort(final String municipalityId, final Organization organization, final List<Organization> organizations, final List<SortorderEntity> allCustomSorts) {
+		// Fetch custom sort for the current organization
 		final var customSort = sortorderRepository.findAllByMunicipalityIdAndOrganizationNumber(municipalityId, organization.getOrgId());
 
-		if (isEmpty(customSort) && nonNull(organization.getParentId())) {
+		// Only add new custom sorts, do not overwrite already existant custom sorts collected earlier as sorting order from
+		// lower levels in tree takes precedence
+		allCustomSorts.addAll(ofNullable(customSort).orElse(emptyList()).stream()
+			.filter(t -> allCustomSorts.stream().noneMatch(u -> t.getComponentId().equals(u.getComponentId())))
+			.toList());
 
-			return organizations.stream()
+		// Traverse up in the organizational structure to fetch all custom sorts from starting point in tree up to root level
+		if (nonNull(organization.getParentId())) {
+			organizations.stream()
 				.filter(parent -> parent.getOrgId().equals(organization.getParentId()))
 				.findAny()
-				.map(parent -> findCustomSort(municipalityId, parent, organizations))
-				.orElse(emptyList());
+				.ifPresent(parent -> addCustomSort(municipalityId, parent, organizations, allCustomSorts));
 		}
 
-		return customSort;
+		return allCustomSorts;
 	}
 }

@@ -3,5 +3,6 @@
 	"createdBy": "someUser",
 	"sortOrder": 5,
 	"text": "Descriptive text for second custom task",
+	"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
 	"questionType": "YES_OR_NO_WITH_TEXT"
 }

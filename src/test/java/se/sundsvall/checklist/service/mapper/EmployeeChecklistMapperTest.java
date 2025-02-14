@@ -10,7 +10,6 @@ import static se.sundsvall.checklist.TestObjectFactory.createEmployeeChecklistEn
 import static se.sundsvall.checklist.TestObjectFactory.createPhaseEntity;
 import static se.sundsvall.checklist.TestObjectFactory.createTaskEntity;
 import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.EMPLOYEE;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_EMPLOYEE;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEmployeeChecklist;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEmployeeChecklistPhase;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEmployeeChecklistTask;
@@ -41,6 +40,7 @@ import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
+import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 import se.sundsvall.dept44.requestid.RequestId;
 
 class EmployeeChecklistMapperTest {
@@ -411,6 +411,7 @@ class EmployeeChecklistMapperTest {
 		final var heading = "heading";
 		final var headingReference = "headingReference";
 		final var questionType = QuestionType.COMPLETED_OR_NOT_RELEVANT;
+		final var roleType = RoleType.MANAGER_FOR_NEW_MANAGER;
 		final var sortOrder = 654;
 		final var text = "text";
 		final var createdBy = "someUSer";
@@ -419,6 +420,7 @@ class EmployeeChecklistMapperTest {
 			.withHeading(heading)
 			.withHeadingReference(headingReference)
 			.withQuestionType(questionType)
+			.withRoleType(roleType)
 			.withSortOrder(sortOrder)
 			.withText(text)
 			.withCreatedBy(createdBy)
@@ -433,7 +435,7 @@ class EmployeeChecklistMapperTest {
 		assertThat(entity.getEmployeeChecklist()).isEqualTo(employeeChecklistEntity);
 		assertThat(entity.getPhase()).isEqualTo(phaseEntity);
 		assertThat(entity.getQuestionType()).isEqualTo(questionType);
-		assertThat(entity.getRoleType()).isEqualTo(MANAGER_FOR_NEW_EMPLOYEE);
+		assertThat(entity.getRoleType()).isEqualTo(roleType);
 		assertThat(entity.getSortOrder()).isEqualTo(sortOrder);
 		assertThat(entity.getText()).isEqualTo(text);
 		assertThat(entity.getUpdated()).isNull();
@@ -453,6 +455,7 @@ class EmployeeChecklistMapperTest {
 		final var heading = "heading";
 		final var headingReference = "headingReference";
 		final var questionType = QuestionType.COMPLETED_OR_NOT_RELEVANT;
+		final var roleType = RoleType.NEW_MANAGER;
 		final var sortOrder = 654;
 		final var text = "text";
 		final var updatedBy = "someUser";
@@ -461,6 +464,7 @@ class EmployeeChecklistMapperTest {
 			.withHeading(heading)
 			.withHeadingReference(headingReference)
 			.withQuestionType(questionType)
+			.withRoleType(roleType)
 			.withSortOrder(sortOrder)
 			.withText(text)
 			.withUpdatedBy(updatedBy)
@@ -478,7 +482,7 @@ class EmployeeChecklistMapperTest {
 		assertThat(entity.getEmployeeChecklist()).isNull();
 		assertThat(entity.getPhase()).isNull();
 		assertThat(entity.getQuestionType()).isEqualTo(questionType);
-		assertThat(entity.getRoleType()).isNull();
+		assertThat(entity.getRoleType()).isEqualTo(roleType);
 		assertThat(entity.getSortOrder()).isEqualTo(sortOrder);
 		assertThat(entity.getText()).isEqualTo(text);
 		assertThat(entity.getUpdated()).isNull();
