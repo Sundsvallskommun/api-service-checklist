@@ -6,7 +6,6 @@ import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toCollection;
 import static org.apache.commons.lang3.ObjectUtils.anyNull;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_EMPLOYEE;
 import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toStakeholder;
 
 import java.time.LocalDate;
@@ -116,7 +115,7 @@ public final class EmployeeChecklistMapper {
 				.withEmployeeChecklist(employeeChecklistEntity)
 				.withPhase(phaseEntity)
 				.withQuestionType(r.getQuestionType())
-				.withRoleType(MANAGER_FOR_NEW_EMPLOYEE) // Hardcoded as custom tasks only can exist for the manager to the new employee, never for employee
+				.withRoleType(r.getRoleType())
 				.withSortOrder(r.getSortOrder())
 				.withText(r.getText())
 				.withLastSavedBy(request.getCreatedBy())
@@ -128,6 +127,7 @@ public final class EmployeeChecklistMapper {
 		ofNullable(request.getHeading()).ifPresent(entity::setHeading);
 		ofNullable(request.getHeadingReference()).ifPresent(entity::setHeadingReference);
 		ofNullable(request.getQuestionType()).ifPresent(entity::setQuestionType);
+		ofNullable(request.getRoleType()).ifPresent(entity::setRoleType);
 		ofNullable(request.getSortOrder()).ifPresent(entity::setSortOrder);
 		ofNullable(request.getText()).ifPresent(entity::setText);
 		entity.setLastSavedBy(request.getUpdatedBy());

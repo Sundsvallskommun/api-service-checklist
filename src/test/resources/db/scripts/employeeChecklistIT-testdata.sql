@@ -69,11 +69,8 @@ values ('01ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 5535, 'PHASE', '7272d1fc
        ('06ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 5535, 'TASK', 'd250a20c-a616-4147-bfe0-19a0d12f3df0', 3),
        ('07ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 5535, 'TASK', '0c8b99e9-718b-4c92-9ba3-a49dc29d48b5', 2),
        ('08ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 5535, 'TASK', '056423aa-01a4-4243-ace4-561a6e4cd25f', 1),
-       -- Tasks below is managed by organization 1 (root organization)
-       ('09ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 5535, 'TASK', 'c8c7abe0-5703-4ca1-86d3-74e5ad79b690', 4),
-       ('10ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 5535, 'TASK', 'a76e9920-261f-42fc-9077-14fb1cdb9871', 3),
-       ('11ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 5535, 'TASK', '0da1dfa2-5196-45c2-b605-162a323b9b5e', 2),
-       ('12ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 5535, 'TASK', 'e930c70d-a961-4b71-89b4-935d47db982f', 1);
+       -- Task below is managed by organization 1 (root organization) but the sort has been overridden
+       ('09ca2228-c49e-4e36-91c6-8e3bcb733c14', '2281', 5535, 'TASK', 'a76e9920-261f-42fc-9077-14fb1cdb9871', 1000);
 
 -- --------------------------------------------------------------------------------------
 -- Checklist for organizationNumber 5336 (Sub organization 5336) that has no explicit custom sort 
@@ -85,10 +82,8 @@ insert into checklist (municipality_id, version, created, updated, last_saved_by
 values ('2281', 1, now(), now(), 'someUser', '68849473-59aa-4ae6-b4bd-7f046e857984',
         '11ecf84e-cb11-426f-acd9-081330f28f7c', 'ACTIVE', 'Checklist for Sub organization 5336');
 
-insert into task (sort_order, question_type, created, updated, last_saved_by, heading, heading_reference, id, role_type,
-                  checklist_id,
-                  phase_id,
-                  text) -- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
+insert into task (sort_order, question_type, created, updated, last_saved_by, heading, heading_reference, id, role_type, checklist_id, phase_id, text) 
+-- role_type on task defines if it is the new employee or his/hers boss that is targeted for the task
 values (9, 'YES_OR_NO', now(), now(), 'someUser', 'Description of task for dept 5536',
         'http://www.address-to-click-for-5536-task.web', '368c4c0b-ccb9-443b-9e38-9da52f0b4b95', 'NEW_EMPLOYEE',
         '68849473-59aa-4ae6-b4bd-7f046e857984',

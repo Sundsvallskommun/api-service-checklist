@@ -73,7 +73,7 @@ import se.sundsvall.checklist.service.util.TaskType;
 @Service
 public class EmployeeChecklistService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeChecklistService.class);
-	private static final String ORGANIZATIONAL_STRUCTURE_DATA_NOT_FOUND = "Employee with username %s is missing information regarding organizational structure.";
+	private static final String ORGANIZATIONAL_STRUCTURE_DATA_NOT_FOUND = "Employee with loginname %s is missing information regarding organizational structure.";
 	private static final String CUSTOM_TASK_NOT_FOUND = "Employee checklist with id %s does not contain any custom task with id %s.";
 	private static final String ERROR_READING_PHASE_FROM_EMPLOYEE_CHECKLIST = "Could not read phase with id %s from employee checklist with id %s.";
 

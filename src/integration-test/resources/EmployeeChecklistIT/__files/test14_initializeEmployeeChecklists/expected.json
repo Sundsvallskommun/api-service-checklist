@@ -7,7 +7,7 @@
 		},
 		{
 			"status": 404,
-			"information": "Not Found: Employee with username hen22snu is missing information regarding organizational structure."
+			"information": "Not Found: Employee with loginname hen22snu is missing information regarding organizational structure."
 		},
 		{
 			"status": 404,
@@ -19,11 +19,11 @@
 		},
 		{
 			"status": 406,
-			"information": "Not Acceptable: Employee with loginname cha77tat does not have a main employment with an event type that validates for creating an employee checklist."
+			"information": "Not Acceptable: Creation of checklist not possible for employee with loginname cha77tat as the employee does not have a main employment with an event type that validates for creating an employee checklist."
 		},
 		{
 			"status": 406,
-			"information": "Not Acceptable: Employee with loginname sca88joh does not have a main employment with an employment form that validates for creating an employee checklist."
+			"information": "Not Acceptable: Creation of checklist not possible for employee with loginname sca88joh as the employee does not have a main employment with an employment form that validates for creating an employee checklist."
 		}
 	]
 }

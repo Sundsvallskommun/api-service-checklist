@@ -922,7 +922,7 @@ class EmployeeChecklistServiceTest {
 		// Assert and verify
 		assertThat(response.getSummary()).isEqualTo("1 potential problems occurred when importing 1 employees");
 		assertThat(response.getDetails()).extracting(Detail::getStatus, Detail::getInformation)
-			.containsExactly(tuple(Status.NOT_FOUND, "Not Found: Employee with username loginName is missing information regarding organizational structure."));
+			.containsExactly(tuple(Status.NOT_FOUND, "Not Found: Employee with loginname loginName is missing information regarding organizational structure."));
 
 		verify(employeeIntegrationMock).getNewEmployees("{\"HireDateFrom\":\"%s\"}".formatted(LocalDate.now().minusDays(30).format(ISO_DATE)));
 		verify(employeeIntegrationMock).getEmployeeByEmail(emailAddress);
@@ -990,7 +990,8 @@ class EmployeeChecklistServiceTest {
 		// Assert and verify
 		assertThat(response.getSummary()).isEqualTo("1 potential problems occurred when importing 1 employees");
 		assertThat(response.getDetails()).extracting(Detail::getStatus, Detail::getInformation)
-			.containsExactly(tuple(Status.NOT_ACCEPTABLE, "Not Acceptable: Employee with loginname loginName does not have a main employment with an employment form that validates for creating an employee checklist."));
+			.containsExactly(tuple(Status.NOT_ACCEPTABLE,
+				"Not Acceptable: Creation of checklist not possible for employee with loginname loginName as the employee does not have a main employment with an employment form that validates for creating an employee checklist."));
 
 		verify(employeeIntegrationMock).getNewEmployees("{\"HireDateFrom\":\"%s\"}".formatted(LocalDate.now().minusDays(30).format(ISO_DATE)));
 	}
@@ -1015,7 +1016,8 @@ class EmployeeChecklistServiceTest {
 		// Assert and verify
 		assertThat(response.getSummary()).isEqualTo("1 potential problems occurred when importing 1 employees");
 		assertThat(response.getDetails()).extracting(Detail::getStatus, Detail::getInformation)
-			.containsExactly(tuple(Status.NOT_ACCEPTABLE, "Not Acceptable: Employee with loginname loginName does not have a main employment with an event type that validates for creating an employee checklist."));
+			.containsExactly(tuple(Status.NOT_ACCEPTABLE,
+				"Not Acceptable: Creation of checklist not possible for employee with loginname loginName as the employee does not have a main employment with an event type that validates for creating an employee checklist."));
 
 		verify(employeeIntegrationMock).getNewEmployees("{\"HireDateFrom\":\"%s\"}".formatted(LocalDate.now().minusDays(30).format(ISO_DATE)));
 	}

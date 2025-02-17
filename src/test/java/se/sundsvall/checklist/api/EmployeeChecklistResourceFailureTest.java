@@ -14,6 +14,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.EnumSource.Mode;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -33,6 +35,7 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.Mentor;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
+import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 import se.sundsvall.checklist.service.EmployeeChecklistService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
@@ -248,6 +251,7 @@ class EmployeeChecklistResourceFailureTest {
 		final var body = CustomTaskCreateRequest.builder()
 			.withHeading("heading")
 			.withQuestionType(QuestionType.YES_OR_NO_WITH_TEXT)
+			.withRoleType(RoleType.NEW_EMPLOYEE)
 			.withText("text")
 			.withSortOrder(1)
 			.withCreatedBy("someUser")
@@ -329,8 +333,47 @@ class EmployeeChecklistResourceFailureTest {
 				.containsExactlyInAnyOrder(
 					tuple("heading", "must not be blank"),
 					tuple("questionType", "must not be null"),
+					tuple("roleType", "must be one of [NEW_EMPLOYEE, MANAGER_FOR_NEW_EMPLOYEE]"),
 					tuple("sortOrder", "must not be null"),
 					tuple("createdBy", "must not be blank"));
+		});
+	}
+
+	@ParameterizedTest
+	@EnumSource(value = RoleType.class, names = {
+		"NEW_EMPLOYEE", "MANAGER_FOR_NEW_EMPLOYEE"
+	}, mode = Mode.EXCLUDE)
+	void createCustomTaskInvalidRoleTypes(RoleType roleType) {
+		// Arrange
+		final var path = "/{employeeChecklistId}/phases/{phaseId}/customtasks";
+		final var body = CustomTaskCreateRequest.builder()
+			.withHeading("heading")
+			.withQuestionType(QuestionType.YES_OR_NO_WITH_TEXT)
+			.withRoleType(roleType)
+			.withText("text")
+			.withSortOrder(1)
+			.withCreatedBy("someUser")
+			.build();
+
+		// Act
+		final var response = webTestClient.post()
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID, "phaseId", ID)))
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert and verify
+		assertThat(response).isNotNull().satisfies(r -> {
+			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
+			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
+			assertThat(r.getViolations())
+				.extracting(
+					Violation::getField, Violation::getMessage)
+				.containsExactlyInAnyOrder(
+					tuple("roleType", "must be one of [NEW_EMPLOYEE, MANAGER_FOR_NEW_EMPLOYEE]"));
 		});
 	}
 
@@ -389,6 +432,40 @@ class EmployeeChecklistResourceFailureTest {
 					tuple("updateCustomTask.municipalityId", "not a valid municipality ID"),
 					tuple("updateCustomTask.employeeChecklistId", "not a valid UUID"),
 					tuple("updateCustomTask.taskId", "not a valid UUID"));
+		});
+	}
+
+	@ParameterizedTest
+	@EnumSource(value = RoleType.class, names = {
+		"NEW_EMPLOYEE", "MANAGER_FOR_NEW_EMPLOYEE"
+	}, mode = Mode.EXCLUDE)
+	void updateCustomTaskInvalidRoleTypesAndMissingUpdatedBy(RoleType roleType) {
+		// Arrange
+		final var path = "/{employeeChecklistId}/customtasks/{taskId}";
+		final var body = CustomTaskUpdateRequest.builder()
+			.withRoleType(roleType)
+			.build();
+
+		// Act
+		final var response = webTestClient.patch()
+			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID, "taskId", ID)))
+			.bodyValue(body)
+			.exchange()
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert and verify
+		assertThat(response).isNotNull().satisfies(r -> {
+			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
+			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
+			assertThat(r.getViolations())
+				.extracting(
+					Violation::getField, Violation::getMessage)
+				.containsExactlyInAnyOrder(
+					tuple("roleType", "must be one of [NEW_EMPLOYEE, MANAGER_FOR_NEW_EMPLOYEE]"),
+					tuple("updatedBy", "must not be blank"));
 		});
 	}
 

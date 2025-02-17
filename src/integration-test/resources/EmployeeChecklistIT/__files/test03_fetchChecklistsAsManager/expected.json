@@ -30,7 +30,7 @@
 						"id": "a76e9920-261f-42fc-9077-14fb1cdb9871",
 						"heading": "Description of new employee task",
 						"text": "Text for task to be performed by new employee",
-						"sortOrder": 3,
+						"sortOrder": 1000,
 						"roleType": "NEW_EMPLOYEE",
 						"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
 						"customTask": false,
@@ -49,7 +49,7 @@
 						"id": "c8c7abe0-5703-4ca1-86d3-74e5ad79b690",
 						"heading": "Description of manager to new employee task",
 						"text": "Text for task to be performed by new employees manager",
-						"sortOrder": 4,
+						"sortOrder": 2,
 						"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
 						"questionType": "COMPLETED_OR_NOT_RELEVANT",
 						"customTask": false,
@@ -157,7 +157,7 @@
 						"id": "a76e9920-261f-42fc-9077-14fb1cdb9871",
 						"heading": "Description of new employee task",
 						"text": "Text for task to be performed by new employee",
-						"sortOrder": 3,
+						"sortOrder": 1000,
 						"roleType": "NEW_EMPLOYEE",
 						"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
 						"customTask": false,
@@ -176,7 +176,7 @@
 						"id": "c8c7abe0-5703-4ca1-86d3-74e5ad79b690",
 						"heading": "Description of manager to new employee task",
 						"text": "Text for task to be performed by new employees manager",
-						"sortOrder": 4,
+						"sortOrder": 2,
 						"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
 						"questionType": "COMPLETED_OR_NOT_RELEVANT",
 						"customTask": false,
@@ -306,13 +306,13 @@
 				"name": "Phasename C",
 				"bodyText": "Description of phase C",
 				"timeToComplete": "P1M",
-				"sortOrder": 1,
+				"sortOrder": 2,
 				"tasks": [
 					{
 						"id": "c8c7abe0-5703-4ca1-86d3-74e5ad79b690",
 						"heading": "Description of manager to new employee task",
 						"text": "Text for task to be performed by new employees manager",
-						"sortOrder": 1,
+						"sortOrder": 2,
 						"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
 						"questionType": "COMPLETED_OR_NOT_RELEVANT",
 						"customTask": false,
@@ -325,7 +325,7 @@
 						"id": "0da1dfa2-5196-45c2-b605-162a323b9b5e",
 						"heading": "Description of new manager task",
 						"text": "Text for task to be performed by new manager",
-						"sortOrder": 1,
+						"sortOrder": 3,
 						"roleType": "NEW_MANAGER",
 						"questionType": "YES_OR_NO",
 						"customTask": false,
@@ -337,11 +337,47 @@
 				]
 			},
 			{
+				"id": "d2c92810-3c46-4161-af54-7ae8b3c9d0b3",
+				"name": "Phasename D",
+				"bodyText": "Description of phase D",
+				"timeToComplete": "P1M",
+				"sortOrder": 3,
+				"tasks": [
+					{
+						"id": "e930c70d-a961-4b71-89b4-935d47db982f",
+						"heading": "Description of managers manager task",
+						"headingReference": "http://www.manager-manager-task-address.web",
+						"text": "Text for task to be performed by new managers manager",
+						"sortOrder": 4,
+						"roleType": "MANAGER_FOR_NEW_MANAGER",
+						"questionType": "YES_OR_NO",
+						"customTask": false,
+						"responseText": "Response on manager task performed by manager to new manager",
+						"fulfilmentStatus": "TRUE",
+						"updated": "2024-01-07T12:00:00+01:00",
+						"updatedBy": "aman0agr"
+					},
+					{
+						"id": "a76e9920-261f-42fc-9077-14fb1cdb9871",
+						"heading": "Description of new employee task",
+						"text": "Text for task to be performed by new employee",
+						"sortOrder": 5,
+						"roleType": "NEW_EMPLOYEE",
+						"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
+						"customTask": false,
+						"responseText": "Response on employee task performed by new manager",
+						"fulfilmentStatus": "TRUE",
+						"updated": "2024-01-07T12:00:00+01:00",
+						"updatedBy": "cman1agr"
+					}
+				]
+			},
+			{
 				"id": "3e9780a7-96f3-4d07-80ee-a9634b786a38",
 				"name": "Phasename B",
 				"bodyText": "Description of phase B",
 				"timeToComplete": "P1M",
-				"sortOrder": 2,
+				"sortOrder": 4,
 				"tasks": [
 					{
 						"id": "d250a20c-a616-4147-bfe0-19a0d12f3df0",
@@ -373,42 +409,6 @@
 						"questionType": "YES_OR_NO",
 						"customTask": false,
 						"fulfilmentStatus": "EMPTY"
-					}
-				]
-			},
-			{
-				"id": "d2c92810-3c46-4161-af54-7ae8b3c9d0b3",
-				"name": "Phasename D",
-				"bodyText": "Description of phase D",
-				"timeToComplete": "P1M",
-				"sortOrder": 2,
-				"tasks": [
-					{
-						"id": "a76e9920-261f-42fc-9077-14fb1cdb9871",
-						"heading": "Description of new employee task",
-						"text": "Text for task to be performed by new employee",
-						"sortOrder": 1,
-						"roleType": "NEW_EMPLOYEE",
-						"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
-						"customTask": false,
-						"responseText": "Response on employee task performed by new manager",
-						"fulfilmentStatus": "TRUE",
-						"updated": "2024-01-07T12:00:00+01:00",
-						"updatedBy": "cman1agr"
-					},
-					{
-						"id": "e930c70d-a961-4b71-89b4-935d47db982f",
-						"heading": "Description of managers manager task",
-						"headingReference": "http://www.manager-manager-task-address.web",
-						"text": "Text for task to be performed by new managers manager",
-						"sortOrder": 2,
-						"roleType": "MANAGER_FOR_NEW_MANAGER",
-						"questionType": "YES_OR_NO",
-						"customTask": false,
-						"responseText": "Response on manager task performed by manager to new manager",
-						"fulfilmentStatus": "TRUE",
-						"updated": "2024-01-07T12:00:00+01:00",
-						"updatedBy": "aman0agr"
 					}
 				]
 			}
