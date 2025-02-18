@@ -1,0 +1,58 @@
+[
+	{
+		"organizationId": "e3384913-a269-40c8-a7de-66800b2c35b2",
+		"isLeafLevel": false,
+		"responsibilityCode": null,
+		"companyId": 1,
+		"orgName": "Sundsvalls kommun",
+		"treeLevel": 1,
+		"orgNameShort": "Sundsvalls kommun",
+		"abbreviation": null,
+		"concatAbbreviation": null,
+		"orgId": 13,
+		"parentId": null,
+		"responsibilityCodePartList": null
+	},
+	{
+		"organizationId": "f81f59fd-fff6-4c4f-86f6-184b6e806c57",
+		"isLeafLevel": false,
+		"responsibilityCode": "2",
+		"companyId": 1,
+		"orgName": "Sundsvall API Stuga",
+		"treeLevel": 2,
+		"orgNameShort": "Individ och arbetsmarknadsförv",
+		"abbreviation": "IAF",
+		"concatAbbreviation": null,
+		"orgId": 1234,
+		"parentId": 13,
+		"responsibilityCodePartList": null
+	},
+	{
+		"organizationId": "c6d75f7e-ec9a-4c17-950a-e44ee7e140b6",
+		"isLeafLevel": true,
+		"responsibilityCode": "27",
+		"companyId": 1,
+		"orgName": "Sundsvall API Stuga A",
+		"treeLevel": 3,
+		"orgNameShort": "Barn unga och familj",
+		"abbreviation": "BUF",
+		"concatAbbreviation": null,
+		"orgId": 123,
+		"parentId": 1234,
+		"responsibilityCodePartList": null
+	},
+	{
+		"organizationId": "c6d75f7e-ec9a-4c17-950a-e44ee7e140b6",
+		"isLeafLevel": true,
+		"responsibilityCode": "27",
+		"companyId": 1,
+		"orgName": "Sundsvall API Stuga B",
+		"treeLevel": 3,
+		"orgNameShort": "Barn unga och familj",
+		"abbreviation": "BUF",
+		"concatAbbreviation": null,
+		"orgId": 321,
+		"parentId": 1234,
+		"responsibilityCodePartList": null
+	}
+]

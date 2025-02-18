@@ -7,12 +7,20 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.checklist.TestObjectFactory.createChecklistEntity;
+import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.EMPLOYEE;
+import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.MANAGER;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_EMPLOYEE;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_MANAGER;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.NEW_EMPLOYEE;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.NEW_MANAGER;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,9 +31,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.zalando.problem.ThrowableProblem;
+import se.sundsvall.checklist.api.model.EmployeeChecklist;
+import se.sundsvall.checklist.api.model.EmployeeChecklistPhase;
+import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
+import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
+import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
+import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.integration.db.model.enums.LifeCycle;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 import se.sundsvall.checklist.integration.db.model.enums.RoleType;
@@ -256,5 +270,104 @@ class ChecklistUtilsTest {
 
 		verify(objectMapperMock).writeValueAsString(entity);
 		verifyNoMoreInteractions(objectMapperMock);
+	}
+
+	@Test
+	void initializeWithEmptyFulfilmentForNullValues() {
+		assertThat(ChecklistUtils.initializeWithEmptyFulfilment(EmployeeChecklist.builder().build()).getPhases()).isNullOrEmpty();
+		assertThat(ChecklistUtils.initializeWithEmptyFulfilment(EmployeeChecklist.builder()
+			.withPhases(List.of(EmployeeChecklistPhase.builder().build())).build()).getPhases()).hasSize(1);
+		assertThat(ChecklistUtils.initializeWithEmptyFulfilment(EmployeeChecklist.builder()
+			.withPhases(List.of(EmployeeChecklistPhase.builder().build())).build()).getPhases().getFirst().getTasks()).isNullOrEmpty();
+	}
+
+	@Test
+	void initializeWithEmptyFulfilment() {
+		final var tasks = new ArrayList<EmployeeChecklistTask>();
+		tasks.addAll(List.of(EmployeeChecklistTask.builder().build()));
+		tasks.add(null);
+
+		final var checklist = EmployeeChecklist.builder()
+			.withPhases(List.of(EmployeeChecklistPhase.builder()
+				.withTasks(tasks)
+				.build()))
+			.build();
+
+		final var result = ChecklistUtils.initializeWithEmptyFulfilment(checklist);
+
+		assertThat(result.getPhases().stream().map(EmployeeChecklistPhase::getTasks).flatMap(List::stream).toList()).hasSize(2).satisfiesExactlyInAnyOrder(task -> {
+			assertThat(task).isNull();
+		}, task -> {
+			assertThat(task).isNotNull().hasFieldOrPropertyWithValue("fulfilmentStatus", FulfilmentStatus.EMPTY);
+		});
+	}
+
+	@Test
+	void removeObsoleteTasksWhenEmployee() {
+		final var entity = Optional.of(EmployeeChecklistEntity.builder().withEmployee(EmployeeEntity.builder().withEmploymentPosition(EMPLOYEE).build()).build());
+		final var checklist = buildChecklist();
+
+		final var result = ChecklistUtils.removeObsoleteTasks(checklist, entity);
+
+		assertThat(result.getPhases()).hasSize(1);
+		assertThat(result.getPhases().getFirst().getTasks()).hasSize(2).extracting(EmployeeChecklistTask::getRoleType).satisfiesExactlyInAnyOrder(r -> {
+			assertThat(r).isEqualTo(NEW_EMPLOYEE);
+		}, r -> {
+			assertThat(r).isEqualTo(MANAGER_FOR_NEW_EMPLOYEE);
+		});
+	}
+
+	@Test
+	void removeObsoleteTasksWhenManager() {
+		final var entity = Optional.of(EmployeeChecklistEntity.builder().withEmployee(EmployeeEntity.builder().withEmploymentPosition(MANAGER).build()).build());
+		final var checklist = buildChecklist();
+
+		final var result = ChecklistUtils.removeObsoleteTasks(checklist, entity);
+
+		assertThat(result.getPhases()).hasSize(2);
+		assertThat(result.getPhases().getFirst().getTasks()).hasSize(4).extracting(EmployeeChecklistTask::getRoleType).satisfiesExactlyInAnyOrder(r -> {
+			assertThat(r).isEqualTo(NEW_EMPLOYEE);
+		}, r -> {
+			assertThat(r).isEqualTo(MANAGER_FOR_NEW_EMPLOYEE);
+		}, r -> {
+			assertThat(r).isEqualTo(NEW_MANAGER);
+		}, r -> {
+			assertThat(r).isEqualTo(MANAGER_FOR_NEW_MANAGER);
+		});
+		assertThat(result.getPhases().getLast().getTasks()).hasSize(2).extracting(EmployeeChecklistTask::getRoleType).satisfiesExactlyInAnyOrder(r -> {
+			assertThat(r).isEqualTo(NEW_MANAGER);
+		}, r -> {
+			assertThat(r).isEqualTo(MANAGER_FOR_NEW_MANAGER);
+		});
+	}
+
+	private static EmployeeChecklist buildChecklist() {
+		return EmployeeChecklist.builder().withPhases(new ArrayList<>(List.of(
+			EmployeeChecklistPhase.builder()
+				.withTasks(new ArrayList<>(List.of(
+					EmployeeChecklistTask.builder()
+						.withRoleType(NEW_MANAGER)
+						.build(),
+					EmployeeChecklistTask.builder()
+						.withRoleType(MANAGER_FOR_NEW_MANAGER)
+						.build(),
+					EmployeeChecklistTask.builder()
+						.withRoleType(NEW_EMPLOYEE)
+						.build(),
+					EmployeeChecklistTask.builder()
+						.withRoleType(MANAGER_FOR_NEW_EMPLOYEE)
+						.build()
+
+				)))
+				.build(),
+			EmployeeChecklistPhase.builder()
+				.withTasks(new ArrayList<>(List.of(
+					EmployeeChecklistTask.builder()
+						.withRoleType(NEW_MANAGER)
+						.build(),
+					EmployeeChecklistTask.builder()
+						.withRoleType(MANAGER_FOR_NEW_MANAGER)
+						.build())))
+				.build()))).build();
 	}
 }

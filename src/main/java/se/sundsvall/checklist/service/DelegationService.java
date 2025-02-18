@@ -4,6 +4,7 @@ import static org.zalando.problem.Status.CONFLICT;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.buildUuidEmployeeFilter;
 import static se.sundsvall.checklist.service.mapper.DelegateMapper.toDelegateEntity;
+import static se.sundsvall.checklist.service.util.ChecklistUtils.removeObsoleteTasks;
 import static se.sundsvall.checklist.service.util.EmployeeChecklistDecorator.decorateWithCustomTasks;
 import static se.sundsvall.checklist.service.util.EmployeeChecklistDecorator.decorateWithFulfilment;
 import static se.sundsvall.checklist.service.util.ServiceUtils.fetchEntity;
@@ -25,6 +26,7 @@ import se.sundsvall.checklist.integration.db.repository.DelegateRepository;
 import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistRepository;
 import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
 import se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper;
+import se.sundsvall.checklist.service.util.ChecklistUtils;
 
 @Service
 public class DelegationService {
@@ -36,6 +38,7 @@ public class DelegationService {
 	private final DelegateRepository delegateRepository;
 	private final EmployeeIntegration employeeIntegration;
 	private final EmployeeChecklistIntegration employeeChecklistIntegration;
+	private final SortorderService sortorderService;
 	private final CustomTaskRepository customTaskRepository;
 	private final Duration employeeInformationUpdateInterval;
 
@@ -43,6 +46,7 @@ public class DelegationService {
 		final DelegateRepository delegateRepository,
 		final EmployeeIntegration employeeIntegration,
 		final EmployeeChecklistIntegration employeeChecklistIntegration,
+		final SortorderService sortorderService,
 		final CustomTaskRepository customTaskRepository,
 		@Value("${checklist.employee-update-interval}") Duration employeeInformationUpdateInterval) {
 
@@ -50,6 +54,7 @@ public class DelegationService {
 		this.delegateRepository = delegateRepository;
 		this.employeeIntegration = employeeIntegration;
 		this.employeeChecklistIntegration = employeeChecklistIntegration;
+		this.sortorderService = sortorderService;
 		this.customTaskRepository = customTaskRepository;
 		this.employeeInformationUpdateInterval = employeeInformationUpdateInterval;
 	}
@@ -86,7 +91,10 @@ public class DelegationService {
 			.map(this::handleUpdatedEmployeeInformation)
 			.map(EmployeeChecklistMapper::toEmployeeChecklist)
 			.map(ob -> decorateWithCustomTasks(ob, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(ob.getId(), municipalityId)))
+			.map(ob -> removeObsoleteTasks(ob, fetchEntity(delegatedEmployeeChecklistEntities, ob.getId())))
+			.map(ChecklistUtils::initializeWithEmptyFulfilment)
 			.map(ob -> decorateWithFulfilment(ob, fetchEntity(delegatedEmployeeChecklistEntities, ob.getId())))
+			.map(ob -> sortorderService.applySorting(fetchEntity(delegatedEmployeeChecklistEntities, ob.getId()), ob))
 			.map(this::decorateWithDelegateInformation)
 			.toList();
 	}
