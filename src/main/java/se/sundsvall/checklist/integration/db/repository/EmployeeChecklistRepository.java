@@ -35,6 +35,8 @@ public interface EmployeeChecklistRepository extends JpaRepository<EmployeeCheck
 
 	Optional<EmployeeChecklistEntity> findByIdAndChecklistsMunicipalityId(String id, String municipalityId);
 
+	List<EmployeeChecklistEntity> findAllByChecklistsTasksId(String taskId);
+
 	default Page<EmployeeChecklistEntity> findAllByOngoingEmployeeChecklistParameters(final OngoingEmployeeChecklistParameters parameters, final Pageable pageable) {
 		return findAll(Specification
 			.where(withMunicipalityId(parameters.getMunicipalityId()))

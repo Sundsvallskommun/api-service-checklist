@@ -55,6 +55,9 @@ class DelegationServiceTest {
 	@Mock
 	private CustomTaskRepository mockCustomTaskRepository;
 
+	@Mock
+	private SortorderService mockSortorderService;
+
 	@InjectMocks
 	private DelegationService service;
 
@@ -65,7 +68,7 @@ class DelegationServiceTest {
 
 	@AfterEach
 	void finalAssertsAndVerifications() {
-		verifyNoMoreInteractions(mockEmployeeChecklistRepository, mockEmployeeIntegration, mockDelegateRepository, mockEmployeeChecklistIntegration, mockCustomTaskRepository);
+		verifyNoMoreInteractions(mockEmployeeChecklistRepository, mockEmployeeIntegration, mockDelegateRepository, mockEmployeeChecklistIntegration, mockCustomTaskRepository, mockSortorderService);
 	}
 
 	@Test
@@ -147,6 +150,7 @@ class DelegationServiceTest {
 		final var delegateEntity = createDelegateEntity();
 
 		when(mockDelegateRepository.findAllByUsername(username)).thenReturn(List.of(delegateEntity));
+		when(mockSortorderService.applySorting(any(), any())).thenAnswer(arg -> arg.getArgument(1));
 
 		final var result = service.fetchDelegatedEmployeeChecklistsByUsername(MUNICIPALITY_ID, username);
 
@@ -156,6 +160,7 @@ class DelegationServiceTest {
 		verify(mockDelegateRepository).findAllByUsername(username);
 		verify(mockCustomTaskRepository).findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(delegateEntity.getEmployeeChecklist().getId(), MUNICIPALITY_ID);
 		verify(mockEmployeeChecklistIntegration).fetchDelegateEmails(delegateEntity.getEmployeeChecklist().getId());
+		verify(mockSortorderService).applySorting(any(), any());
 	}
 
 	@Test
@@ -168,6 +173,7 @@ class DelegationServiceTest {
 
 		when(mockDelegateRepository.findAllByUsername(username)).thenReturn(List.of(delegateEntity));
 		when(mockEmployeeIntegration.getEmployeeInformation(filter)).thenReturn(List.of(employee));
+		when(mockSortorderService.applySorting(any(), any())).thenAnswer(arg -> arg.getArgument(1));
 
 		final var result = service.fetchDelegatedEmployeeChecklistsByUsername(MUNICIPALITY_ID, username);
 
@@ -179,6 +185,7 @@ class DelegationServiceTest {
 		verify(mockEmployeeChecklistIntegration).updateEmployeeInformation(delegateEntity.getEmployeeChecklist().getEmployee(), employee);
 		verify(mockCustomTaskRepository).findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(delegateEntity.getEmployeeChecklist().getId(), MUNICIPALITY_ID);
 		verify(mockEmployeeChecklistIntegration).fetchDelegateEmails(delegateEntity.getEmployeeChecklist().getId());
+		verify(mockSortorderService).applySorting(any(), any());
 	}
 
 	@Test

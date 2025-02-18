@@ -7,11 +7,8 @@ import static org.apache.commons.lang3.ObjectUtils.notEqual;
 import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static org.zalando.problem.Status.OK;
-import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.EMPLOYEE;
-import static se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus.EMPTY;
 import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_EMPLOYEE;
 import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_MANAGER;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.NEW_MANAGER;
 import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.buildDefaultNewEmployeeFilter;
 import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.buildUuidEmployeeFilter;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toCustomTask;
@@ -20,6 +17,7 @@ import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toIn
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.updateCustomTaskEntity;
 import static se.sundsvall.checklist.service.mapper.PagingAndSortingMapper.toPageRequest;
 import static se.sundsvall.checklist.service.mapper.PagingAndSortingMapper.toPagingMetaData;
+import static se.sundsvall.checklist.service.util.ChecklistUtils.removeObsoleteTasks;
 import static se.sundsvall.checklist.service.util.EmployeeChecklistDecorator.decorateWithCustomTasks;
 import static se.sundsvall.checklist.service.util.EmployeeChecklistDecorator.decorateWithFulfilment;
 import static se.sundsvall.checklist.service.util.ServiceUtils.calculateTaskType;
@@ -68,6 +66,7 @@ import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
 import se.sundsvall.checklist.integration.mdviewer.MDViewerClient;
 import se.sundsvall.checklist.service.OrganizationTree.OrganizationLine;
 import se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper;
+import se.sundsvall.checklist.service.util.ChecklistUtils;
 import se.sundsvall.checklist.service.util.TaskType;
 
 @Service
@@ -111,7 +110,7 @@ public class EmployeeChecklistService {
 			.map(EmployeeChecklistMapper::toEmployeeChecklist)
 			.map(list -> decorateWithCustomTasks(list, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(list.getId(), municipalityId)))
 			.map(list -> removeObsoleteTasks(list, employeeChecklist))
-			.map(this::initializeWithEmptyFulfilment)
+			.map(ChecklistUtils::initializeWithEmptyFulfilment)
 			.map(list -> decorateWithFulfilment(list, employeeChecklist))
 			.map(this::decorateWithDelegateInformation)
 			.map(this::removeManagerTasks)
@@ -128,20 +127,11 @@ public class EmployeeChecklistService {
 			.map(EmployeeChecklistMapper::toEmployeeChecklist)
 			.map(list -> decorateWithCustomTasks(list, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(list.getId(), municipalityId)))
 			.map(list -> removeObsoleteTasks(list, fetchEntity(employeeChecklists, list.getId())))
-			.map(this::initializeWithEmptyFulfilment)
+			.map(ChecklistUtils::initializeWithEmptyFulfilment)
 			.map(list -> decorateWithFulfilment(list, fetchEntity(employeeChecklists, list.getId())))
-			.map(this::decorateWithDelegateInformation)
 			.map(list -> sortorderService.applySorting(fetchEntity(employeeChecklists, list.getId()), list))
+			.map(this::decorateWithDelegateInformation)
 			.toList();
-	}
-
-	private EmployeeChecklist initializeWithEmptyFulfilment(final EmployeeChecklist employeeChecklist) {
-		ofNullable(employeeChecklist.getPhases()).orElse(emptyList()).stream()
-			.map(EmployeeChecklistPhase::getTasks)
-			.flatMap(List::stream)
-			.forEach(task -> task.setFulfilmentStatus(EMPTY));
-
-		return employeeChecklist;
 	}
 
 	private EmployeeChecklistEntity handleUpdatedEmployeeInformation(final EmployeeChecklistEntity employeeChecklist) {
@@ -164,18 +154,6 @@ public class EmployeeChecklistService {
 		employeeChecklist.getPhases().forEach(ph -> ph.getTasks().removeIf(
 			task -> MANAGER_FOR_NEW_EMPLOYEE == task.getRoleType() || MANAGER_FOR_NEW_MANAGER == task.getRoleType()));
 		employeeChecklist.getPhases().removeIf(ph -> CollectionUtils.isEmpty(ph.getTasks()));
-
-		return employeeChecklist;
-	}
-
-	private EmployeeChecklist removeObsoleteTasks(final EmployeeChecklist employeeChecklist, final Optional<EmployeeChecklistEntity> employeeChecklistEntity) {
-		employeeChecklistEntity
-			.filter(entity -> EMPLOYEE == entity.getEmployee().getEmploymentPosition())
-			.ifPresent(entity -> {
-				employeeChecklist.getPhases().forEach(ph -> ph.getTasks().removeIf(
-					task -> NEW_MANAGER == task.getRoleType() || MANAGER_FOR_NEW_MANAGER == task.getRoleType()));
-				employeeChecklist.getPhases().removeIf(ph -> CollectionUtils.isEmpty(ph.getTasks()));
-			});
 
 		return employeeChecklist;
 	}

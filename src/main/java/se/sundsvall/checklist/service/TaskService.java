@@ -23,6 +23,7 @@ import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
+import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistRepository;
 import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
 import se.sundsvall.checklist.integration.db.repository.TaskRepository;
 
@@ -36,6 +37,7 @@ public class TaskService {
 	private final TaskRepository taskRepository;
 	private final ChecklistRepository checklistRepository;
 	private final PhaseRepository phaseRepository;
+	private final EmployeeChecklistRepository employeeChecklistRepository;
 	private final SortorderService sortorderService;
 	private final EventService eventService;
 
@@ -43,12 +45,14 @@ public class TaskService {
 		final TaskRepository taskRepository,
 		final ChecklistRepository checklistRepository,
 		final PhaseRepository phaseRepository,
+		final EmployeeChecklistRepository employeeChecklistRepository,
 		final SortorderService sortorderService,
 		final EventService eventService) {
 
 		this.taskRepository = taskRepository;
 		this.checklistRepository = checklistRepository;
 		this.phaseRepository = phaseRepository;
+		this.employeeChecklistRepository = employeeChecklistRepository;
 		this.sortorderService = sortorderService;
 		this.eventService = eventService;
 	}
@@ -104,9 +108,13 @@ public class TaskService {
 		verifyPhaseIsPresent(municipalityId, phaseId); // This is here to verify that sent in phase id is present in database
 		final var task = getTaskInPhase(checklist, phaseId, taskId);
 
-		checklist.getTasks().remove(task); // The task needs to be removed from the checklist to be able to delete it
+		// // Remove all present fulfilments referring to task
+		employeeChecklistRepository.findAllByChecklistsTasksId(taskId)
+			.forEach(employeeChecklist -> employeeChecklist.getFulfilments().removeIf(fulfilment -> fulfilment.getTask() == task));
+		checklist.getTasks().remove(task); // Remove checklist refererence to task
 		taskRepository.delete(task);
 		sortorderService.deleteSortorderItem(taskId);
+
 		eventService.createChecklistEvent(DELETE, TASK_REMOVED.formatted(task.getHeading(), task.getPhase().getName()), checklist, userId);
 	}
 
