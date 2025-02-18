@@ -17,6 +17,8 @@ import static se.sundsvall.checklist.service.EventService.TASK_ADDED;
 import static se.sundsvall.checklist.service.EventService.TASK_CHANGED;
 
 import generated.se.sundsvall.eventlog.EventType;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
@@ -33,9 +35,12 @@ import se.sundsvall.checklist.api.model.Task;
 import se.sundsvall.checklist.api.model.TaskCreateRequest;
 import se.sundsvall.checklist.api.model.TaskUpdateRequest;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
+import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
+import se.sundsvall.checklist.integration.db.model.FulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
+import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistRepository;
 import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
 import se.sundsvall.checklist.integration.db.repository.TaskRepository;
 
@@ -51,6 +56,9 @@ class TaskServiceTest {
 	private ChecklistEntity checklistEntity;
 	private PhaseEntity phaseEntity;
 	private TaskEntity taskEntity;
+
+	@Mock
+	private EmployeeChecklistRepository mockEmployeeChecklistRepository;
 
 	@Mock
 	private ChecklistRepository mockChecklistRepository;
@@ -279,18 +287,28 @@ class TaskServiceTest {
 
 	@Test
 	void deleteTask() {
+		final var employeeChecklist = EmployeeChecklistEntity.builder()
+			.withChecklists(List.of(checklistEntity))
+			.withFulfilments(new ArrayList<>(List.of(FulfilmentEntity.builder()
+				.withTask(taskEntity)
+				.build())))
+			.build();
+
 		when(mockChecklistRepository.findByIdAndMunicipalityId(checklistEntity.getId(), MUNICIPALITY_ID)).thenReturn(Optional.of(checklistEntity));
 		when(mockPhaseRepository.existsByIdAndMunicipalityId(phaseEntity.getId(), MUNICIPALITY_ID)).thenReturn(true);
 		doNothing().when(eventServiceMock).createChecklistEvent(EventType.DELETE, EventService.TASK_REMOVED.formatted(taskEntity.getHeading(), phaseEntity.getName()), checklistEntity, USER_ID);
+		when(mockEmployeeChecklistRepository.findAllByChecklistsTasksId(taskEntity.getId())).thenReturn(List.of(employeeChecklist));
 
 		taskService.deleteTask(MUNICIPALITY_ID, checklistEntity.getId(), phaseEntity.getId(), taskEntity.getId(), USER_ID);
 
 		verify(mockChecklistRepository).findByIdAndMunicipalityId(checklistEntity.getId(), MUNICIPALITY_ID);
 		verify(mockPhaseRepository).existsByIdAndMunicipalityId(phaseEntity.getId(), MUNICIPALITY_ID);
+		verify(mockEmployeeChecklistRepository).findAllByChecklistsTasksId(taskEntity.getId());
 		verify(mockSortorderService).deleteSortorderItem(taskEntity.getId());
 		verify(mockTaskRepository).delete(taskEntityCaptor.capture());
 		verify(eventServiceMock).createChecklistEvent(EventType.DELETE, EventService.TASK_REMOVED.formatted(taskEntity.getHeading(), phaseEntity.getName()), checklistEntity, USER_ID);
 
+		assertThat(employeeChecklist.getFulfilments()).isNullOrEmpty();
 		assertThat(taskEntityCaptor.getValue()).satisfies(entity -> {
 			assertThat(entity.getId()).isEqualTo(taskEntity.getId());
 		});
@@ -336,7 +354,7 @@ class TaskServiceTest {
 
 	@AfterEach
 	void verifyNoMoreInteraction() {
-		verifyNoMoreInteractions(mockChecklistRepository, mockPhaseRepository, mockTaskRepository, mockSortorderService);
+		verifyNoMoreInteractions(mockChecklistRepository, mockPhaseRepository, mockTaskRepository, mockSortorderService, mockEmployeeChecklistRepository);
 	}
 
 }
