@@ -318,7 +318,7 @@ public class EmployeeChecklistService {
 	}
 
 	private EmployeeChecklistResponse createEmployeeChecklist(final String municipalityId, final List<Employee> employees, final boolean verifyValidEmployment) {
-		final var emplyeeChecklistResponse = new EmployeeChecklistResponse();
+		final var employeeChecklistResponse = new EmployeeChecklistResponse();
 
 		employees.forEach(employee -> {
 			try {
@@ -349,16 +349,16 @@ public class EmployeeChecklistService {
 
 				// Initiate employee checklist
 				final var result = employeeChecklistIntegration.initiateEmployee(municipalityId, employee, employeeOrgTree);
-				emplyeeChecklistResponse.getDetails().add(toDetail(OK, result));
+				employeeChecklistResponse.getDetails().add(toDetail(OK, result));
 			} catch (final ThrowableProblem e) {
-				emplyeeChecklistResponse.getDetails().add(toDetail(e.getStatus(), e.getMessage()));
+				employeeChecklistResponse.getDetails().add(toDetail(e.getStatus(), e.getMessage()));
 			} catch (final Exception e) {
 				LOGGER.error("Exception occurred when creating employee checklist", e);
-				emplyeeChecklistResponse.getDetails().add(toDetail(INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR.getReasonPhrase() + ": " + e.getMessage()));
+				employeeChecklistResponse.getDetails().add(toDetail(INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR.getReasonPhrase() + ": " + e.getMessage()));
 			}
 		});
 
-		return emplyeeChecklistResponse;
+		return employeeChecklistResponse;
 	}
 
 	private EmployeeChecklistResponse buildNoMatchResponse() {
