@@ -174,7 +174,7 @@ class EmployeeChecklistIntegrationTest {
 		final var newManagerId = UUID.randomUUID();
 		final var entity = EmployeeEntity.builder()
 			.withManager(ManagerEntity.builder()
-				.withPersonId(oldManagerId.toString())
+				.withPersonId(oldManagerId)
 				.build())
 			.build();
 		final var employment = new Employment().isMainEmployment(true).manager(new Manager().personId(newManagerId));
