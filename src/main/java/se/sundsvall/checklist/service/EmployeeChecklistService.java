@@ -9,8 +9,6 @@ import static org.zalando.problem.Status.NOT_FOUND;
 import static org.zalando.problem.Status.OK;
 import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_EMPLOYEE;
 import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_MANAGER;
-import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.buildDefaultNewEmployeeFilter;
-import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.buildUuidEmployeeFilter;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toCustomTask;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toDetail;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toInitiationInformation;
@@ -29,6 +27,7 @@ import static se.sundsvall.checklist.service.util.VerificationUtils.verifyValidE
 import generated.se.sundsvall.employee.Employee;
 import generated.se.sundsvall.mdviewer.Organization;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -71,7 +70,10 @@ import se.sundsvall.checklist.service.util.TaskType;
 
 @Service
 public class EmployeeChecklistService {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeChecklistService.class);
+
+	private static final LocalDate DEFAULT_HIRE_DATE_FROM_PARAMETER_VALUE = LocalDate.now().minusDays(30);
 	private static final String ORGANIZATIONAL_STRUCTURE_DATA_NOT_FOUND = "Employee with loginname %s is missing information regarding organizational structure.";
 	private static final String CUSTOM_TASK_NOT_FOUND = "Employee checklist with id %s does not contain any custom task with id %s.";
 	private static final String ERROR_READING_PHASE_FROM_EMPLOYEE_CHECKLIST = "Could not read phase with id %s from employee checklist with id %s.";
@@ -106,7 +108,8 @@ public class EmployeeChecklistService {
 		final var employeeChecklist = employeeChecklistIntegration.fetchOptionalEmployeeChecklist(municipalityId, username);
 
 		return employeeChecklist
-			.map(this::handleUpdatedEmployeeInformation)
+
+			.map(checklist -> handleUpdatedEmployeeInformation(municipalityId, checklist))
 			.map(EmployeeChecklistMapper::toEmployeeChecklist)
 			.map(list -> decorateWithCustomTasks(list, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(list.getId(), municipalityId)))
 			.map(list -> removeObsoleteTasks(list, employeeChecklist))
@@ -122,7 +125,7 @@ public class EmployeeChecklistService {
 
 		return employeeChecklists
 			.stream()
-			.map(this::handleUpdatedEmployeeInformation)
+			.map(checklist -> handleUpdatedEmployeeInformation(municipalityId, checklist))
 			.filter(list -> Objects.equals(username, list.getEmployee().getManager().getUsername())) // After possible update, the checklist might not be handled by sent in username anymore
 			.map(EmployeeChecklistMapper::toEmployeeChecklist)
 			.map(list -> decorateWithCustomTasks(list, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(list.getId(), municipalityId)))
@@ -134,10 +137,9 @@ public class EmployeeChecklistService {
 			.toList();
 	}
 
-	private EmployeeChecklistEntity handleUpdatedEmployeeInformation(final EmployeeChecklistEntity employeeChecklist) {
+	private EmployeeChecklistEntity handleUpdatedEmployeeInformation(final String municipalityId, final EmployeeChecklistEntity employeeChecklist) {
 		if (ofNullable(employeeChecklist.getEmployee().getUpdated()).orElse(OffsetDateTime.MIN).isBefore(OffsetDateTime.now().minus(employeeInformationUpdateInterval))) {
-			final var filter = buildUuidEmployeeFilter(employeeChecklist.getEmployee().getId());
-			employeeIntegration.getEmployeeInformation(filter).stream()
+			employeeIntegration.getEmployeeInformation(municipalityId, employeeChecklist.getEmployee().getId()).stream()
 				.findFirst()
 				.ifPresent(employee -> employeeChecklistIntegration.updateEmployeeInformation(employeeChecklist.getEmployee(), employee));
 		}
@@ -278,10 +280,9 @@ public class EmployeeChecklistService {
 	 * him or her.
 	 */
 	public EmployeeChecklistResponse initiateSpecificEmployeeChecklist(final String municipalityId, final String uuid) {
-		final var filter = buildUuidEmployeeFilter(uuid);
-		LOGGER.info("Fetching employee with filter: {}", filter);
+		LOGGER.info("Fetching employees by municipalityId: {} and personId: {}", municipalityId, uuid);
 
-		final var employees = employeeIntegration.getEmployeeInformation(filter);
+		final var employees = employeeIntegration.getEmployeeInformation(municipalityId, uuid);
 		if (isEmpty(employees)) {
 			return buildNoMatchResponse();
 		}
@@ -293,10 +294,10 @@ public class EmployeeChecklistService {
 	 * Fetch new employees from employee integration and initiate checklists for them.
 	 */
 	public EmployeeChecklistResponse initiateEmployeeChecklists(final String municipalityId) {
-		final var filter = buildDefaultNewEmployeeFilter();
-		LOGGER.info("Fetching new employees with filter: {}", filter);
 
-		final var employees = employeeIntegration.getNewEmployees(filter);
+		LOGGER.info("Fetching new employees by municipalityId: {} and hireDateFrom: {}", municipalityId, DEFAULT_HIRE_DATE_FROM_PARAMETER_VALUE);
+
+		final var employees = employeeIntegration.getNewEmployees(municipalityId, DEFAULT_HIRE_DATE_FROM_PARAMETER_VALUE);
 		if (isEmpty(employees)) {
 			return buildNoMatchResponse();
 		}
@@ -330,7 +331,7 @@ public class EmployeeChecklistService {
 					verifyValidEmployment(employee);
 				}
 
-				final var portalPersonData = employeeIntegration.getEmployeeByEmail(employee.getEmailAddress())
+				final var portalPersonData = employeeIntegration.getEmployeeByEmail(municipalityId, employee.getEmailAddress())
 					.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ORGANIZATIONAL_STRUCTURE_DATA_NOT_FOUND.formatted(employee.getLoginname())));
 
 				// Calculate employee orgtree from person data information (which does not include the root organization)

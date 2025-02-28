@@ -2,8 +2,9 @@ package se.sundsvall.checklist.integration.employee;
 
 import static java.util.Collections.emptyList;
 
-import generated.se.sundsvall.employee.Employee;
+import generated.se.sundsvall.employee.Employeev2;
 import generated.se.sundsvall.employee.PortalPersonData;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -24,9 +25,9 @@ public class EmployeeIntegration {
 		this.employeeClient = employeeClient;
 	}
 
-	public List<Employee> getEmployeeInformation(String filterString) {
+	public List<Employeev2> getEmployeeInformation(String municipalityId, String personId) {
 		try {
-			return employeeClient.getEmployeeInformation(filterString)
+			return employeeClient.getEmployeesByPersonId(municipalityId, personId)
 				.orElse(emptyList());
 		} catch (Exception e) {
 			// We don't really care.
@@ -36,9 +37,9 @@ public class EmployeeIntegration {
 		return emptyList();
 	}
 
-	public List<Employee> getNewEmployees(String filterString) {
+	public List<Employeev2> getNewEmployees(String municipalityId, LocalDate hireDateFrom) {
 		try {
-			return employeeClient.getNewEmployees(filterString)
+			return employeeClient.getNewEmployees(municipalityId, hireDateFrom)
 				.orElse(emptyList());
 		} catch (Exception e) {
 			// We don't really care here either...
@@ -48,9 +49,9 @@ public class EmployeeIntegration {
 		return emptyList();
 	}
 
-	public Optional<PortalPersonData> getEmployeeByEmail(String email) {
+	public Optional<PortalPersonData> getEmployeeByEmail(String municipalityId, String email) {
 		try {
-			return employeeClient.getEmployeeByEmail(email);
+			return employeeClient.getEmployeeByEmail(municipalityId, email);
 		} catch (Exception e) {
 			// And not here..
 			LOG.warn("Couldn't fetch employee by email from employee integration", e);
