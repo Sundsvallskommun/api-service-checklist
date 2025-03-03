@@ -20,8 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.zalando.problem.Problem;
 
 /**
- * Builder for creating a query string for the employee service.
- * Booleans are Boolean objects to allow for null values.
+ * Builder for creating a query string for the employee service. Booleans are Boolean objects to allow for null values.
  */
 @Getter
 @Setter
@@ -106,7 +105,7 @@ public class EmployeeFilterBuilder {
 
 	/**
 	 * Construct a custom JSON filter string.
-	 * 
+	 *
 	 * @return The filter string.
 	 */
 	public String build() {
@@ -120,7 +119,7 @@ public class EmployeeFilterBuilder {
 
 	/**
 	 * Default filter for fetching new employees.
-	 * 
+	 *
 	 * @return default filter string.
 	 */
 	public static String buildDefaultNewEmployeeFilter() {
@@ -130,9 +129,9 @@ public class EmployeeFilterBuilder {
 	}
 
 	/**
-	 * Filter for fetching a specific employee by uuid regardless if the employee is new
-	 * or employed since the beginning of time.
-	 * 
+	 * Filter for fetching a specific employee by uuid regardless if the employee is new or employed since the beginning of
+	 * time.
+	 *
 	 * @param  uuid the unique id of the employee to fetch
 	 * @return      a filter string for provided uuid
 	 */
@@ -147,7 +146,7 @@ public class EmployeeFilterBuilder {
 
 	/**
 	 * Get default Builder to be able to add more filters.
-	 * 
+	 *
 	 * @return
 	 */
 	public static EmployeeFilterBuilder getDefaultNewEmployeeFilterBuilder() {
