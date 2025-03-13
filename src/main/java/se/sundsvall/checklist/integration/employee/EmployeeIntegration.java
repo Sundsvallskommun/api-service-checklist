@@ -1,6 +1,8 @@
 package se.sundsvall.checklist.integration.employee;
 
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
 
 import generated.se.sundsvall.employee.PortalPersonData;
 import java.time.LocalDate;
@@ -41,7 +43,7 @@ public class EmployeeIntegration {
 
 	public List<Employee> getNewEmployees(String municipalityId, LocalDate hireDateFrom) {
 		try {
-			return employeeClient.getNewEmployees(municipalityId, hireDateFrom).orElse(emptyList())
+			return employeeClient.getNewEmployees(municipalityId, ofNullable(hireDateFrom).map(d -> d.format(ISO_LOCAL_DATE)).orElse(null)).orElse(emptyList())
 				.stream()
 				.map(EmployeeMapper::toEmployee)
 				.toList();

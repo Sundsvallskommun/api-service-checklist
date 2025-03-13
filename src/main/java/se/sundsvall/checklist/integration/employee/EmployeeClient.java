@@ -8,7 +8,6 @@ import generated.se.sundsvall.employee.Employeev2;
 import generated.se.sundsvall.employee.NewEmployee;
 import generated.se.sundsvall.employee.PortalPersonData;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.cache.annotation.Cacheable;
@@ -44,7 +43,7 @@ public interface EmployeeClient {
 	@GetMapping(path = "/{municipalityId}/newemployments", produces = APPLICATION_JSON_VALUE)
 	Optional<List<NewEmployee>> getNewEmployees(
 		@PathVariable("municipalityId") String municipalityId,
-		@RequestParam(name = "HireDateFrom") LocalDate hireDateFrom);
+		@RequestParam(name = "HireDateFrom") String hireDateFrom);
 
 	/**
 	 * Get a specific employee by email

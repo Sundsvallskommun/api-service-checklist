@@ -1,5 +1,6 @@
 package se.sundsvall.checklist.integration.employee;
 
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -68,7 +69,20 @@ class EmployeeIntegrationTest {
 
 		assertThat(employeeInformation).hasSize(1);
 		assertThat(employeeInformation.getFirst().getPersonId()).isEqualTo(uuid.toString());
-		verify(employeeClientMock).getNewEmployees(MUNICIPALITY_ID, HIRE_DATE_FROM);
+		verify(employeeClientMock).getNewEmployees(MUNICIPALITY_ID, HIRE_DATE_FROM.format(ISO_LOCAL_DATE));
+	}
+
+	@Test
+	void getNewEmployees_withHireDateFromNull() {
+		final var employees = List.of(TestObjectFactory.generateNewEmployee(uuid));
+
+		when(employeeClientMock.getNewEmployees(any(), any())).thenReturn(Optional.of(employees));
+
+		final var employeeInformation = employeeIntegration.getNewEmployees(MUNICIPALITY_ID, null);
+
+		assertThat(employeeInformation).hasSize(1);
+		assertThat(employeeInformation.getFirst().getPersonId()).isEqualTo(uuid.toString());
+		verify(employeeClientMock).getNewEmployees(MUNICIPALITY_ID, null);
 	}
 
 	@Test
@@ -78,7 +92,7 @@ class EmployeeIntegrationTest {
 		final var employeeInformation = employeeIntegration.getNewEmployees(MUNICIPALITY_ID, HIRE_DATE_FROM);
 
 		assertThat(employeeInformation).isEmpty();
-		verify(employeeClientMock).getNewEmployees(MUNICIPALITY_ID, HIRE_DATE_FROM);
+		verify(employeeClientMock).getNewEmployees(MUNICIPALITY_ID, HIRE_DATE_FROM.format(ISO_LOCAL_DATE));
 	}
 
 	@Test
