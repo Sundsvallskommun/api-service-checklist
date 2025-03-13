@@ -1,8 +1,6 @@
 package se.sundsvall.checklist.service.util;
 
-import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
-import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -11,12 +9,12 @@ import static org.zalando.problem.Status.NOT_ACCEPTABLE;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.checklist.service.util.StringUtils.toReadableString;
 
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.Employment;
 import java.util.ArrayList;
 import java.util.List;
 import org.zalando.problem.Problem;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
+import se.sundsvall.checklist.service.model.Employee;
+import se.sundsvall.checklist.service.model.Employment;
 
 public final class VerificationUtils {
 	private static final String EMPLOYMENT_NOT_VALID_FOR_CHECKLIST = "the employee does not have a main employment with an %s that validates for creating an employee checklist";
@@ -34,21 +32,24 @@ public final class VerificationUtils {
 	 */
 	public static void verifyMandatoryInformation(Employee employee) {
 		final var missingInformation = new ArrayList<String>();
+		final var employment = employee.getMainEmployment();
 
 		if (isNull(employee.getPersonId())) {
 			missingInformation.add("the employee does not have any personid");
 		}
-		if (isBlank(employee.getLoginname())) {
-			missingInformation.add("the employee does not have any loginname");
-		}
-		if (isBlank(employee.getEmailAddress())) {
-			missingInformation.add("the employee does not have any email address");
-		}
 
-		final var employment = getMainEmployment(employee);
 		if (isNull(employment)) {
 			missingInformation.add("the employee does not have any main employment");
 		} else {
+			// Check that there is a loginname and email address connected to the account matching the same companyid as the main
+			// employment has
+			if (isBlank(employee.getLoginname())) {
+				missingInformation.add("the employee does not have any loginname");
+			}
+			if (isBlank(employee.getEmailAddress())) {
+				missingInformation.add("the employee does not have any email address");
+			}
+
 			missingInformation.addAll(verifyMandatoryInformation(employment));
 		}
 
@@ -82,7 +83,7 @@ public final class VerificationUtils {
 	 * @param employee the employee connected to the employment to be checked
 	 */
 	public static void verifyValidEmployment(Employee employee) {
-		final var employment = getMainEmployment(employee);
+		final var employment = employee.getMainEmployment();
 		if (isNull(employment)) {
 			throw Problem.valueOf(NOT_FOUND, buildErrorString(employee, List.of("the employee does not have any main employment")));
 		}
@@ -110,17 +111,10 @@ public final class VerificationUtils {
 	}
 
 	private static String buildErrorString(Employee employee, List<String> errors) {
-		final var prefix = isBlank(employee.getLoginname()) ? "Creation of checklist not possible for employee with personid %s as ".formatted(employee.getPersonId())
-			: "Creation of checklist not possible for employee with loginname %s as "
-				.formatted(employee.getLoginname());
+		final var prefix = isNull(employee.getLoginname())
+			? "Creation of checklist not possible for employee with personid %s as ".formatted(employee.getPersonId())
+			: "Creation of checklist not possible for employee with loginname %s as ".formatted(employee.getLoginname());
 
 		return prefix + toReadableString(errors) + ".";
-	}
-
-	private static Employment getMainEmployment(Employee employee) {
-		return ofNullable(employee.getEmployments()).orElse(emptyList()).stream()
-			.filter(Employment::getIsMainEmployment)
-			.findFirst()
-			.orElse(null);
 	}
 }

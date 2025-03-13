@@ -7,11 +7,11 @@
 		},
 		"method": "GET",
 		"queryParameters": {
-			"filter": {
-				"equalTo": "{\"ShowOnlyNewEmployees\":false,\"PersonId\":\"702323a9-f542-4081-a780-a1396068c8c9\",\"EventInfo\":[\"Mover\",\"Corporate\",\"Company\",\"Rehire,Corporate\"]}"
+			"PersonId": {
+				"equalTo": "702323a9-f542-4081-a780-a1396068c8c9"
 			}
 		},
-		"urlPath": "/api-employee/employments"
+		"urlPath": "/api-employee/2281/employments"
 	},
 	"response": {
 		"headers": {

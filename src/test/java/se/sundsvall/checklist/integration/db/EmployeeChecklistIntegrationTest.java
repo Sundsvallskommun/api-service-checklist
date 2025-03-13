@@ -8,9 +8,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.Employment;
-import generated.se.sundsvall.employee.Manager;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -59,6 +56,9 @@ import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
 import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
 import se.sundsvall.checklist.service.OrganizationTree;
 import se.sundsvall.checklist.service.mapper.OrganizationMapper;
+import se.sundsvall.checklist.service.model.Employee;
+import se.sundsvall.checklist.service.model.Employment;
+import se.sundsvall.checklist.service.model.Manager;
 
 @ExtendWith(MockitoExtension.class)
 class EmployeeChecklistIntegrationTest {
@@ -145,15 +145,24 @@ class EmployeeChecklistIntegrationTest {
 	@Test
 	void updateEmployeeInformationWhenManagerExists() {
 		// Arrange
-		final var managerId = UUID.randomUUID();
+		final var managerId = UUID.randomUUID().toString();
 		final var jobTitle = "jobTitle";
 		final var entity = EmployeeEntity.builder()
 			.withManager(ManagerEntity.builder()
 				.withPersonId(UUID.randomUUID().toString()) // Simulate old manager uuid
 				.build())
 			.build();
-		final var employment = new Employment().title(jobTitle).isMainEmployment(true).manager(new Manager().personId(managerId));
-		final var employee = new Employee().employments(List.of(employment));
+
+		final var employment = Employment.builder()
+			.withTitle(jobTitle)
+			.withIsMainEmployment(true)
+			.withManager(Manager.builder()
+				.withPersonId(managerId)
+				.build())
+			.build();
+		final var employee = Employee.builder()
+			.withMainEmployment(employment)
+			.build();
 
 		when(managerRepositoryMock.findById(managerId.toString())).thenReturn(Optional.of(ManagerEntity.builder().withPersonId(managerId.toString()).build()));
 
@@ -171,14 +180,21 @@ class EmployeeChecklistIntegrationTest {
 	void updateEmployeeInformationWhenManagerNotExists() {
 		// Arrange
 		final var oldManagerId = UUID.randomUUID().toString();
-		final var newManagerId = UUID.randomUUID();
+		final var newManagerId = UUID.randomUUID().toString();
 		final var entity = EmployeeEntity.builder()
 			.withManager(ManagerEntity.builder()
 				.withPersonId(oldManagerId)
 				.build())
 			.build();
-		final var employment = new Employment().isMainEmployment(true).manager(new Manager().personId(newManagerId));
-		final var employee = new Employee().employments(List.of(employment));
+		final var employment = Employment.builder()
+			.withIsMainEmployment(true)
+			.withManager(Manager.builder()
+				.withPersonId(newManagerId)
+				.build())
+			.build();
+		final var employee = Employee.builder()
+			.withMainEmployment(employment)
+			.build();
 
 		// Act
 		integration.updateEmployeeInformation(entity, employee);
@@ -1051,10 +1067,11 @@ class EmployeeChecklistIntegrationTest {
 		// Arrange
 		final var municipalityId = "municipalityId";
 		final var username = "username";
-		final var uuid = UUID.randomUUID();
-		final var employee = new Employee()
-			.loginname(username)
-			.personId(uuid);
+		final var uuid = UUID.randomUUID().toString();
+		final var employee = Employee.builder()
+			.withLoginname(username)
+			.withPersonId(uuid)
+			.build();
 
 		when(employeeRepositoryMock.existsById(uuid.toString())).thenReturn(true);
 
@@ -1071,14 +1088,11 @@ class EmployeeChecklistIntegrationTest {
 		// Arrange
 		final var municipalityId = "municipalityId";
 		final var username = "username";
-		final var uuid = UUID.randomUUID();
-		final var employee = new Employee()
-			.loginname(username)
-			.personId(uuid)
-			.addEmploymentsItem(
-				new Employment()
-					.isMainEmployment(false)
-					.formOfEmploymentId("1"));
+		final var uuid = UUID.randomUUID().toString();
+		final var employee = Employee.builder()
+			.withLoginname(username)
+			.withPersonId(uuid)
+			.build();
 
 		// Act
 		final var e = assertThrows(ThrowableProblem.class, () -> integration.initiateEmployee(municipalityId, employee, null));
@@ -1094,22 +1108,24 @@ class EmployeeChecklistIntegrationTest {
 		// Arrange
 		final var municipalityId = "municipalityId";
 		final var username = "username";
-		final var employeeUuid = UUID.randomUUID();
+		final var employeeUuid = UUID.randomUUID().toString();
 		final var companyId = 2;
 		final var orgId = 2124;
 		final var orgName = "orgName";
-		final var managerUuid = UUID.randomUUID();
-		final var employee = new Employee()
-			.loginname(username)
-			.personId(employeeUuid)
-			.addEmploymentsItem(
-				new Employment()
-					.orgId(orgId)
-					.orgName(orgName)
-					.companyId(companyId)
-					.isMainEmployment(true)
-					.manager(new Manager()
-						.personId(managerUuid)));
+		final var managerUuid = UUID.randomUUID().toString();
+		final var employee = Employee.builder()
+			.withLoginname(username)
+			.withPersonId(employeeUuid)
+			.withMainEmployment(Employment.builder()
+				.withOrgId(orgId)
+				.withOrgName(orgName)
+				.withCompanyId(companyId)
+				.withIsMainEmployment(true)
+				.withManager(Manager.builder()
+					.withPersonId(managerUuid)
+					.build())
+				.build())
+			.build();
 		final var orgTree = OrganizationTree.map("1|" + companyId + "|Root¤2|21|Level-2¤3|212|Level-3¤4|" + orgId + "|" + orgName);
 
 		when(employeeRepositoryMock.save(any())).thenReturn(OrganizationMapper.toEmployeeEntity(employee));
@@ -1134,24 +1150,26 @@ class EmployeeChecklistIntegrationTest {
 		// Arrange
 		final var municipalityId = "municipalityId";
 		final var username = "username";
-		final var employeeUuid = UUID.randomUUID();
+		final var employeeUuid = UUID.randomUUID().toString();
 		final var companyId = 2;
 		final var orgId = 2124;
 		final var orgName = "orgName";
-		final var managerUuid = UUID.randomUUID();
-		final var organizationUuid = UUID.randomUUID();
-		final var employee = new Employee()
-			.loginname(username)
-			.personId(employeeUuid)
-			.isManager(true)
-			.addEmploymentsItem(
-				new Employment()
-					.orgId(orgId)
-					.orgName(orgName)
-					.companyId(companyId)
-					.isMainEmployment(true)
-					.manager(new Manager()
-						.personId(managerUuid)));
+		final var managerUuid = UUID.randomUUID().toString();
+		final var organizationUuid = UUID.randomUUID().toString();
+		final var employee = Employee.builder()
+			.withLoginname(username)
+			.withPersonId(employeeUuid)
+			.withMainEmployment(Employment.builder()
+				.withIsManager(true)
+				.withOrgId(orgId)
+				.withOrgName(orgName)
+				.withCompanyId(companyId)
+				.withIsMainEmployment(true)
+				.withManager(Manager.builder()
+					.withPersonId(managerUuid)
+					.build())
+				.build())
+			.build();
 		final var orgTree = OrganizationTree.map("1|" + companyId + "|Root¤2|21|Level-2¤3|212|Level-3¤4|" + orgId + "|" + orgName);
 		final var organization = OrganizationEntity.builder()
 			.withId(organizationUuid.toString())
@@ -1181,24 +1199,26 @@ class EmployeeChecklistIntegrationTest {
 		// Arrange
 		final var municipalityId = "municipalityId";
 		final var username = "username";
-		final var employeeUuid = UUID.randomUUID();
+		final var employeeUuid = UUID.randomUUID().toString();
 		final var companyId = 2;
 		final var orgId = 2124;
 		final var orgName = "orgName";
-		final var managerUuid = UUID.randomUUID();
-		final var organizationUuid = UUID.randomUUID();
-		final var checklistUuid = UUID.randomUUID();
-		final var employee = new Employee()
-			.loginname(username)
-			.personId(employeeUuid)
-			.addEmploymentsItem(
-				new Employment()
-					.orgId(orgId)
-					.orgName(orgName)
-					.companyId(companyId)
-					.isMainEmployment(true)
-					.manager(new Manager()
-						.personId(managerUuid)));
+		final var managerUuid = UUID.randomUUID().toString();
+		final var organizationUuid = UUID.randomUUID().toString();
+		final var checklistUuid = UUID.randomUUID().toString();
+		final var employee = Employee.builder()
+			.withLoginname(username)
+			.withPersonId(employeeUuid)
+			.withMainEmployment(Employment.builder()
+				.withOrgId(orgId)
+				.withOrgName(orgName)
+				.withCompanyId(companyId)
+				.withIsMainEmployment(true)
+				.withManager(Manager.builder()
+					.withPersonId(managerUuid)
+					.build())
+				.build())
+			.build();
 		final var orgTree = OrganizationTree.map("1|" + companyId + "|Root¤2|21|Level-2¤3|212|Level-3¤4|" + orgId + "|" + orgName);
 		final var organization = OrganizationEntity.builder()
 			.withId(organizationUuid.toString())
@@ -1233,24 +1253,26 @@ class EmployeeChecklistIntegrationTest {
 		// Arrange
 		final var municipalityId = "municipalityId";
 		final var username = "username";
-		final var employeeUuid = UUID.randomUUID();
+		final var employeeUuid = UUID.randomUUID().toString();
 		final var companyId = 2;
 		final var orgId = 2124;
 		final var orgName = "orgName";
-		final var managerUuid = UUID.randomUUID();
-		final var organizationUuid = UUID.randomUUID();
-		final var checklistUuid = UUID.randomUUID();
-		final var employee = new Employee()
-			.loginname(username)
-			.personId(employeeUuid)
-			.addEmploymentsItem(
-				new Employment()
-					.orgId(orgId)
-					.orgName(orgName)
-					.companyId(companyId)
-					.isMainEmployment(true)
-					.manager(new Manager()
-						.personId(managerUuid)));
+		final var managerUuid = UUID.randomUUID().toString();
+		final var organizationUuid = UUID.randomUUID().toString();
+		final var checklistUuid = UUID.randomUUID().toString();
+		final var employee = Employee.builder()
+			.withLoginname(username)
+			.withPersonId(employeeUuid)
+			.withMainEmployment(Employment.builder()
+				.withOrgId(orgId)
+				.withOrgName(orgName)
+				.withCompanyId(companyId)
+				.withIsMainEmployment(true)
+				.withManager(Manager.builder()
+					.withPersonId(managerUuid)
+					.build())
+				.build())
+			.build();
 		final var orgTree = OrganizationTree.map("1|" + companyId + "|Root¤2|21|Level-2¤3|212|Level-3¤4|" + orgId + "|" + orgName);
 		final var checklistEntity = ChecklistEntity.builder()
 			.withId(checklistUuid.toString())
@@ -1298,25 +1320,27 @@ class EmployeeChecklistIntegrationTest {
 		// Arrange
 		final var municipalityId = "municipalityId";
 		final var username = "username";
-		final var employeeUuid = UUID.randomUUID();
+		final var employeeUuid = UUID.randomUUID().toString();
 		final var companyId = 2;
 		final var orgId = 2124;
 		final var orgName = "orgName";
-		final var managerUuid = UUID.randomUUID();
-		final var companyUuid = UUID.randomUUID();
-		final var departmentUuid = UUID.randomUUID();
-		final var checklistUuid = UUID.randomUUID();
-		final var employee = new Employee()
-			.loginname(username)
-			.personId(employeeUuid)
-			.addEmploymentsItem(
-				new Employment()
-					.orgId(orgId)
-					.orgName(orgName)
-					.companyId(companyId)
-					.isMainEmployment(true)
-					.manager(new Manager()
-						.personId(managerUuid)));
+		final var managerUuid = UUID.randomUUID().toString();
+		final var companyUuid = UUID.randomUUID().toString();
+		final var departmentUuid = UUID.randomUUID().toString();
+		final var checklistUuid = UUID.randomUUID().toString();
+		final var employee = Employee.builder()
+			.withLoginname(username)
+			.withPersonId(employeeUuid)
+			.withMainEmployment(Employment.builder()
+				.withOrgId(orgId)
+				.withOrgName(orgName)
+				.withCompanyId(companyId)
+				.withIsMainEmployment(true)
+				.withManager(Manager.builder()
+					.withPersonId(managerUuid)
+					.build())
+				.build())
+			.build();
 		final var orgTree = OrganizationTree.map("1|" + companyId + "|Root¤2|21|Level-2¤3|212|Level-3¤4|" + orgId + "|" + orgName);
 		final var companyChecklistEntity = ChecklistEntity.builder()
 			.withId(checklistUuid.toString())

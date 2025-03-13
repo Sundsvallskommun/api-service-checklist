@@ -1,15 +1,26 @@
 [
 	{
-		"emailAddress": "d.employee@55352.com",
-		"loginname": "demp4loyee",
 		"givenname": "D Emp",
 		"isClassified": false,
-		"isManager": false,
 		"personId": "fe34e2a9-5723-4734-91dc-42a664c5432f",
+		"accounts": [
+			{
+				"loginname": "demp4loyee",
+				"companyId": 1,
+				"emailAddress": "d.employee@55352.com"
+			}
+		],
+		"referenceNumbers": [
+			{
+				"referenceNumber": "1DEMP4LOYEE",
+				"companyId": 1
+			}
+		],
 		"employments": [
 			{
 				"orgName": "Sub organization 55352",
 				"topOrgId": 28,
+				"isManager": false,
 				"manager": {
 					"emailAddress": "f.manager@55352.com",
 					"loginname": "fman4agr",

@@ -3,8 +3,6 @@ package se.sundsvall.checklist.service.util;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.Employment;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -20,6 +18,8 @@ import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.FulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
+import se.sundsvall.checklist.service.model.Employee;
+import se.sundsvall.checklist.service.model.Employment;
 
 class ServiceUtilsTest {
 
@@ -68,36 +68,20 @@ class ServiceUtilsTest {
 	}
 
 	@Test
-	void getMainEmployment() {
+	void getMainEmploymentWhenExists() {
 		// Arrange
-		final var mainEmployment = new Employment().isMainEmployment(true);
-		final var sideEmployment = new Employment();
-		final var employee = new Employee().employments(List.of(sideEmployment, mainEmployment));
+		final var mainEmployment = Employment.builder().withIsMainEmployment(true).build();
+		final var employee = Employee.builder().withMainEmployment(mainEmployment).build();
 
 		// Act and assert
 		assertThat(ServiceUtils.getMainEmployment(employee)).isEqualTo(mainEmployment);
 	}
 
 	@Test
-	void getMainEmploymentWhenMainEmploymentSignalIsNull() {
-		// Arrange
-		final var sideEmployment = new Employment();
+	void getMainEmploymentWhenMainEmploymentIsNull() {
+		new Employment();
 		final var username = "username";
-		final var employee = new Employee().loginname(username).employments(List.of(sideEmployment));
-
-		// Act
-		final var e = assertThrows(ThrowableProblem.class, () -> ServiceUtils.getMainEmployment(employee));
-
-		// Assert
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
-		assertThat(e.getMessage()).isEqualTo("Not Found: No main employment found for employee with loginname %s.".formatted(username));
-	}
-
-	@Test
-	void getMainEmploymentWhenEmploymentsAreNull() {
-		// Arrange
-		final var username = "username";
-		final var employee = new Employee().loginname(username);
+		final var employee = Employee.builder().withLoginname(username).build();
 
 		// Act
 		final var e = assertThrows(ThrowableProblem.class, () -> ServiceUtils.getMainEmployment(employee));

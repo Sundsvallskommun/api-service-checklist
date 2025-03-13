@@ -1,15 +1,35 @@
 [
 	{
-		"emailAddress": "jargon.jedi@noreply.com",
-		"loginname": "jar31jed",
 		"givenname": "Jargon",
 		"isClassified": false,
-		"isManager": true,
 		"personId": "af920bfe-630a-44e9-b2e7-53f092cd0225",
+		"accounts": [
+			{
+				"loginname": "jar31jed",
+				"companyId": 1,
+				"emailAddress": "jargon.jedi@noreply.com"
+			},
+			{
+				"loginname": "jar32jed",
+				"companyId": 2,
+				"emailAddress": "jargon.jedi@company2.com"
+			}
+		],
+		"referenceNumbers": [
+			{
+				"referenceNumber": "1JAR31JED",
+				"companyId": 1
+			},
+			{
+				"referenceNumber": "2JAR32JED",
+				"companyId": 2
+			}
+		],
 		"employments": [
 			{
 				"orgName": "Sub organization 553",
 				"topOrgId": 28,
+				"isManager": true,
 				"manager": {
 					"emailAddress": "top.dog@noreply.com",
 					"loginname": "top34dog",
@@ -29,6 +49,56 @@
 				"isMainEmployment": true,
 				"benefitGroupId": 11,
 				"aid": "123456",
+				"startDate": "2024-01-01T00:00:00"
+			},
+			{
+				"orgName": "Sub organization 553",
+				"topOrgId": 28,
+				"isManager": true,
+				"manager": {
+					"emailAddress": "top.dog@noreply.com",
+					"loginname": "top34dog",
+					"referenceNumber": "TOP1DOG",
+					"givenname": "Top",
+					"personId": "e4218391-49d3-415f-877a-c555105af686",
+					"lastname": "Dog"
+				},
+				"employmentType": 0,
+				"formOfEmploymentId": "1",
+				"topOrgName": "Top organization name",
+				"isManual": false,
+				"title": "Some non main employement that should not interfere",
+				"orgId": 553,
+				"companyId": 1,
+				"paTeam": "AB01",
+				"isMainEmployment": false,
+				"benefitGroupId": 11,
+				"aid": "123456",
+				"startDate": "2024-01-01T00:00:00"
+			},
+			{
+				"orgName": "Unit in company 2",
+				"topOrgId": 456,
+				"isManager": false,
+				"manager": {
+					"emailAddress": "top.cat@noreply.com",
+					"loginname": "top12cat",
+					"referenceNumber": "TOP1CAT",
+					"givenname": "Top",
+					"personId": "6e85bf82-f628-4d54-aba1-3254c97d55a0",
+					"lastname": "Cat"
+				},
+				"employmentType": 0,
+				"formOfEmploymentId": "1",
+				"topOrgName": "Top organization name in company 2",
+				"isManual": false,
+				"title": "Some non main employement in company 2 that should not interfere",
+				"orgId": 4567,
+				"companyId": 2,
+				"paTeam": "AB02",
+				"isMainEmployment": false,
+				"benefitGroupId": 22,
+				"aid": "654321",
 				"startDate": "2024-01-01T00:00:00"
 			}
 		],

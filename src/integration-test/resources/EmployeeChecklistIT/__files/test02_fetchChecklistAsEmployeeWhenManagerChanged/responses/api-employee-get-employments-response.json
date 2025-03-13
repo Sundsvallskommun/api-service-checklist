@@ -1,11 +1,21 @@
 [
 	{
-		"emailAddress": "c.employee@55351.com",
-		"loginname": "cemp3loyee",
 		"givenname": "C Emp",
 		"isClassified": false,
-		"isManager": false,
 		"personId": "702323a9-f542-4081-a780-a1396068c8c9",
+		"accounts": [
+			{
+				"loginname": "cemp3loyee",
+				"companyId": 1,
+				"emailAddress": "c.employee@55351.com"
+			}
+		],
+		"referenceNumbers": [
+			{
+				"referenceNumber": "1CEMP3LOYEE",
+				"companyId": 1
+			}
+		],
 		"employments": [
 			{
 				"orgName": "Sub organization 55351",

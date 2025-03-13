@@ -15,7 +15,6 @@ import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEm
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEmployeeChecklistTask;
 import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toStakeholder;
 
-import generated.se.sundsvall.employee.Manager;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -41,6 +40,7 @@ import se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 import se.sundsvall.checklist.integration.db.model.enums.RoleType;
+import se.sundsvall.checklist.service.model.Manager;
 import se.sundsvall.dept44.requestid.RequestId;
 
 class EmployeeChecklistMapperTest {
@@ -132,15 +132,16 @@ class EmployeeChecklistMapperTest {
 		final var emailAddress = "emailAddress";
 		final var firstName = "firstName";
 		final var lastName = "lastName";
-		final var personId = UUID.randomUUID();
+		final var personId = UUID.randomUUID().toString();
 		final var username = "username";
 
-		final var manager = new Manager()
-			.emailAddress(emailAddress)
-			.givenname(firstName)
-			.lastname(lastName)
-			.personId(personId)
-			.loginname(username);
+		final var manager = Manager.builder()
+			.withEmailAddress(emailAddress)
+			.withGivenname(firstName)
+			.withLastname(lastName)
+			.withPersonId(personId)
+			.withLoginname(username)
+			.build();
 
 		// Act
 		final var entity = OrganizationMapper.toManagerEntity(manager);

@@ -24,7 +24,6 @@ import static se.sundsvall.checklist.service.util.VerificationUtils.verifyMandat
 import static se.sundsvall.checklist.service.util.VerificationUtils.verifyUnlockedEmployeeChecklist;
 import static se.sundsvall.checklist.service.util.VerificationUtils.verifyValidEmployment;
 
-import generated.se.sundsvall.employee.Employee;
 import generated.se.sundsvall.mdviewer.Organization;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -65,6 +64,7 @@ import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
 import se.sundsvall.checklist.integration.mdviewer.MDViewerClient;
 import se.sundsvall.checklist.service.OrganizationTree.OrganizationLine;
 import se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper;
+import se.sundsvall.checklist.service.model.Employee;
 import se.sundsvall.checklist.service.util.ChecklistUtils;
 import se.sundsvall.checklist.service.util.TaskType;
 

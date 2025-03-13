@@ -5,6 +5,7 @@ import static se.sundsvall.checklist.configuration.CacheConfiguration.EMPLOYEE_C
 import static se.sundsvall.checklist.integration.employee.configuration.EmployeeConfiguration.CLIENT_ID;
 
 import generated.se.sundsvall.employee.Employeev2;
+import generated.se.sundsvall.employee.NewEmployee;
 import generated.se.sundsvall.employee.PortalPersonData;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import java.time.LocalDate;
@@ -41,7 +42,7 @@ public interface EmployeeClient {
 	 * @return                List of employees
 	 */
 	@GetMapping(path = "/{municipalityId}/newemployments", produces = APPLICATION_JSON_VALUE)
-	Optional<List<Employeev2>> getNewEmployees(
+	Optional<List<NewEmployee>> getNewEmployees(
 		@PathVariable("municipalityId") String municipalityId,
 		@RequestParam(name = "HireDateFrom") LocalDate hireDateFrom);
 

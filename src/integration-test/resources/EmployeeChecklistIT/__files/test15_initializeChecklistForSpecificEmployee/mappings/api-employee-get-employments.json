@@ -6,12 +6,12 @@
 			}
 		},
 		"method": "GET",
+		"urlPath": "/api-employee/2281/employments",
 		"queryParameters": {
-			"filter": {
-				"equalTo": "{\"ShowOnlyNewEmployees\":false,\"PersonId\":\"af920bfe-630a-44e9-b2e7-53f092cd0225\",\"EventInfo\":[\"Mover\",\"Corporate\",\"Company\",\"Rehire,Corporate\"]}"
+			"PersonId": {
+				"equalTo": "af920bfe-630a-44e9-b2e7-53f092cd0225"
 			}
-		},
-		"urlPath": "/api-employee/employments"
+		}
 	},
 	"response": {
 		"headers": {

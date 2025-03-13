@@ -6,13 +6,14 @@
 			}
 		},
 		"method": "GET",
-		"url": "/api-employee/portalpersondata/test%40test5.com"
+		"url": "/api-employee/2281/portalpersondata/test%40test.com"
 	},
 	"response": {
 		"headers": {
 			"Content-Type": "application/json; charset=utf-8"
 		},
-		"bodyFileName": "test4_delegateEmployeeChecklistWithExistingDelegation/responses/employee.json",
+		"bodyFileName": "test01_delegateEmployeeChecklist/responses/api-employee-get-portal-persondata-response.json",
 		"status": "200"
-	}
+	},
+	"name": "api-employee-get-portal-persondata"
 }

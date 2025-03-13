@@ -6,8 +6,6 @@ import static se.sundsvall.checklist.integration.db.model.enums.CommunicationCha
 import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.EMPLOYEE;
 import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.MANAGER;
 
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.Employment;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -26,6 +24,8 @@ import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
 import se.sundsvall.checklist.integration.db.model.ManagerEntity;
 import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel;
+import se.sundsvall.checklist.service.model.Employee;
+import se.sundsvall.checklist.service.model.Employment;
 
 @ExtendWith(MockitoExtension.class)
 class OrganizationMapperTest {
@@ -42,21 +42,24 @@ class OrganizationMapperTest {
 		final var emailAddress = "emailAddress";
 		final var firstName = "firstName";
 		final var lastName = "lastName";
-		final var uuid = UUID.randomUUID();
+		final var uuid = UUID.randomUUID().toString();
 		final var loginName = "loginName";
 		final var startDate = Date.from(LocalDate.of(2023, 12, 4).atStartOfDay(ZoneId.systemDefault()).toInstant());
 		final var title = "title";
 
-		final var employee = new Employee()
-			.emailAddress(emailAddress)
-			.givenname(firstName)
-			.lastname(lastName)
-			.personId(uuid)
-			.isManager(manager)
-			.loginname(loginName)
-			.addEmploymentsItem(new Employment().isMainEmployment(false).startDate(startDate).title("this should not be selected"))
-			.addEmploymentsItem(new Employment().startDate(startDate).title("this should not be selected"))
-			.addEmploymentsItem(new Employment().isMainEmployment(true).startDate(startDate).title(title));
+		final var employee = Employee.builder()
+			.withEmailAddress(emailAddress)
+			.withGivenname(firstName)
+			.withLastname(lastName)
+			.withLoginname(loginName)
+			.withPersonId(uuid)
+			.withMainEmployment(Employment.builder()
+				.withIsMainEmployment(true)
+				.withIsManager(manager)
+				.withStartDate(startDate)
+				.withTitle(title)
+				.build())
+			.build();
 
 		// Act
 		final var entity = OrganizationMapper.toEmployeeEntity(employee);
@@ -83,16 +86,19 @@ class OrganizationMapperTest {
 		final var emailAddress = "emailAddress";
 		final var firstName = "firstName";
 		final var lastName = "lastName";
-		final var uuid = UUID.randomUUID();
+		final var uuid = UUID.randomUUID().toString();
 		final var loginName = "loginName";
 
-		final var employee = new Employee()
-			.emailAddress(emailAddress)
-			.givenname(firstName)
-			.lastname(lastName)
-			.personId(uuid)
-			.loginname(loginName)
-			.addEmploymentsItem(new Employment().isMainEmployment(true));
+		final var employee = Employee.builder()
+			.withEmailAddress(emailAddress)
+			.withGivenname(firstName)
+			.withLastname(lastName)
+			.withLoginname(loginName)
+			.withPersonId(uuid)
+			.withMainEmployment(Employment.builder()
+				.withIsMainEmployment(true)
+				.build())
+			.build();
 
 		// Act
 		final var entity = OrganizationMapper.toEmployeeEntity(employee);
@@ -137,19 +143,26 @@ class OrganizationMapperTest {
 		final var loginName = "loginName";
 		final var startDate = Date.from(LocalDate.of(2023, 12, 4).atStartOfDay(ZoneId.systemDefault()).toInstant());
 		final var title = "title";
+		final var companyId = 1;
 
-		final var employee = new Employee()
-			.emailAddress(emailAddress)
-			.givenname(firstName)
-			.lastname(lastName)
-			.personId(UUID.randomUUID())
-			.isManager(manager)
-			.loginname(loginName)
-			.addEmploymentsItem(new Employment().isMainEmployment(false).startDate(startDate).title("this should not be selected"))
-			.addEmploymentsItem(new Employment().startDate(startDate).title("this should not be selected"))
-			.addEmploymentsItem(new Employment().isMainEmployment(true).startDate(startDate).title(title));
+		final var employee = Employee.builder()
+			.withEmailAddress(emailAddress)
+			.withGivenname(firstName)
+			.withLastname(lastName)
+			.withLoginname(loginName)
+			.withPersonId(UUID.randomUUID().toString())
+			.withMainEmployment(Employment.builder()
+				.withIsMainEmployment(true)
+				.withCompanyId(companyId)
+				.withIsManager(manager)
+				.withStartDate(startDate)
+				.withTitle(title)
+				.build())
+			.build();
 
-		final var entity = EmployeeEntity.builder().withId(uuid.toString()).build();
+		final var entity = EmployeeEntity.builder()
+			.withId(uuid.toString())
+			.build();
 
 		// Act
 		OrganizationMapper.updateEmployeeEntity(entity, employee);
