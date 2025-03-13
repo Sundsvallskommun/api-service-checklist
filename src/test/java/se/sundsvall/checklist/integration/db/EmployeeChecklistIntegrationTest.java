@@ -164,15 +164,15 @@ class EmployeeChecklistIntegrationTest {
 			.withMainEmployment(employment)
 			.build();
 
-		when(managerRepositoryMock.findById(managerId.toString())).thenReturn(Optional.of(ManagerEntity.builder().withPersonId(managerId.toString()).build()));
+		when(managerRepositoryMock.findById(managerId)).thenReturn(Optional.of(ManagerEntity.builder().withPersonId(managerId).build()));
 
 		// Act
 		integration.updateEmployeeInformation(entity, employee);
 
 		// Verify and assert
-		verify(managerRepositoryMock).findById(managerId.toString());
+		verify(managerRepositoryMock).findById(managerId);
 		verify(employeeRepositoryMock).save(employeeEntityCaptor.capture());
-		assertThat(employeeEntityCaptor.getValue().getManager().getPersonId()).isEqualTo(managerId.toString());
+		assertThat(employeeEntityCaptor.getValue().getManager().getPersonId()).isEqualTo(managerId);
 		assertThat(employeeEntityCaptor.getValue().getTitle()).isEqualTo(jobTitle);
 	}
 
@@ -200,9 +200,9 @@ class EmployeeChecklistIntegrationTest {
 		integration.updateEmployeeInformation(entity, employee);
 
 		// Verify and assert
-		verify(managerRepositoryMock).findById(newManagerId.toString());
+		verify(managerRepositoryMock).findById(newManagerId);
 		verify(employeeRepositoryMock).save(employeeEntityCaptor.capture());
-		assertThat(employeeEntityCaptor.getValue().getManager().getPersonId()).isEqualTo(newManagerId.toString());
+		assertThat(employeeEntityCaptor.getValue().getManager().getPersonId()).isEqualTo(newManagerId);
 	}
 
 	@Test
@@ -1073,13 +1073,13 @@ class EmployeeChecklistIntegrationTest {
 			.withPersonId(uuid)
 			.build();
 
-		when(employeeRepositoryMock.existsById(uuid.toString())).thenReturn(true);
+		when(employeeRepositoryMock.existsById(uuid)).thenReturn(true);
 
 		// Act
 		final var result = integration.initiateEmployee(municipalityId, employee, null);
 
 		// Verify and assert
-		verify(employeeRepositoryMock).existsById(uuid.toString());
+		verify(employeeRepositoryMock).existsById(uuid);
 		assertThat(result).isEqualTo("Employee with loginname username already has an employee checklist.");
 	}
 
@@ -1098,7 +1098,7 @@ class EmployeeChecklistIntegrationTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> integration.initiateEmployee(municipalityId, employee, null));
 
 		// Verify and assert
-		verify(employeeRepositoryMock).existsById(uuid.toString());
+		verify(employeeRepositoryMock).existsById(uuid);
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: No main employment found for employee with loginname username.");
 	}
@@ -1134,8 +1134,8 @@ class EmployeeChecklistIntegrationTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> integration.initiateEmployee(municipalityId, employee, orgTree));
 
 		// Verify and assert
-		verify(employeeRepositoryMock).existsById(employeeUuid.toString());
-		verify(managerRepositoryMock).findById(managerUuid.toString());
+		verify(employeeRepositoryMock).existsById(employeeUuid);
+		verify(managerRepositoryMock).findById(managerUuid);
 		verify(organizationRepositoryMock, times(2)).findByOrganizationNumberAndMunicipalityId(2, municipalityId);
 		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(21, municipalityId);
 		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(212, municipalityId);
@@ -1172,7 +1172,7 @@ class EmployeeChecklistIntegrationTest {
 			.build();
 		final var orgTree = OrganizationTree.map("1|" + companyId + "|Root¤2|21|Level-2¤3|212|Level-3¤4|" + orgId + "|" + orgName);
 		final var organization = OrganizationEntity.builder()
-			.withId(organizationUuid.toString())
+			.withId(organizationUuid)
 			.withOrganizationNumber(companyId)
 			.build();
 
@@ -1183,8 +1183,8 @@ class EmployeeChecklistIntegrationTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> integration.initiateEmployee(municipalityId, employee, orgTree));
 
 		// Verify and assert
-		verify(employeeRepositoryMock).existsById(employeeUuid.toString());
-		verify(managerRepositoryMock).findById(managerUuid.toString());
+		verify(employeeRepositoryMock).existsById(employeeUuid);
+		verify(managerRepositoryMock).findById(managerUuid);
 		verify(organizationRepositoryMock, times(2)).findByOrganizationNumberAndMunicipalityId(2, municipalityId);
 		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(21, municipalityId);
 		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(212, municipalityId);
@@ -1221,10 +1221,10 @@ class EmployeeChecklistIntegrationTest {
 			.build();
 		final var orgTree = OrganizationTree.map("1|" + companyId + "|Root¤2|21|Level-2¤3|212|Level-3¤4|" + orgId + "|" + orgName);
 		final var organization = OrganizationEntity.builder()
-			.withId(organizationUuid.toString())
+			.withId(organizationUuid)
 			.withOrganizationNumber(companyId)
 			.withChecklists(List.of(ChecklistEntity.builder()
-				.withId(checklistUuid.toString())
+				.withId(checklistUuid)
 				.withLifeCycle(LifeCycle.DEPRECATED)
 				.build()))
 			.build();
@@ -1236,8 +1236,8 @@ class EmployeeChecklistIntegrationTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> integration.initiateEmployee(municipalityId, employee, orgTree));
 
 		// Verify and assert
-		verify(employeeRepositoryMock).existsById(employeeUuid.toString());
-		verify(managerRepositoryMock).findById(managerUuid.toString());
+		verify(employeeRepositoryMock).existsById(employeeUuid);
+		verify(managerRepositoryMock).findById(managerUuid);
 		verify(organizationRepositoryMock, times(2)).findByOrganizationNumberAndMunicipalityId(2, municipalityId);
 		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(21, municipalityId);
 		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(212, municipalityId);
@@ -1275,11 +1275,11 @@ class EmployeeChecklistIntegrationTest {
 			.build();
 		final var orgTree = OrganizationTree.map("1|" + companyId + "|Root¤2|21|Level-2¤3|212|Level-3¤4|" + orgId + "|" + orgName);
 		final var checklistEntity = ChecklistEntity.builder()
-			.withId(checklistUuid.toString())
+			.withId(checklistUuid)
 			.withLifeCycle(LifeCycle.ACTIVE)
 			.build();
 		final var companyEntity = OrganizationEntity.builder()
-			.withId(organizationUuid.toString())
+			.withId(organizationUuid)
 			.withOrganizationNumber(companyId)
 			.withChecklists(List.of(checklistEntity))
 			.build();
@@ -1292,8 +1292,8 @@ class EmployeeChecklistIntegrationTest {
 		final var result = integration.initiateEmployee(municipalityId, employee, orgTree);
 
 		// Verify and assert
-		verify(employeeRepositoryMock).existsById(employeeUuid.toString());
-		verify(managerRepositoryMock).findById(managerUuid.toString());
+		verify(employeeRepositoryMock).existsById(employeeUuid);
+		verify(managerRepositoryMock).findById(managerUuid);
 		verify(employeeRepositoryMock).save(employeeEntityCaptor.capture());
 		verify(organizationRepositoryMock, times(2)).findByOrganizationNumberAndMunicipalityId(orgId, municipalityId);
 		verify(organizationRepositoryMock, times(2)).findByOrganizationNumberAndMunicipalityId(companyId, municipalityId);
@@ -1343,26 +1343,26 @@ class EmployeeChecklistIntegrationTest {
 			.build();
 		final var orgTree = OrganizationTree.map("1|" + companyId + "|Root¤2|21|Level-2¤3|212|Level-3¤4|" + orgId + "|" + orgName);
 		final var companyChecklistEntity = ChecklistEntity.builder()
-			.withId(checklistUuid.toString())
+			.withId(checklistUuid)
 			.withLifeCycle(LifeCycle.ACTIVE)
 			.build();
 		final var departmentChecklistEntity = ChecklistEntity.builder()
-			.withId(checklistUuid.toString())
+			.withId(checklistUuid)
 			.withLifeCycle(LifeCycle.ACTIVE)
 			.build();
 		final var companyEntity = OrganizationEntity.builder()
-			.withId(companyUuid.toString())
+			.withId(companyUuid)
 			.withOrganizationNumber(companyId)
 			.withChecklists(List.of(companyChecklistEntity))
 			.build();
 		final var departmentEntity = OrganizationEntity.builder()
-			.withId(departmentUuid.toString())
+			.withId(departmentUuid)
 			.withOrganizationNumber(orgId)
 			.withOrganizationName(orgName)
 			.withChecklists(List.of(departmentChecklistEntity))
 			.build();
 		final var managerEntity = ManagerEntity.builder()
-			.withPersonId(managerUuid.toString())
+			.withPersonId(managerUuid)
 			.build();
 
 		final var employeeEntity = OrganizationMapper.toEmployeeEntity(employee);
@@ -1370,14 +1370,14 @@ class EmployeeChecklistIntegrationTest {
 		when(employeeRepositoryMock.save(any())).thenReturn(employeeEntity);
 		when(organizationRepositoryMock.findByOrganizationNumberAndMunicipalityId(companyId, municipalityId)).thenReturn(Optional.of(companyEntity));
 		when(organizationRepositoryMock.findByOrganizationNumberAndMunicipalityId(orgId, municipalityId)).thenReturn(Optional.of(departmentEntity));
-		when(managerRepositoryMock.findById(managerUuid.toString())).thenReturn(Optional.of(managerEntity));
+		when(managerRepositoryMock.findById(managerUuid)).thenReturn(Optional.of(managerEntity));
 
 		// Act
 		final var result = integration.initiateEmployee(municipalityId, employee, orgTree);
 
 		// Verify and assert
-		verify(employeeRepositoryMock).existsById(employeeUuid.toString());
-		verify(managerRepositoryMock).findById(managerUuid.toString());
+		verify(employeeRepositoryMock).existsById(employeeUuid);
+		verify(managerRepositoryMock).findById(managerUuid);
 		verify(employeeRepositoryMock).save(employeeEntityCaptor.capture());
 		verify(organizationRepositoryMock, times(2)).findByOrganizationNumberAndMunicipalityId(orgId, municipalityId);
 		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(212, municipalityId);

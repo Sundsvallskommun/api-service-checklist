@@ -104,7 +104,7 @@ class VerificationUtilsTest {
 
 		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo(NOT_FOUND.getReasonPhrase()
-			+ ": Creation of checklist not possible for employee with personid %s as the main employment for the employee lacks event type information.".formatted(personId.toString()));
+			+ ": Creation of checklist not possible for employee with personid %s as the main employment for the employee lacks event type information.".formatted(personId));
 	}
 
 	@Test

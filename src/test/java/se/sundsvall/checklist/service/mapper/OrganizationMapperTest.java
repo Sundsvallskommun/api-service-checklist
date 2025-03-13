@@ -70,7 +70,7 @@ class OrganizationMapperTest {
 		assertThat(entity.getDepartment()).isNull();
 		assertThat(entity.getEmail()).isEqualTo(emailAddress);
 		assertThat(entity.getFirstName()).isEqualTo(firstName);
-		assertThat(entity.getId()).isEqualTo(uuid.toString());
+		assertThat(entity.getId()).isEqualTo(uuid);
 		assertThat(entity.getLastName()).isEqualTo(lastName);
 		assertThat(entity.getManager()).isNull();
 		assertThat(entity.getEmployeeChecklist()).isNull();
@@ -109,7 +109,7 @@ class OrganizationMapperTest {
 		assertThat(entity.getDepartment()).isNull();
 		assertThat(entity.getEmail()).isEqualTo(emailAddress);
 		assertThat(entity.getFirstName()).isEqualTo(firstName);
-		assertThat(entity.getId()).isEqualTo(uuid.toString());
+		assertThat(entity.getId()).isEqualTo(uuid);
 		assertThat(entity.getLastName()).isEqualTo(lastName);
 		assertThat(entity.getManager()).isNull();
 		assertThat(entity.getEmployeeChecklist()).isNull();

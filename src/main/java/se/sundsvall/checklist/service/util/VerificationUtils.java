@@ -50,7 +50,7 @@ public final class VerificationUtils {
 				missingInformation.add("the employee does not have any email address");
 			}
 
-			missingInformation.addAll(verifyMandatoryInformation(employment));
+			missingInformation.addAll(verifyMandatoryEmploymentInformation(employment));
 		}
 
 		if (isNotEmpty(missingInformation)) {
@@ -58,7 +58,7 @@ public final class VerificationUtils {
 		}
 	}
 
-	private static List<String> verifyMandatoryInformation(Employment employment) {
+	private static List<String> verifyMandatoryEmploymentInformation(Employment employment) {
 		final var missingInformation = new ArrayList<String>();
 
 		if (isNull(employment.getManager())) {

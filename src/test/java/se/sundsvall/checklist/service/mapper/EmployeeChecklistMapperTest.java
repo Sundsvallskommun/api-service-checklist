@@ -152,7 +152,7 @@ class EmployeeChecklistMapperTest {
 		assertThat(entity.getEmployees()).isNullOrEmpty();
 		assertThat(entity.getFirstName()).isEqualTo(firstName);
 		assertThat(entity.getLastName()).isEqualTo(lastName);
-		assertThat(entity.getPersonId()).isEqualTo(personId.toString());
+		assertThat(entity.getPersonId()).isEqualTo(personId);
 		assertThat(entity.getUpdated()).isNull();
 		assertThat(entity.getUsername()).isEqualTo(username);
 	}
