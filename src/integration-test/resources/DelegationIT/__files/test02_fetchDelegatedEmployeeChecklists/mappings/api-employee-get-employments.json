@@ -6,18 +6,18 @@
 			}
 		},
 		"method": "GET",
+		"urlPath": "/api-employee/2281/employments",
 		"queryParameters": {
 			"PersonId": {
-				"equalTo": "fe34e2a9-5723-4734-91dc-42a664c5432f"
+				"equalTo": "1f183588-48ef-4287-9725-4963997c817d"
 			}
-		},
-		"urlPath": "/api-employee/2281/employments"
+		}
 	},
 	"response": {
 		"headers": {
 			"Content-Type": "application/json"
 		},
-		"bodyFileName": "test04_fetchChecklistsAsManagerWhenEmployeeChangedManager/responses/api-employee-get-employments-response.json",
+		"bodyFileName": "test02_fetchDelegatedEmployeeChecklists/responses/api-employee-get-employments-response.json",
 		"status": 200
 	},
 	"name": "api-employee-get-employments"

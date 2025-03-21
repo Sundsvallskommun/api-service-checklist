@@ -7,8 +7,6 @@ import static se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus
 import static se.sundsvall.checklist.service.util.TaskType.COMMON;
 import static se.sundsvall.checklist.service.util.TaskType.CUSTOM;
 
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.Employment;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -21,6 +19,8 @@ import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.FulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
+import se.sundsvall.checklist.service.model.Employee;
+import se.sundsvall.checklist.service.model.Employment;
 
 public final class ServiceUtils {
 	private static final String NO_MATCHING_EMPLOYEE_CHECKLIST_TASK_FOUND = "Task with id %s was not found in employee checklist with id %s.";
@@ -51,10 +51,7 @@ public final class ServiceUtils {
 	}
 
 	public static Employment getMainEmployment(Employee employee) {
-		return ofNullable(employee.getEmployments()).orElse(emptyList()).stream()
-			.filter(employment -> Objects.nonNull(employment.getIsMainEmployment()))
-			.filter(Employment::getIsMainEmployment)
-			.findFirst()
+		return ofNullable(employee.getMainEmployment())
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NO_MAIN_EMPLOYMENT_FOUND.formatted(employee.getLoginname())));
 	}
 

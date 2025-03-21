@@ -1,6 +1,5 @@
 package se.sundsvall.checklist.service;
 
-import static java.time.format.DateTimeFormatter.ISO_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -10,11 +9,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.buildUuidEmployeeFilter;
 
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.Employment;
-import generated.se.sundsvall.employee.Manager;
 import generated.se.sundsvall.employee.PortalPersonData;
 import generated.se.sundsvall.mdviewer.Organization;
 import java.time.Duration;
@@ -69,6 +64,9 @@ import se.sundsvall.checklist.integration.db.repository.InitiationRepository;
 import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
 import se.sundsvall.checklist.integration.mdviewer.MDViewerClient;
 import se.sundsvall.checklist.service.OrganizationTree.OrganizationLine;
+import se.sundsvall.checklist.service.model.Employee;
+import se.sundsvall.checklist.service.model.Employment;
+import se.sundsvall.checklist.service.model.Manager;
 
 @ExtendWith(MockitoExtension.class)
 class EmployeeChecklistServiceTest {
@@ -181,11 +179,11 @@ class EmployeeChecklistServiceTest {
 		final var customTask = CustomTaskEntity.builder()
 			.withId(customTaskId)
 			.build();
-		final var employee = new Employee();
+		final var employee = Employee.builder().build();
 
 		when(employeeChecklistIntegrationMock.fetchOptionalEmployeeChecklist(MUNICIPALITY_ID, username)).thenReturn(Optional.of(employeeChecklistEntity));
 		when(customTaskRepositoryMock.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(employeeChecklistId, MUNICIPALITY_ID)).thenReturn(List.of(customTask));
-		when(employeeIntegrationMock.getEmployeeInformation(buildUuidEmployeeFilter(employeeId))).thenReturn(List.of(employee));
+		when(employeeIntegrationMock.getEmployeeInformation(MUNICIPALITY_ID, employeeId)).thenReturn(List.of(employee));
 		when(sortorderServiceMock.applySorting(any(), any())).thenAnswer(args -> args.getArgument(1));
 
 		// Act
@@ -196,7 +194,7 @@ class EmployeeChecklistServiceTest {
 		verify(employeeChecklistIntegrationMock).fetchOptionalEmployeeChecklist(MUNICIPALITY_ID, username);
 		verify(customTaskRepositoryMock).findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(employeeChecklistId, MUNICIPALITY_ID);
 		verify(employeeChecklistIntegrationMock).fetchDelegateEmails(employeeChecklistId);
-		verify(employeeIntegrationMock).getEmployeeInformation(buildUuidEmployeeFilter(employeeId));
+		verify(employeeIntegrationMock).getEmployeeInformation(MUNICIPALITY_ID, employeeId);
 		verify(employeeChecklistIntegrationMock).updateEmployeeInformation(employeeEntity, employee);
 		verify(sortorderServiceMock).applySorting(any(), any());
 	}
@@ -305,28 +303,29 @@ class EmployeeChecklistServiceTest {
 		final var oldManagerId = "oldManagerId";
 		final var newManagerId = "newManagerId";
 		final var employeeChecklistId = UUID.randomUUID().toString();
-		final var managerEntity = ManagerEntity.builder()
-			.withUsername(oldManagerId)
-			.build();
 		final var employeeEntity = EmployeeEntity.builder()
 			.withId(employeeId)
-			.withManager(managerEntity)
+			.withManager(ManagerEntity.builder()
+				.withUsername(oldManagerId)
+				.build())
 			.withUpdated(OffsetDateTime.now().minusDays(1).minusNanos(1))
 			.build();
-		final var checklist = ChecklistEntity.builder().build();
 		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
 			.withId(employeeChecklistId)
 			.withEmployee(employeeEntity)
-			.withChecklists(List.of(checklist))
+			.withChecklists(List.of(ChecklistEntity.builder().build()))
 			.build();
-		final var employment = new Employment()
-			.isMainEmployment(true)
-			.manager(new Manager().loginname(newManagerId));
-		final var employee = new Employee()
-			.employments(List.of(employment));
+		final var employee = Employee.builder()
+			.withMainEmployment(Employment.builder()
+				.withIsMainEmployment(true)
+				.withManager(Manager.builder()
+					.withLoginname(newManagerId)
+					.build())
+				.build())
+			.build();
 
 		when(employeeChecklistIntegrationMock.fetchEmployeeChecklistsForManager(MUNICIPALITY_ID, username)).thenReturn(List.of(employeeChecklistEntity));
-		when(employeeIntegrationMock.getEmployeeInformation(buildUuidEmployeeFilter(employeeId))).thenReturn(List.of(employee));
+		when(employeeIntegrationMock.getEmployeeInformation(MUNICIPALITY_ID, employeeId)).thenReturn(List.of(employee));
 
 		// Act
 		final var employeeChecklists = service.fetchChecklistsForManager(MUNICIPALITY_ID, username);
@@ -335,7 +334,7 @@ class EmployeeChecklistServiceTest {
 		assertThat(employeeChecklists).isEmpty(); // Due to that employee is updated and no longer has incoming userId as manager
 		verify(employeeChecklistIntegrationMock).fetchEmployeeChecklistsForManager(MUNICIPALITY_ID, username);
 		verify(employeeChecklistIntegrationMock).updateEmployeeInformation(employeeEntity, employee);
-		verify(employeeIntegrationMock).getEmployeeInformation(buildUuidEmployeeFilter(employeeId));
+		verify(employeeIntegrationMock).getEmployeeInformation(MUNICIPALITY_ID, employeeId);
 	}
 
 	@Test
@@ -879,8 +878,8 @@ class EmployeeChecklistServiceTest {
 			.companyId(companyId)
 			.orgTree(orgTree);
 
-		when(employeeIntegrationMock.getNewEmployees(any())).thenReturn(List.of(employee));
-		when(employeeIntegrationMock.getEmployeeByEmail(emailAddress)).thenReturn(Optional.of(portalPersonData));
+		when(employeeIntegrationMock.getNewEmployees(eq(MUNICIPALITY_ID), any())).thenReturn(List.of(employee));
+		when(employeeIntegrationMock.getEmployeeByEmail(MUNICIPALITY_ID, emailAddress)).thenReturn(Optional.of(portalPersonData));
 		when(employeeChecklistIntegrationMock.initiateEmployee(any(), any(), any())).thenReturn(information);
 		when(mdViewerClientMock.getOrganizationsForCompany(companyId)).thenReturn(List.of(
 			new Organization().orgId(rootOrgId).treeLevel(1).orgName("Sundsvalls kommun"),
@@ -892,8 +891,8 @@ class EmployeeChecklistServiceTest {
 		final var response = service.initiateEmployeeChecklists(MUNICIPALITY_ID);
 
 		// Assert and verify
-		verify(employeeIntegrationMock).getNewEmployees("{\"HireDateFrom\":\"%s\"}".formatted(LocalDate.now().minusDays(30).format(ISO_DATE)));
-		verify(employeeIntegrationMock).getEmployeeByEmail(emailAddress);
+		verify(employeeIntegrationMock).getNewEmployees(MUNICIPALITY_ID, LocalDate.now().minusDays(30));
+		verify(employeeIntegrationMock).getEmployeeByEmail(MUNICIPALITY_ID, emailAddress);
 		verify(mdViewerClientMock).getOrganizationsForCompany(companyId);
 		verify(employeeChecklistIntegrationMock).initiateEmployee(eq(MUNICIPALITY_ID), eq(employee), organizationTreeCaptor.capture());
 
@@ -914,7 +913,7 @@ class EmployeeChecklistServiceTest {
 		final var loginName = "loginName";
 		final var employee = createEmployee(emailAddress, employeeUuid, managerUuid, companyId, orgId, loginName);
 
-		when(employeeIntegrationMock.getNewEmployees(any())).thenReturn(List.of(employee));
+		when(employeeIntegrationMock.getNewEmployees(eq(MUNICIPALITY_ID), any())).thenReturn(List.of(employee));
 
 		// Act
 		final var response = service.initiateEmployeeChecklists(MUNICIPALITY_ID);
@@ -924,8 +923,8 @@ class EmployeeChecklistServiceTest {
 		assertThat(response.getDetails()).extracting(Detail::getStatus, Detail::getInformation)
 			.containsExactly(tuple(Status.NOT_FOUND, "Not Found: Employee with loginname loginName is missing information regarding organizational structure."));
 
-		verify(employeeIntegrationMock).getNewEmployees("{\"HireDateFrom\":\"%s\"}".formatted(LocalDate.now().minusDays(30).format(ISO_DATE)));
-		verify(employeeIntegrationMock).getEmployeeByEmail(emailAddress);
+		verify(employeeIntegrationMock).getNewEmployees(MUNICIPALITY_ID, LocalDate.now().minusDays(30));
+		verify(employeeIntegrationMock).getEmployeeByEmail(MUNICIPALITY_ID, emailAddress);
 		verify(mdViewerClientMock, never()).getOrganizationsForCompany(companyId);
 		verify(employeeChecklistIntegrationMock, never()).initiateEmployee(eq(MUNICIPALITY_ID), any(), any());
 	}
@@ -946,8 +945,8 @@ class EmployeeChecklistServiceTest {
 			.companyId(companyId)
 			.orgTree(orgTree);
 
-		when(employeeIntegrationMock.getNewEmployees(any())).thenReturn(List.of(employee));
-		when(employeeIntegrationMock.getEmployeeByEmail(emailAddress)).thenReturn(Optional.of(portalPersonData));
+		when(employeeIntegrationMock.getNewEmployees(eq(MUNICIPALITY_ID), any())).thenReturn(List.of(employee));
+		when(employeeIntegrationMock.getEmployeeByEmail(MUNICIPALITY_ID, emailAddress)).thenReturn(Optional.of(portalPersonData));
 		when(mdViewerClientMock.getOrganizationsForCompany(companyId)).thenReturn(List.of(
 			new Organization().orgId(rootOrgId).treeLevel(1).orgName("Sundsvalls kommun"),
 			new Organization().orgId(12).treeLevel(2).orgName("OrgLevel 2").parentId(rootOrgId),
@@ -959,8 +958,8 @@ class EmployeeChecklistServiceTest {
 		final var response = service.initiateEmployeeChecklists(MUNICIPALITY_ID);
 
 		// Assert and verify
-		verify(employeeIntegrationMock).getNewEmployees("{\"HireDateFrom\":\"%s\"}".formatted(LocalDate.now().minusDays(30).format(ISO_DATE)));
-		verify(employeeIntegrationMock).getEmployeeByEmail(emailAddress);
+		verify(employeeIntegrationMock).getNewEmployees(MUNICIPALITY_ID, LocalDate.now().minusDays(30));
+		verify(employeeIntegrationMock).getEmployeeByEmail(MUNICIPALITY_ID, emailAddress);
 		verify(mdViewerClientMock).getOrganizationsForCompany(companyId);
 		verify(employeeChecklistIntegrationMock).initiateEmployee(eq(MUNICIPALITY_ID), eq(employee), organizationTreeCaptor.capture());
 
@@ -980,9 +979,10 @@ class EmployeeChecklistServiceTest {
 		final var orgId = 1225;
 		final var loginName = "loginName";
 		final var employee = createEmployee(emailAddress, employeeUuid, managerUuid, companyId, orgId, loginName);
-		employee.getEmployments().getFirst().formOfEmploymentId("invalid").eventType("joiner");
+		employee.getMainEmployment().setFormOfEmploymentId("invalid");
+		employee.getMainEmployment().setEventType("joiner");
 
-		when(employeeIntegrationMock.getNewEmployees(any())).thenReturn(List.of(employee));
+		when(employeeIntegrationMock.getNewEmployees(eq(MUNICIPALITY_ID), any())).thenReturn(List.of(employee));
 
 		// Act
 		final var response = service.initiateEmployeeChecklists(MUNICIPALITY_ID);
@@ -993,7 +993,7 @@ class EmployeeChecklistServiceTest {
 			.containsExactly(tuple(Status.NOT_ACCEPTABLE,
 				"Not Acceptable: Creation of checklist not possible for employee with loginname loginName as the employee does not have a main employment with an employment form that validates for creating an employee checklist."));
 
-		verify(employeeIntegrationMock).getNewEmployees("{\"HireDateFrom\":\"%s\"}".formatted(LocalDate.now().minusDays(30).format(ISO_DATE)));
+		verify(employeeIntegrationMock).getNewEmployees(MUNICIPALITY_ID, LocalDate.now().minusDays(30));
 	}
 
 	@Test
@@ -1006,9 +1006,10 @@ class EmployeeChecklistServiceTest {
 		final var orgId = 1225;
 		final var loginName = "loginName";
 		final var employee = createEmployee(emailAddress, employeeUuid, managerUuid, companyId, orgId, loginName);
-		employee.getEmployments().getFirst().formOfEmploymentId("9").eventType("invalid");
+		employee.getMainEmployment().setFormOfEmploymentId("9");
+		employee.getMainEmployment().setEventType("invalid");
 
-		when(employeeIntegrationMock.getNewEmployees(any())).thenReturn(List.of(employee));
+		when(employeeIntegrationMock.getNewEmployees(eq(MUNICIPALITY_ID), any())).thenReturn(List.of(employee));
 
 		// Act
 		final var response = service.initiateEmployeeChecklists(MUNICIPALITY_ID);
@@ -1019,7 +1020,7 @@ class EmployeeChecklistServiceTest {
 			.containsExactly(tuple(Status.NOT_ACCEPTABLE,
 				"Not Acceptable: Creation of checklist not possible for employee with loginname loginName as the employee does not have a main employment with an event type that validates for creating an employee checklist."));
 
-		verify(employeeIntegrationMock).getNewEmployees("{\"HireDateFrom\":\"%s\"}".formatted(LocalDate.now().minusDays(30).format(ISO_DATE)));
+		verify(employeeIntegrationMock).getNewEmployees(MUNICIPALITY_ID, LocalDate.now().minusDays(30));
 	}
 
 	@Test
@@ -1031,7 +1032,7 @@ class EmployeeChecklistServiceTest {
 		assertThat(response.getSummary()).isEqualTo("No employees found");
 		assertThat(response.getDetails()).isNullOrEmpty();
 
-		verify(employeeIntegrationMock).getNewEmployees("{\"HireDateFrom\":\"%s\"}".formatted(LocalDate.now().minusDays(30).format(ISO_DATE)));
+		verify(employeeIntegrationMock).getNewEmployees(MUNICIPALITY_ID, LocalDate.now().minusDays(30));
 	}
 
 	@Test
@@ -1051,8 +1052,8 @@ class EmployeeChecklistServiceTest {
 			.companyId(companyId)
 			.orgTree(orgTree);
 
-		when(employeeIntegrationMock.getEmployeeInformation(any())).thenReturn(List.of(employee));
-		when(employeeIntegrationMock.getEmployeeByEmail(emailAddress)).thenReturn(Optional.of(portalPersonData));
+		when(employeeIntegrationMock.getEmployeeInformation(eq(MUNICIPALITY_ID), any())).thenReturn(List.of(employee));
+		when(employeeIntegrationMock.getEmployeeByEmail(MUNICIPALITY_ID, emailAddress)).thenReturn(Optional.of(portalPersonData));
 		when(employeeChecklistIntegrationMock.initiateEmployee(eq(MUNICIPALITY_ID), any(), any())).thenReturn(information);
 		when(mdViewerClientMock.getOrganizationsForCompany(companyId)).thenReturn(List.of(
 			new Organization().orgId(rootOrgId).treeLevel(1).orgName("Sundsvalls kommun"),
@@ -1064,8 +1065,8 @@ class EmployeeChecklistServiceTest {
 		final var response = service.initiateSpecificEmployeeChecklist(MUNICIPALITY_ID, employeeUuid.toString());
 
 		// Assert and verify
-		verify(employeeIntegrationMock).getEmployeeInformation("{\"ShowOnlyNewEmployees\":false,\"PersonId\":\"" + employeeUuid.toString() + "\",\"EventInfo\":[\"Mover\",\"Corporate\",\"Company\",\"Rehire,Corporate\"]}");
-		verify(employeeIntegrationMock).getEmployeeByEmail(emailAddress);
+		verify(employeeIntegrationMock).getEmployeeInformation(MUNICIPALITY_ID, employeeUuid.toString());
+		verify(employeeIntegrationMock).getEmployeeByEmail(MUNICIPALITY_ID, emailAddress);
 		verify(mdViewerClientMock).getOrganizationsForCompany(companyId);
 		verify(employeeChecklistIntegrationMock).initiateEmployee(eq(MUNICIPALITY_ID), eq(employee), organizationTreeCaptor.capture());
 
@@ -1087,7 +1088,7 @@ class EmployeeChecklistServiceTest {
 		assertThat(response.getSummary()).isEqualTo("No employees found");
 		assertThat(response.getDetails()).isNullOrEmpty();
 
-		verify(employeeIntegrationMock).getEmployeeInformation("{\"ShowOnlyNewEmployees\":false,\"PersonId\":\"" + employeeUuid.toString() + "\",\"EventInfo\":[\"Mover\",\"Corporate\",\"Company\",\"Rehire,Corporate\"]}");
+		verify(employeeIntegrationMock).getEmployeeInformation(MUNICIPALITY_ID, employeeUuid.toString());
 	}
 
 	@Test
@@ -1108,10 +1109,11 @@ class EmployeeChecklistServiceTest {
 			.companyId(companyId)
 			.orgTree(orgTree);
 
-		employee.getEmployments().getFirst().formOfEmploymentId("invalid").eventType("invalid");
+		employee.getMainEmployment().setFormOfEmploymentId("invalid");
+		employee.getMainEmployment().setEventType("invalid");
 
-		when(employeeIntegrationMock.getEmployeeInformation(any())).thenReturn(List.of(employee));
-		when(employeeIntegrationMock.getEmployeeByEmail(emailAddress)).thenReturn(Optional.of(portalPersonData));
+		when(employeeIntegrationMock.getEmployeeInformation(eq(MUNICIPALITY_ID), any())).thenReturn(List.of(employee));
+		when(employeeIntegrationMock.getEmployeeByEmail(MUNICIPALITY_ID, emailAddress)).thenReturn(Optional.of(portalPersonData));
 		when(employeeChecklistIntegrationMock.initiateEmployee(eq(MUNICIPALITY_ID), any(), any())).thenReturn(information);
 		when(mdViewerClientMock.getOrganizationsForCompany(companyId)).thenReturn(List.of(
 			new Organization().orgId(rootOrgId).treeLevel(1).orgName("Sundsvalls kommun"),
@@ -1123,8 +1125,8 @@ class EmployeeChecklistServiceTest {
 		final var response = service.initiateSpecificEmployeeChecklist(MUNICIPALITY_ID, employeeUuid.toString());
 
 		// Assert and verify
-		verify(employeeIntegrationMock).getEmployeeInformation("{\"ShowOnlyNewEmployees\":false,\"PersonId\":\"" + employeeUuid.toString() + "\",\"EventInfo\":[\"Mover\",\"Corporate\",\"Company\",\"Rehire,Corporate\"]}");
-		verify(employeeIntegrationMock).getEmployeeByEmail(emailAddress);
+		verify(employeeIntegrationMock).getEmployeeInformation(MUNICIPALITY_ID, employeeUuid.toString());
+		verify(employeeIntegrationMock).getEmployeeByEmail(MUNICIPALITY_ID, emailAddress);
 		verify(mdViewerClientMock).getOrganizationsForCompany(companyId);
 		verify(employeeChecklistIntegrationMock).initiateEmployee(eq(MUNICIPALITY_ID), eq(employee), organizationTreeCaptor.capture());
 
@@ -1224,17 +1226,20 @@ class EmployeeChecklistServiceTest {
 	}
 
 	private static Employee createEmployee(final String emailAddress, final UUID employeeUuid, final UUID managerUuid, final int companyId, final int orgId, final String loginName) {
-		return new Employee()
-			.emailAddress(emailAddress)
-			.personId(employeeUuid)
-			.employments(List.of(new Employment()
-				.formOfEmploymentId("1")
-				.eventType("Joiner")
-				.isMainEmployment(true)
-				.companyId(companyId)
-				.orgId(orgId)
-				.manager(new Manager()
-					.personId(managerUuid))))
-			.loginname(loginName);
+		return Employee.builder()
+			.withEmailAddress(emailAddress)
+			.withPersonId(employeeUuid.toString())
+			.withLoginname(loginName)
+			.withMainEmployment(Employment.builder()
+				.withFormOfEmploymentId("1")
+				.withEventType("Joiner")
+				.withIsMainEmployment(true)
+				.withCompanyId(companyId)
+				.withOrgId(orgId)
+				.withManager(Manager.builder()
+					.withPersonId(managerUuid.toString())
+					.build())
+				.build())
+			.build();
 	}
 }

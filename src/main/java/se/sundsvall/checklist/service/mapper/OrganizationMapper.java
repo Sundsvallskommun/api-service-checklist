@@ -5,10 +5,8 @@ import static java.util.Optional.ofNullable;
 import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.NO_COMMUNICATION;
 import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.EMPLOYEE;
 import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.MANAGER;
+import static se.sundsvall.checklist.service.util.ServiceUtils.getMainEmployment;
 
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.Employment;
-import generated.se.sundsvall.employee.Manager;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -23,6 +21,9 @@ import se.sundsvall.checklist.api.model.Stakeholder;
 import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
 import se.sundsvall.checklist.integration.db.model.ManagerEntity;
 import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
+import se.sundsvall.checklist.service.model.Employee;
+import se.sundsvall.checklist.service.model.Employment;
+import se.sundsvall.checklist.service.model.Manager;
 
 public class OrganizationMapper {
 	private OrganizationMapper() {}
@@ -33,50 +34,50 @@ public class OrganizationMapper {
 
 	public static EmployeeEntity toEmployeeEntity(final Employee employeeProspect) {
 		return ofNullable(employeeProspect)
-			.map(employee -> EmployeeEntity.builder()
-				.withEmail(employee.getEmailAddress())
-				.withFirstName(employee.getGivenname())
-				.withLastName(employee.getLastname())
-				.withId(employee.getPersonId().toString())
-				.withEmploymentPosition(ofNullable(employee.getIsManager()).orElse(false) ? MANAGER : EMPLOYEE)
-				.withStartDate(getStartDate(employee))
-				.withTitle(getJobTitle(employee))
-				.withUsername(employee.getLoginname())
-				.build())
+			.map(employee -> {
+				final var mainEmployment = getMainEmployment(employee);
+
+				return EmployeeEntity.builder()
+					.withEmail(employee.getEmailAddress())
+					.withFirstName(employee.getGivenname())
+					.withLastName(employee.getLastname())
+					.withId(employee.getPersonId())
+					.withEmploymentPosition(isManager(mainEmployment) ? MANAGER : EMPLOYEE)
+					.withStartDate(getStartDate(employee))
+					.withTitle(mainEmployment.getTitle())
+					.withUsername(employee.getLoginname())
+					.build();
+			})
 			.orElse(null);
 	}
 
 	public static void updateEmployeeEntity(final EmployeeEntity entity, final Employee employeeProspect) {
 		ofNullable(employeeProspect).ifPresent(employee -> {
+			final var mainEmployment = getMainEmployment(employee);
+
 			entity.setEmail(employee.getEmailAddress());
 			entity.setLastName(employee.getLastname());
 			entity.setFirstName(employee.getGivenname());
 			entity.setUsername(employee.getLoginname());
-			entity.setTitle(getJobTitle(employee));
-			entity.setEmploymentPosition(ofNullable(employee.getIsManager()).orElse(false) ? MANAGER : EMPLOYEE);
+			entity.setTitle(mainEmployment.getTitle());
+			entity.setEmploymentPosition(isManager(mainEmployment) ? MANAGER : EMPLOYEE);
 		});
 	}
 
-	private static String getJobTitle(final Employee employee) {
-		return employee.getEmployments().stream()
-			.filter(employment -> Objects.nonNull(employment.getIsMainEmployment()))
-			.filter(Employment::getIsMainEmployment)
-			.map(Employment::getTitle)
+	private static boolean isManager(final Employment mainEmployment) {
+		return ofNullable(mainEmployment)
+			.map(Employment::getIsManager)
 			.filter(Objects::nonNull)
-			.findFirst()
-			.orElse(null);
+			.orElse(false);
 	}
 
 	private static LocalDate getStartDate(final Employee employee) {
-		return employee.getEmployments().stream()
-			.filter(employment -> Objects.nonNull(employment.getIsMainEmployment()))
-			.filter(Employment::getIsMainEmployment)
+		return ofNullable(employee.getMainEmployment())
 			.map(Employment::getStartDate)
 			.filter(Objects::nonNull)
 			.map(Date::toInstant)
 			.map(instant -> instant.atZone(ZoneId.systemDefault()))
 			.map(ZonedDateTime::toLocalDate)
-			.findFirst()
 			.orElse(LocalDate.now());
 	}
 
@@ -106,14 +107,14 @@ public class OrganizationMapper {
 		return entity;
 	}
 
-	public static ManagerEntity toManagerEntity(final Manager manager) {
-		return ofNullable(manager)
-			.map(manager1 -> ManagerEntity.builder()
-				.withEmail(manager1.getEmailAddress())
-				.withFirstName(manager1.getGivenname())
-				.withLastName(manager1.getLastname())
-				.withPersonId(manager1.getPersonId().toString())
-				.withUsername(manager1.getLoginname())
+	public static ManagerEntity toManagerEntity(final Manager managerProspect) {
+		return ofNullable(managerProspect)
+			.map(manager -> ManagerEntity.builder()
+				.withEmail(manager.getEmailAddress())
+				.withFirstName(manager.getGivenname())
+				.withLastName(manager.getLastname())
+				.withPersonId(manager.getPersonId().toString())
+				.withUsername(manager.getLoginname())
 				.build())
 			.orElse(null);
 	}

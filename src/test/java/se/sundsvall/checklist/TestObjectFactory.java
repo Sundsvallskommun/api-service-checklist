@@ -10,9 +10,12 @@ import static se.sundsvall.checklist.integration.db.model.enums.QuestionType.YES
 import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_EMPLOYEE;
 import static se.sundsvall.checklist.integration.db.model.enums.RoleType.NEW_EMPLOYEE;
 
-import generated.se.sundsvall.employee.Employee;
+import generated.se.sundsvall.employee.Account;
+import generated.se.sundsvall.employee.Employeev2;
 import generated.se.sundsvall.employee.Employment;
 import generated.se.sundsvall.employee.Manager;
+import generated.se.sundsvall.employee.NewEmployee;
+import generated.se.sundsvall.employee.NewEmployment;
 import generated.se.sundsvall.employee.PortalPersonData;
 import generated.se.sundsvall.eventlog.Event;
 import generated.se.sundsvall.eventlog.EventType;
@@ -394,13 +397,36 @@ public final class TestObjectFactory {
 		return createTask(null);
 	}
 
-	public static Employee generateEmployee(final UUID uuid) {
-		return new generated.se.sundsvall.employee.Employee()
+	public static NewEmployee generateNewEmployee(final UUID uuid) {
+		return new generated.se.sundsvall.employee.NewEmployee()
 			.personId(uuid)
 			.givenname("Test")
 			.lastname("Testsson")
-			.loginname("tes10tes")
+			.accounts(List.of(new Account()
+				.loginname("tes10tes")))
+			.employments(generateNewEmployments());
+	}
+
+	public static List<NewEmployment> generateNewEmployments() {
+		return new ArrayList<>(List.of(generateNewEmployment()));
+	}
+
+	public static NewEmployment generateNewEmployment() {
+		return new generated.se.sundsvall.employee.NewEmployment()
+			.companyId(1)
+			.isMainEmployment(true)
 			.isManager(false)
+			.isManual(false)
+			.manager(generateManager(UUID.randomUUID()));
+	}
+
+	public static Employeev2 generateEmployee(final UUID uuid) {
+		return new generated.se.sundsvall.employee.Employeev2()
+			.personId(uuid)
+			.givenname("Test")
+			.lastname("Testsson")
+			.accounts(List.of(new Account()
+				.loginname("tes10tes")))
 			.employments(generateEmployments());
 	}
 
@@ -412,6 +438,7 @@ public final class TestObjectFactory {
 		return new generated.se.sundsvall.employee.Employment()
 			.companyId(1)
 			.isMainEmployment(true)
+			.isManager(false)
 			.isManual(false)
 			.manager(generateManager(UUID.randomUUID()));
 	}

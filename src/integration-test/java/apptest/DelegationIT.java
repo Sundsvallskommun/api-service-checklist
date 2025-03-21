@@ -29,7 +29,7 @@ class DelegationIT extends AbstractAppTest {
 	private static final String EXPECTED_FILE = "expected.json";
 
 	@Test
-	void test1_delegateEmployeeChecklist() {
+	void test01_delegateEmployeeChecklist() {
 		setupCall()
 			.withServicePath(PATH + EMPLOYEE_CHECKLIST_ID + "/delegate-to/" + EMAIL)
 			.withHttpMethod(POST)
@@ -39,7 +39,7 @@ class DelegationIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test2_fetchDelegatedEmployeeChecklists() {
+	void test02_fetchDelegatedEmployeeChecklists() {
 		setupCall()
 			.withServicePath(PATH + "delegated-to/" + USERNAME)
 			.withHttpMethod(GET)
@@ -49,7 +49,7 @@ class DelegationIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test3_removeEmployeeChecklistDelegation() {
+	void test03_removeEmployeeChecklistDelegation() {
 		setupCall()
 			.withServicePath(PATH + EMPLOYEE_CHECKLIST_ID + "/delegated-to/" + EMAIL)
 			.withHttpMethod(DELETE)
@@ -59,7 +59,7 @@ class DelegationIT extends AbstractAppTest {
 	}
 
 	@Test
-	void test4_delegateEmployeeChecklistWithExistingDelegation() {
+	void test04_delegateEmployeeChecklistWithExistingDelegation() {
 		setupCall()
 			.withServicePath(PATH + EMPLOYEE_CHECKLIST_ID + "/delegate-to/test@test5.com")
 			.withHttpMethod(POST)

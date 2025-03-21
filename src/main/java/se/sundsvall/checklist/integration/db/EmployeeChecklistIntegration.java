@@ -17,14 +17,14 @@ import static se.sundsvall.checklist.service.util.ServiceUtils.getMainEmployment
 import static se.sundsvall.checklist.service.util.StringUtils.toReadableString;
 import static se.sundsvall.checklist.service.util.VerificationUtils.verifyUnlockedEmployeeChecklist;
 
-import generated.se.sundsvall.employee.Employee;
-import generated.se.sundsvall.employee.Manager;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
@@ -58,9 +58,12 @@ import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
 import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
 import se.sundsvall.checklist.service.OrganizationTree;
 import se.sundsvall.checklist.service.OrganizationTree.OrganizationLine;
+import se.sundsvall.checklist.service.model.Employee;
+import se.sundsvall.checklist.service.model.Manager;
 
 @Component
 public class EmployeeChecklistIntegration {
+	private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeChecklistIntegration.class);
 	private static final String EMPLOYEE_HAS_CHECKLIST = "Employee with loginname %s already has an employee checklist.";
 	private static final String EMPLOYEE_SUCCESSFULLY_PROCESSED = "Employee with loginname %s processed successfully.";
 	private static final String NO_MATCHING_CHECKLIST_FOUND = "No checklist was found for any id in the organization tree for employee %s. Search has been performed for id %s.";
@@ -105,7 +108,15 @@ public class EmployeeChecklistIntegration {
 	@Transactional
 	public void updateEmployeeInformation(EmployeeEntity employeeEntity, Employee employee) {
 		updateEmployeeEntity(employeeEntity, employee);
-		employeeEntity.setManager(retrieveManagerEntity(getMainEmployment(employee).getManager()));
+
+		// Trying to update manager, but if employment has been updated there is a risk that main employment signal is missing.
+		// In that case, log problem and keep existing manager.
+		try {
+			employeeEntity.setManager(retrieveManagerEntity(getMainEmployment(employee).getManager()));
+		} catch (final ThrowableProblem e) {
+			LOGGER.warn("Tried to update manager for employee %s but ended up with an exception.".formatted(employee.getLoginname()), e);
+		}
+
 		employeeRepository.save(employeeEntity);
 	}
 

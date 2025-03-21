@@ -1,15 +1,26 @@
 [
 	{
-		"emailAddress": "john.doe@email.com",
-		"loginname": "johndoe",
 		"givenname": "John",
 		"isClassified": false,
-		"isManager": false,
 		"personId": "1f183588-48ef-4287-9725-4963997c817d",
+		"accounts": [
+			{
+				"loginname": "johndoe",
+				"companyId": 1,
+				"emailAddress": "john.doe@email.com"
+			}
+		],
+		"referenceNumbers": [
+			{
+				"referenceNumber": "1JOHNDOE",
+				"companyId": 1
+			}
+		],
 		"employments": [
 			{
 				"orgName": "Sub organization 5535",
 				"topOrgId": 28,
+				"isManager": false,
 				"manager": {
 					"emailAddress": "kalleanka@email.com",
 					"loginname": "kalleanka",

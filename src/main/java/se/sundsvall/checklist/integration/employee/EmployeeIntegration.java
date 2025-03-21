@@ -1,14 +1,17 @@
 package se.sundsvall.checklist.integration.employee;
 
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
 
-import generated.se.sundsvall.employee.Employee;
 import generated.se.sundsvall.employee.PortalPersonData;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import se.sundsvall.checklist.service.model.Employee;
 
 /**
  * Wrapper class for {@link EmployeeClient}.
@@ -24,11 +27,13 @@ public class EmployeeIntegration {
 		this.employeeClient = employeeClient;
 	}
 
-	public List<Employee> getEmployeeInformation(String filterString) {
+	public List<Employee> getEmployeeInformation(String municipalityId, String personId) {
 		try {
-			return employeeClient.getEmployeeInformation(filterString)
-				.orElse(emptyList());
-		} catch (Exception e) {
+			return employeeClient.getEmployeesByPersonId(municipalityId, personId).orElse(emptyList())
+				.stream()
+				.map(EmployeeMapper::toEmployee)
+				.toList();
+		} catch (final Exception e) {
 			// We don't really care.
 			LOG.warn("Couldn't fetch employee information from employee integration", e);
 		}
@@ -36,11 +41,13 @@ public class EmployeeIntegration {
 		return emptyList();
 	}
 
-	public List<Employee> getNewEmployees(String filterString) {
+	public List<Employee> getNewEmployees(String municipalityId, LocalDate hireDateFrom) {
 		try {
-			return employeeClient.getNewEmployees(filterString)
-				.orElse(emptyList());
-		} catch (Exception e) {
+			return employeeClient.getNewEmployees(municipalityId, ofNullable(hireDateFrom).map(d -> d.format(ISO_LOCAL_DATE)).orElse(null)).orElse(emptyList())
+				.stream()
+				.map(EmployeeMapper::toEmployee)
+				.toList();
+		} catch (final Exception e) {
 			// We don't really care here either...
 			LOG.warn("Couldn't fetch new employees from employee integration", e);
 		}
@@ -48,10 +55,10 @@ public class EmployeeIntegration {
 		return emptyList();
 	}
 
-	public Optional<PortalPersonData> getEmployeeByEmail(String email) {
+	public Optional<PortalPersonData> getEmployeeByEmail(String municipalityId, String email) {
 		try {
-			return employeeClient.getEmployeeByEmail(email);
-		} catch (Exception e) {
+			return employeeClient.getEmployeeByEmail(municipalityId, email);
+		} catch (final Exception e) {
 			// And not here..
 			LOG.warn("Couldn't fetch employee by email from employee integration", e);
 		}

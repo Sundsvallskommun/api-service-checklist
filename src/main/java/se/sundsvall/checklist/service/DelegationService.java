@@ -2,7 +2,6 @@ package se.sundsvall.checklist.service;
 
 import static org.zalando.problem.Status.CONFLICT;
 import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.checklist.integration.employee.EmployeeFilterBuilder.buildUuidEmployeeFilter;
 import static se.sundsvall.checklist.service.mapper.DelegateMapper.toDelegateEntity;
 import static se.sundsvall.checklist.service.util.ChecklistUtils.removeObsoleteTasks;
 import static se.sundsvall.checklist.service.util.EmployeeChecklistDecorator.decorateWithCustomTasks;
@@ -63,7 +62,7 @@ public class DelegationService {
 		final var employeeChecklist = employeeChecklistRepository.findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, EMPLOYEE_CHECKLIST_NOT_FOUND.formatted(employeeChecklistId)));
 
-		final var employeeData = employeeIntegration.getEmployeeByEmail(email)
+		final var employeeData = employeeIntegration.getEmployeeByEmail(municipalityId, email)
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, EMPLOYEE_NOT_FOUND.formatted(email)));
 
 		delegateRepository.findByEmployeeChecklistAndEmail(employeeChecklist, email).ifPresentOrElse(o -> {
@@ -88,7 +87,7 @@ public class DelegationService {
 
 	private List<EmployeeChecklist> toEmployeeChecklists(String municipalityId, List<EmployeeChecklistEntity> delegatedEmployeeChecklistEntities) {
 		return delegatedEmployeeChecklistEntities.stream()
-			.map(this::handleUpdatedEmployeeInformation)
+			.map(checklist -> handleUpdatedEmployeeInformation(municipalityId, checklist))
 			.map(EmployeeChecklistMapper::toEmployeeChecklist)
 			.map(ob -> decorateWithCustomTasks(ob, customTaskRepository.findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(ob.getId(), municipalityId)))
 			.map(ob -> removeObsoleteTasks(ob, fetchEntity(delegatedEmployeeChecklistEntities, ob.getId())))
@@ -99,10 +98,9 @@ public class DelegationService {
 			.toList();
 	}
 
-	private EmployeeChecklistEntity handleUpdatedEmployeeInformation(EmployeeChecklistEntity employeeChecklist) {
+	private EmployeeChecklistEntity handleUpdatedEmployeeInformation(String municipalityId, EmployeeChecklistEntity employeeChecklist) {
 		if (employeeChecklist.getEmployee().getUpdated().isBefore(OffsetDateTime.now().minus(employeeInformationUpdateInterval))) {
-			final var filter = buildUuidEmployeeFilter(employeeChecklist.getEmployee().getId());
-			employeeIntegration.getEmployeeInformation(filter).stream()
+			employeeIntegration.getEmployeeInformation(municipalityId, employeeChecklist.getEmployee().getId()).stream()
 				.findFirst()
 				.ifPresent(employee -> employeeChecklistIntegration.updateEmployeeInformation(employeeChecklist.getEmployee(), employee));
 		}

@@ -1,15 +1,35 @@
 [
 	{
-		"emailAddress": "pauletta.rodgers@noreply.com",
-		"loginname": "pau55rod",
 		"givenname": "Pauletta",
 		"isClassified": false,
-		"isManager": true,
 		"personId": "d9008859-bac0-470d-9fb0-5ecc8b161b95",
+		"accounts": [
+			{
+				"loginname": "pau55rod",
+				"companyId": 1,
+				"emailAddress": "pauletta.rodgers@noreply.com"
+			},
+			{
+				"loginname": "pau55rodcompany2",
+				"companyId": 2,
+				"emailAddress": "pauletta.rodgers@company2.com"
+			}
+		],
+		"referenceNumbers": [
+			{
+				"referenceNumber": "1PAU55ROD",
+				"companyId": 1
+			},
+			{
+				"referenceNumber": "2PAU55ROD",
+				"companyId": 2
+			}
+		],
 		"employments": [
 			{
 				"orgName": "Sub organization 212",
 				"topOrgId": 24,
+				"isManager": true,
 				"manager": {
 					"emailAddress": "bossa.nova@noreply.com",
 					"loginname": "bos33nov",
@@ -33,22 +53,61 @@
 				"benefitGroupId": 11,
 				"aid": "123456",
 				"startDate": "2024-01-24T00:00:00"
+			},
+			{
+				"orgName": "Some organization in company 2",
+				"topOrgId": 456,
+				"isManager": false,
+				"manager": {
+					"emailAddress": "manager.for.company.2@noreply.com",
+					"loginname": "company2manager",
+					"referenceNumber": "COMPANY2",
+					"givenname": "Obsolete",
+					"personId": "bdd7064a-d4aa-496c-9bc6-7f2b925f7644",
+					"lastname": "Manager"
+				},
+				"employmentType": 0,
+				"formOfEmploymentId": "1",
+				"topOrgName": "Top organization name in company 2",
+				"isManual": false,
+				"eventType": "Joiner",
+				"title": "Some obsolete non main employment in company 2",
+				"orgId": 4567,
+				"companyId": 2,
+				"eventInfo": "Corporate",
+				"paTeam": "ROBOT",
+				"managerCode": "C_",
+				"isMainEmployment": false,
+				"benefitGroupId": 22,
+				"aid": "123456",
+				"startDate": "2024-01-24T00:00:00"
 			}
 		],
 		"personNumber": "1901021234",
 		"lastname": "Rodgers"
 	},
 	{
-		"emailAddress": "henrietta.snuggles@noreply.com",
-		"loginname": "hen22snu",
 		"givenname": "Henrietta",
 		"isClassified": false,
-		"isManager": false,
 		"personId": "7ad3ce90-4113-4ac6-93d9-cf574a4a21b0",
+		"accounts": [
+			{
+				"loginname": "hen22snu",
+				"companyId": 1,
+				"emailAddress": "henrietta.snuggles@noreply.com"
+			}
+		],
+		"referenceNumbers": [
+			{
+				"referenceNumber": "1HEN22SNU",
+				"companyId": 1
+			}
+		],
 		"employments": [
 			{
 				"orgName": "Sub organization 212",
 				"topOrgId": 24,
+				"isManager": false,
 				"manager": {
 					"emailAddress": "bossa.nova@noreply.com",
 					"loginname": "bos33nov",
@@ -77,16 +136,27 @@
 		"lastname": "Snuggles"
 	},
 	{
-		"emailAddress": "chase.sparks@noreply.com",
-		"loginname": "cha66spa",
 		"givenname": "Chase",
 		"isClassified": false,
-		"isManager": false,
 		"personId": "ea32f3f4-c18c-48b9-98a0-9d73e7a2c5a6",
+		"accounts": [
+			{
+				"loginname": "cha66spa",
+				"companyId": 1,
+				"emailAddress": "chase.sparks@noreply.com"
+			}
+		],
+		"referenceNumbers": [
+			{
+				"referenceNumber": "1CHA66SPA",
+				"companyId": 1
+			}
+		],
 		"employments": [
 			{
 				"orgName": "Sub organization 7420",
 				"topOrgId": 23,
+				"isManager": false,
 				"employmentType": 0,
 				"formOfEmploymentId": "1",
 				"topOrgName": "Top organization name",
@@ -107,16 +177,27 @@
 		"lastname": "Sparks"
 	},
 	{
-		"emailAddress": "a.employee@5535.com",
-		"loginname": "aemp0loyee",
 		"givenname": "A Emp",
 		"isClassified": false,
-		"isManager": false,
 		"personId": "1810c9c4-7281-44de-9930-426d9f065f4d",
+		"accounts": [
+			{
+				"loginname": "aemp0loyee",
+				"companyId": 1,
+				"emailAddress": "a.employee@5535.com"
+			}
+		],
+		"referenceNumbers": [
+			{
+				"referenceNumber": "1AEMP01OYEE",
+				"companyId": 1
+			}
+		],
 		"employments": [
 			{
 				"orgName": "Sub organization 5335",
 				"topOrgId": 28,
+				"isManager": false,
 				"manager": {
 					"emailAddress": "a.manager@5535.com",
 					"loginname": "aman0agr",
@@ -145,16 +226,27 @@
 		"lastname": "Loyee"
 	},
 	{
-		"emailAddress": "channing.tatum@noreply.com",
-		"loginname": "cha77tat",
 		"givenname": "Channing",
 		"isClassified": false,
-		"isManager": false,
 		"personId": "453d8949-9a69-45b0-9960-6e356f61b38d",
+		"accounts": [
+			{
+				"loginname": "cha77tat",
+				"companyId": 1,
+				"emailAddress": "channing.tatum@noreply.com"
+			}
+		],
+		"referenceNumbers": [
+			{
+				"referenceNumber": "1CHA77TAT",
+				"companyId": 1
+			}
+		],
 		"employments": [
 			{
 				"orgName": "Sub organization 7420",
 				"topOrgId": 23,
+				"isManager": false,
 				"manager": {
 					"emailAddress": "a.manager@5535.com",
 					"loginname": "aman0agr",
@@ -183,16 +275,27 @@
 		"lastname": "Tatum"
 	},
 	{
-		"emailAddress": "scarlett.johansson@noreply.com",
-		"loginname": "sca88joh",
 		"givenname": "Scarlett",
 		"isClassified": false,
-		"isManager": false,
 		"personId": "3ce56128-23df-4296-af2c-313c15944151",
+		"accounts": [
+			{
+				"loginname": "sca88joh",
+				"companyId": 1,
+				"emailAddress": "scarlett.johansson@noreply.com"
+			}
+		],
+		"referenceNumbers": [
+			{
+				"referenceNumber": "1SCA88JOH",
+				"companyId": 1
+			}
+		],
 		"employments": [
 			{
 				"orgName": "Sub organization 7420",
 				"topOrgId": 23,
+				"isManager": false,
 				"manager": {
 					"emailAddress": "a.manager@5535.com",
 					"loginname": "aman0agr",
