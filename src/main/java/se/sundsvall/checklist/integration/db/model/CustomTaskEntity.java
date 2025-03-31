@@ -46,7 +46,7 @@ public class CustomTaskEntity {
 	@Column(name = "heading")
 	private String heading;
 
-	@Column(name = "heading_reference")
+	@Column(name = "heading_reference", columnDefinition = "varchar(1024)")
 	private String headingReference;
 
 	@Enumerated(EnumType.STRING)
