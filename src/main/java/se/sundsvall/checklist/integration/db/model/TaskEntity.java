@@ -44,7 +44,7 @@ public class TaskEntity {
 	@Column(name = "heading")
 	private String heading;
 
-	@Column(name = "heading_reference")
+	@Column(name = "heading_reference", columnDefinition = "varchar(1024)")
 	private String headingReference;
 
 	@Column(name = "text", columnDefinition = "varchar(2048)")
