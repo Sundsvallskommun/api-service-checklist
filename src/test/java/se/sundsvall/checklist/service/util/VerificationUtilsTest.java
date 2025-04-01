@@ -108,6 +108,24 @@ class VerificationUtilsTest {
 	}
 
 	@Test
+	void testValidEmploymentWhenNoFormOfEmployment() {
+		final var personId = UUID.randomUUID().toString();
+		final var employee = Employee.builder()
+			.withPersonId(personId)
+			.withMainEmployment(Employment.builder()
+				.withIsMainEmployment(true)
+				.withEventType("someType")
+				.build())
+			.build();
+
+		final var e = assertThrows(ThrowableProblem.class, () -> VerificationUtils.verifyValidEmployment(employee));
+
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
+		assertThat(e.getMessage()).isEqualTo(NOT_FOUND.getReasonPhrase()
+			+ ": Creation of checklist not possible for employee with personid %s as the main employment for the employee lacks information regarding form of employment.".formatted(personId));
+	}
+
+	@Test
 	void testValidEmploymentWhenNotValidFormOfEmployment() {
 		final var employee = Employee.builder()
 			.withLoginname("<loginName>")
