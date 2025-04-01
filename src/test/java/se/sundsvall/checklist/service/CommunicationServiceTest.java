@@ -20,6 +20,8 @@ import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.checklist.integration.db.model.CorrespondenceEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
+import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
+import se.sundsvall.checklist.integration.db.model.ManagerEntity;
 import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -75,7 +77,12 @@ class CommunicationServiceTest {
 	void sendEmail() {
 		// Arrange
 		final var id = UUID.randomUUID().toString();
-		final var employeeChecklistEntity = EmployeeChecklistEntity.builder().build();
+		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
+			.withEmployee(EmployeeEntity.builder()
+				.withManager(ManagerEntity.builder()
+					.build())
+				.build())
+			.build();
 
 		when(employeeChecklistRepositoryMock.findByIdAndChecklistsMunicipalityId(id, MUNICIPALITY_ID)).thenReturn(Optional.of(employeeChecklistEntity));
 
@@ -108,7 +115,12 @@ class CommunicationServiceTest {
 	@Test
 	void sendEmailForEntity() {
 		// Arrange
-		final var entity = EmployeeChecklistEntity.builder().build();
+		final var entity = EmployeeChecklistEntity.builder()
+			.withEmployee(EmployeeEntity.builder()
+				.withManager(ManagerEntity.builder()
+					.build())
+				.build())
+			.build();
 
 		// Act
 		service.sendEmail(entity);

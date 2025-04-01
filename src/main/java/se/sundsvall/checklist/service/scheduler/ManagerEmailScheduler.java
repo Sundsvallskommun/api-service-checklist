@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
@@ -34,6 +35,7 @@ public class ManagerEmailScheduler {
 		this.properties = properties;
 	}
 
+	@Transactional
 	@Dept44Scheduled(
 		name = "${checklist.manager-email.name}",
 		cron = "${checklist.manager-email.cron}",
