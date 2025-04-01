@@ -90,6 +90,9 @@ public final class VerificationUtils {
 		if (isNull(employment.getEventType())) {
 			throw Problem.valueOf(NOT_FOUND, buildErrorString(employee, List.of("the main employment for the employee lacks event type information")));
 		}
+		if (isNull(employment.getFormOfEmploymentId())) {
+			throw Problem.valueOf(NOT_FOUND, buildErrorString(employee, List.of("the main employment for the employee lacks information regarding form of employment")));
+		}
 		if (!VALID_EMPLOYMENT_FORMS_FOR_CHECKLIST.contains(employment.getFormOfEmploymentId())) {
 			throw Problem.valueOf(NOT_ACCEPTABLE, buildErrorString(employee, List.of(EMPLOYMENT_NOT_VALID_FOR_CHECKLIST.formatted("employment form"))));
 		}
