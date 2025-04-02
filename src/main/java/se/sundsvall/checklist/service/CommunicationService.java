@@ -57,9 +57,9 @@ public class CommunicationService {
 		if (entity.getEmployee().getDepartment().getCommunicationChannels().contains(EMAIL)) {
 			return true;
 		}
-		Optional.ofNullable(entity.getCorrespondence()).ifPresentOrElse(c -> { // Update existing object to reflect that email is the last used channel for communication together with managers email
-			c.setCommunicationChannel(EMAIL);
-			c.setRecipient(entity.getEmployee().getManager().getEmail());
+		Optional.ofNullable(entity.getCorrespondence()).ifPresentOrElse(correspondence -> { // Update existing object to reflect that email is the last used channel for communication together with managers email
+			correspondence.setCommunicationChannel(EMAIL);
+			correspondence.setRecipient(entity.getEmployee().getManager().getEmail());
 		}, () -> entity.setCorrespondence(toCorrespondenceEntity(EMAIL, entity.getEmployee().getManager().getEmail()))); // Add correspondence object if it does not exist on entity
 
 		// Finally set status to WILL_NOT_SEND as company has opted out of email correspondence

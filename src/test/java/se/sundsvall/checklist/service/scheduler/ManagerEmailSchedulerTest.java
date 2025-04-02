@@ -2,11 +2,14 @@ package se.sundsvall.checklist.service.scheduler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.ERROR;
+import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.SENT;
 
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -15,11 +18,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
+import se.sundsvall.checklist.integration.db.model.CorrespondenceEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.service.CommunicationService;
+import se.sundsvall.dept44.scheduling.health.Dept44HealthUtility;
 
 @ExtendWith(MockitoExtension.class)
 class ManagerEmailSchedulerTest {
@@ -31,12 +37,15 @@ class ManagerEmailSchedulerTest {
 	@Mock
 	private ChecklistProperties checklistPropertiesMock;
 
+	@Mock
+	private Dept44HealthUtility dept44HealthUtilityMock;
+
 	@InjectMocks
 	private ManagerEmailScheduler scheduler;
 
 	@AfterEach
 	void verifyNoMoreMockInteractions() {
-		verifyNoMoreInteractions(checklistPropertiesMock, communicationServiceMock);
+		verifyNoMoreInteractions(checklistPropertiesMock, communicationServiceMock, dept44HealthUtilityMock);
 	}
 
 	@Test
@@ -82,12 +91,16 @@ class ManagerEmailSchedulerTest {
 	@Test
 	void executeWhenSendingEmailThrowsException() {
 		// Arrange
-		final var entityFail = EmployeeChecklistEntity.builder().build();
-		final var entityOk = EmployeeChecklistEntity.builder().build();
+		ReflectionTestUtils.setField(scheduler, "schedulerName", "my-scheduler-name");
+		final var entityError = EmployeeChecklistEntity.builder().withCorrespondence(CorrespondenceEntity.builder().withCorrespondenceStatus(ERROR).build()).build();
+		final var entityException = EmployeeChecklistEntity.builder().build();
+		final var entitySent = EmployeeChecklistEntity.builder().withCorrespondence(CorrespondenceEntity.builder().withCorrespondenceStatus(SENT).build()).build();
 
 		when(checklistPropertiesMock.managedMunicipalityIds()).thenReturn(List.of(MUNICIPALITY_ID));
-		when(communicationServiceMock.fetchManagersToSendMailTo(MUNICIPALITY_ID)).thenReturn(List.of(entityFail, entityOk));
-		doThrow(Problem.valueOf(Status.BAD_GATEWAY, "Bad to the bone")).when(communicationServiceMock).sendEmail(entityFail);
+		when(communicationServiceMock.fetchManagersToSendMailTo(MUNICIPALITY_ID)).thenReturn(List.of(entityError, entitySent, entityException));
+		doNothing().when(communicationServiceMock).sendEmail(entityError);
+		doThrow(Problem.valueOf(Status.BAD_GATEWAY, "Bad to the bone")).when(communicationServiceMock).sendEmail(entityException);
+		doNothing().when(communicationServiceMock).sendEmail(entitySent);
 
 		// Act
 		scheduler.execute();
@@ -95,8 +108,9 @@ class ManagerEmailSchedulerTest {
 		// Assert and verify
 		verify(checklistPropertiesMock, times(2)).managedMunicipalityIds();
 		verify(communicationServiceMock).fetchManagersToSendMailTo(MUNICIPALITY_ID);
-		verify(communicationServiceMock).sendEmail(entityFail);
-		verify(communicationServiceMock).sendEmail(entityOk);
-
+		verify(communicationServiceMock).sendEmail(entityError);
+		verify(communicationServiceMock).sendEmail(entityException);
+		verify(communicationServiceMock).sendEmail(entitySent);
+		verify(dept44HealthUtilityMock).setHealthIndicatorUnhealthy("my-scheduler-name", "Communication service error: 2 of 3 emails encountered an exception while being sent");
 	}
 }
