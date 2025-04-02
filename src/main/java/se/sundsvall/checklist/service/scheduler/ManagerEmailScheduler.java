@@ -1,20 +1,13 @@
 package se.sundsvall.checklist.service.scheduler;
 
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
-import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.EMAIL;
-import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.NOT_SENT;
-import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.WILL_NOT_SEND;
-import static se.sundsvall.checklist.service.mapper.CorrespondenceMapper.toCorrespondenceEntity;
 
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
-import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistRepository;
 import se.sundsvall.checklist.service.CommunicationService;
 import se.sundsvall.dept44.scheduling.Dept44Scheduled;
 
@@ -25,17 +18,14 @@ public class ManagerEmailScheduler {
 	private static final String LOG_SEND_MANAGER_EMAIL_STARTED = "Beginning sending of email to employee managers";
 	private static final String LOG_SEND_MANAGER_EMAIL_ENDED = "Ending sending of email to employee managers";
 
-	private final EmployeeChecklistRepository employeeChecklistRepository;
 	private final CommunicationService communicationService;
 	private final ChecklistProperties properties;
 
-	public ManagerEmailScheduler(final EmployeeChecklistRepository employeeChecklistRepository, final CommunicationService communicationService, final ChecklistProperties properties) {
-		this.employeeChecklistRepository = employeeChecklistRepository;
+	public ManagerEmailScheduler(final CommunicationService communicationService, final ChecklistProperties properties) {
 		this.communicationService = communicationService;
 		this.properties = properties;
 	}
 
-	@Transactional
 	@Dept44Scheduled(
 		name = "${checklist.manager-email.name}",
 		cron = "${checklist.manager-email.cron}",
@@ -55,33 +45,18 @@ public class ManagerEmailScheduler {
 	}
 
 	private void handleEmailCommunication(String municipalityId) {
-		// Send email to all new employees that haven't sent any email yet and where the company has opted in to send emails
-		employeeChecklistRepository
-			.findAllByChecklistsMunicipalityIdAndCorrespondenceIsNull(municipalityId)
-			.stream()
-			.filter(this::filterByCompanyWithEmailAsCommunicationChannel)
-			.forEach(communicationService::sendEmail);
-
-		// Send email to all employees where previous send request didn't succeed
-		employeeChecklistRepository
-			.findAllByChecklistsMunicipalityIdAndCorrespondenceCorrespondenceStatus(municipalityId, NOT_SENT)
-			.stream()
-			.filter(this::filterByCompanyWithEmailAsCommunicationChannel)
-			.forEach(communicationService::sendEmail);
+		// Send email to all new employees that haven't sent any email yet and where the company has opted in to send emails and
+		// to all employees where previous send request didn't succeed
+		communicationService.fetchManagersToSendMailTo(municipalityId)
+			.forEach(this::sendEmail);
 	}
 
-	boolean filterByCompanyWithEmailAsCommunicationChannel(EmployeeChecklistEntity entity) {
-		if (entity.getEmployee().getDepartment().getCommunicationChannels().contains(EMAIL)) {
-			return true;
+	private void sendEmail(EmployeeChecklistEntity entity) {
+		try {
+			communicationService.sendEmail(entity);
+		} catch (final Exception e) {
+			// Log exception but don't interrupt execution
+			LOGGER.error("Exception occured when sending email", e);
 		}
-		Optional.ofNullable(entity.getCorrespondence()).ifPresentOrElse(c -> { // Update existing object to reflect that email is the last used channel for communication together with managers email
-			c.setCommunicationChannel(EMAIL);
-			c.setRecipient(entity.getEmployee().getManager().getEmail());
-		}, () -> entity.setCorrespondence(toCorrespondenceEntity(EMAIL, entity.getEmployee().getManager().getEmail()))); // Add correspondence object if it does not exist on entity
-
-		// Finally set status to WILL_NOT_SEND as company has opted out of email correspondence
-		entity.getCorrespondence().setCorrespondenceStatus(WILL_NOT_SEND);
-		employeeChecklistRepository.save(entity);
-		return false;
 	}
 }

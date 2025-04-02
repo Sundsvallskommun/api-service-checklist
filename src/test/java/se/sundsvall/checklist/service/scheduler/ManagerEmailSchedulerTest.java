@@ -2,36 +2,28 @@ package se.sundsvall.checklist.service.scheduler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.EMAIL;
-import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.NO_COMMUNICATION;
-import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.NOT_SENT;
 
 import java.util.List;
-import java.util.Set;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
-import se.sundsvall.checklist.integration.db.model.CorrespondenceEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
-import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
-import se.sundsvall.checklist.integration.db.model.ManagerEntity;
-import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
-import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistRepository;
 import se.sundsvall.checklist.service.CommunicationService;
 
 @ExtendWith(MockitoExtension.class)
 class ManagerEmailSchedulerTest {
-
-	@Mock
-	private EmployeeChecklistRepository employeeChecklistRepositoryMock;
+	private static final String MUNICIPALITY_ID = "municipalityId";
 
 	@Mock
 	private CommunicationService communicationServiceMock;
@@ -42,124 +34,38 @@ class ManagerEmailSchedulerTest {
 	@InjectMocks
 	private ManagerEmailScheduler scheduler;
 
-	@Test
-	void executeWhenEmployeeChecklistsWithNoPreviousCorrespondenceFound() {
-		// Arrange
-		final var municipalityId = "municipalityId";
-		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
-			.withEmployee(EmployeeEntity.builder()
-				.withDepartment(OrganizationEntity.builder()
-					.withCommunicationChannels(Set.of(EMAIL))
-					.build())
-				.withManager(ManagerEntity.builder()
-					.build())
-				.build())
-			.build();
-
-		when(checklistPropertiesMock.managedMunicipalityIds()).thenReturn(List.of(municipalityId));
-		when(employeeChecklistRepositoryMock.findAllByChecklistsMunicipalityIdAndCorrespondenceIsNull(municipalityId)).thenReturn(List.of(employeeChecklistEntity));
-
-		// Act
-		scheduler.execute();
-
-		// Assert and verify
-		verify(checklistPropertiesMock, times(2)).managedMunicipalityIds();
-		verify(employeeChecklistRepositoryMock).findAllByChecklistsMunicipalityIdAndCorrespondenceIsNull(municipalityId);
-		verify(employeeChecklistRepositoryMock).findAllByChecklistsMunicipalityIdAndCorrespondenceCorrespondenceStatus(municipalityId, NOT_SENT);
-		verify(communicationServiceMock).sendEmail(employeeChecklistEntity);
-		verifyNoMoreInteractions(employeeChecklistRepositoryMock, communicationServiceMock);
+	@AfterEach
+	void verifyNoMoreMockInteractions() {
+		verifyNoMoreInteractions(checklistPropertiesMock, communicationServiceMock);
 	}
 
 	@Test
-	void executeWhenEmployeeChecklistsWithPreviousNonSuccessfulCorrespondenceFound() {
+	void executeWhenReciviersExist() {
 		// Arrange
-		final var municipalityId = "municipalityId";
-		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
-			.withCorrespondence(CorrespondenceEntity.builder()
-				.withCorrespondenceStatus(NOT_SENT)
-				.build())
-			.withEmployee(EmployeeEntity.builder()
-				.withDepartment(OrganizationEntity.builder()
-					.withCommunicationChannels(Set.of(EMAIL))
-					.build())
-				.withManager(ManagerEntity.builder()
-					.build())
-				.build())
-			.build();
+		final var entity = EmployeeChecklistEntity.builder().build();
 
-		when(checklistPropertiesMock.managedMunicipalityIds()).thenReturn(List.of(municipalityId));
-		when(employeeChecklistRepositoryMock.findAllByChecklistsMunicipalityIdAndCorrespondenceCorrespondenceStatus(municipalityId, NOT_SENT)).thenReturn(List.of(employeeChecklistEntity));
+		when(checklistPropertiesMock.managedMunicipalityIds()).thenReturn(List.of(MUNICIPALITY_ID));
+		when(communicationServiceMock.fetchManagersToSendMailTo(MUNICIPALITY_ID)).thenReturn(List.of(entity));
 
 		// Act
 		scheduler.execute();
 
 		// Assert and verify
 		verify(checklistPropertiesMock, times(2)).managedMunicipalityIds();
-		verify(employeeChecklistRepositoryMock).findAllByChecklistsMunicipalityIdAndCorrespondenceIsNull(municipalityId);
-		verify(employeeChecklistRepositoryMock).findAllByChecklistsMunicipalityIdAndCorrespondenceCorrespondenceStatus(municipalityId, NOT_SENT);
-		verify(communicationServiceMock).sendEmail(employeeChecklistEntity);
-		verifyNoMoreInteractions(employeeChecklistRepositoryMock, communicationServiceMock);
+		verify(communicationServiceMock).fetchManagersToSendMailTo(MUNICIPALITY_ID);
+		verify(communicationServiceMock).sendEmail(entity);
 	}
 
 	@Test
-	void executeWhenEmployeeChecklistsWithNoPreviousCorrespondenceFoundForOptedOutCompanys() {
+	void executeWhenRecieversNotExist() {
 		// Arrange
-		final var municipalityId = "municipalityId";
-		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
-			.withEmployee(EmployeeEntity.builder()
-				.withDepartment(OrganizationEntity.builder()
-					.withCommunicationChannels(Set.of(NO_COMMUNICATION))
-					.build())
-				.withManager(ManagerEntity.builder()
-					.withEmail("manager@email.com")
-					.build())
-				.build())
-			.build();
-
-		when(checklistPropertiesMock.managedMunicipalityIds()).thenReturn(List.of(municipalityId));
-		when(employeeChecklistRepositoryMock.findAllByChecklistsMunicipalityIdAndCorrespondenceIsNull(municipalityId)).thenReturn(List.of(employeeChecklistEntity));
-
+		when(checklistPropertiesMock.managedMunicipalityIds()).thenReturn(List.of(MUNICIPALITY_ID));
 		// Act
 		scheduler.execute();
 
 		// Assert and verify
 		verify(checklistPropertiesMock, times(2)).managedMunicipalityIds();
-		verify(employeeChecklistRepositoryMock).findAllByChecklistsMunicipalityIdAndCorrespondenceIsNull(municipalityId);
-		verify(employeeChecklistRepositoryMock).findAllByChecklistsMunicipalityIdAndCorrespondenceCorrespondenceStatus(municipalityId, NOT_SENT);
-		verify(employeeChecklistRepositoryMock).save(employeeChecklistEntity);
-		verifyNoMoreInteractions(employeeChecklistRepositoryMock, communicationServiceMock);
-	}
-
-	@Test
-	void executeWhenEmployeeChecklistsWithPreviousNonSuccessfulCorrespondenceFoundForOptedOutCompanys() {
-		// Arrange
-		final var municipalityId = "municipalityId";
-		final var employeeChecklistEntity = EmployeeChecklistEntity.builder()
-			.withCorrespondence(CorrespondenceEntity.builder()
-				.withCorrespondenceStatus(NOT_SENT)
-				.build())
-			.withEmployee(EmployeeEntity.builder()
-				.withDepartment(OrganizationEntity.builder()
-					.withCommunicationChannels(Set.of(NO_COMMUNICATION))
-					.build())
-				.withManager(ManagerEntity.builder()
-					.withEmail("manager@email.com")
-					.build())
-				.build())
-			.build();
-
-		when(checklistPropertiesMock.managedMunicipalityIds()).thenReturn(List.of(municipalityId));
-		when(employeeChecklistRepositoryMock.findAllByChecklistsMunicipalityIdAndCorrespondenceCorrespondenceStatus(municipalityId, NOT_SENT)).thenReturn(List.of(employeeChecklistEntity));
-
-		// Act
-		scheduler.execute();
-
-		// Assert and verify
-		verify(checklistPropertiesMock, times(2)).managedMunicipalityIds();
-		verify(employeeChecklistRepositoryMock).findAllByChecklistsMunicipalityIdAndCorrespondenceIsNull(municipalityId);
-		verify(employeeChecklistRepositoryMock).findAllByChecklistsMunicipalityIdAndCorrespondenceCorrespondenceStatus(municipalityId, NOT_SENT);
-		verify(employeeChecklistRepositoryMock).save(employeeChecklistEntity);
-		verifyNoMoreInteractions(employeeChecklistRepositoryMock, communicationServiceMock);
+		verify(communicationServiceMock).fetchManagersToSendMailTo(MUNICIPALITY_ID);
 	}
 
 	@Test
@@ -171,6 +77,26 @@ class ManagerEmailSchedulerTest {
 		assertThat(e.getStatus()).isEqualTo(Status.INTERNAL_SERVER_ERROR);
 		assertThat(e.getMessage()).isEqualTo("Internal Server Error: No managed municipalities was found, please verify service properties.");
 		verify(checklistPropertiesMock).managedMunicipalityIds();
-		verifyNoMoreInteractions(employeeChecklistRepositoryMock, communicationServiceMock, checklistPropertiesMock);
+	}
+
+	@Test
+	void executeWhenSendingEmailThrowsException() {
+		// Arrange
+		final var entityFail = EmployeeChecklistEntity.builder().build();
+		final var entityOk = EmployeeChecklistEntity.builder().build();
+
+		when(checklistPropertiesMock.managedMunicipalityIds()).thenReturn(List.of(MUNICIPALITY_ID));
+		when(communicationServiceMock.fetchManagersToSendMailTo(MUNICIPALITY_ID)).thenReturn(List.of(entityFail, entityOk));
+		doThrow(Problem.valueOf(Status.BAD_GATEWAY, "Bad to the bone")).when(communicationServiceMock).sendEmail(entityFail);
+
+		// Act
+		scheduler.execute();
+
+		// Assert and verify
+		verify(checklistPropertiesMock, times(2)).managedMunicipalityIds();
+		verify(communicationServiceMock).fetchManagersToSendMailTo(MUNICIPALITY_ID);
+		verify(communicationServiceMock).sendEmail(entityFail);
+		verify(communicationServiceMock).sendEmail(entityOk);
+
 	}
 }
