@@ -2,6 +2,7 @@ package se.sundsvall.checklist.service;
 
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.EMAIL;
+import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.ERROR;
 import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.NOT_SENT;
 import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.WILL_NOT_SEND;
 import static se.sundsvall.checklist.service.mapper.CorrespondenceMapper.toCorrespondenceEntity;
@@ -51,6 +52,11 @@ public class CommunicationService {
 		return recipients.stream()
 			.filter(this::filterByCompanyWithEmailAsCommunicationChannel)
 			.toList();
+	}
+
+	@Transactional
+	public int countCorrespondenceWithErrors() {
+		return employeeChecklistRepository.countByCorrespondenceCorrespondenceStatus(ERROR);
 	}
 
 	boolean filterByCompanyWithEmailAsCommunicationChannel(EmployeeChecklistEntity entity) {

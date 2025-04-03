@@ -13,6 +13,7 @@ import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceSt
 
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -43,6 +44,11 @@ class ManagerEmailSchedulerTest {
 	@InjectMocks
 	private ManagerEmailScheduler scheduler;
 
+	@BeforeEach
+	void initField() {
+		ReflectionTestUtils.setField(scheduler, "schedulerName", "my-scheduler-name");
+	}
+
 	@AfterEach
 	void verifyNoMoreMockInteractions() {
 		verifyNoMoreInteractions(checklistPropertiesMock, communicationServiceMock, dept44HealthUtilityMock);
@@ -63,6 +69,8 @@ class ManagerEmailSchedulerTest {
 		verify(checklistPropertiesMock, times(2)).managedMunicipalityIds();
 		verify(communicationServiceMock).fetchManagersToSendMailTo(MUNICIPALITY_ID);
 		verify(communicationServiceMock).sendEmail(entity);
+		verify(communicationServiceMock).countCorrespondenceWithErrors();
+		verify(dept44HealthUtilityMock).setHealthIndicatorHealthy("my-scheduler-name");
 	}
 
 	@Test
@@ -75,6 +83,8 @@ class ManagerEmailSchedulerTest {
 		// Assert and verify
 		verify(checklistPropertiesMock, times(2)).managedMunicipalityIds();
 		verify(communicationServiceMock).fetchManagersToSendMailTo(MUNICIPALITY_ID);
+		verify(communicationServiceMock).countCorrespondenceWithErrors();
+		verify(dept44HealthUtilityMock).setHealthIndicatorHealthy("my-scheduler-name");
 	}
 
 	@Test
@@ -91,7 +101,6 @@ class ManagerEmailSchedulerTest {
 	@Test
 	void executeWhenSendingEmailThrowsException() {
 		// Arrange
-		ReflectionTestUtils.setField(scheduler, "schedulerName", "my-scheduler-name");
 		final var entityError = EmployeeChecklistEntity.builder().withCorrespondence(CorrespondenceEntity.builder().withCorrespondenceStatus(ERROR).build()).build();
 		final var entityException = EmployeeChecklistEntity.builder().build();
 		final var entitySent = EmployeeChecklistEntity.builder().withCorrespondence(CorrespondenceEntity.builder().withCorrespondenceStatus(SENT).build()).build();
@@ -101,6 +110,7 @@ class ManagerEmailSchedulerTest {
 		doNothing().when(communicationServiceMock).sendEmail(entityError);
 		doThrow(Problem.valueOf(Status.BAD_GATEWAY, "Bad to the bone")).when(communicationServiceMock).sendEmail(entityException);
 		doNothing().when(communicationServiceMock).sendEmail(entitySent);
+		when(communicationServiceMock.countCorrespondenceWithErrors()).thenReturn(2);
 
 		// Act
 		scheduler.execute();
@@ -111,6 +121,7 @@ class ManagerEmailSchedulerTest {
 		verify(communicationServiceMock).sendEmail(entityError);
 		verify(communicationServiceMock).sendEmail(entityException);
 		verify(communicationServiceMock).sendEmail(entitySent);
-		verify(dept44HealthUtilityMock).setHealthIndicatorUnhealthy("my-scheduler-name", "Communication service error: 2 of 3 emails encountered an exception while being sent");
+		verify(communicationServiceMock).countCorrespondenceWithErrors();
+		verify(dept44HealthUtilityMock).setHealthIndicatorUnhealthy("my-scheduler-name", "Communication service error: 2 email has encountered exception while being processed and needs to be investigated");
 	}
 }

@@ -6,17 +6,18 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.EMAIL;
 import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.NO_COMMUNICATION;
+import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.ERROR;
 import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.NOT_SENT;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -51,6 +52,13 @@ class CommunicationServiceTest {
 	@Captor
 	private ArgumentCaptor<EmployeeChecklistEntity> entityCaptor;
 
+	@AfterEach
+	void verifyNoMoreMockInteractions() {
+		verifyNoMoreInteractions(
+			employeeChecklistRepositoryMock,
+			mailHandlerMock);
+	}
+
 	@Test
 	void fetchCorrespondence() {
 		// Arrange
@@ -66,8 +74,6 @@ class CommunicationServiceTest {
 		// Assert and verify
 		assertThat(result).isNotNull();
 		verify(employeeChecklistRepositoryMock).findByIdAndChecklistsMunicipalityId(id, MUNICIPALITY_ID);
-		verifyNoMoreInteractions(employeeChecklistRepositoryMock);
-		verifyNoInteractions(mailHandlerMock);
 	}
 
 	@Test
@@ -82,8 +88,6 @@ class CommunicationServiceTest {
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s not found within municipality %s.".formatted(id, MUNICIPALITY_ID));
 		verify(employeeChecklistRepositoryMock).findByIdAndChecklistsMunicipalityId(id, MUNICIPALITY_ID);
-		verifyNoMoreInteractions(employeeChecklistRepositoryMock);
-		verifyNoInteractions(mailHandlerMock);
 	}
 
 	@Test
@@ -105,7 +109,6 @@ class CommunicationServiceTest {
 		// Assert and verify
 		verify(employeeChecklistRepositoryMock).findByIdAndChecklistsMunicipalityId(id, MUNICIPALITY_ID);
 		verify(mailHandlerMock).sendEmail(eq(employeeChecklistEntity), any());
-		verifyNoMoreInteractions(employeeChecklistRepositoryMock, mailHandlerMock);
 	}
 
 	@Test
@@ -120,8 +123,6 @@ class CommunicationServiceTest {
 		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s not found within municipality %s.".formatted(id, MUNICIPALITY_ID));
 		verify(employeeChecklistRepositoryMock).findByIdAndChecklistsMunicipalityId(id, MUNICIPALITY_ID);
-		verifyNoMoreInteractions(employeeChecklistRepositoryMock);
-		verifyNoInteractions(mailHandlerMock);
 
 	}
 
@@ -140,7 +141,6 @@ class CommunicationServiceTest {
 
 		// Assert and verify
 		verify(mailHandlerMock).sendEmail(eq(entity), any());
-		verifyNoMoreInteractions(employeeChecklistRepositoryMock, mailHandlerMock);
 	}
 
 	@Test
@@ -178,7 +178,6 @@ class CommunicationServiceTest {
 
 		verify(employeeChecklistRepositoryMock).findAllByChecklistsMunicipalityIdAndCorrespondenceIsNull(MUNICIPALITY_ID);
 		verify(employeeChecklistRepositoryMock).findAllByChecklistsMunicipalityIdAndCorrespondenceCorrespondenceStatus(MUNICIPALITY_ID, NOT_SENT);
-		verifyNoMoreInteractions(employeeChecklistRepositoryMock);
 	}
 
 	@Test
@@ -220,6 +219,21 @@ class CommunicationServiceTest {
 		assertThat(entityCaptor.getAllValues()).hasSize(2).allSatisfy(e -> {
 			assertThat(e.getCorrespondence().getCorrespondenceStatus()).isEqualTo(CorrespondenceStatus.WILL_NOT_SEND);
 		});
-		verifyNoMoreInteractions(employeeChecklistRepositoryMock);
+	}
+
+	@Test
+	void countCorrespondenceWithErrors() {
+		// Arrange
+		final var errors = 123;
+		when(employeeChecklistRepositoryMock.countByCorrespondenceCorrespondenceStatus(ERROR)).thenReturn(errors);
+
+		// Act
+		final var result = service.countCorrespondenceWithErrors();
+
+		// Assert and verify
+
+		assertThat(result).isEqualTo(errors);
+
+		verify(employeeChecklistRepositoryMock).countByCorrespondenceCorrespondenceStatus(ERROR);
 	}
 }

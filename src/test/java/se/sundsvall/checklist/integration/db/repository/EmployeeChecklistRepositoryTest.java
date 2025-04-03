@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.assertj.core.groups.Tuple.tuple;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
+import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.ERROR;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -102,11 +103,9 @@ class EmployeeChecklistRepositoryTest {
 	void findAllByChecklistMunicipalityIdAndCorrespondenceIsNull() {
 		final var result = repository.findAllByChecklistsMunicipalityIdAndCorrespondenceIsNull("2281");
 
-		assertThat(result).hasSize(2)
+		assertThat(result).hasSize(1)
 			.extracting(EmployeeChecklistEntity::getId)
-			.containsExactlyInAnyOrder(
-				"f5960058-fad8-4825-85f3-b0fdb518adc5",
-				"223a076f-441d-4a30-b5d0-f2bfd5ab250b");
+			.containsExactly("f5960058-fad8-4825-85f3-b0fdb518adc5");
 	}
 
 	@ParameterizedTest
@@ -117,6 +116,9 @@ class EmployeeChecklistRepositoryTest {
 		if (CorrespondenceStatus.SENT == status) {
 			assertThat(result).hasSize(1);
 			assertThat(result.getFirst().getId()).isEqualTo("f853e2b1-a144-4305-b05e-ee8d6dc6d005");
+		} else if (CorrespondenceStatus.ERROR == status) {
+			assertThat(result).hasSize(1);
+			assertThat(result.getFirst().getId()).isEqualTo("223a076f-441d-4a30-b5d0-f2bfd5ab250b");
 		} else {
 			assertThat(result).isEmpty();
 		}
@@ -136,5 +138,10 @@ class EmployeeChecklistRepositoryTest {
 		assertThat(result).hasSize(1)
 			.extracting(EmployeeChecklistEntity::getId)
 			.containsExactly("223a076f-441d-4a30-b5d0-f2bfd5ab250b");
+	}
+
+	@Test
+	void countByCorrespondenceCorrespondenceStatus() {
+		assertThat(repository.countByCorrespondenceCorrespondenceStatus(ERROR)).isOne();
 	}
 }
