@@ -7,6 +7,8 @@ import static se.sundsvall.checklist.service.mapper.CorrespondenceMapper.toCorre
 import static se.sundsvall.checklist.service.mapper.CorrespondenceMapper.toCorrespondenceStatus;
 
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
@@ -16,6 +18,7 @@ import se.sundsvall.checklist.integration.templating.TemplatingIntegration;
 
 @Component
 public class MailHandler {
+	private static final Logger LOGGER = LoggerFactory.getLogger(MailHandler.class);
 
 	private final MessagingIntegration messagingIntegration;
 
@@ -34,6 +37,8 @@ public class MailHandler {
 
 	@Transactional
 	public void sendEmail(EmployeeChecklistEntity entity, String emailTemplate) {
+		LOGGER.info("Sending email to {}, manager for new employee with login name {}", entity.getEmployee().getManager().getEmail(), entity.getEmployee().getUsername());
+
 		Optional.ofNullable(entity.getCorrespondence()).ifPresentOrElse(c -> { // Update existing object to reflect that email is the last used channel for communication together with managers email
 			c.setCommunicationChannel(EMAIL);
 			c.setRecipient(entity.getEmployee().getManager().getEmail());

@@ -27,6 +27,8 @@ public interface EmployeeChecklistRepository extends JpaRepository<EmployeeCheck
 
 	List<EmployeeChecklistEntity> findAllByChecklistsMunicipalityIdAndCorrespondenceCorrespondenceStatus(String municipalityId, CorrespondenceStatus status);
 
+	int countByCorrespondenceCorrespondenceStatus(CorrespondenceStatus status);
+
 	EmployeeChecklistEntity findByChecklistsMunicipalityIdAndEmployeeUsername(String municipalityId, String username);
 
 	List<EmployeeChecklistEntity> findAllByChecklistsMunicipalityIdAndEmployeeManagerUsername(String municipalityId, String username);
