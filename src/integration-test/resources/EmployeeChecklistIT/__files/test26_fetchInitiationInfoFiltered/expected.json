@@ -23,14 +23,6 @@
 			{
 				"status": 404,
 				"information": "Not Found: Employee with username hen22snu is missing information regarding organizational structure."
-			},
-			{
-				"status": 200,
-				"information": "Employee with loginname jar31jed processed successfully."
-			},
-			{
-				"status": 200,
-				"information": "Employee with loginname aemp0loyee already has an employee checklist."
 			}
 		]
 	}

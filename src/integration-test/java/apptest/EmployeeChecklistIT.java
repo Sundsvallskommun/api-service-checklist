@@ -433,4 +433,15 @@ class EmployeeChecklistIT extends AbstractAppTest {
 			.withExpectedResponse(EXPECTED_FILE)
 			.sendRequestAndVerifyResponse();
 	}
+
+	@Test
+	void test26_fetchInitiationInfoFiltered() {
+		setupCall()
+			.withServicePath(PATH_PREFIX + "/initiationinfo?onlyErrors=true")
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(EXPECTED_FILE)
+			.sendRequestAndVerifyResponse();
+	}
 }

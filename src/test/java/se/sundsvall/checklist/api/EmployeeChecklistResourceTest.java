@@ -2,6 +2,8 @@ package se.sundsvall.checklist.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -429,7 +431,7 @@ class EmployeeChecklistResourceTest {
 		// Arrange
 		final var path = "/initiationinfo";
 
-		final var mockedResponse = InitiationInformation.builder()
+		final var mockedResponse = List.of(InitiationInformation.builder()
 			.withDetails(List.of(InitiationInformation.Detail.builder()
 				.withInformation("detailed information")
 				.withStatus(123)
@@ -437,22 +439,60 @@ class EmployeeChecklistResourceTest {
 			.withExecuted(OffsetDateTime.now())
 			.withLogId("logId")
 			.withSummary("summary")
-			.build();
+			.build());
 
-		when(serviceMock.getInitiationInformation(MUNICIPALITY_ID)).thenReturn(mockedResponse);
+		when(serviceMock.getInitiationInformation(eq(MUNICIPALITY_ID), anyBoolean(), anyBoolean())).thenReturn(mockedResponse);
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(BASE_PATH + path).build(Map.of("municipalityId", MUNICIPALITY_ID)))
+			.uri(builder -> builder
+				.path(BASE_PATH + path)
+				.queryParam("onlyLatest", true)
+				.queryParam("onlyErrors", true)
+				.build(Map.of("municipalityId", MUNICIPALITY_ID)))
 			.exchange()
 			.expectStatus().isOk()
-			.expectBody(InitiationInformation.class)
+			.expectBodyList(InitiationInformation.class)
 			.returnResult()
 			.getResponseBody();
 
 		// Assert and verify
 		assertThat(response).isEqualTo(mockedResponse);
 
-		verify(serviceMock).getInitiationInformation(MUNICIPALITY_ID);
+		verify(serviceMock).getInitiationInformation(MUNICIPALITY_ID, true, true);
+	}
+
+	@Test
+	void getInitiationinfoWithNoFilter() {
+		// Arrange
+		final var path = "/initiationinfo";
+
+		final var mockedResponse = List.of(InitiationInformation.builder()
+			.withDetails(List.of(InitiationInformation.Detail.builder()
+				.withInformation("detailed information")
+				.withStatus(123)
+				.build()))
+			.withExecuted(OffsetDateTime.now())
+			.withLogId("logId")
+			.withSummary("summary")
+			.build());
+
+		when(serviceMock.getInitiationInformation(eq(MUNICIPALITY_ID), anyBoolean(), anyBoolean())).thenReturn(mockedResponse);
+
+		// Act
+		final var response = webTestClient.get()
+			.uri(builder -> builder
+				.path(BASE_PATH + path)
+				.build(Map.of("municipalityId", MUNICIPALITY_ID)))
+			.exchange()
+			.expectStatus().isOk()
+			.expectBodyList(InitiationInformation.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert and verify
+		assertThat(response).isEqualTo(mockedResponse);
+
+		verify(serviceMock).getInitiationInformation(MUNICIPALITY_ID, true, false);
 	}
 }

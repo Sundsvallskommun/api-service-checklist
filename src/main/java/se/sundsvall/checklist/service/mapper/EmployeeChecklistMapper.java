@@ -4,21 +4,22 @@ import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toCollection;
 import static org.apache.commons.lang3.ObjectUtils.anyNull;
+import static org.springframework.util.CollectionUtils.isEmpty;
+import static org.zalando.problem.Status.UNPROCESSABLE_ENTITY;
 import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toStakeholder;
+import static se.sundsvall.checklist.service.util.StringUtils.getErrorCode;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.CollectionUtils;
-import org.zalando.problem.Status;
 import org.zalando.problem.StatusType;
 import se.sundsvall.checklist.api.model.CustomTask;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
@@ -42,6 +43,7 @@ import se.sundsvall.checklist.integration.db.model.InitiationInfoEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
+import se.sundsvall.checklist.service.util.StringUtils;
 import se.sundsvall.dept44.requestid.RequestId;
 
 public final class EmployeeChecklistMapper {
@@ -268,35 +270,47 @@ public final class EmployeeChecklistMapper {
 			.withStatus(status).build();
 	}
 
-	public static InitiationInformation toInitiationInformation(final List<InitiationInfoEntity> infos) {
-		final var entries = CollectionUtils.isEmpty(infos) ? 0 : infos.size();
-		final var errors = countErrors(infos);
+	public static List<InitiationInformation> toInitiationInformations(final List<InitiationInfoEntity> infos) {
+		return ofNullable(infos).orElse(emptyList()).stream()
+			.collect(groupingBy(InitiationInfoEntity::getLogId))
+			.entrySet()
+			.stream()
+			.map(EmployeeChecklistMapper::toInitiationInformation)
+			.sorted((o1, o2) -> o2.getExecuted().compareTo(o1.getExecuted())) // We want latest execution first
+			.toList();
+	}
+
+	private static InitiationInformation toInitiationInformation(Entry<String, List<InitiationInfoEntity>> infoEntry) {
+		final var processedEmployees = isEmpty(infoEntry.getValue()) ? 0 : infoEntry.getValue().size();
+		final var errors = countErrors(infoEntry.getValue());
 
 		return InitiationInformation.builder()
-			.withSummary(createHeader(entries, errors))
-			.withLogId(ofNullable(infos).filter(ObjectUtils::isNotEmpty).map(List::getFirst).map(InitiationInfoEntity::getLogId).orElse(null))
-			.withExecuted(ofNullable(infos).filter(ObjectUtils::isNotEmpty).map(List::getFirst).map(InitiationInfoEntity::getCreated).orElse(null))
-			.withDetails(ofNullable(infos).filter(ObjectUtils::isNotEmpty).map(EmployeeChecklistMapper::toDetails).orElse(null))
+			.withSummary(createHeader(infoEntry.getKey(), processedEmployees, errors))
+			.withLogId(infoEntry.getKey())
+			.withExecuted(ofNullable(infoEntry.getValue()).filter(ObjectUtils::isNotEmpty).map(List::getFirst).map(InitiationInfoEntity::getCreated).orElse(null))
+			.withDetails(ofNullable(infoEntry.getValue())
+				.filter(ObjectUtils::isNotEmpty)
+				.map(EmployeeChecklistMapper::toDetails)
+				.orElse(null))
 			.build();
 	}
 
-	private static String createHeader(int entries, long errors) {
-		if (entries == 0) {
-			return "The last scheduled execution did not find any employees to initialize checklists for";
-		}
-		return errors > 0 ? "%s potential problems occurred when initializing checklists for %s employees".formatted(errors, entries) : "No problems occurred when initializing checklists for %s employees".formatted(entries);
+	private static String createHeader(String logId, int entries, long errors) {
+		return errors > 0
+			? "%s potential problems occurred in execution with log id %s where %s employees were proceessed".formatted(errors, logId, entries)
+			: "No problems occurred in execution with log id %s where %s employees were processed".formatted(logId, entries);
 	}
 
 	private static List<InitiationInformation.Detail> toDetails(final List<InitiationInfoEntity> infos) {
 		return infos.stream()
 			.map(EmployeeChecklistMapper::toDetail)
-			.sorted(Comparator.comparing(InitiationInformation.Detail::getStatus).reversed())
-			.toList();
+			.sorted(comparing(InitiationInformation.Detail::getStatus).reversed())
+			.collect(toCollection(ArrayList::new));
 	}
 
 	private static InitiationInformation.Detail toDetail(InitiationInfoEntity i) {
 		return InitiationInformation.Detail.builder()
-			.withStatus(nonNull(i.getStatus()) ? Integer.parseInt(i.getStatus()) : Status.UNPROCESSABLE_ENTITY.getStatusCode())
+			.withStatus(nonNull(i.getStatus()) ? getErrorCode(i.getStatus()) : UNPROCESSABLE_ENTITY.getStatusCode())
 			.withInformation(i.getInformation())
 			.build();
 	}
@@ -308,17 +322,11 @@ public final class EmployeeChecklistMapper {
 	 * @return       total amount of errors (where status null is considered to be an error)
 	 */
 	private static long countErrors(final List<InitiationInfoEntity> infos) {
-		final var errors = ofNullable(infos).orElse(emptyList()).stream()
+		return ofNullable(infos).orElse(emptyList()).stream()
 			.map(InitiationInfoEntity::getStatus)
-			.filter(Objects::nonNull)
-			.map(Integer::parseInt)
+			.map(StringUtils::getErrorCode)
 			.map(HttpStatus::valueOf)
 			.filter(HttpStatus::isError)
-			.count();
-
-		return errors + ofNullable(infos).orElse(emptyList()).stream()
-			.map(InitiationInfoEntity::getStatus)
-			.filter(Objects::isNull)
 			.count();
 	}
 }

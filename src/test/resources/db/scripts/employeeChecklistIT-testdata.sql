@@ -583,12 +583,12 @@ values ('4b6e83ec-35a7-469e-8137-d1bd044c92ad', 'b3c9f934-a7f3-4bc8-9cc6-f085077
 -- Data used in test 25 (reading initiation information)
 -- ======================================================================================
 insert into initiation_info (created, id, information, log_id, status, municipality_id)
-values ('2024-01-01 12:00:00.000', 'b6847217-3314-4686-a576-9c2344345ee5', 'Employee with loginname jar31jed processed successfully.', '8537d28d-1479-42cf-87df-f79612bbe965', '200', '2281'),
-       ('2024-01-01 12:00:00.000', 'ed71b4a2-3135-445d-b593-6060e9617181', 'Not Found: Employee with username hen22snu is missing information regarding organizational structure.', '8537d28d-1479-42cf-87df-f79612bbe965', '404', '2281'),
-       ('2024-01-01 12:00:00.000', '117955f1-6cf1-4bc6-906d-bb0a69f24a8c', 'Not Found: Creation of checklist not possible for employee with loginname cha66spa as the main employment for the employee lacks information about the manager.', '8537d28d-1479-42cf-87df-f79612bbe965', '404', '2281'),
-       ('2024-01-01 12:00:00.000', 'cfd8de12-4ce7-48c9-b037-1883d5e84693', 'Employee with loginname aemp0loyee already has an employee checklist.', '8537d28d-1479-42cf-87df-f79612bbe965', '200', '2281'),
-       ('2024-01-01 12:00:00.000', '024efa6f-3226-41a9-9a74-fbf877b0e859', 'Not Acceptable: Employee with loginname cha77tat does not have a main employment with an event type that validates for creating an employee checklist.', '8537d28d-1479-42cf-87df-f79612bbe965', '406', '2281'),
-       ('2024-01-01 12:00:00.000', 'd9bc5dc4-5431-41da-a31c-a8a16c676e12', 'Not Acceptable: Employee with loginname sca88joh does not have a main employment with an employment form that validates for creating an employee checklist.', '8537d28d-1479-42cf-87df-f79612bbe965', '406', '2281'),
+values ('2024-01-01 12:00:00.000', 'b6847217-3314-4686-a576-9c2344345ee5', 'Employee with loginname jar31jed processed successfully.', '8537d28d-1479-42cf-87df-f79612bbe965', '200 OK', '2281'),
+       ('2024-01-01 12:00:00.000', 'ed71b4a2-3135-445d-b593-6060e9617181', 'Not Found: Employee with username hen22snu is missing information regarding organizational structure.', '8537d28d-1479-42cf-87df-f79612bbe965', '404 Not Found', '2281'),
+       ('2024-01-01 12:00:00.000', '117955f1-6cf1-4bc6-906d-bb0a69f24a8c', 'Not Found: Creation of checklist not possible for employee with loginname cha66spa as the main employment for the employee lacks information about the manager.', '8537d28d-1479-42cf-87df-f79612bbe965', '404 Not Found', '2281'),
+       ('2024-01-01 12:00:00.000', 'cfd8de12-4ce7-48c9-b037-1883d5e84693', 'Employee with loginname aemp0loyee already has an employee checklist.', '8537d28d-1479-42cf-87df-f79612bbe965', '200 OK', '2281'),
+       ('2024-01-01 12:00:00.000', '024efa6f-3226-41a9-9a74-fbf877b0e859', 'Not Acceptable: Employee with loginname cha77tat does not have a main employment with an event type that validates for creating an employee checklist.', '8537d28d-1479-42cf-87df-f79612bbe965', '406 Not Acceptable', '2281'),
+       ('2024-01-01 12:00:00.000', 'd9bc5dc4-5431-41da-a31c-a8a16c676e12', 'Not Acceptable: Employee with loginname sca88joh does not have a main employment with an employment form that validates for creating an employee checklist.', '8537d28d-1479-42cf-87df-f79612bbe965', '406 Not Acceptable', '2281'),
        ('2024-01-01 12:00:00.000', '64f2eef6-1696-4378-8fc1-82455400813d', 'Some mysterious error that has been translated to empty status.', '8537d28d-1479-42cf-87df-f79612bbe965', null, '2281');
        
        

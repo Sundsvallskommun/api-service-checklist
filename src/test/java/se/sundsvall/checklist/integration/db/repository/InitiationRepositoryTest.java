@@ -39,11 +39,11 @@ class InitiationRepositoryTest {
 		assertThat(result).hasSize(2).satisfiesExactlyInAnyOrder(entity -> {
 			assertThat(entity.getId()).isEqualTo("b6847217-3314-4686-a576-9c2344345ee5");
 			assertThat(entity.getMunicipalityId()).isEqualTo(municipalityId);
-			assertThat(entity.getStatus()).isEqualTo("200");
+			assertThat(entity.getStatus()).isEqualTo("200 OK");
 		}, entity -> {
 			assertThat(entity.getId()).isEqualTo("ed71b4a2-3135-445d-b593-6060e9617181");
 			assertThat(entity.getMunicipalityId()).isEqualTo(municipalityId);
-			assertThat(entity.getStatus()).isEqualTo("404");
+			assertThat(entity.getStatus()).isEqualTo("404 Not Found");
 		});
 	}
 

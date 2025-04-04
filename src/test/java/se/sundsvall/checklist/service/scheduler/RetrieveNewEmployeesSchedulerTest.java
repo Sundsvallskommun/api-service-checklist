@@ -10,8 +10,6 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -19,8 +17,6 @@ import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse.Detail;
-import se.sundsvall.checklist.integration.db.model.InitiationInfoEntity;
-import se.sundsvall.checklist.integration.db.repository.InitiationRepository;
 import se.sundsvall.checklist.service.EmployeeChecklistService;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,12 +27,6 @@ class RetrieveNewEmployeesSchedulerTest {
 
 	@Mock
 	private ChecklistProperties checklistPropertiesMock;
-
-	@Mock
-	private InitiationRepository initiationRepositoryMock;
-
-	@Captor
-	private ArgumentCaptor<List<InitiationInfoEntity>> initiationInfoEntityCaptor;
 
 	@InjectMocks
 	private RetrieveNewEmployeesScheduler scheduler;
@@ -63,13 +53,6 @@ class RetrieveNewEmployeesSchedulerTest {
 		scheduler.execute();
 
 		verify(checklistPropertiesMock, times(2)).managedMunicipalityIds();
-		verify(initiationRepositoryMock).saveAll(initiationInfoEntityCaptor.capture());
-		var initiationInfoEntities = initiationInfoEntityCaptor.getValue();
-		assertThat(initiationInfoEntities).hasSize(2).allSatisfy(initiationInfoEntity -> {
-			assertThat(initiationInfoEntity.getMunicipalityId()).isEqualTo(municipalityId);
-			assertThat(initiationInfoEntity.getInformation()).isIn("Ok string", "Error string");
-			assertThat(initiationInfoEntity.getStatus()).isIn("200 OK", "404 Not Found");
-		});
 		verify(employeeChecklistServiceMock).initiateEmployeeChecklists(municipalityId);
 		verifyNoMoreInteractions(employeeChecklistServiceMock, checklistPropertiesMock);
 	}

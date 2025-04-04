@@ -9,6 +9,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static org.zalando.problem.Status.OK;
 
 import generated.se.sundsvall.employee.PortalPersonData;
 import generated.se.sundsvall.mdviewer.Organization;
@@ -16,7 +18,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -31,6 +32,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
@@ -52,6 +54,7 @@ import se.sundsvall.checklist.integration.db.model.DelegateEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
 import se.sundsvall.checklist.integration.db.model.FulfilmentEntity;
+import se.sundsvall.checklist.integration.db.model.InitiationInfoEntity;
 import se.sundsvall.checklist.integration.db.model.ManagerEntity;
 import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
@@ -72,6 +75,10 @@ import se.sundsvall.checklist.service.model.Manager;
 class EmployeeChecklistServiceTest {
 
 	private static final String MUNICIPALITY_ID = "municipalityId";
+	private static final String LOG_ID_1 = "logId1";
+	private static final OffsetDateTime TIMESTAMP_1 = OffsetDateTime.now().minusSeconds(1);
+	private static final String LOG_ID_2 = "logId2";
+	private static final OffsetDateTime TIMESTAMP_2 = OffsetDateTime.now();
 
 	@Mock
 	private EmployeeChecklistIntegration employeeChecklistIntegrationMock;
@@ -96,6 +103,9 @@ class EmployeeChecklistServiceTest {
 
 	@Captor
 	private ArgumentCaptor<OrganizationTree> organizationTreeCaptor;
+
+	@Captor
+	private ArgumentCaptor<List<InitiationInfoEntity>> initiationEntitiesCaptor;
 
 	@BeforeEach
 	void initializeFields() {
@@ -451,7 +461,7 @@ class EmployeeChecklistServiceTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> service.readCustomTask(MUNICIPALITY_ID, employeeChecklistId, customTaskId));
 
 		// Assert and verify
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s does not contain any custom task with id %s.".formatted(employeeChecklistId, customTaskId));
 
 		verify(customTaskRepositoryMock).findById(customTaskId);
@@ -472,7 +482,7 @@ class EmployeeChecklistServiceTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> service.readCustomTask(MUNICIPALITY_ID, employeeChecklistId, customTaskId));
 
 		// Assert and verify
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s does not contain any custom task with id %s.".formatted(employeeChecklistId, customTaskId));
 
 		verify(customTaskRepositoryMock).findById(customTaskId);
@@ -526,7 +536,7 @@ class EmployeeChecklistServiceTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> service.updateCustomTask(MUNICIPALITY_ID, employeeChecklistId, customTaskId, request));
 
 		// Assert and verify
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s does not contain any custom task with id %s.".formatted(employeeChecklistId, customTaskId));
 
 		verify(customTaskRepositoryMock).findById(customTaskId);
@@ -548,7 +558,7 @@ class EmployeeChecklistServiceTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> service.updateCustomTask(MUNICIPALITY_ID, employeeChecklistId, customTaskId, request));
 
 		// Assert and verify
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s does not contain any custom task with id %s.".formatted(employeeChecklistId, customTaskId));
 
 		verify(customTaskRepositoryMock).findById(customTaskId);
@@ -620,7 +630,7 @@ class EmployeeChecklistServiceTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> service.deleteCustomTask(MUNICIPALITY_ID, employeeChecklistId, customTaskId));
 
 		// Assert and verify
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s does not contain any custom task with id %s.".formatted(employeeChecklistId, customTaskId));
 
 		verify(customTaskRepositoryMock).findById(customTaskId);
@@ -641,7 +651,7 @@ class EmployeeChecklistServiceTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> service.deleteCustomTask(MUNICIPALITY_ID, employeeChecklistId, customTaskId));
 
 		// Assert and verify
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s does not contain any custom task with id %s.".formatted(employeeChecklistId, customTaskId));
 
 		verify(customTaskRepositoryMock).findById(customTaskId);
@@ -784,7 +794,7 @@ class EmployeeChecklistServiceTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> service.updateTaskFulfilment(MUNICIPALITY_ID, employeeChecklistId, taskId, request));
 
 		// Assert and verify
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Task with id %s was not found in employee checklist with id %s.".formatted(taskId, employeeChecklistId));
 
 		verify(employeeChecklistIntegrationMock).fetchEmployeeChecklist(MUNICIPALITY_ID, employeeChecklistId);
@@ -832,7 +842,7 @@ class EmployeeChecklistServiceTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> service.updateTaskFulfilment(MUNICIPALITY_ID, employeeChecklistId, taskId, request));
 
 		// Assert and verify
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Task with id %s was not found in employee checklist with id %s.".formatted(taskId, employeeChecklistId));
 
 		verify(employeeChecklistIntegrationMock).fetchEmployeeChecklist(MUNICIPALITY_ID, employeeChecklistId);
@@ -895,11 +905,17 @@ class EmployeeChecklistServiceTest {
 		verify(employeeIntegrationMock).getEmployeeByEmail(MUNICIPALITY_ID, emailAddress);
 		verify(mdViewerClientMock).getOrganizationsForCompany(companyId);
 		verify(employeeChecklistIntegrationMock).initiateEmployee(eq(MUNICIPALITY_ID), eq(employee), organizationTreeCaptor.capture());
+		verify(initiationRepositoryMock).saveAll(initiationEntitiesCaptor.capture());
 
+		assertThat(initiationEntitiesCaptor.getValue()).hasSize(1).satisfiesExactly(entity -> {
+			assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
+			assertThat(entity.getStatus()).isEqualTo("200 OK");
+			assertThat(entity.getInformation()).isEqualTo("All is good in the neighborhood");
+		});
 		assertOrgTreeParameters();
 		assertThat(response.getSummary()).isEqualTo("Successful import of 1 employees");
 		assertThat(response.getDetails()).extracting(Detail::getStatus, Detail::getInformation)
-			.containsExactly(tuple(Status.OK, information));
+			.containsExactly(tuple(OK, information));
 	}
 
 	@Test
@@ -919,14 +935,20 @@ class EmployeeChecklistServiceTest {
 		final var response = service.initiateEmployeeChecklists(MUNICIPALITY_ID);
 
 		// Assert and verify
-		assertThat(response.getSummary()).isEqualTo("1 potential problems occurred when importing 1 employees");
-		assertThat(response.getDetails()).extracting(Detail::getStatus, Detail::getInformation)
-			.containsExactly(tuple(Status.NOT_FOUND, "Not Found: Employee with loginname loginName is missing information regarding organizational structure."));
-
 		verify(employeeIntegrationMock).getNewEmployees(MUNICIPALITY_ID, LocalDate.now().minusDays(30));
 		verify(employeeIntegrationMock).getEmployeeByEmail(MUNICIPALITY_ID, emailAddress);
+		verify(initiationRepositoryMock).saveAll(initiationEntitiesCaptor.capture());
 		verify(mdViewerClientMock, never()).getOrganizationsForCompany(companyId);
 		verify(employeeChecklistIntegrationMock, never()).initiateEmployee(eq(MUNICIPALITY_ID), any(), any());
+
+		assertThat(initiationEntitiesCaptor.getValue()).hasSize(1).satisfiesExactly(entity -> {
+			assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
+			assertThat(entity.getStatus()).isEqualTo("404 Not Found");
+			assertThat(entity.getInformation()).isEqualTo("Not Found: Employee with loginname loginName is missing information regarding organizational structure.");
+		});
+		assertThat(response.getSummary()).isEqualTo("1 potential problems occurred when importing 1 employees");
+		assertThat(response.getDetails()).extracting(Detail::getStatus, Detail::getInformation)
+			.containsExactly(tuple(NOT_FOUND, "Not Found: Employee with loginname loginName is missing information regarding organizational structure."));
 	}
 
 	@Test
@@ -962,8 +984,15 @@ class EmployeeChecklistServiceTest {
 		verify(employeeIntegrationMock).getEmployeeByEmail(MUNICIPALITY_ID, emailAddress);
 		verify(mdViewerClientMock).getOrganizationsForCompany(companyId);
 		verify(employeeChecklistIntegrationMock).initiateEmployee(eq(MUNICIPALITY_ID), eq(employee), organizationTreeCaptor.capture());
+		verify(initiationRepositoryMock).saveAll(initiationEntitiesCaptor.capture());
 
 		assertOrgTreeParameters();
+		assertThat(initiationEntitiesCaptor.getValue()).hasSize(1).satisfiesExactly(entity -> {
+			assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
+			assertThat(entity.getStatus()).isEqualTo("500 Internal Server Error");
+			assertThat(entity.getInformation()).isEqualTo("Internal Server Error: There is a null value in the neighborhood");
+		});
+
 		assertThat(response.getSummary()).isEqualTo("1 potential problems occurred when importing 1 employees");
 		assertThat(response.getDetails()).extracting(Detail::getStatus, Detail::getInformation)
 			.containsExactly(tuple(Status.INTERNAL_SERVER_ERROR, "Internal Server Error: There is a null value in the neighborhood"));
@@ -988,12 +1017,19 @@ class EmployeeChecklistServiceTest {
 		final var response = service.initiateEmployeeChecklists(MUNICIPALITY_ID);
 
 		// Assert and verify
+		verify(employeeIntegrationMock).getNewEmployees(MUNICIPALITY_ID, LocalDate.now().minusDays(30));
+		verify(initiationRepositoryMock).saveAll(initiationEntitiesCaptor.capture());
+
+		assertThat(initiationEntitiesCaptor.getValue()).hasSize(1).satisfiesExactly(entity -> {
+			assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
+			assertThat(entity.getStatus()).isEqualTo("406 Not Acceptable");
+			assertThat(entity.getInformation()).isEqualTo(
+				"Not Acceptable: Creation of checklist not possible for employee with loginname loginName as the employee does not have a main employment with an employment form that validates for creating an employee checklist.");
+		});
 		assertThat(response.getSummary()).isEqualTo("1 potential problems occurred when importing 1 employees");
 		assertThat(response.getDetails()).extracting(Detail::getStatus, Detail::getInformation)
 			.containsExactly(tuple(Status.NOT_ACCEPTABLE,
 				"Not Acceptable: Creation of checklist not possible for employee with loginname loginName as the employee does not have a main employment with an employment form that validates for creating an employee checklist."));
-
-		verify(employeeIntegrationMock).getNewEmployees(MUNICIPALITY_ID, LocalDate.now().minusDays(30));
 	}
 
 	@Test
@@ -1015,12 +1051,21 @@ class EmployeeChecklistServiceTest {
 		final var response = service.initiateEmployeeChecklists(MUNICIPALITY_ID);
 
 		// Assert and verify
+		verify(employeeIntegrationMock).getNewEmployees(MUNICIPALITY_ID, LocalDate.now().minusDays(30));
+		verify(initiationRepositoryMock).saveAll(initiationEntitiesCaptor.capture());
+
+		assertThat(initiationEntitiesCaptor.getValue()).hasSize(1).satisfiesExactly(entity -> {
+			assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
+			assertThat(entity.getStatus()).isEqualTo("406 Not Acceptable");
+			assertThat(entity.getInformation()).isEqualTo(
+				"Not Acceptable: Creation of checklist not possible for employee with loginname loginName as the employee does not have a main employment with an event type that validates for creating an employee checklist.");
+		});
+
 		assertThat(response.getSummary()).isEqualTo("1 potential problems occurred when importing 1 employees");
 		assertThat(response.getDetails()).extracting(Detail::getStatus, Detail::getInformation)
 			.containsExactly(tuple(Status.NOT_ACCEPTABLE,
 				"Not Acceptable: Creation of checklist not possible for employee with loginname loginName as the employee does not have a main employment with an event type that validates for creating an employee checklist."));
 
-		verify(employeeIntegrationMock).getNewEmployees(MUNICIPALITY_ID, LocalDate.now().minusDays(30));
 	}
 
 	@Test
@@ -1069,11 +1114,17 @@ class EmployeeChecklistServiceTest {
 		verify(employeeIntegrationMock).getEmployeeByEmail(MUNICIPALITY_ID, emailAddress);
 		verify(mdViewerClientMock).getOrganizationsForCompany(companyId);
 		verify(employeeChecklistIntegrationMock).initiateEmployee(eq(MUNICIPALITY_ID), eq(employee), organizationTreeCaptor.capture());
+		verify(initiationRepositoryMock).saveAll(initiationEntitiesCaptor.capture());
 
+		assertThat(initiationEntitiesCaptor.getValue()).hasSize(1).satisfiesExactly(entity -> {
+			assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
+			assertThat(entity.getInformation()).isEqualTo(information);
+			assertThat(entity.getStatus()).isEqualTo("200 OK");
+		});
 		assertOrgTreeParameters();
 		assertThat(response.getSummary()).isEqualTo("Successful import of 1 employees");
 		assertThat(response.getDetails()).extracting(Detail::getStatus, Detail::getInformation)
-			.containsExactly(tuple(Status.OK, information));
+			.containsExactly(tuple(OK, information));
 	}
 
 	@Test
@@ -1129,11 +1180,17 @@ class EmployeeChecklistServiceTest {
 		verify(employeeIntegrationMock).getEmployeeByEmail(MUNICIPALITY_ID, emailAddress);
 		verify(mdViewerClientMock).getOrganizationsForCompany(companyId);
 		verify(employeeChecklistIntegrationMock).initiateEmployee(eq(MUNICIPALITY_ID), eq(employee), organizationTreeCaptor.capture());
+		verify(initiationRepositoryMock).saveAll(initiationEntitiesCaptor.capture());
 
 		assertOrgTreeParameters();
+		assertThat(initiationEntitiesCaptor.getValue()).hasSize(1).satisfiesExactly(entity -> {
+			assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
+			assertThat(entity.getInformation()).isEqualTo(information);
+			assertThat(entity.getStatus()).isEqualTo("200 OK");
+		});
 		assertThat(response.getSummary()).isEqualTo("Successful import of 1 employees");
 		assertThat(response.getDetails()).extracting(Detail::getStatus, Detail::getInformation)
-			.containsExactly(tuple(Status.OK, information));
+			.containsExactly(tuple(OK, information));
 	}
 
 	@Test
@@ -1198,17 +1255,69 @@ class EmployeeChecklistServiceTest {
 	@Test
 	void getInitiationInformation() {
 		// Arrange
-		when(initiationRepositoryMock.findAllByMunicipalityId(MUNICIPALITY_ID)).thenReturn(Collections.emptyList());
+		when(initiationRepositoryMock.findAllByMunicipalityId(MUNICIPALITY_ID)).thenReturn(createInitiationEntities());
 
 		// Act
-		final var result = service.getInitiationInformation(MUNICIPALITY_ID);
+		final var result = service.getInitiationInformation(MUNICIPALITY_ID, false, false);
 
 		// Assert and verify
-		assertThat(result).isNotNull();
-		assertThat(result.getSummary()).isEqualTo("The last scheduled execution did not find any employees to initialize checklists for");
+		assertThat(result).hasSize(2).satisfiesExactly(info -> {
+			assertThat(info.getLogId()).isEqualTo(LOG_ID_2);
+			assertThat(info.getDetails()).hasSize(2);
+		}, info -> {
+			assertThat(info.getLogId()).isEqualTo(LOG_ID_1);
+			assertThat(info.getDetails()).hasSize(2);
+		});
 
 		verify(initiationRepositoryMock).findAllByMunicipalityId(MUNICIPALITY_ID);
+	}
 
+	@Test
+	void getInitiationInformationOnlyLatest() {
+		// Arrange
+		when(initiationRepositoryMock.findAllByMunicipalityId(MUNICIPALITY_ID)).thenReturn(createInitiationEntities());
+
+		// Act
+		final var result = service.getInitiationInformation(MUNICIPALITY_ID, true, false);
+
+		// Assert and verify
+		assertThat(result).hasSize(1).satisfiesExactly(info -> {
+			assertThat(info.getLogId()).isEqualTo(LOG_ID_2);
+			assertThat(info.getDetails()).hasSize(2);
+		});
+
+		verify(initiationRepositoryMock).findAllByMunicipalityId(MUNICIPALITY_ID);
+	}
+
+	@Test
+	void getInitiationInformationOnlyLatestWhenNoMatches() {
+		// Act and assert
+		assertThat(service.getInitiationInformation(MUNICIPALITY_ID, true, false)).isEmpty();
+
+		// Verify
+		verify(initiationRepositoryMock).findAllByMunicipalityId(MUNICIPALITY_ID);
+	}
+
+	@Test
+	void getInitiationInformationOnlyErrors() {
+		// Arrange
+		when(initiationRepositoryMock.findAllByMunicipalityId(MUNICIPALITY_ID)).thenReturn(createInitiationEntities());
+
+		// Act
+		final var result = service.getInitiationInformation(MUNICIPALITY_ID, false, true);
+
+		// Assert and verify
+		assertThat(result).hasSize(2).satisfiesExactly(info -> {
+			assertThat(info.getLogId()).isEqualTo(LOG_ID_2);
+			assertThat(info.getDetails()).hasSize(1);
+			assertThat(HttpStatus.valueOf(info.getDetails().getFirst().getStatus()).isError()).isTrue();
+		}, info -> {
+			assertThat(info.getLogId()).isEqualTo(LOG_ID_1);
+			assertThat(info.getDetails()).hasSize(1);
+			assertThat(HttpStatus.valueOf(info.getDetails().getFirst().getStatus()).isError()).isTrue();
+		});
+
+		verify(initiationRepositoryMock).findAllByMunicipalityId(MUNICIPALITY_ID);
 	}
 
 	private void assertOrgTreeParameters() {
@@ -1241,5 +1350,29 @@ class EmployeeChecklistServiceTest {
 					.build())
 				.build())
 			.build();
+	}
+
+	private static List<InitiationInfoEntity> createInitiationEntities() {
+		return List.of(
+			InitiationInfoEntity.builder()
+				.withLogId(LOG_ID_1)
+				.withCreated(TIMESTAMP_1)
+				.withStatus(OK.toString())
+				.build(),
+			InitiationInfoEntity.builder()
+				.withLogId(LOG_ID_1)
+				.withCreated(TIMESTAMP_1)
+				.withStatus(NOT_FOUND.toString())
+				.build(),
+			InitiationInfoEntity.builder()
+				.withLogId(LOG_ID_2)
+				.withCreated(TIMESTAMP_2)
+				.withStatus(OK.toString())
+				.build(),
+			InitiationInfoEntity.builder()
+				.withLogId(LOG_ID_2)
+				.withCreated(TIMESTAMP_2)
+				.withStatus(NOT_FOUND.toString())
+				.build());
 	}
 }
