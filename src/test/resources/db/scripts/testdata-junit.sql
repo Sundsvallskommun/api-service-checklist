@@ -73,5 +73,5 @@ VALUES -- organizational unit 13
 
 
 INSERT INTO initiation_info (created, id, information, log_id, status, municipality_id)
-VALUES ('2024-01-01 12:00:00.000', 'b6847217-3314-4686-a576-9c2344345ee5', 'Success', '8537d28d-1479-42cf-87df-f79612bbe965', '200 OK', '2281'),
-       ('2024-01-01 12:00:00.000', 'ed71b4a2-3135-445d-b593-6060e9617181', 'Error', '8537d28d-1479-42cf-87df-f79612bbe965', '404 Not Found', '2281');
+VALUES ('2024-01-01 12:00:00.000', 'b6847217-3314-4686-a576-9c2344345ee5', 'Success', '8537d28d-1479-42cf-87df-f79612bbe965', '200', '2281'),
+       ('2024-01-01 12:00:00.000', 'ed71b4a2-3135-445d-b593-6060e9617181', 'Error', '8537d28d-1479-42cf-87df-f79612bbe965', '404', '2281');

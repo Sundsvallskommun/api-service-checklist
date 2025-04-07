@@ -909,7 +909,7 @@ class EmployeeChecklistServiceTest {
 
 		assertThat(initiationEntitiesCaptor.getValue()).hasSize(1).satisfiesExactly(entity -> {
 			assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
-			assertThat(entity.getStatus()).isEqualTo("200 OK");
+			assertThat(entity.getStatus()).isEqualTo("200");
 			assertThat(entity.getInformation()).isEqualTo("All is good in the neighborhood");
 		});
 		assertOrgTreeParameters();
@@ -943,7 +943,7 @@ class EmployeeChecklistServiceTest {
 
 		assertThat(initiationEntitiesCaptor.getValue()).hasSize(1).satisfiesExactly(entity -> {
 			assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
-			assertThat(entity.getStatus()).isEqualTo("404 Not Found");
+			assertThat(entity.getStatus()).isEqualTo("404");
 			assertThat(entity.getInformation()).isEqualTo("Not Found: Employee with loginname loginName is missing information regarding organizational structure.");
 		});
 		assertThat(response.getSummary()).isEqualTo("1 potential problems occurred when importing 1 employees");
@@ -989,7 +989,7 @@ class EmployeeChecklistServiceTest {
 		assertOrgTreeParameters();
 		assertThat(initiationEntitiesCaptor.getValue()).hasSize(1).satisfiesExactly(entity -> {
 			assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
-			assertThat(entity.getStatus()).isEqualTo("500 Internal Server Error");
+			assertThat(entity.getStatus()).isEqualTo("500");
 			assertThat(entity.getInformation()).isEqualTo("Internal Server Error: There is a null value in the neighborhood");
 		});
 
@@ -1022,7 +1022,7 @@ class EmployeeChecklistServiceTest {
 
 		assertThat(initiationEntitiesCaptor.getValue()).hasSize(1).satisfiesExactly(entity -> {
 			assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
-			assertThat(entity.getStatus()).isEqualTo("406 Not Acceptable");
+			assertThat(entity.getStatus()).isEqualTo("406");
 			assertThat(entity.getInformation()).isEqualTo(
 				"Not Acceptable: Creation of checklist not possible for employee with loginname loginName as the employee does not have a main employment with an employment form that validates for creating an employee checklist.");
 		});
@@ -1056,7 +1056,7 @@ class EmployeeChecklistServiceTest {
 
 		assertThat(initiationEntitiesCaptor.getValue()).hasSize(1).satisfiesExactly(entity -> {
 			assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
-			assertThat(entity.getStatus()).isEqualTo("406 Not Acceptable");
+			assertThat(entity.getStatus()).isEqualTo("406");
 			assertThat(entity.getInformation()).isEqualTo(
 				"Not Acceptable: Creation of checklist not possible for employee with loginname loginName as the employee does not have a main employment with an event type that validates for creating an employee checklist.");
 		});
@@ -1119,7 +1119,7 @@ class EmployeeChecklistServiceTest {
 		assertThat(initiationEntitiesCaptor.getValue()).hasSize(1).satisfiesExactly(entity -> {
 			assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
 			assertThat(entity.getInformation()).isEqualTo(information);
-			assertThat(entity.getStatus()).isEqualTo("200 OK");
+			assertThat(entity.getStatus()).isEqualTo("200");
 		});
 		assertOrgTreeParameters();
 		assertThat(response.getSummary()).isEqualTo("Successful import of 1 employees");
@@ -1186,7 +1186,7 @@ class EmployeeChecklistServiceTest {
 		assertThat(initiationEntitiesCaptor.getValue()).hasSize(1).satisfiesExactly(entity -> {
 			assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
 			assertThat(entity.getInformation()).isEqualTo(information);
-			assertThat(entity.getStatus()).isEqualTo("200 OK");
+			assertThat(entity.getStatus()).isEqualTo("200");
 		});
 		assertThat(response.getSummary()).isEqualTo("Successful import of 1 employees");
 		assertThat(response.getDetails()).extracting(Detail::getStatus, Detail::getInformation)
@@ -1357,22 +1357,22 @@ class EmployeeChecklistServiceTest {
 			InitiationInfoEntity.builder()
 				.withLogId(LOG_ID_1)
 				.withCreated(TIMESTAMP_1)
-				.withStatus(OK.toString())
+				.withStatus(String.valueOf(OK.getStatusCode()))
 				.build(),
 			InitiationInfoEntity.builder()
 				.withLogId(LOG_ID_1)
 				.withCreated(TIMESTAMP_1)
-				.withStatus(NOT_FOUND.toString())
+				.withStatus(String.valueOf(NOT_FOUND.getStatusCode()))
 				.build(),
 			InitiationInfoEntity.builder()
 				.withLogId(LOG_ID_2)
 				.withCreated(TIMESTAMP_2)
-				.withStatus(OK.toString())
+				.withStatus(String.valueOf(OK.getStatusCode()))
 				.build(),
 			InitiationInfoEntity.builder()
 				.withLogId(LOG_ID_2)
 				.withCreated(TIMESTAMP_2)
-				.withStatus(NOT_FOUND.toString())
+				.withStatus(String.valueOf(NOT_FOUND.getStatusCode()))
 				.build());
 	}
 }

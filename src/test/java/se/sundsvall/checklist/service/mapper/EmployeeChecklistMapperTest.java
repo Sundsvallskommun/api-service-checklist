@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.assertj.core.groups.Tuple.tuple;
 import static org.mockito.Mockito.mockStatic;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static org.zalando.problem.Status.OK;
 import static se.sundsvall.checklist.TestObjectFactory.createCustomTaskEntity;
 import static se.sundsvall.checklist.TestObjectFactory.createEmployeeChecklistEntity;
 import static se.sundsvall.checklist.TestObjectFactory.createPhaseEntity;
@@ -49,7 +51,7 @@ class EmployeeChecklistMapperTest {
 	void toInitiationInfoEntity() {
 		final var detail = EmployeeChecklistResponse.Detail.builder()
 			.withStatus(Status.I_AM_A_TEAPOT)
-			.withInformation("Stout and firm")
+			.withInformation("I'm a teapot, stout and firm")
 			.build();
 		final var municipalityId = "municipalityId";
 		mockStatic(RequestId.class).when(RequestId::get).thenReturn("logId");
@@ -60,8 +62,8 @@ class EmployeeChecklistMapperTest {
 		assertThat(entity.getId()).isNull();
 		assertThat(entity.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(entity.getLogId()).isEqualTo("logId");
-		assertThat(entity.getInformation()).isEqualTo("Stout and firm");
-		assertThat(entity.getStatus()).isEqualTo("418 I'm a teapot");
+		assertThat(entity.getInformation()).isEqualTo("I'm a teapot, stout and firm");
+		assertThat(entity.getStatus()).isEqualTo("418");
 	}
 
 	@ParameterizedTest
@@ -548,7 +550,7 @@ class EmployeeChecklistMapperTest {
 	@Test
 	void toInitiationInformationFromListWithOnlySuccess() {
 		final var logId = UUID.randomUUID().toString();
-		final var success = InitiationInfoEntity.builder().withCreated(OffsetDateTime.now()).withLogId(logId).withStatus("200 OK").withInformation("Happy life").build();
+		final var success = InitiationInfoEntity.builder().withCreated(OffsetDateTime.now()).withLogId(logId).withStatus(String.valueOf(OK.getStatusCode())).withInformation("Happy life").build();
 
 		final var list = EmployeeChecklistMapper.toInitiationInformations(List.of(success));
 
@@ -570,8 +572,8 @@ class EmployeeChecklistMapperTest {
 	@Test
 	void toInitiationInformationFromListWithSuccessAndFailure() {
 		final var logId = UUID.randomUUID().toString();
-		final var success = InitiationInfoEntity.builder().withCreated(OffsetDateTime.now()).withLogId(logId).withStatus(Status.OK.toString()).withInformation("Happy life").build();
-		final var failure = InitiationInfoEntity.builder().withCreated(OffsetDateTime.now()).withLogId(logId).withStatus(Status.NOT_FOUND.toString()).withInformation("Not wanted").build();
+		final var success = InitiationInfoEntity.builder().withCreated(OffsetDateTime.now()).withLogId(logId).withStatus(String.valueOf(OK.getStatusCode())).withInformation("Happy life").build();
+		final var failure = InitiationInfoEntity.builder().withCreated(OffsetDateTime.now()).withLogId(logId).withStatus(String.valueOf(NOT_FOUND.getStatusCode())).withInformation("Not wanted").build();
 
 		final var list = EmployeeChecklistMapper.toInitiationInformations(List.of(success, failure));
 

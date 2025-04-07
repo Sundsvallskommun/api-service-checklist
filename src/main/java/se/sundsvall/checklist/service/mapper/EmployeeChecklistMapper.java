@@ -2,15 +2,14 @@ package se.sundsvall.checklist.service.mapper;
 
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
-import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toCollection;
 import static org.apache.commons.lang3.ObjectUtils.anyNull;
 import static org.springframework.util.CollectionUtils.isEmpty;
+import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 import static org.zalando.problem.Status.UNPROCESSABLE_ENTITY;
 import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toStakeholder;
-import static se.sundsvall.checklist.service.util.StringUtils.getErrorCode;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -43,7 +42,6 @@ import se.sundsvall.checklist.integration.db.model.InitiationInfoEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
-import se.sundsvall.checklist.service.util.StringUtils;
 import se.sundsvall.dept44.requestid.RequestId;
 
 public final class EmployeeChecklistMapper {
@@ -60,7 +58,7 @@ public final class EmployeeChecklistMapper {
 				.withMunicipalityId(municipalityId)
 				.withLogId(RequestId.get())
 				.withInformation(detail.getInformation())
-				.withStatus(detail.getStatus().toString())
+				.withStatus(ofNullable(detail.getStatus()).map(StatusType::getStatusCode).map(String::valueOf).orElse(null))
 				.build())
 			.orElse(null);
 	}
@@ -308,10 +306,10 @@ public final class EmployeeChecklistMapper {
 			.collect(toCollection(ArrayList::new));
 	}
 
-	private static InitiationInformation.Detail toDetail(InitiationInfoEntity i) {
+	private static InitiationInformation.Detail toDetail(InitiationInfoEntity infoEntity) {
 		return InitiationInformation.Detail.builder()
-			.withStatus(nonNull(i.getStatus()) ? getErrorCode(i.getStatus()) : UNPROCESSABLE_ENTITY.getStatusCode())
-			.withInformation(i.getInformation())
+			.withStatus(ofNullable(infoEntity.getStatus()).map(Integer::parseInt).orElse(UNPROCESSABLE_ENTITY.getStatusCode()))
+			.withInformation(infoEntity.getInformation())
 			.build();
 	}
 
@@ -323,8 +321,8 @@ public final class EmployeeChecklistMapper {
 	 */
 	private static long countErrors(final List<InitiationInfoEntity> infos) {
 		return ofNullable(infos).orElse(emptyList()).stream()
-			.map(InitiationInfoEntity::getStatus)
-			.map(StringUtils::getErrorCode)
+			.map(infoEntity -> ofNullable(infoEntity.getStatus()).orElse(String.valueOf(INTERNAL_SERVER_ERROR.getStatusCode())))
+			.map(Integer::parseInt)
 			.map(HttpStatus::valueOf)
 			.filter(HttpStatus::isError)
 			.count();
