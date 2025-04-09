@@ -131,3 +131,9 @@ checklist:
     name: lockEmployeeChecklists
     lockAtMostFor: PT2M
     maximumExecutionTime: PT2M
+  purge-old-initiation-info:
+    cron: ${config.schedulers.purge-old-initiation-info.cron:-}
+    maximumLifespanInDays: ${config.schedulers.purge-old-initiation-info.maximum-lifespan-in-days:30}
+    name: purgeOldInitiationInfo
+    lockAtMostFor: PT2M
+    maximumExecutionTime: PT2M
