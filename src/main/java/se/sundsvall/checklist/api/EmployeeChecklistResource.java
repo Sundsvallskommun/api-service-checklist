@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.zalando.problem.Problem;
@@ -214,10 +215,12 @@ class EmployeeChecklistResource {
 		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
 	})
 	@GetMapping(value = "/initiationinfo", produces = APPLICATION_JSON_VALUE)
-	ResponseEntity<InitiationInformation> getInitiationInformation(
-		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId) {
+	ResponseEntity<List<InitiationInformation>> getInitiationInformation(
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "onlyLatest", description = "Signal if only last execution or full execution history should be returned", example = "true") @RequestParam(defaultValue = "true") final boolean onlyLatest,
+		@Parameter(name = "onlyErrors", description = "Signal if only posts with errors or both post with successful and errors should be returned", example = "false") @RequestParam(defaultValue = "false") final boolean onlyErrors) {
 
-		return ok(employeeChecklistService.getInitiationInformation(municipalityId));
+		return ok(employeeChecklistService.getInitiationInformation(municipalityId, onlyLatest, onlyErrors));
 	}
 
 	@Operation(summary = "Inititalize checklists for a specific employee", description = "Trigger creation of checklist for employee matching sent in person id", responses = {

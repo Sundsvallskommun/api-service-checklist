@@ -11,7 +11,8 @@ import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER
 import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_MANAGER;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toCustomTask;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toDetail;
-import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toInitiationInformation;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toInitiationInfoEntity;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toInitiationInformations;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.updateCustomTaskEntity;
 import static se.sundsvall.checklist.service.mapper.PagingAndSortingMapper.toPageRequest;
 import static se.sundsvall.checklist.service.mapper.PagingAndSortingMapper.toPagingMetaData;
@@ -35,6 +36,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -269,9 +271,21 @@ public class EmployeeChecklistService {
 			.findAny();
 	}
 
-	public InitiationInformation getInitiationInformation(final String municipalityId) {
-		final var infos = initiationRepository.findAllByMunicipalityId(municipalityId);
-		return toInitiationInformation(infos);
+	public List<InitiationInformation> getInitiationInformation(final String municipalityId, boolean onlyLatest, boolean onlyErrors) {
+		final var infos = toInitiationInformations(initiationRepository.findAllByMunicipalityId(municipalityId));
+
+		// If request is to only return initiations with error, remove all detail rows that is not interpreted as error
+		if (onlyErrors) {
+			infos.forEach(info -> info.getDetails().removeIf(detail -> !HttpStatus.valueOf(detail.getStatus()).isError()));
+		}
+
+		// If request is to only return the latest execution, pick the first of list (or empty if no posts are present)
+		if (onlyLatest) {
+			return infos.isEmpty() ? emptyList() : List.of(infos.getFirst());
+		}
+
+		// Default return full response
+		return infos;
 	}
 
 	/**
@@ -314,6 +328,10 @@ public class EmployeeChecklistService {
 			.count();
 
 		employeeChecklistResponse.setSummary(errors > 0 ? "%s potential problems occurred when importing %s employees".formatted(errors, employees.size()) : "Successful import of %s employees".formatted(employees.size()));
+
+		initiationRepository.saveAll(employeeChecklistResponse.getDetails().stream()
+			.map(detail -> toInitiationInfoEntity(municipalityId, detail))
+			.toList());
 
 		return employeeChecklistResponse;
 	}

@@ -16,5 +16,4 @@ class StringUtilsTest {
 		assertThat(StringUtils.toReadableString(List.of("Lorem", "Ipsum"))).isEqualTo("lorem and ipsum");
 		assertThat(StringUtils.toReadableString(List.of("Lorem Ipsum", "Neque", "porro"))).isEqualTo("lorem ipsum, neque and porro");
 	}
-
 }

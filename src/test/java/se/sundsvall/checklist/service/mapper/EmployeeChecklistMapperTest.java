@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.assertj.core.groups.Tuple.tuple;
 import static org.mockito.Mockito.mockStatic;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static org.zalando.problem.Status.OK;
 import static se.sundsvall.checklist.TestObjectFactory.createCustomTaskEntity;
 import static se.sundsvall.checklist.TestObjectFactory.createEmployeeChecklistEntity;
 import static se.sundsvall.checklist.TestObjectFactory.createPhaseEntity;
@@ -49,7 +51,7 @@ class EmployeeChecklistMapperTest {
 	void toInitiationInfoEntity() {
 		final var detail = EmployeeChecklistResponse.Detail.builder()
 			.withStatus(Status.I_AM_A_TEAPOT)
-			.withInformation("Stout and firm")
+			.withInformation("I'm a teapot, stout and firm")
 			.build();
 		final var municipalityId = "municipalityId";
 		mockStatic(RequestId.class).when(RequestId::get).thenReturn("logId");
@@ -60,8 +62,8 @@ class EmployeeChecklistMapperTest {
 		assertThat(entity.getId()).isNull();
 		assertThat(entity.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(entity.getLogId()).isEqualTo("logId");
-		assertThat(entity.getInformation()).isEqualTo("Stout and firm");
-		assertThat(entity.getStatus()).isEqualTo("418 I'm a teapot");
+		assertThat(entity.getInformation()).isEqualTo("I'm a teapot, stout and firm");
+		assertThat(entity.getStatus()).isEqualTo("418");
 	}
 
 	@ParameterizedTest
@@ -542,53 +544,55 @@ class EmployeeChecklistMapperTest {
 	@ParameterizedTest
 	@NullAndEmptySource
 	void toInitiationInformationFromEmptyList(List<InitiationInfoEntity> entries) {
-		final var bean = EmployeeChecklistMapper.toInitiationInformation(entries);
-
-		assertThat(bean).hasAllNullFieldsOrPropertiesExcept("summary");
-		assertThat(bean.getSummary()).isEqualTo("The last scheduled execution did not find any employees to initialize checklists for");
+		assertThat(EmployeeChecklistMapper.toInitiationInformations(entries)).isEmpty();
 	}
 
 	@Test
 	void toInitiationInformationFromListWithOnlySuccess() {
 		final var logId = UUID.randomUUID().toString();
-		final var success = InitiationInfoEntity.builder().withCreated(OffsetDateTime.now()).withLogId(logId).withStatus("200").withInformation("Happy life").build();
+		final var success = InitiationInfoEntity.builder().withCreated(OffsetDateTime.now()).withLogId(logId).withStatus(String.valueOf(OK.getStatusCode())).withInformation("Happy life").build();
 
-		final var bean = EmployeeChecklistMapper.toInitiationInformation(List.of(success));
+		final var list = EmployeeChecklistMapper.toInitiationInformations(List.of(success));
 
-		assertThat(bean.getSummary()).isEqualTo("No problems occurred when initializing checklists for 1 employees");
-		assertThat(bean.getExecuted()).isCloseTo(OffsetDateTime.now(), within(2, SECONDS));
-		assertThat(bean.getLogId()).isEqualTo(logId);
-		assertThat(bean.getDetails()).hasSize(1)
-			.extracting(
-				InitiationInformation.Detail::getInformation,
-				InitiationInformation.Detail::getStatus)
-			.containsExactly(tuple(
-				"Happy life",
-				200));
+		assertThat(list).hasSize(1).satisfiesExactly(entry -> {
+			assertThat(entry.getSummary()).isEqualTo("No problems occurred in execution with log id %s where 1 employees were processed".formatted(logId));
+			assertThat(entry.getExecuted()).isCloseTo(OffsetDateTime.now(), within(2, SECONDS));
+			assertThat(entry.getLogId()).isEqualTo(logId);
+			assertThat(entry.getDetails()).hasSize(1)
+				.extracting(
+					InitiationInformation.Detail::getInformation,
+					InitiationInformation.Detail::getStatus)
+				.containsExactly(tuple(
+					"Happy life",
+					200));
+
+		});
 	}
 
 	@Test
 	void toInitiationInformationFromListWithSuccessAndFailure() {
 		final var logId = UUID.randomUUID().toString();
-		final var success = InitiationInfoEntity.builder().withCreated(OffsetDateTime.now()).withLogId(logId).withStatus("200").withInformation("Happy life").build();
-		final var failure = InitiationInfoEntity.builder().withCreated(OffsetDateTime.now()).withLogId(logId).withStatus("404").withInformation("Not wanted").build();
+		final var success = InitiationInfoEntity.builder().withCreated(OffsetDateTime.now()).withLogId(logId).withStatus(String.valueOf(OK.getStatusCode())).withInformation("Happy life").build();
+		final var failure = InitiationInfoEntity.builder().withCreated(OffsetDateTime.now()).withLogId(logId).withStatus(String.valueOf(NOT_FOUND.getStatusCode())).withInformation("Not wanted").build();
 
-		final var bean = EmployeeChecklistMapper.toInitiationInformation(List.of(success, failure));
+		final var list = EmployeeChecklistMapper.toInitiationInformations(List.of(success, failure));
 
-		assertThat(bean.getSummary()).isEqualTo("1 potential problems occurred when initializing checklists for 2 employees");
-		assertThat(bean.getExecuted()).isCloseTo(OffsetDateTime.now(), within(2, SECONDS));
-		assertThat(bean.getLogId()).isEqualTo(logId);
-		assertThat(bean.getDetails()).hasSize(2)
-			.extracting(
-				InitiationInformation.Detail::getInformation,
-				InitiationInformation.Detail::getStatus)
-			.containsExactlyInAnyOrder(
-				tuple(
-					"Happy life",
-					200),
-				tuple(
-					"Not wanted",
-					404));
+		assertThat(list).hasSize(1).satisfiesExactly(entry -> {
+			assertThat(entry.getSummary()).isEqualTo("1 potential problems occurred in execution with log id %s where 2 employees were proceessed".formatted(logId));
+			assertThat(entry.getExecuted()).isCloseTo(OffsetDateTime.now(), within(2, SECONDS));
+			assertThat(entry.getLogId()).isEqualTo(logId);
+			assertThat(entry.getDetails()).hasSize(2)
+				.extracting(
+					InitiationInformation.Detail::getInformation,
+					InitiationInformation.Detail::getStatus)
+				.containsExactlyInAnyOrder(
+					tuple(
+						"Happy life",
+						200),
+					tuple(
+						"Not wanted",
+						404));
+		});
 	}
 
 	@Test
@@ -596,17 +600,19 @@ class EmployeeChecklistMapperTest {
 		final var logId = UUID.randomUUID().toString();
 		final var failure = InitiationInfoEntity.builder().withCreated(OffsetDateTime.now()).withLogId(logId).withInformation("Mysterious error").build();
 
-		final var bean = EmployeeChecklistMapper.toInitiationInformation(List.of(failure));
+		final var list = EmployeeChecklistMapper.toInitiationInformations(List.of(failure));
 
-		assertThat(bean.getSummary()).isEqualTo("1 potential problems occurred when initializing checklists for 1 employees");
-		assertThat(bean.getExecuted()).isCloseTo(OffsetDateTime.now(), within(2, SECONDS));
-		assertThat(bean.getLogId()).isEqualTo(logId);
-		assertThat(bean.getDetails()).hasSize(1)
-			.extracting(
-				InitiationInformation.Detail::getInformation,
-				InitiationInformation.Detail::getStatus)
-			.containsExactlyInAnyOrder(tuple(
-				"Mysterious error",
-				422));
+		assertThat(list).hasSize(1).satisfiesExactly(entry -> {
+			assertThat(entry.getSummary()).isEqualTo("1 potential problems occurred in execution with log id %s where 1 employees were proceessed".formatted(logId));
+			assertThat(entry.getExecuted()).isCloseTo(OffsetDateTime.now(), within(2, SECONDS));
+			assertThat(entry.getLogId()).isEqualTo(logId);
+			assertThat(entry.getDetails()).hasSize(1)
+				.extracting(
+					InitiationInformation.Detail::getInformation,
+					InitiationInformation.Detail::getStatus)
+				.containsExactlyInAnyOrder(tuple(
+					"Mysterious error",
+					422));
+		});
 	}
 }
