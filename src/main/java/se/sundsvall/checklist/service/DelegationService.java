@@ -1,5 +1,6 @@
 package se.sundsvall.checklist.service;
 
+import static java.util.Optional.ofNullable;
 import static org.zalando.problem.Status.CONFLICT;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.checklist.service.mapper.DelegateMapper.toDelegateEntity;
@@ -99,7 +100,7 @@ public class DelegationService {
 	}
 
 	private EmployeeChecklistEntity handleUpdatedEmployeeInformation(String municipalityId, EmployeeChecklistEntity employeeChecklist) {
-		if (employeeChecklist.getEmployee().getUpdated().isBefore(OffsetDateTime.now().minus(employeeInformationUpdateInterval))) {
+		if (ofNullable(employeeChecklist.getEmployee().getUpdated()).orElse(OffsetDateTime.MIN).isBefore(OffsetDateTime.now().minus(employeeInformationUpdateInterval))) {
 			employeeIntegration.getEmployeeInformation(municipalityId, employeeChecklist.getEmployee().getId()).stream()
 				.findFirst()
 				.ifPresent(employee -> employeeChecklistIntegration.updateEmployeeInformation(employeeChecklist.getEmployee(), employee));

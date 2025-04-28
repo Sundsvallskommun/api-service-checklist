@@ -18,10 +18,15 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -162,13 +167,20 @@ class DelegationServiceTest {
 		verify(mockSortorderService).applySorting(any(), any());
 	}
 
-	@Test
-	void fetchDelegatedEmployeeChecklistsByUsernameWhenEmployeeInformationNeedsUpdateTest() {
+	private static Stream<Arguments> fetchDelegatedEmployeeChecklistsByUsernameWhenEmployeeInformationNeedsUpdateProvider() {
+		return Stream.of(
+			Arguments.of(OffsetDateTime.now().minusDays(1).minusNanos(1)));
+	}
+
+	@ParameterizedTest
+	@MethodSource("fetchDelegatedEmployeeChecklistsByUsernameWhenEmployeeInformationNeedsUpdateProvider")
+	@NullSource
+	void fetchDelegatedEmployeeChecklistsByUsernameWhenEmployeeInformationNeedsUpdateTest(OffsetDateTime updated) {
 		final var username = "username";
 		final var delegateEntity = createDelegateEntity();
 		final var employee = Employee.builder().build();
 		final var employeeId = delegateEntity.getEmployeeChecklist().getEmployee().getId();
-		delegateEntity.getEmployeeChecklist().getEmployee().setUpdated(OffsetDateTime.now().minusDays(1).minusNanos(1));
+		delegateEntity.getEmployeeChecklist().getEmployee().setUpdated(updated);
 
 		when(mockDelegateRepository.findAllByUsername(username)).thenReturn(List.of(delegateEntity));
 		when(mockEmployeeIntegration.getEmployeeInformation(MUNICIPALITY_ID, employeeId)).thenReturn(List.of(employee));
