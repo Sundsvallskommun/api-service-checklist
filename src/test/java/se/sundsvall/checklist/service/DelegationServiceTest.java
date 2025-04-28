@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,11 +27,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.zalando.problem.Problem;
+
 import se.sundsvall.checklist.integration.db.EmployeeChecklistIntegration;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
 import se.sundsvall.checklist.integration.db.repository.DelegateRepository;
@@ -167,11 +170,13 @@ class DelegationServiceTest {
 	}
 
 	private static Stream<Arguments> fetchDelegatedEmployeeChecklistsByUsernameWhenEmployeeInformationNeedsUpdateProvider() {
-		return Stream.of(Arguments.of(null, OffsetDateTime.now().minusDays(1).minusNanos(1)));
+		return Stream.of(
+			Arguments.of(OffsetDateTime.now().minusDays(1).minusNanos(1)));
 	}
 
 	@ParameterizedTest
 	@MethodSource("fetchDelegatedEmployeeChecklistsByUsernameWhenEmployeeInformationNeedsUpdateProvider")
+	@NullSource
 	void fetchDelegatedEmployeeChecklistsByUsernameWhenEmployeeInformationNeedsUpdateTest(OffsetDateTime updated) {
 		final var username = "username";
 		final var delegateEntity = createDelegateEntity();
