@@ -1,6 +1,6 @@
 # Checklist
 
-_The service provides administration of the checklists that new employees and their corresponding manager shall undergo when a person is employed. The service also keeps track of the checklist progress of each individual._
+_The service provides administration of checklist tasks that new employees and their corresponding manager shall undergo when a person is employed. The service also keeps track of the checklist progress of each individual._
 
 ## Getting Started
 
@@ -24,7 +24,7 @@ cd api-service-checklist
 2. **Configure the application:**
 
    Before running the application, you need to set up configuration settings.
-   See [Configuration](#Configuration)
+   See [Configuration](#configuration)
 
    **Note:** Ensure all required configurations are set; otherwise, the application may fail to start.
 
@@ -145,7 +145,7 @@ config:
 
 ```
 
-- ** Configuration of schedulers**
+- **Configuration of schedulers**
 
 ```yaml
   config:
@@ -209,4 +209,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-© 2024 Sundsvalls kommun
+&copy; 2024 Sundsvalls kommun
