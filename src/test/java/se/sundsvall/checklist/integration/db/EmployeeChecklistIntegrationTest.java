@@ -99,6 +99,11 @@ class EmployeeChecklistIntegrationTest {
 	@Captor
 	private ArgumentCaptor<MentorEntity> mentorEntityCaptor;
 
+	@AfterEach
+	void assertNoMoreInteractions() {
+		verifyNoMoreInteractions(employeeRepositoryMock, managerRepositoryMock, employeeChecklistsRepositoryMock, organizationRepositoryMock, delegateRepositoryMock, customTaskRepositoryMock, phaseRepositoryMock, pagedEmployeeChecklistMock);
+	}
+
 	@Test
 	void fetchOptionalEmployeeChecklist() {
 		// Arrange
@@ -1399,6 +1404,7 @@ class EmployeeChecklistIntegrationTest {
 
 	@Test
 	void fetchAllOngoingEmployeeChecklists() {
+		// Arrange
 		final var page = PageRequest.of(2, 3);
 		final var result = List.of(EmployeeChecklistEntity.builder().build());
 		final var parameters = new OngoingEmployeeChecklistParameters()
@@ -1408,14 +1414,27 @@ class EmployeeChecklistIntegrationTest {
 		when(pagedEmployeeChecklistMock.getContent()).thenReturn(result);
 		when(employeeChecklistsRepositoryMock.findAllByOngoingEmployeeChecklistParameters(any(), any())).thenReturn(pagedEmployeeChecklistMock);
 
+		// Act
 		final var response = integration.fetchAllOngoingEmployeeChecklists(parameters, page);
 
-		assertThat(response.getContent()).isEqualTo(result);
+		// Verify and assert
 		verify(employeeChecklistsRepositoryMock).findAllByOngoingEmployeeChecklistParameters(parameters, page);
+		assertThat(response.getContent()).isEqualTo(result);
 	}
 
-	@AfterEach
-	void assertNoMoreInteractions() {
-		verifyNoMoreInteractions(employeeRepositoryMock, managerRepositoryMock, employeeChecklistsRepositoryMock, organizationRepositoryMock, delegateRepositoryMock, phaseRepositoryMock);
+	@Test
+	void findOngoingChecklists() {
+		// Arrange
+		final var municipalityId = "municipalityId";
+		final var result = List.of(EmployeeChecklistEntity.builder().build());
+
+		when(employeeChecklistsRepositoryMock.findAllByChecklistsMunicipalityIdAndCompletedFalse(municipalityId)).thenReturn(result);
+
+		// Act
+		final var response = integration.findOngoingChecklists(municipalityId);
+
+		// Verify and assert
+		verify(employeeChecklistsRepositoryMock).findAllByChecklistsMunicipalityIdAndCompletedFalse(municipalityId);
+		assertThat(response).isEqualTo(result);
 	}
 }

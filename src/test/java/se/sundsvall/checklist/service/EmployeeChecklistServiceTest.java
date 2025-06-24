@@ -1,14 +1,17 @@
 package se.sundsvall.checklist.service;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static org.zalando.problem.Status.OK;
 
@@ -1318,6 +1321,151 @@ class EmployeeChecklistServiceTest {
 		});
 
 		verify(initiationRepositoryMock).findAllByMunicipalityId(MUNICIPALITY_ID);
+	}
+
+	@Test
+	void updateManagerInformation() {
+		final var personId = UUID.randomUUID().toString();
+		final var checklist = createChecklist(personId, UUID.randomUUID().toString());
+		final var remoteEmployee = Employee.builder()
+			.withMainEmployment(Employment.builder()
+				.withManager(Manager.builder()
+					.withPersonId(UUID.randomUUID().toString())
+					.build())
+				.build())
+			.build();
+
+		when(employeeChecklistIntegrationMock.findOngoingChecklists(MUNICIPALITY_ID)).thenReturn(List.of(checklist));
+		when(employeeIntegrationMock.getEmployeeInformation(MUNICIPALITY_ID, personId)).thenReturn(List.of(remoteEmployee));
+
+		final var result = service.updateManagerInformation(MUNICIPALITY_ID, null);
+
+		assertThat(result).isNotNull();
+		assertThat(result.getDetails()).hasSize(1);
+
+		verify(employeeChecklistIntegrationMock).findOngoingChecklists(MUNICIPALITY_ID);
+		verify(employeeIntegrationMock).getEmployeeInformation(MUNICIPALITY_ID, personId);
+		verify(employeeChecklistIntegrationMock).updateEmployeeInformation(checklist.getEmployee(), remoteEmployee);
+	}
+
+	@Test
+	void updateManagerInformationWhenUpToDate() {
+		final var personId = UUID.randomUUID().toString();
+		final var managerPersonId = UUID.randomUUID().toString();
+		final var checklist = createChecklist(personId, managerPersonId);
+		final var remoteEmployee = Employee.builder()
+			.withMainEmployment(Employment.builder()
+				.withManager(Manager.builder()
+					.withPersonId(managerPersonId)
+					.build())
+				.build())
+			.build();
+
+		when(employeeChecklistIntegrationMock.findOngoingChecklists(MUNICIPALITY_ID)).thenReturn(List.of(checklist));
+		when(employeeIntegrationMock.getEmployeeInformation(MUNICIPALITY_ID, personId)).thenReturn(List.of(remoteEmployee));
+
+		final var result = service.updateManagerInformation(MUNICIPALITY_ID, null);
+
+		assertThat(result).isNotNull();
+		assertThat(result.getDetails()).isEmpty();
+
+		verify(employeeChecklistIntegrationMock).findOngoingChecklists(MUNICIPALITY_ID);
+		verify(employeeIntegrationMock).getEmployeeInformation(MUNICIPALITY_ID, personId);
+	}
+
+	@Test
+	void updateManagerInformationForSpecificEmployee() {
+		final var username = "username";
+		final var personId = UUID.randomUUID().toString();
+		final var checklist = createChecklist(personId, UUID.randomUUID().toString());
+		final var remoteEmployee = Employee.builder()
+			.withMainEmployment(Employment.builder()
+				.withManager(Manager.builder()
+					.withPersonId(UUID.randomUUID().toString())
+					.build())
+				.build())
+			.build();
+
+		when(employeeChecklistIntegrationMock.fetchOptionalEmployeeChecklist(MUNICIPALITY_ID, username)).thenReturn(Optional.of(checklist));
+		when(employeeIntegrationMock.getEmployeeInformation(MUNICIPALITY_ID, personId)).thenReturn(List.of(remoteEmployee));
+
+		final var result = service.updateManagerInformation(MUNICIPALITY_ID, username);
+
+		assertThat(result).isNotNull();
+		assertThat(result.getDetails()).hasSize(1);
+
+		verify(employeeChecklistIntegrationMock).fetchOptionalEmployeeChecklist(MUNICIPALITY_ID, username);
+		verify(employeeIntegrationMock).getEmployeeInformation(MUNICIPALITY_ID, personId);
+		verify(employeeChecklistIntegrationMock).updateEmployeeInformation(checklist.getEmployee(), remoteEmployee);
+	}
+
+	@Test
+	void updateManagerInformationNoOngoingChecklists() {
+		when(employeeChecklistIntegrationMock.findOngoingChecklists(MUNICIPALITY_ID)).thenReturn(emptyList());
+
+		final var result = service.updateManagerInformation(MUNICIPALITY_ID, null);
+
+		assertThat(result).isNotNull();
+		assertThat(result.getDetails()).isEmpty();
+
+		verify(employeeChecklistIntegrationMock).findOngoingChecklists(MUNICIPALITY_ID);
+	}
+
+	@Test
+	void updateManagerInformationForSpecificUsernameNotFound() {
+		final var username = "username";
+
+		final var result = service.updateManagerInformation(MUNICIPALITY_ID, username);
+
+		assertThat(result).isNotNull();
+		assertThat(result.getDetails()).isEmpty();
+
+		verify(employeeChecklistIntegrationMock).fetchOptionalEmployeeChecklist(MUNICIPALITY_ID, username);
+	}
+
+	@Test
+	void updateManagerInformationThrowsException() {
+		final var personId = UUID.randomUUID().toString();
+		final var checklist = createChecklist(personId, UUID.randomUUID().toString());
+		final var remoteEmployee = Employee.builder()
+			.withMainEmployment(Employment.builder()
+				.withManager(Manager.builder()
+					.withPersonId(UUID.randomUUID().toString())
+					.build())
+				.build())
+			.build();
+
+		when(employeeChecklistIntegrationMock.findOngoingChecklists(MUNICIPALITY_ID)).thenReturn(List.of(checklist));
+		when(employeeIntegrationMock.getEmployeeInformation(MUNICIPALITY_ID, personId)).thenReturn(List.of(remoteEmployee));
+		doThrow(new NullPointerException()).when(employeeChecklistIntegrationMock).updateEmployeeInformation(any(), any());
+
+		final var result = service.updateManagerInformation(MUNICIPALITY_ID, null);
+
+		assertThat(result).isNotNull();
+		assertThat(result.getDetails()).hasSize(1);
+		assertThat(result.getDetails().getFirst().getStatus()).isEqualTo(INTERNAL_SERVER_ERROR);
+		assertThat(result.getDetails().getFirst().getInformation()).isEqualTo("NullPointerException occurred when updating manager for A B (C)");
+
+		verify(employeeChecklistIntegrationMock).findOngoingChecklists(MUNICIPALITY_ID);
+		verify(employeeIntegrationMock).getEmployeeInformation(MUNICIPALITY_ID, personId);
+		verify(employeeChecklistIntegrationMock).updateEmployeeInformation(checklist.getEmployee(), remoteEmployee);
+	}
+
+	private EmployeeChecklistEntity createChecklist(String employeePersonId, String managerPersonId) {
+		final var manager = ManagerEntity.builder()
+			.withPersonId(managerPersonId)
+			.build();
+		final var employee = EmployeeEntity.builder()
+			.withFirstName("A")
+			.withLastName("B")
+			.withUsername("C")
+			.withId(employeePersonId)
+			.withManager(manager)
+			.build();
+		return EmployeeChecklistEntity.builder()
+			.withEmployee(employee)
+			.build();
+
 	}
 
 	private void assertOrgTreeParameters() {

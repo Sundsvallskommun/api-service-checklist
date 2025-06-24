@@ -144,4 +144,13 @@ class EmployeeChecklistRepositoryTest {
 	void countByCorrespondenceCorrespondenceStatus() {
 		assertThat(repository.countByCorrespondenceCorrespondenceStatus(ERROR)).isOne();
 	}
+
+	@Test
+	void findAllByChecklistsMunicipalityIdAndCompletedFalse() {
+		final var result = repository.findAllByChecklistsMunicipalityIdAndCompletedFalse("2281");
+
+		assertThat(result).hasSize(1)
+			.extracting(EmployeeChecklistEntity::getId)
+			.containsExactly("223a076f-441d-4a30-b5d0-f2bfd5ab250b");
+	}
 }

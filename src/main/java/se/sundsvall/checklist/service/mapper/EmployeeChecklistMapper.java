@@ -42,6 +42,7 @@ import se.sundsvall.checklist.integration.db.model.InitiationInfoEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
+import se.sundsvall.checklist.service.model.Employee;
 import se.sundsvall.dept44.requestid.RequestId;
 
 public final class EmployeeChecklistMapper {
@@ -327,4 +328,62 @@ public final class EmployeeChecklistMapper {
 			.filter(HttpStatus::isError)
 			.count();
 	}
+
+	/**
+	 * Mapping method for build a response for manager update result
+	 *
+	 * @param  processedEntities total amount of processed checklists
+	 * @param  details           the process status for each updated checklist
+	 * @return                   a response containing result of the process
+	 */
+	public static EmployeeChecklistResponse toUpdateManagerResponse(final int processedChecklists, final List<Detail> details) {
+		if (isEmpty(details)) {
+			return EmployeeChecklistResponse.builder()
+				.withSummary("No ongoing checklists have been found with outdated manager information")
+				.build();
+		}
+
+		return EmployeeChecklistResponse.builder()
+			.withSummary("%s ongoing checklist(s) has been processed and for %s checklist(s) an attempt has been made to update with new manager information. See individual status for each checklist below."
+				.formatted(processedChecklists, details.size()))
+			.withDetails(details)
+			.build();
+	}
+
+	/**
+	 * Method for exctracting detail information. To be used in conjunction with toUpdateManagerResponse method
+	 *
+	 * @param  localEmployee  the local employee entity that is to be updated
+	 * @param  remoteEmployee the remote employee object with updated manager information
+	 * @return                a string describing the change made to the employee checklist
+	 */
+	public static String createUpdateManagerDetailString(EmployeeEntity localEmployee, Employee remoteEmployee) {
+		return "Checklist for employee %s %s (%s) has changed manager from %s %s (%s) to %s %s (%s)".formatted(
+			localEmployee.getFirstName(),
+			localEmployee.getLastName(),
+			localEmployee.getUsername(),
+			localEmployee.getManager().getFirstName(),
+			localEmployee.getManager().getLastName(),
+			localEmployee.getManager().getUsername(),
+			remoteEmployee.getMainEmployment().getManager().getGivenname(),
+			remoteEmployee.getMainEmployment().getManager().getLastname(),
+			remoteEmployee.getMainEmployment().getManager().getLoginname());
+	}
+
+	/**
+	 * Method for creating error string. To be used in conjunction with toUpdateManagerResponse method
+	 *
+	 * @param  localEmployee the local employee entity that is to be updated
+	 * @param  e             the exception that has been thrown
+	 * @return               a string describing the problem that occurred when trying to update manager for employee
+	 *                       checklist
+	 */
+	public static String createUpdateManagerErrorString(EmployeeEntity localEmployee, final Exception e) {
+		return "%s occurred when updating manager for %s %s (%s)".formatted(
+			e.getClass().getSimpleName(),
+			localEmployee.getFirstName(),
+			localEmployee.getLastName(),
+			localEmployee.getUsername());
+	}
+
 }
