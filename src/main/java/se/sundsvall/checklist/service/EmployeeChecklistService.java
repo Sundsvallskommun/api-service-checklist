@@ -25,6 +25,7 @@ import static se.sundsvall.checklist.service.util.EmployeeChecklistDecorator.dec
 import static se.sundsvall.checklist.service.util.EmployeeChecklistDecorator.decorateWithFulfilment;
 import static se.sundsvall.checklist.service.util.ServiceUtils.calculateTaskType;
 import static se.sundsvall.checklist.service.util.ServiceUtils.fetchEntity;
+import static se.sundsvall.checklist.service.util.StringUtils.toSecureString;
 import static se.sundsvall.checklist.service.util.VerificationUtils.verifyMandatoryInformation;
 import static se.sundsvall.checklist.service.util.VerificationUtils.verifyUnlockedEmployeeChecklist;
 import static se.sundsvall.checklist.service.util.VerificationUtils.verifyValidEmployment;
@@ -414,7 +415,7 @@ public class EmployeeChecklistService {
 	 * @return                EmployeeChecklistResponse containing information of the execution
 	 */
 	public EmployeeChecklistResponse updateManagerInformation(String municipalityId, String username) {
-		LOGGER.info("Processing checklists for municipalityId {} and updating those with outdated manager information", municipalityId);
+		LOGGER.info("Processing checklists for municipalityId {} and updating those with outdated manager information", toSecureString(municipalityId));
 
 		// If username is present, only fetch checklist for that person (disregarding if the checklist is completed or not).
 		// Otherwise fetch all ongoing checklists.

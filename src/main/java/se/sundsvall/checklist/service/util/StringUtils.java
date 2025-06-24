@@ -19,4 +19,11 @@ public final class StringUtils {
 			.collect(joining(", "))
 			.replaceAll(REGEXP_LAST_COMMA, " and");
 	}
+
+	public static String toSecureString(String value) {
+		return ofNullable(value)
+			.map(s -> s.replaceAll("[\n\r]", " "))
+			.map(s -> s.replaceAll("(.)\\1+", "$1"))
+			.orElse(null);
+	}
 }
