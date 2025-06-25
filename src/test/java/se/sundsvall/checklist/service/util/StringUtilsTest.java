@@ -18,12 +18,16 @@ class StringUtilsTest {
 	}
 
 	@Test
-	void secureString() {
-		assertThat(StringUtils.toSecureString(null)).isNull();
-		assertThat(StringUtils.toSecureString("Lorem Ipsum")).isEqualTo("Lorem Ipsum");
-		assertThat(StringUtils.toSecureString("Lorem\n\r\n\r\nIpsum")).isEqualTo("Lorem Ipsum");
-		assertThat(StringUtils.toSecureString("Lorem\n\rIpsum")).isEqualTo("Lorem Ipsum");
-		assertThat(StringUtils.toSecureString("Lorem\nIpsum")).isEqualTo("Lorem Ipsum");
-		assertThat(StringUtils.toSecureString("Lorem\rIpsum")).isEqualTo("Lorem Ipsum");
+	void sanitizeAndCompress() {
+		assertThat(StringUtils.sanitizeAndCompress(null)).isNull();
+		assertThat(StringUtils.sanitizeAndCompress("Lorem Ipsum")).isEqualTo("Lorem Ipsum");
+		assertThat(StringUtils.sanitizeAndCompress("Lorem\n\r\n\r\nIpsum")).isEqualTo("Lorem Ipsum");
+		assertThat(StringUtils.sanitizeAndCompress("Lorem\n\rIpsum")).isEqualTo("Lorem Ipsum");
+		assertThat(StringUtils.sanitizeAndCompress("Lorem\bIpsum")).isEqualTo("Lorem Ipsum");
+		assertThat(StringUtils.sanitizeAndCompress("Lo%rem Ip\\\\\\\\sum")).isEqualTo("Lorem Ipsum");
+		assertThat(StringUtils.sanitizeAndCompress("%Lorem\n\rIpsum")).isEqualTo("Lorem Ipsum");
+		assertThat(StringUtils.sanitizeAndCompress("Lorem\nIpsum\nAbbacus")).isEqualTo("Lorem Ipsum Abbacus");
+		assertThat(StringUtils.sanitizeAndCompress("Lorem\rIpsum\rAbbacus")).isEqualTo("Lorem Ipsum Abbacus");
+
 	}
 }
