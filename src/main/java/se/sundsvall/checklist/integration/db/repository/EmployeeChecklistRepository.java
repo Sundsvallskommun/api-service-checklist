@@ -27,6 +27,8 @@ public interface EmployeeChecklistRepository extends JpaRepository<EmployeeCheck
 
 	List<EmployeeChecklistEntity> findAllByChecklistsMunicipalityIdAndCorrespondenceCorrespondenceStatus(String municipalityId, CorrespondenceStatus status);
 
+	List<EmployeeChecklistEntity> findAllByChecklistsMunicipalityIdAndCompletedFalse(String municipalityId);
+
 	int countByCorrespondenceCorrespondenceStatus(CorrespondenceStatus status);
 
 	EmployeeChecklistEntity findByChecklistsMunicipalityIdAndEmployeeUsername(String municipalityId, String username);
@@ -41,10 +43,10 @@ public interface EmployeeChecklistRepository extends JpaRepository<EmployeeCheck
 
 	default Page<EmployeeChecklistEntity> findAllByOngoingEmployeeChecklistParameters(final OngoingEmployeeChecklistParameters parameters, final Pageable pageable) {
 		return findAll(Specification
-			.where(withMunicipalityId(parameters.getMunicipalityId()))
-			.and(withEmployeeName(parameters.getEmployeeName()))
-			.and(withNonCompletedChecklists())
-			.and(distinct()),
+			.allOf(withMunicipalityId(parameters.getMunicipalityId())
+				.and(withEmployeeName(parameters.getEmployeeName()))
+				.and(withNonCompletedChecklists())
+				.and(distinct())),
 			pageable);
 	}
 

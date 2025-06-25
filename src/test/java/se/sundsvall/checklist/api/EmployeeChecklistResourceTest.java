@@ -1,5 +1,6 @@
 package se.sundsvall.checklist.api;
 
+import static java.util.Optional.ofNullable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -14,9 +15,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -63,6 +67,11 @@ class EmployeeChecklistResourceTest {
 
 	@Autowired
 	private WebTestClient webTestClient;
+
+	@AfterEach
+	void verifyNoMoreMockInteractions() {
+		verifyNoMoreInteractions(serviceMock);
+	}
 
 	@Test
 	void fetchAllOngoingEmployeeChecklists() {
@@ -495,4 +504,35 @@ class EmployeeChecklistResourceTest {
 
 		verify(serviceMock).getInitiationInformation(MUNICIPALITY_ID, true, false);
 	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {
+		"joe01doe"
+	})
+	@NullSource
+	void updateManagerInformation(String username) {
+		// Arrange
+		final var mockedResponse = EmployeeChecklistResponse.builder().build();
+
+		final var path = "/update-manager";
+
+		when(serviceMock.updateManagerInformation(MUNICIPALITY_ID, username)).thenReturn(mockedResponse);
+
+		// Act
+		final var response = webTestClient.post()
+			.uri(builder -> builder
+				.path(BASE_PATH + path)
+				.queryParamIfPresent("username", ofNullable(username))
+				.build(Map.of("municipalityId", MUNICIPALITY_ID)))
+			.exchange()
+			.expectStatus().isOk()
+			.expectBody(EmployeeChecklistResponse.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert and verify
+		assertThat(response).isEqualTo(mockedResponse);
+		verify(serviceMock).updateManagerInformation(MUNICIPALITY_ID, username);
+	}
+
 }

@@ -306,7 +306,7 @@ public class EmployeeChecklistIntegration {
 	 */
 	@Transactional
 	public String initiateEmployee(String municipalityId, Employee employee, OrganizationTree orgTree) {
-		if (employeeRepository.existsById(employee.getPersonId().toString())) {
+		if (employeeRepository.existsById(employee.getPersonId())) {
 			return EMPLOYEE_HAS_CHECKLIST.formatted(employee.getLoginname());
 		}
 
@@ -379,5 +379,9 @@ public class EmployeeChecklistIntegration {
 		if (!employeeChecklist.isCompleted() && allTasksAreCompleted(employeeChecklist)) {
 			employeeChecklist.setCompleted(true);
 		}
+	}
+
+	public List<EmployeeChecklistEntity> findOngoingChecklists(String municipalityId) {
+		return employeeChecklistRepository.findAllByChecklistsMunicipalityIdAndCompletedFalse(municipalityId);
 	}
 }

@@ -258,4 +258,15 @@ class EmployeeChecklistResource {
 
 		return noContent().header(CONTENT_TYPE, ALL_VALUE).build();
 	}
+
+	@Operation(summary = "Update manager information", description = "Triggers update of ongoing checklists with outdated manager information", responses = {
+		@ApiResponse(responseCode = "200", description = "Successful Operation", useReturnTypeSchema = true)
+	})
+	@PostMapping(value = "/update-manager", produces = APPLICATION_JSON_VALUE)
+	ResponseEntity<EmployeeChecklistResponse> updateManagerInformation(
+		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
+		@Parameter(name = "username", description = "Optional username to update. If left out, all active checklists will be updated", example = "usr123") @RequestParam(required = false) final String username) {
+
+		return ok(employeeChecklistService.updateManagerInformation(municipalityId, username));
+	}
 }

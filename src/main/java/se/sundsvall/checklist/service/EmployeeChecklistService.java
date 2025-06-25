@@ -1,6 +1,7 @@
 package se.sundsvall.checklist.service;
 
 import static java.util.Collections.emptyList;
+import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.lang3.ObjectUtils.notEqual;
@@ -9,10 +10,13 @@ import static org.zalando.problem.Status.NOT_FOUND;
 import static org.zalando.problem.Status.OK;
 import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_EMPLOYEE;
 import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_MANAGER;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.createUpdateManagerDetailString;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.createUpdateManagerErrorString;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toCustomTask;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toDetail;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toInitiationInfoEntity;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toInitiationInformations;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toUpdateManagerResponse;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.updateCustomTaskEntity;
 import static se.sundsvall.checklist.service.mapper.PagingAndSortingMapper.toPageRequest;
 import static se.sundsvall.checklist.service.mapper.PagingAndSortingMapper.toPagingMetaData;
@@ -21,6 +25,7 @@ import static se.sundsvall.checklist.service.util.EmployeeChecklistDecorator.dec
 import static se.sundsvall.checklist.service.util.EmployeeChecklistDecorator.decorateWithFulfilment;
 import static se.sundsvall.checklist.service.util.ServiceUtils.calculateTaskType;
 import static se.sundsvall.checklist.service.util.ServiceUtils.fetchEntity;
+import static se.sundsvall.checklist.service.util.StringUtils.sanitizeAndCompress;
 import static se.sundsvall.checklist.service.util.VerificationUtils.verifyMandatoryInformation;
 import static se.sundsvall.checklist.service.util.VerificationUtils.verifyUnlockedEmployeeChecklist;
 import static se.sundsvall.checklist.service.util.VerificationUtils.verifyValidEmployment;
@@ -29,6 +34,7 @@ import generated.se.sundsvall.mdviewer.Organization;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -49,6 +55,7 @@ import se.sundsvall.checklist.api.model.EmployeeChecklist;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhase;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse;
+import se.sundsvall.checklist.api.model.EmployeeChecklistResponse.Detail;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.InitiationInformation;
@@ -59,6 +66,7 @@ import se.sundsvall.checklist.integration.db.EmployeeChecklistIntegration;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
+import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
 import se.sundsvall.checklist.integration.db.repository.InitiationRepository;
@@ -398,5 +406,50 @@ public class EmployeeChecklistService {
 			.withChecklists(checklists)
 			.withMetadata(toPagingMetaData(page))
 			.build();
+	}
+
+	/**
+	 * Process ongoing checklists and update manager information where the information is out of sync
+	 *
+	 * @param  municipalityId the id of the municipality to filter checklists on
+	 * @return                EmployeeChecklistResponse containing information of the execution
+	 */
+	public EmployeeChecklistResponse updateManagerInformation(String municipalityId, String username) {
+		LOGGER.info("Processing checklists for municipalityId {} and updating those with outdated manager information", sanitizeAndCompress(municipalityId));
+
+		// If username is present, only fetch checklist for that person (disregarding if the checklist is completed or not).
+		// Otherwise fetch all ongoing checklists.
+		final var ongoingChecklists = isNull(username) ? employeeChecklistIntegration.findOngoingChecklists(municipalityId)
+			: employeeChecklistIntegration.fetchOptionalEmployeeChecklist(municipalityId, username)
+				.map(List::of)
+				.orElse(emptyList());
+
+		final List<Detail> updateResultDetails = new ArrayList<>();
+
+		ongoingChecklists.stream()
+			.map(EmployeeChecklistEntity::getEmployee)
+			.forEach(localEmployee -> employeeIntegration.getEmployeeInformation(municipalityId, localEmployee.getId()).stream()
+				.findAny()
+				.ifPresent(remoteEmployee -> updateManagerInformation(updateResultDetails, localEmployee, remoteEmployee)));
+
+		return toUpdateManagerResponse(ongoingChecklists.size(), updateResultDetails);
+	}
+
+	private void updateManagerInformation(final List<Detail> updateResultDetails, EmployeeEntity localEmployee, Employee remoteEmployee) {
+		Detail detail = null;
+
+		try {
+			if (notEqual(remoteEmployee.getMainEmployment().getManager().getPersonId(), localEmployee.getManager().getPersonId())) {
+				// First calculate information for response as local entity will be modified in next step
+				detail = toDetail(OK, createUpdateManagerDetailString(localEmployee, remoteEmployee));
+				// Update employee entity with new manager
+				employeeChecklistIntegration.updateEmployeeInformation(localEmployee, remoteEmployee);
+			}
+		} catch (final Exception e) {
+			LOGGER.error("Error when updating manager information for {} {} ({})", localEmployee.getFirstName(), localEmployee.getLastName(), localEmployee.getUsername(), e);
+			detail = toDetail(INTERNAL_SERVER_ERROR, createUpdateManagerErrorString(localEmployee, e));
+		} finally {
+			ofNullable(detail).ifPresent(updateResultDetails::add);
+		}
 	}
 }

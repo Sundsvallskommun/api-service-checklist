@@ -1,6 +1,7 @@
 package se.sundsvall.checklist.service.mapper;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.assertj.core.groups.Tuple.tuple;
@@ -29,6 +30,7 @@ import org.zalando.problem.Status;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse;
+import se.sundsvall.checklist.api.model.EmployeeChecklistResponse.Detail;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.InitiationInformation;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
@@ -36,12 +38,15 @@ import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
 import se.sundsvall.checklist.integration.db.model.InitiationInfoEntity;
+import se.sundsvall.checklist.integration.db.model.ManagerEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 import se.sundsvall.checklist.integration.db.model.enums.RoleType;
+import se.sundsvall.checklist.service.model.Employee;
+import se.sundsvall.checklist.service.model.Employment;
 import se.sundsvall.checklist.service.model.Manager;
 import se.sundsvall.dept44.requestid.RequestId;
 
@@ -614,5 +619,69 @@ class EmployeeChecklistMapperTest {
 					"Mysterious error",
 					422));
 		});
+	}
+
+	@Test
+	void toUpdateManagerResponse() {
+		final var details = List.of(
+			Detail.builder().withStatus(OK).withInformation("Detail description").build(),
+			Detail.builder().withStatus(OK).withInformation("Detail description").build());
+
+		final var response = EmployeeChecklistMapper.toUpdateManagerResponse(123, details);
+
+		assertThat(response).isNotNull();
+		assertThat(response.getSummary()).isEqualTo("123 ongoing checklist(s) has been processed and for 2 checklist(s) an attempt has been made to update with new manager information. See individual status for each checklist below.");
+		assertThat(response.getDetails()).usingRecursiveComparison().isEqualTo(List.of(
+			Detail.builder().withStatus(OK).withInformation("Detail description").build(),
+			Detail.builder().withStatus(OK).withInformation("Detail description").build()));
+	}
+
+	@Test
+	void toUpdateManagerResponseWhenEmptyDetails() {
+
+		final var response = EmployeeChecklistMapper.toUpdateManagerResponse(0, emptyList());
+
+		assertThat(response).isNotNull();
+		assertThat(response.getSummary()).isEqualTo("No ongoing checklists have been found with outdated manager information");
+		assertThat(response.getDetails()).isEmpty();
+	}
+
+	@Test
+	void extractDetailInformation() {
+		// Arrange
+		final var employeeFirstName = "employeeFirstName";
+		final var employeeLastName = "employeeLastName";
+		final var employeeUsername = "employeeUsername";
+		final var managerFirstName = "managerFirstName";
+		final var managerLastName = "managerLastName";
+		final var managerUsername = "managerUsername";
+		final var newManagerFirstName = "newManagerFirstName";
+		final var newManagerLastName = "newManagerLastName";
+		final var newManagerUsername = "newManagerUsername";
+
+		final var localEmployee = EmployeeEntity.builder()
+			.withFirstName(employeeFirstName)
+			.withLastName(employeeLastName)
+			.withUsername(employeeUsername)
+			.withManager(ManagerEntity.builder()
+				.withFirstName(managerFirstName)
+				.withLastName(managerLastName)
+				.withUsername(managerUsername)
+				.build())
+			.build();
+		final var remoteEmployee = Employee.builder()
+			.withMainEmployment(Employment.builder()
+				.withManager(Manager.builder()
+					.withGivenname(newManagerFirstName)
+					.withLastname(newManagerLastName)
+					.withLoginname(newManagerUsername)
+					.build())
+				.build())
+			.build();
+
+		final var detailInfo = EmployeeChecklistMapper.createUpdateManagerDetailString(localEmployee, remoteEmployee);
+
+		assertThat(detailInfo)
+			.isEqualTo("Checklist for employee employeeFirstName employeeLastName (employeeUsername) has changed manager from managerFirstName managerLastName (managerUsername) to newManagerFirstName newManagerLastName (newManagerUsername)");
 	}
 }
