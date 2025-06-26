@@ -1,0 +1,9 @@
+{
+	"summary": "1 ongoing checklist(s) has been processed and for 1 checklist(s) an attempt has been made to update with new manager information. See individual status for each checklist below.",
+	"details": [
+		{
+			"status": 200,
+			"information": "Checklist for employee B Emp Loyee (bemp0loyee) has changed manager from A Man Ager (aman0agr) to J Man Ager (jman6agr)"
+		}
+	]
+}

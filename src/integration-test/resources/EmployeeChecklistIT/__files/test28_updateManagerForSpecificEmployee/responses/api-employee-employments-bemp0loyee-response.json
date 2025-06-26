@@ -1,0 +1,44 @@
+[
+	{
+		"personId": "8122705b-e0e6-4055-b301-eba21986e219",
+		"personNumber": "190102031231",
+		"isClassified": false,
+		"givenname": "B Emp",
+		"lastname": "Loyee",
+		"accounts": [
+			{
+				"loginname": "bemp0loyee",
+				"companyId": 1,
+				"emailAddress": "b.employee@5535.com"
+			}
+		],
+		"employments": [
+			{
+				"companyId": 1,
+				"startDate": "2025-04-01T00:00:00",
+				"employmentType": 0,
+				"title": "Loather",
+				"orgId": 5535,
+				"orgName": "Sub organization 5535",
+				"topOrgId": 1,
+				"topOrgName": "Topdog organization",
+				"benefitGroupId": 11,
+				"formOfEmploymentId": "1",
+				"isManual": false,
+				"paTeam": "PA1",
+				"isMainEmployment": true,
+				"isManager": false,
+				"manager": {
+					"personId": "1dcffa46-c500-4696-a862-04867df207d2",
+					"givenname": "J Man",
+					"lastname": "Ager",
+					"loginname": "jman6agr",
+					"emailAddress": "j.manager@55351.com",
+					"referenceNumber": "REF6AGR"
+				},
+				"aid": "351008",
+				"empRowId": "1000"
+			}
+		]
+	}
+]

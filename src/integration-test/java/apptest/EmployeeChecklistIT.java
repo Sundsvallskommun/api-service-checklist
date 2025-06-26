@@ -20,6 +20,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
 import se.sundsvall.checklist.Application;
@@ -444,4 +445,29 @@ class EmployeeChecklistIT extends AbstractAppTest {
 			.withExpectedResponse(EXPECTED_FILE)
 			.sendRequestAndVerifyResponse();
 	}
+
+	@Test
+	@DirtiesContext
+	void test27_updateManagerOnOngoingChecklists() {
+		setupCall()
+			.withServicePath(PATH_PREFIX + "/update-manager")
+			.withHttpMethod(POST)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(EXPECTED_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
+	@DirtiesContext
+	void test28_updateManagerForSpecificEmployee() {
+		setupCall()
+			.withServicePath(PATH_PREFIX + "/update-manager?username=bemp0loyee")
+			.withHttpMethod(POST)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(EXPECTED_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
 }

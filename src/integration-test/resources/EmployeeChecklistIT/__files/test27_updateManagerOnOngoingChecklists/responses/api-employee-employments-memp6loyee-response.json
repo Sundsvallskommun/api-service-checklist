@@ -1,0 +1,44 @@
+[
+	{
+		"personId": "f1abc7a4-ad20-4c74-a5d7-3d4833405a02",
+		"personNumber": "190102031232",
+		"isClassified": false,
+		"givenname": "Lars",
+		"lastname": "Bertilsson",
+		"accounts": [
+			{
+				"loginname": "memp6loyee",
+				"companyId": 1,
+				"emailAddress": "m.employee@55351.com"
+			}
+		],
+		"employments": [
+			{
+				"companyId": 1,
+				"startDate": "2025-04-01T00:00:00",
+				"employmentType": 0,
+				"title": "Slugger",
+				"orgId": 55351,
+				"orgName": "Sub organization 55351",
+				"topOrgId": 1,
+				"topOrgName": "Topdog organization",
+				"benefitGroupId": 11,
+				"formOfEmploymentId": "1",
+				"isManual": false,
+				"paTeam": "PA1",
+				"isMainEmployment": true,
+				"isManager": false,
+				"manager": {
+					"personId": "1dcffa46-c500-4696-a862-04867df207d2",
+					"givenname": "J Man",
+					"lastname": "Ager",
+					"loginname": "jman6agr",
+					"emailAddress": "j.manager@55351.com",
+					"referenceNumber": "REF6AGR"
+				},
+				"aid": "351008",
+				"empRowId": "1000"
+			}
+		]
+	}
+]

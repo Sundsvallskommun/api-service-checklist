@@ -1,0 +1,13 @@
+{
+	"summary": "6 ongoing checklist(s) has been processed and for 2 checklist(s) an attempt has been made to update with new manager information. See individual status for each checklist below.",
+	"details": [
+		{
+			"status": 200,
+			"information": "Checklist for employee Anton Nyberg (nemp6loyee) has changed manager from J Man Ager (jman6agr) to D Man Ager (dman2agr)"
+		},
+		{
+			"status": 200,
+			"information": "Checklist for employee C Newman Ager (cman1agr) has changed manager from A Man Ager (aman0agr) to D Man Ager (dman2agr)"
+		}
+	]
+}
