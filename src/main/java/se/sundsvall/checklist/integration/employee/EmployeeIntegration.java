@@ -3,6 +3,7 @@ package se.sundsvall.checklist.integration.employee;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
+import static se.sundsvall.checklist.configuration.CacheConfiguration.EMPLOYEE_CACHE;
 
 import generated.se.sundsvall.employee.PortalPersonData;
 import java.time.LocalDate;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import se.sundsvall.checklist.service.model.Employee;
 
@@ -55,6 +57,7 @@ public class EmployeeIntegration {
 		return emptyList();
 	}
 
+	@Cacheable(EMPLOYEE_CACHE)
 	public Optional<PortalPersonData> getEmployeeByEmail(String municipalityId, String email) {
 		try {
 			return employeeClient.getEmployeeByEmail(municipalityId, email);

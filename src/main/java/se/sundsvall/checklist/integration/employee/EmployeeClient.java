@@ -1,7 +1,6 @@
 package se.sundsvall.checklist.integration.employee;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static se.sundsvall.checklist.configuration.CacheConfiguration.EMPLOYEE_CACHE;
 import static se.sundsvall.checklist.integration.employee.configuration.EmployeeConfiguration.CLIENT_ID;
 
 import generated.se.sundsvall.employee.Employeev2;
@@ -10,7 +9,6 @@ import generated.se.sundsvall.employee.PortalPersonData;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,7 +50,6 @@ public interface EmployeeClient {
 	 * @param  email          email of the employee
 	 * @return                {@link Optional<PortalPersonData>} with possible information about the employee
 	 */
-	@Cacheable(EMPLOYEE_CACHE)
 	@GetMapping(path = "/{municipalityId}/portalpersondata/{email}", produces = APPLICATION_JSON_VALUE)
 	Optional<PortalPersonData> getEmployeeByEmail(
 		@PathVariable("municipalityId") String municipalityId,
