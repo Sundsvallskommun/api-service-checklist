@@ -113,7 +113,7 @@ public class OrganizationMapper {
 				.withEmail(manager.getEmailAddress())
 				.withFirstName(manager.getGivenname())
 				.withLastName(manager.getLastname())
-				.withPersonId(manager.getPersonId().toString())
+				.withPersonId(manager.getPersonId())
 				.withUsername(manager.getLoginname())
 				.build())
 			.orElse(null);

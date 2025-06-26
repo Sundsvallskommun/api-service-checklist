@@ -340,7 +340,7 @@ public class EmployeeChecklistIntegration {
 	}
 
 	private ManagerEntity retrieveManagerEntity(Manager manager) {
-		return managerRepository.findById(manager.getPersonId().toString())
+		return managerRepository.findById(manager.getPersonId())
 			.orElse(toManagerEntity(manager));
 	}
 
