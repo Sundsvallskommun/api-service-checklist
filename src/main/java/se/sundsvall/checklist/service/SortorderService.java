@@ -29,17 +29,17 @@ import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
 import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.integration.db.model.SortorderEntity;
 import se.sundsvall.checklist.integration.db.repository.SortorderRepository;
-import se.sundsvall.checklist.integration.mdviewer.MDViewerClient;
+import se.sundsvall.checklist.integration.mdviewer.MDViewerIntegration;
 
 @Service
 public class SortorderService {
 
 	private final SortorderRepository sortorderRepository;
-	private final MDViewerClient mdViewerClient;
+	private final MDViewerIntegration mdViewerIntegration;
 
-	public SortorderService(final SortorderRepository sortorderRepository, final MDViewerClient mdViewerClient) {
+	public SortorderService(final SortorderRepository sortorderRepository, final MDViewerIntegration mdViewerIntegration) {
 		this.sortorderRepository = sortorderRepository;
-		this.mdViewerClient = mdViewerClient;
+		this.mdViewerIntegration = mdViewerIntegration;
 	}
 
 	/**
@@ -103,7 +103,7 @@ public class SortorderService {
 	 * @return                    list of checklists where custom sortorder has been applied
 	 */
 	public List<Checklist> applySortingToChecklists(final String municipalityId, final Integer organizationNumber, final List<Checklist> checklists) {
-		ofNullable(findOrganization(mdViewerClient.getCompanies().iterator(), organizationNumber))
+		ofNullable(findOrganization(mdViewerIntegration.getCompanies().iterator(), organizationNumber))
 			.map(org -> aggregateCustomSorts(municipalityId, org))
 			.ifPresent(customSort -> recalculateSortorder(checklists, customSort));
 
@@ -138,7 +138,7 @@ public class SortorderService {
 	 * @return                    list with tasks where custom sortorder has been applied
 	 */
 	public List<Task> applySortingToTasks(final String municipalityId, final Integer organizationNumber, final List<Task> tasks) {
-		return ofNullable(findOrganization(mdViewerClient.getCompanies().iterator(), organizationNumber))
+		return ofNullable(findOrganization(mdViewerIntegration.getCompanies().iterator(), organizationNumber))
 			.map(org -> aggregateCustomSorts(municipalityId, org))
 			.map(customSort -> {
 				applyCustomSortorder(tasks, customSort);
@@ -160,16 +160,16 @@ public class SortorderService {
 	}
 
 	private Organization findOrganization(final Iterator<Organization> companyIterator, final Integer organizationNumber) {
-		return mdViewerClient.getOrganizationsForCompany(companyIterator.next().getCompanyId()).stream()
+		return mdViewerIntegration.getOrganizationsForCompany(companyIterator.next().getCompanyId()).stream()
 			.filter(org -> org.getOrgId().equals(organizationNumber))
 			.findAny()
 			.orElse(companyIterator.hasNext() ? findOrganization(companyIterator, organizationNumber) : null);
 	}
 
 	private List<SortorderEntity> aggregateCustomSorts(final String municipalityId, final Organization organization) {
-		final var organizations = ofNullable(findOrganization(mdViewerClient.getCompanies().iterator(), organization.getOrgId()))
+		final var organizations = ofNullable(findOrganization(mdViewerIntegration.getCompanies().iterator(), organization.getOrgId()))
 			.map(Organization::getCompanyId)
-			.map(mdViewerClient::getOrganizationsForCompany)
+			.map(mdViewerIntegration::getOrganizationsForCompany)
 			.orElse(emptyList());
 
 		return organizations.stream()
@@ -204,7 +204,7 @@ public class SortorderService {
 	private List<SortorderEntity> aggregateCustomSorts(final EmployeeEntity employee) {
 		final var organizations = ofNullable(employee.getCompany())
 			.map(OrganizationEntity::getOrganizationNumber)
-			.map(mdViewerClient::getOrganizationsForCompany)
+			.map(mdViewerIntegration::getOrganizationsForCompany)
 			.orElse(emptyList());
 
 		return organizations.stream()

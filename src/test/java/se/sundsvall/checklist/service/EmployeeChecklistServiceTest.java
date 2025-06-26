@@ -68,7 +68,7 @@ import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
 import se.sundsvall.checklist.integration.db.repository.InitiationRepository;
 import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
-import se.sundsvall.checklist.integration.mdviewer.MDViewerClient;
+import se.sundsvall.checklist.integration.mdviewer.MDViewerIntegration;
 import se.sundsvall.checklist.service.OrganizationTree.OrganizationLine;
 import se.sundsvall.checklist.service.model.Employee;
 import se.sundsvall.checklist.service.model.Employment;
@@ -99,7 +99,7 @@ class EmployeeChecklistServiceTest {
 	private InitiationRepository initiationRepositoryMock;
 
 	@Mock
-	private MDViewerClient mdViewerClientMock;
+	private MDViewerIntegration mdViewerIntegrationMock;
 
 	@InjectMocks
 	private EmployeeChecklistService service;
@@ -117,7 +117,7 @@ class EmployeeChecklistServiceTest {
 
 	@AfterEach
 	void assertNoMoreInteractions() {
-		verifyNoMoreInteractions(employeeChecklistIntegrationMock, customTaskRepositoryMock, employeeIntegrationMock, sortorderServiceMock, initiationRepositoryMock, mdViewerClientMock);
+		verifyNoMoreInteractions(employeeChecklistIntegrationMock, customTaskRepositoryMock, employeeIntegrationMock, sortorderServiceMock, initiationRepositoryMock, mdViewerIntegrationMock);
 	}
 
 	@Test
@@ -894,7 +894,7 @@ class EmployeeChecklistServiceTest {
 		when(employeeIntegrationMock.getNewEmployees(eq(MUNICIPALITY_ID), any())).thenReturn(List.of(employee));
 		when(employeeIntegrationMock.getEmployeeByEmail(MUNICIPALITY_ID, emailAddress)).thenReturn(Optional.of(portalPersonData));
 		when(employeeChecklistIntegrationMock.initiateEmployee(any(), any(), any())).thenReturn(information);
-		when(mdViewerClientMock.getOrganizationsForCompany(companyId)).thenReturn(List.of(
+		when(mdViewerIntegrationMock.getOrganizationsForCompany(companyId)).thenReturn(List.of(
 			new Organization().orgId(rootOrgId).treeLevel(1).orgName("Sundsvalls kommun"),
 			new Organization().orgId(12).treeLevel(2).orgName("OrgLevel 2").parentId(rootOrgId),
 			new Organization().orgId(122).treeLevel(3).orgName("OrgLevel 3").parentId(12),
@@ -906,7 +906,7 @@ class EmployeeChecklistServiceTest {
 		// Assert and verify
 		verify(employeeIntegrationMock).getNewEmployees(MUNICIPALITY_ID, LocalDate.now().minusDays(30));
 		verify(employeeIntegrationMock).getEmployeeByEmail(MUNICIPALITY_ID, emailAddress);
-		verify(mdViewerClientMock).getOrganizationsForCompany(companyId);
+		verify(mdViewerIntegrationMock).getOrganizationsForCompany(companyId);
 		verify(employeeChecklistIntegrationMock).initiateEmployee(eq(MUNICIPALITY_ID), eq(employee), organizationTreeCaptor.capture());
 		verify(initiationRepositoryMock).saveAll(initiationEntitiesCaptor.capture());
 
@@ -941,7 +941,7 @@ class EmployeeChecklistServiceTest {
 		verify(employeeIntegrationMock).getNewEmployees(MUNICIPALITY_ID, LocalDate.now().minusDays(30));
 		verify(employeeIntegrationMock).getEmployeeByEmail(MUNICIPALITY_ID, emailAddress);
 		verify(initiationRepositoryMock).saveAll(initiationEntitiesCaptor.capture());
-		verify(mdViewerClientMock, never()).getOrganizationsForCompany(companyId);
+		verify(mdViewerIntegrationMock, never()).getOrganizationsForCompany(companyId);
 		verify(employeeChecklistIntegrationMock, never()).initiateEmployee(eq(MUNICIPALITY_ID), any(), any());
 
 		assertThat(initiationEntitiesCaptor.getValue()).hasSize(1).satisfiesExactly(entity -> {
@@ -972,7 +972,7 @@ class EmployeeChecklistServiceTest {
 
 		when(employeeIntegrationMock.getNewEmployees(eq(MUNICIPALITY_ID), any())).thenReturn(List.of(employee));
 		when(employeeIntegrationMock.getEmployeeByEmail(MUNICIPALITY_ID, emailAddress)).thenReturn(Optional.of(portalPersonData));
-		when(mdViewerClientMock.getOrganizationsForCompany(companyId)).thenReturn(List.of(
+		when(mdViewerIntegrationMock.getOrganizationsForCompany(companyId)).thenReturn(List.of(
 			new Organization().orgId(rootOrgId).treeLevel(1).orgName("Sundsvalls kommun"),
 			new Organization().orgId(12).treeLevel(2).orgName("OrgLevel 2").parentId(rootOrgId),
 			new Organization().orgId(122).treeLevel(3).orgName("OrgLevel 3").parentId(12),
@@ -985,7 +985,7 @@ class EmployeeChecklistServiceTest {
 		// Assert and verify
 		verify(employeeIntegrationMock).getNewEmployees(MUNICIPALITY_ID, LocalDate.now().minusDays(30));
 		verify(employeeIntegrationMock).getEmployeeByEmail(MUNICIPALITY_ID, emailAddress);
-		verify(mdViewerClientMock).getOrganizationsForCompany(companyId);
+		verify(mdViewerIntegrationMock).getOrganizationsForCompany(companyId);
 		verify(employeeChecklistIntegrationMock).initiateEmployee(eq(MUNICIPALITY_ID), eq(employee), organizationTreeCaptor.capture());
 		verify(initiationRepositoryMock).saveAll(initiationEntitiesCaptor.capture());
 
@@ -1103,7 +1103,7 @@ class EmployeeChecklistServiceTest {
 		when(employeeIntegrationMock.getEmployeeInformation(eq(MUNICIPALITY_ID), any())).thenReturn(List.of(employee));
 		when(employeeIntegrationMock.getEmployeeByEmail(MUNICIPALITY_ID, emailAddress)).thenReturn(Optional.of(portalPersonData));
 		when(employeeChecklistIntegrationMock.initiateEmployee(eq(MUNICIPALITY_ID), any(), any())).thenReturn(information);
-		when(mdViewerClientMock.getOrganizationsForCompany(companyId)).thenReturn(List.of(
+		when(mdViewerIntegrationMock.getOrganizationsForCompany(companyId)).thenReturn(List.of(
 			new Organization().orgId(rootOrgId).treeLevel(1).orgName("Sundsvalls kommun"),
 			new Organization().orgId(12).treeLevel(2).orgName("OrgLevel 2").parentId(rootOrgId),
 			new Organization().orgId(122).treeLevel(3).orgName("OrgLevel 3").parentId(12),
@@ -1115,7 +1115,7 @@ class EmployeeChecklistServiceTest {
 		// Assert and verify
 		verify(employeeIntegrationMock).getEmployeeInformation(MUNICIPALITY_ID, employeeUuid.toString());
 		verify(employeeIntegrationMock).getEmployeeByEmail(MUNICIPALITY_ID, emailAddress);
-		verify(mdViewerClientMock).getOrganizationsForCompany(companyId);
+		verify(mdViewerIntegrationMock).getOrganizationsForCompany(companyId);
 		verify(employeeChecklistIntegrationMock).initiateEmployee(eq(MUNICIPALITY_ID), eq(employee), organizationTreeCaptor.capture());
 		verify(initiationRepositoryMock).saveAll(initiationEntitiesCaptor.capture());
 
@@ -1169,7 +1169,7 @@ class EmployeeChecklistServiceTest {
 		when(employeeIntegrationMock.getEmployeeInformation(eq(MUNICIPALITY_ID), any())).thenReturn(List.of(employee));
 		when(employeeIntegrationMock.getEmployeeByEmail(MUNICIPALITY_ID, emailAddress)).thenReturn(Optional.of(portalPersonData));
 		when(employeeChecklistIntegrationMock.initiateEmployee(eq(MUNICIPALITY_ID), any(), any())).thenReturn(information);
-		when(mdViewerClientMock.getOrganizationsForCompany(companyId)).thenReturn(List.of(
+		when(mdViewerIntegrationMock.getOrganizationsForCompany(companyId)).thenReturn(List.of(
 			new Organization().orgId(rootOrgId).treeLevel(1).orgName("Sundsvalls kommun"),
 			new Organization().orgId(12).treeLevel(2).orgName("OrgLevel 2").parentId(rootOrgId),
 			new Organization().orgId(122).treeLevel(3).orgName("OrgLevel 3").parentId(12),
@@ -1181,7 +1181,7 @@ class EmployeeChecklistServiceTest {
 		// Assert and verify
 		verify(employeeIntegrationMock).getEmployeeInformation(MUNICIPALITY_ID, employeeUuid.toString());
 		verify(employeeIntegrationMock).getEmployeeByEmail(MUNICIPALITY_ID, emailAddress);
-		verify(mdViewerClientMock).getOrganizationsForCompany(companyId);
+		verify(mdViewerIntegrationMock).getOrganizationsForCompany(companyId);
 		verify(employeeChecklistIntegrationMock).initiateEmployee(eq(MUNICIPALITY_ID), eq(employee), organizationTreeCaptor.capture());
 		verify(initiationRepositoryMock).saveAll(initiationEntitiesCaptor.capture());
 

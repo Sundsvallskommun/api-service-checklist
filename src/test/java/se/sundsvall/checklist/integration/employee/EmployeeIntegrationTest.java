@@ -18,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.cache.annotation.Cacheable;
 import se.sundsvall.checklist.TestObjectFactory;
 import se.sundsvall.dept44.exception.ClientProblem;
 
@@ -35,6 +36,11 @@ class EmployeeIntegrationTest {
 	private EmployeeIntegration employeeIntegration;
 
 	private final UUID uuid = UUID.randomUUID();
+
+	@Test
+	void verifyCacheAnnotations() throws NoSuchMethodException {
+		assertThat(EmployeeIntegration.class.getMethod("getEmployeeByEmail", String.class, String.class).getAnnotation(Cacheable.class).value()).containsExactly("employee");
+	}
 
 	@Test
 	void testGetEmployeeInformation_shouldReturnListOfEmployees_whenOk() {

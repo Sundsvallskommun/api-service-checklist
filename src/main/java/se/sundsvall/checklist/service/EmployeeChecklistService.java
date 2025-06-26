@@ -71,7 +71,7 @@ import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
 import se.sundsvall.checklist.integration.db.repository.InitiationRepository;
 import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
-import se.sundsvall.checklist.integration.mdviewer.MDViewerClient;
+import se.sundsvall.checklist.integration.mdviewer.MDViewerIntegration;
 import se.sundsvall.checklist.service.OrganizationTree.OrganizationLine;
 import se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper;
 import se.sundsvall.checklist.service.model.Employee;
@@ -93,7 +93,7 @@ public class EmployeeChecklistService {
 	private final EmployeeIntegration employeeIntegration;
 	private final EmployeeChecklistIntegration employeeChecklistIntegration;
 	private final SortorderService sortorderService;
-	private final MDViewerClient mdViewerClient;
+	private final MDViewerIntegration mdViewerIntegration;
 	private final Duration employeeInformationUpdateInterval;
 
 	public EmployeeChecklistService(
@@ -102,7 +102,7 @@ public class EmployeeChecklistService {
 		final EmployeeIntegration employeeIntegration,
 		final EmployeeChecklistIntegration employeeChecklistIntegration,
 		final SortorderService sortorderService,
-		final MDViewerClient mdViewerClient,
+		final MDViewerIntegration mdViewerIntegration,
 		@Value("${checklist.employee-update-interval}") final Duration employeeInformationUpdateInterval) {
 
 		this.customTaskRepository = customTaskRepository;
@@ -110,7 +110,7 @@ public class EmployeeChecklistService {
 		this.employeeIntegration = employeeIntegration;
 		this.employeeChecklistIntegration = employeeChecklistIntegration;
 		this.sortorderService = sortorderService;
-		this.mdViewerClient = mdViewerClient;
+		this.mdViewerIntegration = mdViewerIntegration;
 		this.employeeInformationUpdateInterval = employeeInformationUpdateInterval;
 	}
 
@@ -302,7 +302,9 @@ public class EmployeeChecklistService {
 	 * him or her.
 	 */
 	public EmployeeChecklistResponse initiateSpecificEmployeeChecklist(final String municipalityId, final String uuid) {
-		LOGGER.info("Fetching employees by municipalityId: {} and personId: {}", municipalityId, uuid);
+		if (LOGGER.isInfoEnabled()) {
+			LOGGER.info("Fetching employees by municipalityId: {} and personId: {}", sanitizeAndCompress(municipalityId), sanitizeAndCompress(uuid));
+		}
 
 		final var employees = employeeIntegration.getEmployeeInformation(municipalityId, uuid);
 		if (isEmpty(employees)) {
@@ -316,8 +318,9 @@ public class EmployeeChecklistService {
 	 * Fetch new employees from employee integration and initiate checklists for them.
 	 */
 	public EmployeeChecklistResponse initiateEmployeeChecklists(final String municipalityId) {
-
-		LOGGER.info("Fetching new employees by municipalityId: {} and hireDateFrom: {}", municipalityId, DEFAULT_HIRE_DATE_FROM_PARAMETER_VALUE);
+		if (LOGGER.isInfoEnabled()) {
+			LOGGER.info("Fetching new employees by municipalityId: {} and hireDateFrom: {}", sanitizeAndCompress(municipalityId), DEFAULT_HIRE_DATE_FROM_PARAMETER_VALUE);
+		}
 
 		final var employees = employeeIntegration.getNewEmployees(municipalityId, DEFAULT_HIRE_DATE_FROM_PARAMETER_VALUE);
 		if (isEmpty(employees)) {
@@ -364,7 +367,7 @@ public class EmployeeChecklistService {
 				final var employeeOrgTree = OrganizationTree.map(portalPersonData.getOrgTree());
 
 				// We need to find the root organization connected to the top level in the employees org tree via mdviewer
-				final var organizations = mdViewerClient.getOrganizationsForCompany(portalPersonData.getCompanyId());
+				final var organizations = mdViewerIntegration.getOrganizationsForCompany(portalPersonData.getCompanyId());
 				organizations.stream()
 					.filter(organization -> organization.getOrgId() == Integer.parseInt(employeeOrgTree.getTree().firstEntry().getValue().getOrgId()))
 					.map(Organization::getParentId)
@@ -415,7 +418,9 @@ public class EmployeeChecklistService {
 	 * @return                EmployeeChecklistResponse containing information of the execution
 	 */
 	public EmployeeChecklistResponse updateManagerInformation(String municipalityId, String username) {
-		LOGGER.info("Processing checklists for municipalityId {} and updating those with outdated manager information", sanitizeAndCompress(municipalityId));
+		if (LOGGER.isInfoEnabled()) {
+			LOGGER.info("Processing checklists for municipalityId {} and updating those with outdated manager information", sanitizeAndCompress(municipalityId));
+		}
 
 		// If username is present, only fetch checklist for that person (disregarding if the checklist is completed or not).
 		// Otherwise fetch all ongoing checklists.
