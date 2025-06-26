@@ -25,9 +25,6 @@ import wiremock.org.apache.commons.lang3.RandomUtils;
 @ExtendWith(MockitoExtension.class)
 class MDViewerIntegrationTest {
 
-	private static final String MUNICIPALITY_ID = "municipalityId";
-	private static final String LOG_KEY = "logKey";
-
 	@Mock
 	private MDViewerClient mdViewerClientMock;
 
