@@ -1,0 +1,44 @@
+[
+	{
+		"personId": "f1abc7a4-ad20-4c74-a5d7-3d4833405a03",
+		"personNumber": "190102031233",
+		"isClassified": false,
+		"givenname": "Anton",
+		"lastname": "Nyberg",
+		"accounts": [
+			{
+				"loginname": "nemp6loyee",
+				"companyId": 1,
+				"emailAddress": "n.employee@55351.com"
+			}
+		],
+		"employments": [
+			{
+				"companyId": 1,
+				"startDate": "2025-04-01T00:00:00",
+				"employmentType": 0,
+				"title": "Slugger",
+				"orgId": 55351,
+				"orgName": "Sub organization 55351",
+				"topOrgId": 1,
+				"topOrgName": "Topdog organization",
+				"benefitGroupId": 11,
+				"formOfEmploymentId": "1",
+				"isManual": false,
+				"paTeam": "PA1",
+				"isMainEmployment": true,
+				"isManager": false,
+				"manager": {
+					"personId": "b1cf6779-f2a2-4236-89c6-0ba9beab70c7",
+					"givenname": "D Man",
+					"lastname": "Ager",
+					"loginname": "dman2agr",
+					"emailAddress": "d.manager@55351.com",
+					"referenceNumber": "REF2AGR"
+				},
+				"aid": "351008",
+				"empRowId": "1000"
+			}
+		]
+	}
+]
