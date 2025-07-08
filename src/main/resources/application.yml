@@ -137,3 +137,8 @@ checklist:
     name: purgeOldInitiationInfo
     lockAtMostFor: PT2M
     maximumExecutionTime: PT2M
+  update-manager:
+    cron: ${config.schedulers.update-manager.cron:-}
+    name: updateManager
+    lockAtMostFor: PT10M
+    maximumExecutionTime: PT10M

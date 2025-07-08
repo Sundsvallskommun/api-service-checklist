@@ -1,6 +1,7 @@
 package se.sundsvall.checklist.integration.eventlog;
 
 import static org.zalando.problem.Status.BAD_GATEWAY;
+import static se.sundsvall.checklist.service.util.StringUtils.sanitizeAndCompress;
 
 import generated.se.sundsvall.eventlog.Event;
 import generated.se.sundsvall.eventlog.PageEvent;
@@ -25,25 +26,29 @@ public class EventlogIntegration {
 	}
 
 	public void createEvent(final Event event) {
+		final var sanitizedLogKey = sanitizeAndCompress(event.getLogKey());
 		try {
-			LOG.info("Creating event for checklist: {}", event.getLogKey());
+			LOG.info("Creating event for checklist: {}", sanitizedLogKey);
 			eventlogClient.createEvent(event.getMunicipalityId(), event.getLogKey(), event);
-			LOG.info("Successfully created event for checklist: {}", event.getLogKey());
-		} catch (Exception e) {
+			LOG.info("Successfully created event for checklist: {}", sanitizedLogKey);
+		} catch (final Exception e) {
 			// This exception should not be thrown to the client.
-			LOG.error("Could not create event for checklist: {}", event.getLogKey(), e);
+			LOG.error("Could not create event for checklist: {}", sanitizedLogKey, e);
 		}
 	}
 
 	public PageEvent getEvents(final String municipalityId, final String logKey, final Pageable pageable) {
+		final var sanitizedMunicipalityId = sanitizeAndCompress(municipalityId);
+		final var sanitizedLogKey = sanitizeAndCompress(logKey);
+
 		try {
-			LOG.info("Fetching events for checklist: {}", logKey);
-			var events = eventlogClient.getEvents(municipalityId, logKey, pageable);
-			LOG.info("Successfully fetched events for checklist: {}", logKey);
+			LOG.info("Fetching events for checklist: {}", sanitizedLogKey);
+			final var events = eventlogClient.getEvents(sanitizedMunicipalityId, sanitizedLogKey, pageable);
+			LOG.info("Successfully fetched events for checklist: {}", sanitizedLogKey);
 			return events;
-		} catch (Exception e) {
-			LOG.error("Could not fetch events for checklist: {}", logKey, e);
-			throw Problem.valueOf(BAD_GATEWAY, "Could not fetch events for checklist: " + logKey);
+		} catch (final Exception e) {
+			LOG.error("Could not fetch events for checklist: {}", sanitizedLogKey, e);
+			throw Problem.valueOf(BAD_GATEWAY, "Could not fetch events for checklist: %s".formatted(sanitizedLogKey));
 		}
 	}
 
