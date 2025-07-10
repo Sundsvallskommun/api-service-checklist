@@ -8,6 +8,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse;
@@ -33,6 +34,7 @@ public class UpdateEmployeeManagerScheduler {
 		this.properties = properties;
 	}
 
+	@Transactional
 	@Dept44Scheduled(
 		name = "${checklist.update-manager.name}",
 		cron = "${checklist.update-manager.cron}",

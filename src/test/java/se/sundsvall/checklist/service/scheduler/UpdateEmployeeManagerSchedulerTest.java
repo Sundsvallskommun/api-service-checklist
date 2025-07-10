@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
@@ -31,6 +32,11 @@ class UpdateEmployeeManagerSchedulerTest {
 
 	@InjectMocks
 	private UpdateEmployeeManagerScheduler scheduler;
+
+	@Test
+	void verifyTransactionalAnnotation() throws NoSuchMethodException {
+		assertThat(UpdateEmployeeManagerScheduler.class.getMethod("execute").getAnnotation(Transactional.class)).isNotNull();
+	}
 
 	@Test
 	void execute() {

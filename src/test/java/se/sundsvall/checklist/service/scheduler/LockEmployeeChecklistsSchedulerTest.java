@@ -17,6 +17,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.transaction.annotation.Transactional;
 import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
@@ -36,6 +37,11 @@ class LockEmployeeChecklistsSchedulerTest {
 
 	@Captor
 	private ArgumentCaptor<EmployeeChecklistEntity> entityCaptor;
+
+	@Test
+	void verifyTransactionalAnnotation() throws NoSuchMethodException {
+		assertThat(LockEmployeeChecklistsScheduler.class.getMethod("execute").getAnnotation(Transactional.class)).isNotNull();
+	}
 
 	@Test
 	void executeWhenNoLockableEmployeeChecklistsExists() {
