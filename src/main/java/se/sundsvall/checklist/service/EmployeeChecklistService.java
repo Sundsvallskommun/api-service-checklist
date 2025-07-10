@@ -444,6 +444,9 @@ public class EmployeeChecklistService {
 		Detail detail = null;
 
 		try {
+			if (isNull(remoteEmployee.getMainEmployment())) {
+				throw Problem.valueOf(NOT_FOUND, "No main employement was found");
+			}
 			if (notEqual(remoteEmployee.getMainEmployment().getManager().getPersonId(), localEmployee.getManager().getPersonId())) {
 				// First calculate information for response as local entity will be modified in next step
 				detail = toDetail(OK, createUpdateManagerDetailString(localEmployee, remoteEmployee));

@@ -1,6 +1,7 @@
 package se.sundsvall.checklist.service.scheduler;
 
 import static java.time.temporal.ChronoUnit.DAYS;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.transaction.annotation.Transactional;
 import se.sundsvall.checklist.integration.db.repository.InitiationRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,6 +27,11 @@ class PurgeOldInitiationInfoSchedulerTest {
 	@BeforeEach
 	void setup() {
 		scheduler = new PurgeOldInitiationInfoScheduler(initiationRepositoryMock, THRESHOLD_IN_DAYS);
+	}
+
+	@Test
+	void verifyTransactionalAnnotation() throws NoSuchMethodException {
+		assertThat(PurgeOldInitiationInfoScheduler.class.getMethod("execute").getAnnotation(Transactional.class)).isNotNull();
 	}
 
 	@Test
