@@ -1,12 +1,10 @@
 package se.sundsvall.checklist.integration.mdviewer;
 
-import static se.sundsvall.checklist.configuration.CacheConfiguration.MDVIEWER_CACHE;
 import static se.sundsvall.checklist.integration.mdviewer.configuration.MDViewerConfiguration.CLIENT_ID;
 
 import generated.se.sundsvall.mdviewer.Organization;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import java.util.List;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +20,6 @@ public interface MDViewerClient {
 	 *
 	 * @return List of root organizations (a.k.a. companies)
 	 */
-	@Cacheable(MDVIEWER_CACHE)
 	@GetMapping(path = "/root", produces = MediaType.APPLICATION_JSON_VALUE)
 	List<Organization> getCompanies();
 
@@ -32,7 +29,6 @@ public interface MDViewerClient {
 	 * @param  companyId containing the id of the root company to fetch organizations for
 	 * @return           List of organizations
 	 */
-	@Cacheable(MDVIEWER_CACHE)
 	@GetMapping(path = "/{companyId}/company", produces = MediaType.APPLICATION_JSON_VALUE)
 	List<Organization> getOrganizationsForCompany(@PathVariable("companyId") int companyId);
 
