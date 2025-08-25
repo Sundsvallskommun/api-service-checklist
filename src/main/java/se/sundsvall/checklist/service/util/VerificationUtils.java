@@ -19,7 +19,12 @@ import se.sundsvall.checklist.service.model.Employment;
 public final class VerificationUtils {
 	private static final String EMPLOYMENT_NOT_VALID_FOR_CHECKLIST = "the employee does not have a main employment with an %s that validates for creating an employee checklist";
 	private static final String EMPLOYEE_CHECKLIST_IS_LOCKED = "Employee checklist with id %s is locked and can not be modified.";
-	private static final List<String> VALID_EMPLOYMENT_FORMS_FOR_CHECKLIST = List.of("1", "2", "9", "14", "17"); // Permanent employment ("1"), temporary monthly paid employment ("2") and probationary employment ("9")
+
+	/**
+	 * Permanent employment ("1"), temporary monthly paid employment ("2"), probationary employment ("9"), unauthorized
+	 * teacher ("T")
+	 */
+	private static final List<String> VALID_EMPLOYMENT_FORMS_FOR_CHECKLIST = List.of("1", "2", "9", "14", "17", "T");
 	private static final String VALID_EVENT_TYPE = "Joiner";
 
 	private VerificationUtils() {}
