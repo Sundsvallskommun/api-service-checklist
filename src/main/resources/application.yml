@@ -118,8 +118,8 @@ checklist:
     delay-on-startup: ${config.schedulers.new-employees.delay-on-startup}
     cron: ${config.schedulers.new-employees.cron:-}
     name: fetchNewEmployees
-    lockAtMostFor: PT2M
-    maximumExecutionTime: PT2M
+    lockAtMostFor: PT5M
+    maximumExecutionTime: PT5M
   manager-email:
     cron: ${config.schedulers.manager-email.cron:-}
     name: sendEmailToManagers
