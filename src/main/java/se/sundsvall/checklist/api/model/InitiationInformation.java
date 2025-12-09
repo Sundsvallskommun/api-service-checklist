@@ -20,13 +20,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Schema(description = "Model for information about the last execution to initiate employee checklists")
 public class InitiationInformation {
 
-	@Schema(description = "The log id for the execution (used for investigation purpose when searching logs in ELK)", example = "5a6c3e4e-c320-4006-b448-1fd4121df828", accessMode = READ_ONLY)
+	@Schema(description = "The log id for the execution (used for investigation purpose when searching logs in ELK)", examples = "5a6c3e4e-c320-4006-b448-1fd4121df828", accessMode = READ_ONLY)
 	private String logId;
 
-	@Schema(description = "A information summary for the execution", example = "4 potential problems occurred when importing 6 employees", accessMode = READ_ONLY)
+	@Schema(description = "A information summary for the execution", examples = "4 potential problems occurred when importing 6 employees", accessMode = READ_ONLY)
 	private String summary;
 
-	@Schema(description = "The execution date and time for the initiation", example = "2023-11-22T15:30:00+03:00", accessMode = READ_ONLY)
+	@Schema(description = "The execution date and time for the initiation", examples = "2023-11-22T15:30:00+03:00", accessMode = READ_ONLY)
 	@DateTimeFormat(iso = DATE_TIME)
 	private OffsetDateTime executed;
 
@@ -40,10 +40,10 @@ public class InitiationInformation {
 	@Schema(description = "Model for detailed information for a specific employee checklist initiation")
 	public static class Detail {
 
-		@Schema(description = "Status for the employee checklist initiation", example = "200", accessMode = READ_ONLY)
+		@Schema(description = "Status for the employee checklist initiation", examples = "200", accessMode = READ_ONLY)
 		private int status;
 
-		@Schema(description = "Information regarding the employee checklist initiation", example = "Employee with loginname pau55rod processed successfully.", accessMode = READ_ONLY)
+		@Schema(description = "Information regarding the employee checklist initiation", examples = "Employee with loginname pau55rod processed successfully.", accessMode = READ_ONLY)
 		private String information;
 	}
 }

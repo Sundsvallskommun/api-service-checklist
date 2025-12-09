@@ -30,11 +30,11 @@ public class EmployeeChecklistResponse {
 		@Schema(description = "Status for action of creating the employee checklist", accessMode = READ_ONLY)
 		private StatusType status;
 
-		@Schema(description = "Descriptive text for of the creation outcome", example = "Employee with loginname abc123 processed successfully.", accessMode = READ_ONLY)
+		@Schema(description = "Descriptive text for of the creation outcome", examples = "Employee with loginname abc123 processed successfully.", accessMode = READ_ONLY)
 		private String information;
 	}
 
-	@Schema(description = "Summary for execution", example = "Successful execution", accessMode = READ_ONLY)
+	@Schema(description = "Summary for execution", examples = "Successful execution", accessMode = READ_ONLY)
 	private String summary;
 
 	@ArraySchema(arraySchema = @Schema(implementation = Detail.class, description = "Details for each user specific creation", accessMode = READ_ONLY))

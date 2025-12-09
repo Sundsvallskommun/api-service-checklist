@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Model for checklist update request")
 public class ChecklistUpdateRequest {
 
-	@Schema(description = "The name of the checklist", example = "New display name")
+	@Schema(description = "The name of the checklist", examples = "New display name")
 	private String displayName;
 
 	@Schema(description = "The id of the user updating the checklist")

@@ -24,7 +24,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Schema(description = "Model for a employee specific checklist")
 public class EmployeeChecklist {
 
-	@Schema(description = "The id of the employee checklist", example = "5a6c3e4e-c320-4006-b448-1fd4121df828", accessMode = READ_ONLY)
+	@Schema(description = "The id of the employee checklist", examples = "5a6c3e4e-c320-4006-b448-1fd4121df828", accessMode = READ_ONLY)
 	private String id;
 
 	@Schema(description = "The employee connected to the checklist", accessMode = READ_ONLY)
@@ -49,23 +49,23 @@ public class EmployeeChecklist {
 	@Builder.Default
 	private List<EmployeeChecklistPhase> phases = new ArrayList<>();
 
-	@Schema(description = "The created date and time of the checklist", example = "2023-11-22T15:30:00+03:00", accessMode = READ_ONLY)
+	@Schema(description = "The created date and time of the checklist", examples = "2023-11-22T15:30:00+03:00", accessMode = READ_ONLY)
 	@DateTimeFormat(iso = DATE_TIME)
 	private OffsetDateTime created;
 
-	@Schema(description = "The last update date and time of the checklist", example = "2023-11-22T15:30:00+03:00", accessMode = READ_ONLY)
+	@Schema(description = "The last update date and time of the checklist", examples = "2023-11-22T15:30:00+03:00", accessMode = READ_ONLY)
 	@DateTimeFormat(iso = DATE_TIME)
 	private OffsetDateTime updated;
 
-	@Schema(description = "The date when the fulfilment of the checklist was started", example = "2023-11-22", accessMode = READ_ONLY)
+	@Schema(description = "The date when the fulfilment of the checklist was started", examples = "2023-11-22", accessMode = READ_ONLY)
 	@DateTimeFormat(iso = DATE)
 	private LocalDate startDate;
 
-	@Schema(description = "The date when the fulfilment of the checklist was finished", example = "2023-11-22", accessMode = READ_ONLY)
+	@Schema(description = "The date when the fulfilment of the checklist was finished", examples = "2023-11-22", accessMode = READ_ONLY)
 	@DateTimeFormat(iso = DATE)
 	private LocalDate endDate;
 
-	@Schema(description = "The expiration date of the checklist", example = "2023-11-22", accessMode = READ_ONLY)
+	@Schema(description = "The expiration date of the checklist", examples = "2023-11-22", accessMode = READ_ONLY)
 	@DateTimeFormat(iso = DATE)
 	private LocalDate expirationDate;
 }

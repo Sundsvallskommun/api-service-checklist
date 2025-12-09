@@ -20,16 +20,16 @@ import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 @Builder(setterPrefix = "with")
 @Schema(description = "Model for custom task")
 public class CustomTask {
-	@Schema(description = "The id of the task", example = "5a6c3e4e-c320-4006-b448-1fd4121df828", accessMode = READ_ONLY)
+	@Schema(description = "The id of the task", examples = "5a6c3e4e-c320-4006-b448-1fd4121df828", accessMode = READ_ONLY)
 	private String id;
 
-	@Schema(description = "The heading of the task", example = "Bjud på fika", accessMode = READ_ONLY)
+	@Schema(description = "The heading of the task", examples = "Bjud på fika", accessMode = READ_ONLY)
 	private String heading;
 
-	@Schema(description = "Reference to use as value for the headings anchor element (if present)", example = "http://www.google.com", accessMode = READ_ONLY)
+	@Schema(description = "Reference to use as value for the headings anchor element (if present)", examples = "http://www.google.com", accessMode = READ_ONLY)
 	private String headingReference;
 
-	@Schema(description = "The body text of the task", example = "Detta är en beskrivning av ett uppdrag", accessMode = READ_ONLY)
+	@Schema(description = "The body text of the task", examples = "Detta är en beskrivning av ett uppdrag", accessMode = READ_ONLY)
 	private String text;
 
 	@Schema(description = "The sort order for the task", accessMode = READ_ONLY)
@@ -41,14 +41,14 @@ public class CustomTask {
 	@Schema(description = "The question type of the task")
 	private QuestionType questionType;
 
-	@Schema(description = "The date and time the task was created", example = "2023-11-22T15:30:00+03:00", accessMode = READ_ONLY)
+	@Schema(description = "The date and time the task was created", examples = "2023-11-22T15:30:00+03:00", accessMode = READ_ONLY)
 	@DateTimeFormat(iso = DATE_TIME)
 	private OffsetDateTime created;
 
-	@Schema(description = "The date and time the task was last updated", example = "2023-11-22T15:30:00+03:00", accessMode = READ_ONLY)
+	@Schema(description = "The date and time the task was last updated", examples = "2023-11-22T15:30:00+03:00", accessMode = READ_ONLY)
 	@DateTimeFormat(iso = DATE_TIME)
 	private OffsetDateTime updated;
 
-	@Schema(description = "The id of the user that last modified the custom task", example = "joe01doe", accessMode = READ_ONLY)
+	@Schema(description = "The id of the user that last modified the custom task", examples = "joe01doe", accessMode = READ_ONLY)
 	private String lastSavedBy;
 }

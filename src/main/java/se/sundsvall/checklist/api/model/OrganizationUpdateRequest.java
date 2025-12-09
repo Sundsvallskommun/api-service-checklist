@@ -20,7 +20,7 @@ import se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel;
 @Schema(description = "Model for organizational unit update request")
 public class OrganizationUpdateRequest {
 
-	@Schema(description = "The name of the unit", example = "Sundsvall Energi", accessMode = WRITE_ONLY, nullable = true)
+	@Schema(description = "The name of the unit", examples = "Sundsvall Energi", accessMode = WRITE_ONLY, nullable = true)
 	private String organizationName;
 
 	@ArraySchema(schema = @Schema(description = "Valid channels to use when communicating with the organization", accessMode = WRITE_ONLY), uniqueItems = true)

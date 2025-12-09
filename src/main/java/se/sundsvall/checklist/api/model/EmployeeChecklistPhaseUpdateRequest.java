@@ -21,7 +21,7 @@ public class EmployeeChecklistPhaseUpdateRequest {
 	@Schema(description = "The value to be set on all tasks in the phase", accessMode = WRITE_ONLY, nullable = true)
 	private FulfilmentStatus tasksFulfilmentStatus;
 
-	@Schema(description = "Identifier for the person that is performing the update", example = "joe01doe", accessMode = WRITE_ONLY)
+	@Schema(description = "Identifier for the person that is performing the update", examples = "joe01doe", accessMode = WRITE_ONLY)
 	@NotBlank
 	private String updatedBy;
 }

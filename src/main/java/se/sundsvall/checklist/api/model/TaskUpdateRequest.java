@@ -23,13 +23,13 @@ public class TaskUpdateRequest {
 	@Schema(description = "The name of the task", accessMode = WRITE_ONLY)
 	private String heading;
 
-	@Schema(description = "Optional reference to use as value for the headings anchor element", example = "http://www.google.com", accessMode = WRITE_ONLY)
+	@Schema(description = "Optional reference to use as value for the headings anchor element", examples = "http://www.google.com", accessMode = WRITE_ONLY)
 	private String headingReference;
 
 	@Schema(description = "The body text of the task", accessMode = WRITE_ONLY)
 	private String text;
 
-	@Schema(description = "The sort order of the task", example = "1", accessMode = WRITE_ONLY)
+	@Schema(description = "The sort order of the task", examples = "1", accessMode = WRITE_ONLY)
 	private Integer sortOrder;
 
 	@Schema(description = "The role type of the task")
@@ -41,7 +41,7 @@ public class TaskUpdateRequest {
 	@Schema(description = "The question type of the task")
 	private QuestionType questionType;
 
-	@Schema(description = "The id of the user updating the task", example = "joe01doe", accessMode = WRITE_ONLY)
+	@Schema(description = "The id of the user updating the task", examples = "joe01doe", accessMode = WRITE_ONLY)
 	@NotBlank
 	private String updatedBy;
 }
