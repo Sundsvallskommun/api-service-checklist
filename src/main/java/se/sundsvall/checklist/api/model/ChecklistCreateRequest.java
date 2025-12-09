@@ -16,15 +16,15 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Model for checklist create request")
 public class ChecklistCreateRequest {
 
-	@Schema(description = "The name of the checklist", example = "Checklist_A")
+	@Schema(description = "The name of the checklist", examples = "Checklist_A")
 	@NotBlank
 	private String name;
 
-	@Schema(description = "The display name of the checklist", example = "Display name")
+	@Schema(description = "The display name of the checklist", examples = "Display name")
 	@NotBlank
 	private String displayName;
 
-	@Schema(description = "The organization that the checklist is created for", example = "11")
+	@Schema(description = "The organization that the checklist is created for", examples = "11")
 	@NotNull
 	private Integer organizationNumber;
 

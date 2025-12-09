@@ -22,26 +22,26 @@ import se.sundsvall.checklist.integration.db.model.enums.LifeCycle;
 @Schema(description = "Model for checklist")
 public class Checklist {
 
-	@Schema(description = "The id of the checklist", example = "5a6c3e4e-c320-4006-b448-1fd4121df828", accessMode = READ_ONLY)
+	@Schema(description = "The id of the checklist", examples = "5a6c3e4e-c320-4006-b448-1fd4121df828", accessMode = READ_ONLY)
 	private String id;
 
-	@Schema(description = "The name of the checklist", example = "Checklist_A", accessMode = READ_ONLY)
+	@Schema(description = "The name of the checklist", examples = "Checklist_A", accessMode = READ_ONLY)
 	private String name;
 
-	@Schema(description = "The display name of the checklist", example = "Display name", accessMode = READ_ONLY)
+	@Schema(description = "The display name of the checklist", examples = "Display name", accessMode = READ_ONLY)
 	private String displayName;
 
-	@Schema(description = "The version of the checklist", example = "1", accessMode = READ_ONLY)
+	@Schema(description = "The version of the checklist", examples = "1", accessMode = READ_ONLY)
 	private Integer version;
 
 	@Schema(description = "The lifecycle of the checklist", accessMode = READ_ONLY)
 	private LifeCycle lifeCycle;
 
-	@Schema(description = "The created date and time of the checklist", example = "2023-11-22T15:30:00+03:00", accessMode = READ_ONLY)
+	@Schema(description = "The created date and time of the checklist", examples = "2023-11-22T15:30:00+03:00", accessMode = READ_ONLY)
 	@DateTimeFormat(iso = DATE_TIME)
 	private OffsetDateTime created;
 
-	@Schema(description = "The last update date and time of the checklist", example = "2023-11-22T15:30:00+03:00", accessMode = READ_ONLY)
+	@Schema(description = "The last update date and time of the checklist", examples = "2023-11-22T15:30:00+03:00", accessMode = READ_ONLY)
 	@DateTimeFormat(iso = DATE_TIME)
 	private OffsetDateTime updated;
 

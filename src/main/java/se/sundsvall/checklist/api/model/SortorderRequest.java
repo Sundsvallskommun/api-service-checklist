@@ -46,11 +46,11 @@ public class SortorderRequest {
 	@Schema(description = "Model for a task item in the sort order structure")
 	public static class TaskItem {
 
-		@Schema(description = "The id for the item", example = "283cec0f-b6eb-473c-9dbb-d97a959a8144", accessMode = WRITE_ONLY)
+		@Schema(description = "The id for the item", examples = "283cec0f-b6eb-473c-9dbb-d97a959a8144", accessMode = WRITE_ONLY)
 		@ValidUuid
 		private String id;
 
-		@Schema(description = "The sort order position for the item", example = "1", accessMode = WRITE_ONLY)
+		@Schema(description = "The sort order position for the item", examples = "1", accessMode = WRITE_ONLY)
 		@NotNull
 		private Integer position;
 	}

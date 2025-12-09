@@ -21,21 +21,21 @@ import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 @Schema(description = "Model for task create request")
 public class TaskCreateRequest {
 
-	@Schema(description = "The name of the task", example = "Name of the task", accessMode = WRITE_ONLY)
+	@Schema(description = "The name of the task", examples = "Name of the task", accessMode = WRITE_ONLY)
 	@NotBlank
 	private String heading;
 
-	@Schema(description = "Optional reference to use as value for the headings anchor element", example = "http://www.google.com", accessMode = WRITE_ONLY)
+	@Schema(description = "Optional reference to use as value for the headings anchor element", examples = "http://www.google.com", accessMode = WRITE_ONLY)
 	private String headingReference;
 
-	@Schema(description = "The body text of the task", example = "Body text of the task", accessMode = WRITE_ONLY)
+	@Schema(description = "The body text of the task", examples = "Body text of the task", accessMode = WRITE_ONLY)
 	private String text;
 
-	@Schema(description = "The sort order of the task", example = "1", accessMode = WRITE_ONLY)
+	@Schema(description = "The sort order of the task", examples = "1", accessMode = WRITE_ONLY)
 	@NotNull
 	private Integer sortOrder;
 
-	@Schema(description = "The role type of the task", example = "NEW_EMPLOYEE")
+	@Schema(description = "The role type of the task", examples = "NEW_EMPLOYEE")
 	@NotNull
 	private RoleType roleType;
 
@@ -43,11 +43,11 @@ public class TaskCreateRequest {
 	@NotNull
 	private Permission permission;
 
-	@Schema(description = "The question type of the task", example = "YES_OR_NO")
+	@Schema(description = "The question type of the task", examples = "YES_OR_NO")
 	@NotNull
 	private QuestionType questionType;
 
-	@Schema(description = "The id of the user creating the task", example = "joe01doe", accessMode = WRITE_ONLY)
+	@Schema(description = "The id of the user creating the task", examples = "joe01doe", accessMode = WRITE_ONLY)
 	@NotBlank
 	private String createdBy;
 }

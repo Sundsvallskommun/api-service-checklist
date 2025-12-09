@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: api-checklist
   contact: { }
@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "1.1"
 servers:
-  - url: http://localhost:53798
+  - url: http://localhost:57753
     description: Generated server url
 tags:
   - name: Phase resources
@@ -2445,17 +2445,17 @@ paths:
           description: Zero-based page index (0..N)
           required: false
           schema:
-            minimum: 0
             type: integer
             default: 0
+            minimum: 0
         - name: size
           in: query
           description: The size of the page to be returned
           required: false
           schema:
-            minimum: 1
             type: integer
             default: 20
+            minimum: 1
         - name: sort
           in: query
           description: "Sorting criteria in the format: property,(asc|desc). Default\
@@ -2616,67 +2616,63 @@ paths:
 components:
   schemas:
     PhaseItem:
-      required:
-        - position
       type: object
+      description: Model for a phase item in the sort order structure
       properties:
         id:
           type: string
           description: The id for the item
+          examples:
+            - 283cec0f-b6eb-473c-9dbb-d97a959a8144
           writeOnly: true
-          example: 283cec0f-b6eb-473c-9dbb-d97a959a8144
         position:
           type: integer
-          description: The sort order position for the item
           format: int32
+          description: The sort order position for the item
+          examples:
+            - "1"
           writeOnly: true
-          example: 1
         taskOrder:
           type: array
           description: List containing sort order for the task items connected to
             the phase
-          writeOnly: true
           items:
             $ref: "#/components/schemas/TaskItem"
-      description: Model for a phase item in the sort order structure
-      writeOnly: true
+          writeOnly: true
+      required:
+        - position
     SortorderRequest:
       type: object
+      description: Model for custom sort order request
       properties:
         phaseOrder:
           type: array
           description: List containing sort order for phase items
-          writeOnly: true
           items:
             $ref: "#/components/schemas/PhaseItem"
-      description: Model for custom sort order request
+          writeOnly: true
     TaskItem:
-      required:
-        - position
       type: object
+      description: Model for a task item in the sort order structure
       properties:
         id:
           type: string
           description: The id for the item
+          examples:
+            - 283cec0f-b6eb-473c-9dbb-d97a959a8144
           writeOnly: true
-          example: 283cec0f-b6eb-473c-9dbb-d97a959a8144
         position:
           type: integer
-          description: The sort order position for the item
           format: int32
+          description: The sort order position for the item
+          examples:
+            - "1"
           writeOnly: true
-          example: 1
-      description: Model for a task item in the sort order structure
-      writeOnly: true
+      required:
+        - position
     Problem:
       type: object
       properties:
-        title:
-          type: string
-        detail:
-          type: string
-        status:
-          $ref: "#/components/schemas/StatusType"
         instance:
           type: string
           format: uri
@@ -2685,16 +2681,21 @@ components:
           format: uri
         parameters:
           type: object
-          additionalProperties:
-            type: object
+          additionalProperties: { }
+        status:
+          $ref: "#/components/schemas/StatusType"
+        title:
+          type: string
+        detail:
+          type: string
     StatusType:
       type: object
       properties:
-        reasonPhrase:
-          type: string
         statusCode:
           type: integer
           format: int32
+        reasonPhrase:
+          type: string
     ConstraintViolationProblem:
       type: object
       properties:
@@ -2735,15 +2736,14 @@ components:
           type: string
         message:
           type: string
-        detail:
-          type: string
         instance:
           type: string
           format: uri
         parameters:
           type: object
-          additionalProperties:
-            type: object
+          additionalProperties: { }
+        detail:
+          type: string
         suppressed:
           type: array
           items:
@@ -2780,8 +2780,7 @@ components:
     ThrowableProblem:
       type: object
       properties:
-        cause:
-          $ref: "#/components/schemas/ThrowableProblem"
+        cause: { }
         stackTrace:
           type: array
           items:
@@ -2806,12 +2805,6 @@ components:
                 type: boolean
         message:
           type: string
-        title:
-          type: string
-        detail:
-          type: string
-        status:
-          $ref: "#/components/schemas/StatusType"
         instance:
           type: string
           format: uri
@@ -2820,8 +2813,13 @@ components:
           format: uri
         parameters:
           type: object
-          additionalProperties:
-            type: object
+          additionalProperties: { }
+        status:
+          $ref: "#/components/schemas/StatusType"
+        title:
+          type: string
+        detail:
+          type: string
         suppressed:
           type: array
           items:
@@ -2863,139 +2861,153 @@ components:
         message:
           type: string
     Mentor:
+      type: object
+      description: Model for a mentor on an employee checklist
+      properties:
+        userId:
+          type: string
+          description: The user-id of the mentor
+          minLength: 1
+        name:
+          type: string
+          description: The name of the mentor
+          minLength: 1
       required:
         - name
         - userId
-      type: object
-      properties:
-        userId:
-          minLength: 1
-          type: string
-          description: The user-id of the mentor
-        name:
-          minLength: 1
-          type: string
-          description: The name of the mentor
-      description: Model for a mentor on an employee checklist
     Permission:
       type: string
-      description: The permission needed to administrate the phase
       enum:
         - SUPERADMIN
         - ADMIN
     PhaseCreateRequest:
+      type: object
+      description: Model for phase create request
+      properties:
+        name:
+          type: string
+          description: The name of the phase
+          examples:
+            - Första veckan
+          minLength: 1
+          writeOnly: true
+        bodyText:
+          type: string
+          description: The body text of the phase
+          examples:
+            - Detta är en beskrivning av vad som ska göras under första veckan
+          writeOnly: true
+        timeToComplete:
+          type: string
+          description: The time to complete the phase
+          examples:
+            - P1M
+          writeOnly: true
+        permission:
+          $ref: "#/components/schemas/Permission"
+          description: The permission needed to administrate the phase
+        sortOrder:
+          type: integer
+          format: int32
+          description: The sort order of the phase
+          examples:
+            - "1"
+          writeOnly: true
+        createdBy:
+          type: string
+          description: The id of the user creating the phase
+          minLength: 1
       required:
         - createdBy
         - name
         - permission
         - sortOrder
-      type: object
-      properties:
-        name:
-          minLength: 1
-          type: string
-          description: The name of the phase
-          writeOnly: true
-          example: Första veckan
-        bodyText:
-          type: string
-          description: The body text of the phase
-          writeOnly: true
-          example: Detta är en beskrivning av vad som ska göras under första veckan
-        timeToComplete:
-          type: string
-          description: The time to complete the phase
-          writeOnly: true
-          example: P1M
-        permission:
-          $ref: "#/components/schemas/Permission"
-        sortOrder:
-          type: integer
-          description: The sort order of the phase
-          format: int32
-          writeOnly: true
-          example: 1
-        createdBy:
-          minLength: 1
-          type: string
-          description: The id of the user creating the phase
-      description: Model for phase create request
     CommunicationChannel:
       type: string
-      description: Valid channels to use when communicating with the organization
-      writeOnly: true
       enum:
         - EMAIL
         - NO_COMMUNICATION
     OrganizationCreateRequest:
+      type: object
+      description: Model for organizational unit create request
+      properties:
+        organizationName:
+          type: string
+          description: The name of the unit
+          examples:
+            - Sundsvall Energi
+          minLength: 1
+          writeOnly: true
+        organizationNumber:
+          type: integer
+          format: int32
+          description: The organization number of the unit
+          examples:
+            - "5345"
+          writeOnly: true
+        communicationChannels:
+          type: array
+          items:
+            $ref: "#/components/schemas/CommunicationChannel"
+            description: Valid channels to use when communicating with the organization
+            writeOnly: true
+          minContains: 1
+          uniqueItems: true
+          writeOnly: true
       required:
         - organizationName
         - organizationNumber
-      type: object
-      properties:
-        organizationName:
-          minLength: 1
-          type: string
-          description: The name of the unit
-          writeOnly: true
-          example: Sundsvall Energi
-        organizationNumber:
-          type: integer
-          description: The organization number of the unit
-          format: int32
-          writeOnly: true
-          example: 5345
-        communicationChannels:
-          uniqueItems: true
-          type: array
-          writeOnly: true
-          items:
-            $ref: "#/components/schemas/CommunicationChannel"
-      description: Model for organizational unit create request
     CustomTaskCreateRequest:
+      type: object
+      description: Model for custom task create request
+      properties:
+        heading:
+          type: string
+          description: The heading of the task
+          examples:
+            - Bjud på fika
+          minLength: 1
+          writeOnly: true
+        headingReference:
+          type: string
+          description: Optional reference to use as value for the headings anchor
+            element
+          examples:
+            - http://www.google.com
+          writeOnly: true
+        text:
+          type: string
+          description: The body text of the task
+          examples:
+            - Detta är en beskrivning av ett uppdrag
+          writeOnly: true
+        questionType:
+          $ref: "#/components/schemas/QuestionType"
+          description: The question type of the task
+        roleType:
+          $ref: "#/components/schemas/RoleType"
+          description: The role that shall perform the task
+          examples:
+            - NEW_EMPLOYEE
+        sortOrder:
+          type: integer
+          format: int32
+          description: The sort order for the task
+          writeOnly: true
+        createdBy:
+          type: string
+          description: The id of the user creating the custom task
+          examples:
+            - joe01doe
+          minLength: 1
+          writeOnly: true
       required:
         - createdBy
         - heading
         - questionType
         - sortOrder
-      type: object
-      properties:
-        heading:
-          minLength: 1
-          type: string
-          description: The heading of the task
-          writeOnly: true
-          example: Bjud på fika
-        headingReference:
-          type: string
-          description: Optional reference to use as value for the headings anchor
-            element
-          writeOnly: true
-          example: http://www.google.com
-        text:
-          type: string
-          description: The body text of the task
-          writeOnly: true
-          example: Detta är en beskrivning av ett uppdrag
-        questionType:
-          $ref: "#/components/schemas/QuestionType"
-        roleType:
-          $ref: "#/components/schemas/RoleType"
-        sortOrder:
-          type: integer
-          description: The sort order for the task
-          format: int32
-          writeOnly: true
-        createdBy:
-          minLength: 1
-          type: string
-          description: The id of the user creating the custom task
-          writeOnly: true
-          example: joe01doe
-      description: Model for custom task create request
     QuestionType:
       type: string
-      description: The question type of the task
       enum:
         - YES_OR_NO
         - YES_OR_NO_WITH_TEXT
@@ -3003,8 +3015,6 @@ components:
         - COMPLETED_OR_NOT_RELEVANT_WITH_TEXT
     RoleType:
       type: string
-      description: The role that shall perform the task
-      example: NEW_EMPLOYEE
       enum:
         - NEW_EMPLOYEE
         - NEW_MANAGER
@@ -3012,110 +3022,175 @@ components:
         - MANAGER_FOR_NEW_MANAGER
     CustomTask:
       type: object
+      description: Model for custom task
       properties:
         id:
           type: string
           description: The id of the task
+          examples:
+            - 5a6c3e4e-c320-4006-b448-1fd4121df828
           readOnly: true
-          example: 5a6c3e4e-c320-4006-b448-1fd4121df828
         heading:
           type: string
           description: The heading of the task
+          examples:
+            - Bjud på fika
           readOnly: true
-          example: Bjud på fika
         headingReference:
           type: string
           description: Reference to use as value for the headings anchor element (if
             present)
+          examples:
+            - http://www.google.com
           readOnly: true
-          example: http://www.google.com
         text:
           type: string
           description: The body text of the task
+          examples:
+            - Detta är en beskrivning av ett uppdrag
           readOnly: true
-          example: Detta är en beskrivning av ett uppdrag
         sortOrder:
           type: integer
-          description: The sort order for the task
           format: int32
+          description: The sort order for the task
           readOnly: true
         roleType:
           $ref: "#/components/schemas/RoleType"
+          description: The role type of the task
         questionType:
           $ref: "#/components/schemas/QuestionType"
+          description: The question type of the task
         created:
           type: string
-          description: The date and time the task was created
           format: date-time
+          description: The date and time the task was created
+          examples:
+            - 2023-11-22T15:30:00+03:00
           readOnly: true
-          example: 2023-11-22T15:30:00+03:00
         updated:
           type: string
-          description: The date and time the task was last updated
           format: date-time
+          description: The date and time the task was last updated
+          examples:
+            - 2023-11-22T15:30:00+03:00
           readOnly: true
-          example: 2023-11-22T15:30:00+03:00
         lastSavedBy:
           type: string
           description: The id of the user that last modified the custom task
+          examples:
+            - joe01doe
           readOnly: true
-          example: joe01doe
-      description: Model for custom task
     Detail:
       type: object
+      description: Model for employee checklist triggering detailed status
       properties:
         status:
           $ref: "#/components/schemas/StatusType"
+          description: Status for action of creating the employee checklist
+          readOnly: true
         information:
           type: string
           description: Descriptive text for of the creation outcome
+          examples:
+            - Employee with loginname abc123 processed successfully.
           readOnly: true
-          example: Employee with loginname abc123 processed successfully.
-      description: Model for employee checklist triggering detailed status
     EmployeeChecklistResponse:
       type: object
+      description: Model for employee checklist triggering response
       properties:
         summary:
           type: string
           description: Summary for execution
+          examples:
+            - Successful execution
           readOnly: true
-          example: Successful execution
         details:
           type: array
           description: Details for each user specific creation
-          readOnly: true
           items:
             $ref: "#/components/schemas/Detail"
-      description: Model for employee checklist triggering response
     ChecklistCreateRequest:
+      type: object
+      description: Model for checklist create request
+      properties:
+        name:
+          type: string
+          description: The name of the checklist
+          examples:
+            - Checklist_A
+          minLength: 1
+        displayName:
+          type: string
+          description: The display name of the checklist
+          examples:
+            - Display name
+          minLength: 1
+        organizationNumber:
+          type: integer
+          format: int32
+          description: The organization that the checklist is created for
+          examples:
+            - "11"
+        createdBy:
+          type: string
+          description: The id of the user creating the checklist
+          minLength: 1
       required:
         - createdBy
         - displayName
         - name
         - organizationNumber
-      type: object
-      properties:
-        name:
-          minLength: 1
-          type: string
-          description: The name of the checklist
-          example: Checklist_A
-        displayName:
-          minLength: 1
-          type: string
-          description: The display name of the checklist
-          example: Display name
-        organizationNumber:
-          type: integer
-          description: The organization that the checklist is created for
-          format: int32
-          example: 11
-        createdBy:
-          minLength: 1
-          type: string
-          description: The id of the user creating the checklist
-      description: Model for checklist create request
     TaskCreateRequest:
+      type: object
+      description: Model for task create request
+      properties:
+        heading:
+          type: string
+          description: The name of the task
+          examples:
+            - Name of the task
+          minLength: 1
+          writeOnly: true
+        headingReference:
+          type: string
+          description: Optional reference to use as value for the headings anchor
+            element
+          examples:
+            - http://www.google.com
+          writeOnly: true
+        text:
+          type: string
+          description: The body text of the task
+          examples:
+            - Body text of the task
+          writeOnly: true
+        sortOrder:
+          type: integer
+          format: int32
+          description: The sort order of the task
+          examples:
+            - "1"
+          writeOnly: true
+        roleType:
+          $ref: "#/components/schemas/RoleType"
+          description: The role type of the task
+          examples:
+            - NEW_EMPLOYEE
+        permission:
+          $ref: "#/components/schemas/Permission"
+          description: The permission needed to administrate the task
+        questionType:
+          $ref: "#/components/schemas/QuestionType"
+          description: The question type of the task
+          examples:
+            - YES_OR_NO
+        createdBy:
+          type: string
+          description: The id of the user creating the task
+          examples:
+            - joe01doe
+          minLength: 1
+          writeOnly: true
       required:
         - createdBy
         - heading
@@ -3123,253 +3198,244 @@ components:
         - questionType
         - roleType
         - sortOrder
-      type: object
-      properties:
-        heading:
-          minLength: 1
-          type: string
-          description: The name of the task
-          writeOnly: true
-          example: Name of the task
-        headingReference:
-          type: string
-          description: Optional reference to use as value for the headings anchor
-            element
-          writeOnly: true
-          example: http://www.google.com
-        text:
-          type: string
-          description: The body text of the task
-          writeOnly: true
-          example: Body text of the task
-        sortOrder:
-          type: integer
-          description: The sort order of the task
-          format: int32
-          writeOnly: true
-          example: 1
-        roleType:
-          $ref: "#/components/schemas/RoleType"
-        permission:
-          $ref: "#/components/schemas/Permission"
-        questionType:
-          $ref: "#/components/schemas/QuestionType"
-        createdBy:
-          minLength: 1
-          type: string
-          description: The id of the user creating the task
-          writeOnly: true
-          example: joe01doe
-      description: Model for task create request
     PhaseUpdateRequest:
-      required:
-        - updatedBy
       type: object
+      description: Model for phase update request
       properties:
         name:
           type: string
           description: The name of the phase
+          examples:
+            - Första veckan
           writeOnly: true
-          example: Första veckan
         bodyText:
           type: string
           description: The body text of the phase
+          examples:
+            - Detta är en beskrivning av vad som ska göras under första veckan
           writeOnly: true
-          example: Detta är en beskrivning av vad som ska göras under första veckan
         timeToComplete:
           type: string
           description: The time to complete the phase
+          examples:
+            - P1M
           writeOnly: true
-          example: P1M
         permission:
           $ref: "#/components/schemas/Permission"
+          description: The permission needed to administrate the phase
         sortOrder:
           type: integer
-          description: The sort order of the phase
           format: int32
+          description: The sort order of the phase
+          examples:
+            - "1"
           writeOnly: true
-          example: 1
         updatedBy:
-          minLength: 1
           type: string
           description: The id of the user updating the phase
-      description: Model for phase update request
+          minLength: 1
+      required:
+        - updatedBy
     Phase:
       type: object
+      description: Model for a phase
       properties:
         id:
           type: string
           description: The id of the phase
+          examples:
+            - 5a6c3e4e-c320-4006-b448-1fd4121df828
           readOnly: true
-          example: 5a6c3e4e-c320-4006-b448-1fd4121df828
         name:
           type: string
           description: The name of the phase
+          examples:
+            - Första veckan
           readOnly: true
-          example: Första veckan
         bodyText:
           type: string
           description: The body text of the phase
+          examples:
+            - Detta är en beskrivning av vad som ska göras under första veckan
           readOnly: true
-          example: Detta är en beskrivning av vad som ska göras under första veckan
         timeToComplete:
           type: string
           description: The time to complete the phase
+          examples:
+            - P1M
           readOnly: true
-          example: P1M
         permission:
           $ref: "#/components/schemas/Permission"
+          description: The permission needed to administrate the phase
         sortOrder:
           type: integer
-          description: The sort order of the phase
           format: int32
+          description: The sort order of the phase
+          examples:
+            - "1"
           readOnly: true
-          example: 1
         tasks:
           type: array
           description: Tasks in the phase
-          readOnly: true
           items:
             $ref: "#/components/schemas/Task"
         created:
           type: string
-          description: The created date and time of the phase
           format: date-time
+          description: The created date and time of the phase
+          examples:
+            - 2023-11-22T15:30:00+03:00
           readOnly: true
-          example: 2023-11-22T15:30:00+03:00
         updated:
           type: string
-          description: The last update date and time of the phase
           format: date-time
+          description: The last update date and time of the phase
+          examples:
+            - 2023-11-22T15:30:00+03:00
           readOnly: true
-          example: 2023-11-22T15:30:00+03:00
         lastSavedBy:
           type: string
           description: The id of the user that last modified the phase
-      description: Model for a phase
     Task:
       type: object
+      description: Task model
       properties:
         id:
           type: string
           description: The id of the task
+          examples:
+            - 5a6c3e4e-c320-4006-b448-1fd4121df828
           readOnly: true
-          example: 5a6c3e4e-c320-4006-b448-1fd4121df828
         heading:
           type: string
           description: The heading of the task
+          examples:
+            - Bjud på fika
           readOnly: true
-          example: Bjud på fika
         headingReference:
           type: string
           description: Reference to use as value for the headings anchor element (if
             present)
+          examples:
+            - http://www.google.com
           readOnly: true
-          example: http://www.google.com
         text:
           type: string
           description: The body text of the task
+          examples:
+            - Detta är en beskrivning av ett uppdrag
           readOnly: true
-          example: Detta är en beskrivning av ett uppdrag
         sortOrder:
           type: integer
-          description: The sort order of the task
           format: int32
+          description: The sort order of the task
+          examples:
+            - "1"
           readOnly: true
-          example: 1
         roleType:
           $ref: "#/components/schemas/RoleType"
+          description: The role type eligible for the task
         questionType:
           $ref: "#/components/schemas/QuestionType"
+          description: The question type of the task
         permission:
           $ref: "#/components/schemas/Permission"
+          description: The permission needed to administrate the task
         created:
           type: string
-          description: The date and time the task was created
           format: date-time
+          description: The date and time the task was created
+          examples:
+            - 2023-11-22T15:30:00+03:00
           readOnly: true
-          example: 2023-11-22T15:30:00+03:00
         updated:
           type: string
-          description: The date and time the task was last updated
           format: date-time
+          description: The date and time the task was last updated
+          examples:
+            - 2023-11-22T15:30:00+03:00
           readOnly: true
-          example: 2023-11-22T15:30:00+03:00
         lastSavedBy:
           type: string
           description: The id of the user that last modified the task
+          examples:
+            - joe01doe
           readOnly: true
-          example: joe01doe
-      description: Task model
     OrganizationUpdateRequest:
       type: object
+      description: Model for organizational unit update request
       properties:
         organizationName:
           type: string
           description: The name of the unit
-          nullable: true
+          examples:
+            - Sundsvall Energi
           writeOnly: true
-          example: Sundsvall Energi
         communicationChannels:
-          uniqueItems: true
           type: array
-          writeOnly: true
           items:
             $ref: "#/components/schemas/CommunicationChannel"
-      description: Model for organizational unit update request
+            description: Valid channels to use when communicating with the organization
+            writeOnly: true
+          uniqueItems: true
+          writeOnly: true
     Checklist:
       type: object
+      description: Model for checklist
       properties:
         id:
           type: string
           description: The id of the checklist
+          examples:
+            - 5a6c3e4e-c320-4006-b448-1fd4121df828
           readOnly: true
-          example: 5a6c3e4e-c320-4006-b448-1fd4121df828
         name:
           type: string
           description: The name of the checklist
+          examples:
+            - Checklist_A
           readOnly: true
-          example: Checklist_A
         displayName:
           type: string
           description: The display name of the checklist
+          examples:
+            - Display name
           readOnly: true
-          example: Display name
         version:
           type: integer
-          description: The version of the checklist
           format: int32
+          description: The version of the checklist
+          examples:
+            - "1"
           readOnly: true
-          example: 1
         lifeCycle:
           $ref: "#/components/schemas/LifeCycle"
+          description: The lifecycle of the checklist
+          readOnly: true
         created:
           type: string
-          description: The created date and time of the checklist
           format: date-time
+          description: The created date and time of the checklist
+          examples:
+            - 2023-11-22T15:30:00+03:00
           readOnly: true
-          example: 2023-11-22T15:30:00+03:00
         updated:
           type: string
-          description: The last update date and time of the checklist
           format: date-time
+          description: The last update date and time of the checklist
+          examples:
+            - 2023-11-22T15:30:00+03:00
           readOnly: true
-          example: 2023-11-22T15:30:00+03:00
         lastSavedBy:
           type: string
           description: The id of the user that last modified the checklist
         phases:
           type: array
           description: Phases in the checklist
-          readOnly: true
           items:
             $ref: "#/components/schemas/Phase"
-      description: Model for checklist
-      readOnly: true
     LifeCycle:
       type: string
-      description: The lifecycle of the checklist
-      readOnly: true
       enum:
         - CREATED
         - ACTIVE
@@ -3377,109 +3443,125 @@ components:
         - RETIRED
     Organization:
       type: object
+      description: Model for an organizational unit
       properties:
         id:
           type: string
           description: The id of the unit
+          examples:
+            - 5a6c3e4e-c320-4006-b448-1fd4121df828
           readOnly: true
-          example: 5a6c3e4e-c320-4006-b448-1fd4121df828
         organizationName:
           type: string
           description: The name of the unit
+          examples:
+            - Sundsvall Energi
           readOnly: true
-          example: Sundsvall Energi
         organizationNumber:
           type: integer
-          description: The organization number of the unit
           format: int32
+          description: The organization number of the unit
+          examples:
+            - "5345"
           readOnly: true
-          example: 5345
         checklists:
           type: array
-          readOnly: true
           items:
             $ref: "#/components/schemas/Checklist"
-        communicationChannels:
-          uniqueItems: true
-          type: array
+            description: All checklists connected to the organization
+            readOnly: true
           readOnly: true
+        communicationChannels:
+          type: array
           items:
             $ref: "#/components/schemas/CommunicationChannel"
+            description: Valid channels to use when communicating with the organization
+            readOnly: true
+          readOnly: true
+          uniqueItems: true
         created:
           type: string
-          description: The date and time the unit was created
           format: date-time
+          description: The date and time the unit was created
+          examples:
+            - 2023-11-22T15:30:00+02:00
           readOnly: true
-          example: 2023-11-22T15:30:00+02:00
         updated:
           type: string
-          description: The date and time the unit was updated
           format: date-time
+          description: The date and time the unit was updated
+          examples:
+            - 2023-11-22T15:30:00+02:00
           readOnly: true
-          example: 2023-11-22T15:30:00+02:00
-      description: Model for an organizational unit
     EmployeeChecklistTaskUpdateRequest:
-      required:
-        - updatedBy
       type: object
+      description: Model for update request of fulfilment for a task
       properties:
         fulfilmentStatus:
           $ref: "#/components/schemas/FulfilmentStatus"
+          description: The status of the task fulfilment
+          writeOnly: true
         responseText:
           type: string
           description: The response text for the task fulfilment
-          nullable: true
+          examples:
+            - Har bjudit på fika
           writeOnly: true
-          example: Har bjudit på fika
         updatedBy:
-          minLength: 1
           type: string
           description: Identifier for the person that is performing the update
+          examples:
+            - joe01doe
+          minLength: 1
           writeOnly: true
-          example: joe01doe
-      description: Model for update request of fulfilment for a task
+      required:
+        - updatedBy
     FulfilmentStatus:
       type: string
-      description: The status of the task fulfilment
-      nullable: true
-      writeOnly: true
       enum:
         - EMPTY
         - "TRUE"
         - "FALSE"
     EmployeeChecklistTask:
       type: object
+      description: Model for a employee checklist task
       properties:
         id:
           type: string
           description: The id of the task
+          examples:
+            - 5a6c3e4e-c320-4006-b448-1fd4121df828
           readOnly: true
-          example: 5a6c3e4e-c320-4006-b448-1fd4121df828
         heading:
           type: string
           description: The heading of the task
+          examples:
+            - Bjud på fika
           readOnly: true
-          example: Bjud på fika
         headingReference:
           type: string
           description: Reference to use as value for the headings anchor element (if
             present)
+          examples:
+            - http://www.google.com
           readOnly: true
-          example: http://www.google.com
         text:
           type: string
           description: The body text of the task
+          examples:
+            - Detta är en beskrivning av ett uppdrag
           readOnly: true
-          example: Detta är en beskrivning av ett uppdrag
         sortOrder:
           type: integer
-          description: The sort order for the task
           format: int32
+          description: The sort order for the task
           readOnly: true
         roleType:
           $ref: "#/components/schemas/RoleType"
+          description: The role type of the task
         questionType:
           $ref: "#/components/schemas/QuestionType"
+          description: The question type of the task
         customTask:
           type: boolean
           description: Tells if the task is only applies to the current checklist
@@ -3488,127 +3570,147 @@ components:
         responseText:
           type: string
           description: The task response text
+          examples:
+            - Jag har bjudit på fika
           readOnly: true
-          example: Jag har bjudit på fika
         fulfilmentStatus:
           $ref: "#/components/schemas/FulfilmentStatus"
+          description: The status of the task fulfilment
+          examples:
+            - "TRUE"
         updated:
           type: string
-          description: The date and time the task was last updated
           format: date-time
+          description: The date and time the task was last updated
+          examples:
+            - 2023-11-22T15:30:00+03:00
           readOnly: true
-          example: 2023-11-22T15:30:00+03:00
         updatedBy:
           type: string
           description: Identifier for the person that last updated the task
+          examples:
+            - joe01doe
           readOnly: true
-          example: joe01doe
-      description: Model for a employee checklist task
     EmployeeChecklistPhaseUpdateRequest:
-      required:
-        - updatedBy
       type: object
+      description: Model for update request on an employee checklist phase
       properties:
         tasksFulfilmentStatus:
           $ref: "#/components/schemas/FulfilmentStatus"
+          description: The value to be set on all tasks in the phase
+          writeOnly: true
         updatedBy:
-          minLength: 1
           type: string
           description: Identifier for the person that is performing the update
+          examples:
+            - joe01doe
+          minLength: 1
           writeOnly: true
-          example: joe01doe
-      description: Model for update request on an employee checklist phase
+      required:
+        - updatedBy
     EmployeeChecklistPhase:
       type: object
+      description: Model for a employee checklist phase
       properties:
         id:
           type: string
           description: The id of the phase
+          examples:
+            - 5a6c3e4e-c320-4006-b448-1fd4121df828
           readOnly: true
-          example: 5a6c3e4e-c320-4006-b448-1fd4121df828
         name:
           type: string
           description: The name of the phase
+          examples:
+            - Första veckan
           readOnly: true
-          example: Första veckan
         bodyText:
           type: string
           description: The body text of the phase
+          examples:
+            - Detta är en beskrivning av vad som ska göras under första veckan
           readOnly: true
-          example: Detta är en beskrivning av vad som ska göras under första veckan
         timeToComplete:
           type: string
           description: The time to complete the phase
+          examples:
+            - P1M
           readOnly: true
-          example: P1M
         sortOrder:
           type: integer
-          description: The sort order for the phase
           format: int32
+          description: The sort order for the phase
+          examples:
+            - "1"
           readOnly: true
-          example: 1
         tasks:
           type: array
           description: Tasks in the phase
-          readOnly: true
           items:
             $ref: "#/components/schemas/EmployeeChecklistTask"
-      description: Model for a employee checklist phase
     CustomTaskUpdateRequest:
-      required:
-        - updatedBy
       type: object
+      description: Model for custom task update request
       properties:
         heading:
           type: string
           description: The heading of the task
+          examples:
+            - Bjud på fika
           writeOnly: true
-          example: Bjud på fika
         headingReference:
           type: string
           description: Optional reference to use as value for the headings anchor
             element
+          examples:
+            - http://www.google.com
           writeOnly: true
-          example: http://www.google.com
         text:
           type: string
           description: The body text of the task
+          examples:
+            - Detta är en beskrivning av ett uppdrag
           writeOnly: true
-          example: Detta är en beskrivning av ett uppdrag
         questionType:
           $ref: "#/components/schemas/QuestionType"
+          description: The question type of the task
         roleType:
           $ref: "#/components/schemas/RoleType"
+          description: The role that shall perform the task
+          examples:
+            - NEW_EMPLOYEE
         sortOrder:
           type: integer
-          description: The sort order for the task
           format: int32
+          description: The sort order for the task
           writeOnly: true
         updatedBy:
-          minLength: 1
           type: string
           description: The id of the user updating the custom task
+          examples:
+            - joe01doe
+          minLength: 1
           writeOnly: true
-          example: joe01doe
-      description: Model for custom task update request
-    ChecklistUpdateRequest:
       required:
         - updatedBy
+    ChecklistUpdateRequest:
       type: object
+      description: Model for checklist update request
       properties:
         displayName:
           type: string
           description: The name of the checklist
-          example: New display name
+          examples:
+            - New display name
         updatedBy:
-          minLength: 1
           type: string
           description: The id of the user updating the checklist
-      description: Model for checklist update request
-    TaskUpdateRequest:
+          minLength: 1
       required:
         - updatedBy
+    TaskUpdateRequest:
       type: object
+      description: Model for task update request
       properties:
         heading:
           type: string
@@ -3618,65 +3720,78 @@ components:
           type: string
           description: Optional reference to use as value for the headings anchor
             element
+          examples:
+            - http://www.google.com
           writeOnly: true
-          example: http://www.google.com
         text:
           type: string
           description: The body text of the task
           writeOnly: true
         sortOrder:
           type: integer
-          description: The sort order of the task
           format: int32
+          description: The sort order of the task
+          examples:
+            - "1"
           writeOnly: true
-          example: 1
         roleType:
           $ref: "#/components/schemas/RoleType"
+          description: The role type of the task
         permission:
           $ref: "#/components/schemas/Permission"
+          description: The permission needed to administrate the task
         questionType:
           $ref: "#/components/schemas/QuestionType"
+          description: The question type of the task
         updatedBy:
-          minLength: 1
           type: string
           description: The id of the user updating the task
+          examples:
+            - joe01doe
+          minLength: 1
           writeOnly: true
-          example: joe01doe
-      description: Model for task update request
+      required:
+        - updatedBy
     Correspondence:
       type: object
+      description: Model for correspondence
       properties:
         messageId:
           type: string
           description: Id for message
+          examples:
+            - 3fa85f64-5717-4562-b3fc-2c963f66afa6
           readOnly: true
-          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
         recipient:
           type: string
           description: Message recipient
+          examples:
+            - email.address@noreply.com
           readOnly: true
-          example: email.address@noreply.com
         attempts:
           type: integer
-          description: Attempt count
           format: int32
+          description: Attempt count
+          examples:
+            - "1"
           readOnly: true
-          example: 1
         correspondenceStatus:
           $ref: "#/components/schemas/CorrespondenceStatus"
+          description: Status for correspondence
+          readOnly: true
         communicationChannel:
           $ref: "#/components/schemas/CommunicationChannel"
+          description: Communicationschannel used for message
+          readOnly: true
         sent:
           type: string
-          description: Timestamp when message was sent
           format: date-time
+          description: Timestamp when message was sent
+          examples:
+            - 2023-11-22T15:30:00+02:00
           readOnly: true
-          example: 2023-11-22T15:30:00+02:00
-      description: Model for correspondence
     CorrespondenceStatus:
       type: string
-      description: Status for correspondence
-      readOnly: true
       enum:
         - SENT
         - NOT_SENT
@@ -3684,96 +3799,99 @@ components:
         - WILL_NOT_SEND
     OngoingEmployeeChecklist:
       type: object
+      description: Model for summarized information for an ongoing employee checklist
       properties:
         employeeName:
           type: string
           description: The employee first name and last name concatenated
-          example: John Doe
+          examples:
+            - John Doe
         employeeUsername:
           type: string
           description: The employee username
-          example: johndoe
+          examples:
+            - johndoe
         managerName:
           type: string
           description: 'The employees managers first name and last name concatenated '
-          example: John Doe
+          examples:
+            - John Doe
         departmentName:
           type: string
           description: The organization name
-          example: Organization XYZ
+          examples:
+            - Organization XYZ
         delegatedTo:
           type: array
           description: The names of the person(s) which have been delegated the checklist
-          example: John Doe
+          examples:
+            - John Doe
           items:
             type: string
-            description: The names of the person(s) which have been delegated the
-              checklist
-            example: John Doe
         employmentDate:
           type: string
-          description: The employment date of the employee
           format: date
-          example: 2021-01-01
+          description: The employment date of the employee
+          examples:
+            - 2021-01-01
         purgeDate:
           type: string
-          description: The purge date for the checklist
           format: date
-          example: 2029-01-01
-      description: Model for summarized information for an ongoing employee checklist
+          description: The purge date for the checklist
+          examples:
+            - 2029-01-01
       readOnly: true
     OngoingEmployeeChecklists:
       type: object
+      description: Paged model with summarized information for all ongoing employee
+        checklists
       properties:
         checklists:
           type: array
-          readOnly: true
           items:
             $ref: "#/components/schemas/OngoingEmployeeChecklist"
+            readOnly: true
+          readOnly: true
         _meta:
           $ref: "#/components/schemas/PagingMetaData"
-      description: Paged model with summarized information for all ongoing employee
-        checklists
+          readOnly: true
       readOnly: true
     PagingMetaData:
       type: object
+      description: PagingMetaData model
       properties:
         page:
           type: integer
-          description: Current page
           format: int32
-          readOnly: true
+          description: Current page
           example: 5
+          readOnly: true
         limit:
           type: integer
-          description: Displayed objects per page
           format: int32
-          readOnly: true
+          description: Displayed objects per page
           example: 20
+          readOnly: true
         count:
           type: integer
-          description: Displayed objects on current page
           format: int32
-          readOnly: true
+          description: Displayed objects on current page
           example: 13
+          readOnly: true
         totalRecords:
           type: integer
-          description: Total amount of hits based on provided search parameters
           format: int64
-          readOnly: true
+          description: Total amount of hits based on provided search parameters
           example: 98
+          readOnly: true
         totalPages:
           type: integer
-          description: Total amount of pages based on provided search parameters
           format: int32
-          readOnly: true
+          description: Total amount of pages based on provided search parameters
           example: 23
-      description: PagingMetaData model
-      readOnly: true
+          readOnly: true
     Direction:
       type: string
-      description: The sort order direction
-      example: ASC
       enum:
         - ASC
         - DESC
@@ -3781,19 +3899,19 @@ components:
       type: object
       properties:
         page:
-          minimum: 1
           type: integer
-          description: Page number
           format: int32
-          example: 1
           default: 1
-        limit:
+          description: Page number
+          example: 1
           minimum: 1
+        limit:
           type: integer
+          format: int32
           description: Result size per page. Maximum allowed value is dynamically
             configured
-          format: int32
           example: 15
+          minimum: 1
         sortBy:
           type: array
           items:
@@ -3802,20 +3920,28 @@ components:
             example: propertyName
         sortDirection:
           $ref: "#/components/schemas/Direction"
+          description: The sort order direction
+          example: ASC
         employeeName:
           type: string
     EmployeeChecklist:
       type: object
+      description: Model for a employee specific checklist
       properties:
         id:
           type: string
           description: The id of the employee checklist
+          examples:
+            - 5a6c3e4e-c320-4006-b448-1fd4121df828
           readOnly: true
-          example: 5a6c3e4e-c320-4006-b448-1fd4121df828
         employee:
           $ref: "#/components/schemas/Stakeholder"
+          description: The employee connected to the checklist
+          readOnly: true
         manager:
           $ref: "#/components/schemas/Stakeholder"
+          description: The manager connected to the checklist
+          readOnly: true
         completed:
           type: boolean
           description: Signal if all tasks in the checklist has been completed or
@@ -3827,128 +3953,138 @@ components:
           readOnly: true
         mentor:
           $ref: "#/components/schemas/Mentor"
+          description: The mentor on the checklist
+          readOnly: true
         delegatedTo:
           type: array
           description: Contains the email to the delegate(s) if the checklist is delegated
-          readOnly: true
           items:
             type: string
-            description: Contains the email to the delegate(s) if the checklist is
-              delegated
-            readOnly: true
+          readOnly: true
         phases:
           type: array
           description: Phases in the checklist
-          readOnly: true
           items:
             $ref: "#/components/schemas/EmployeeChecklistPhase"
         created:
           type: string
-          description: The created date and time of the checklist
           format: date-time
+          description: The created date and time of the checklist
+          examples:
+            - 2023-11-22T15:30:00+03:00
           readOnly: true
-          example: 2023-11-22T15:30:00+03:00
         updated:
           type: string
-          description: The last update date and time of the checklist
           format: date-time
+          description: The last update date and time of the checklist
+          examples:
+            - 2023-11-22T15:30:00+03:00
           readOnly: true
-          example: 2023-11-22T15:30:00+03:00
         startDate:
           type: string
-          description: The date when the fulfilment of the checklist was started
           format: date
+          description: The date when the fulfilment of the checklist was started
+          examples:
+            - 2023-11-22
           readOnly: true
-          example: 2023-11-22
         endDate:
           type: string
-          description: The date when the fulfilment of the checklist was finished
           format: date
+          description: The date when the fulfilment of the checklist was finished
+          examples:
+            - 2023-11-22
           readOnly: true
-          example: 2023-11-22
         expirationDate:
           type: string
-          description: The expiration date of the checklist
           format: date
+          description: The expiration date of the checklist
+          examples:
+            - 2023-11-22
           readOnly: true
-          example: 2023-11-22
-      description: Model for a employee specific checklist
     Stakeholder:
       type: object
+      description: Model for a stakeholder (employee or manager) to an employee checklist
       properties:
         id:
           type: string
           description: The person id for the stakeholder
+          examples:
+            - 5a6c3e4e-c320-4006-b448-1fd4121df828
           readOnly: true
-          example: 5a6c3e4e-c320-4006-b448-1fd4121df828
         firstName:
           type: string
           description: The first name for the stakeholder
+          examples:
+            - John
           readOnly: true
-          example: John
         lastName:
           type: string
           description: The last name for the stakeholder
+          examples:
+            - Doe
           readOnly: true
-          example: Doe
         email:
           type: string
           description: The email address for the stakeholder
+          examples:
+            - email.address@noreply.com
           readOnly: true
-          example: email.address@noreply.com
         username:
           type: string
           description: The username for the stakeholder
+          examples:
+            - abc12def
           readOnly: true
-          example: abc12def
         title:
           type: string
           description: The job title for the stakeholder (if applicable)
+          examples:
+            - Skoladministratör (Sundsvalls kommun)
           readOnly: true
-          example: Skoladministratör (Sundsvalls kommun)
-      description: Model for a stakeholder (employee or manager) to an employee checklist
-      readOnly: true
     InitiationInformation:
       type: object
+      description: Model for information about the last execution to initiate employee
+        checklists
       properties:
         logId:
           type: string
           description: The log id for the execution (used for investigation purpose
             when searching logs in ELK)
+          examples:
+            - 5a6c3e4e-c320-4006-b448-1fd4121df828
           readOnly: true
-          example: 5a6c3e4e-c320-4006-b448-1fd4121df828
         summary:
           type: string
           description: A information summary for the execution
+          examples:
+            - 4 potential problems occurred when importing 6 employees
           readOnly: true
-          example: 4 potential problems occurred when importing 6 employees
         executed:
           type: string
-          description: The execution date and time for the initiation
           format: date-time
+          description: The execution date and time for the initiation
+          examples:
+            - 2023-11-22T15:30:00+03:00
           readOnly: true
-          example: 2023-11-22T15:30:00+03:00
         details:
           type: array
           description: A list with detailed information for each employee checklist
             initiation
-          readOnly: true
           items:
             $ref: "#/components/schemas/Detail"
-      description: Model for information about the last execution to initiate employee
-        checklists
+          readOnly: true
     DelegatedEmployeeChecklistResponse:
       type: object
+      description: Model for delegated employee checklist response
       properties:
         employeeChecklists:
           type: array
           description: Delegated employee checklists
-          readOnly: true
           items:
             $ref: "#/components/schemas/EmployeeChecklist"
-      description: Model for delegated employee checklist response
     Event:
       type: object
+      description: Model for an event
       properties:
         logKey:
           type: string
@@ -3974,51 +4110,50 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Metadata"
-      description: Model for an event
     Events:
       type: object
+      description: Model for a paginated list of events
       properties:
         page:
           type: integer
-          description: Current page
           format: int32
-          readOnly: true
+          description: Current page
           example: 5
+          readOnly: true
         limit:
           type: integer
-          description: Displayed objects per page
           format: int32
-          readOnly: true
+          description: Displayed objects per page
           example: 20
+          readOnly: true
         count:
           type: integer
-          description: Displayed objects on current page
           format: int32
-          readOnly: true
+          description: Displayed objects on current page
           example: 13
+          readOnly: true
         totalRecords:
           type: integer
-          description: Total amount of hits based on provided search parameters
           format: int64
-          readOnly: true
+          description: Total amount of hits based on provided search parameters
           example: 98
+          readOnly: true
         totalPages:
           type: integer
-          description: Total amount of pages based on provided search parameters
           format: int32
-          readOnly: true
+          description: Total amount of pages based on provided search parameters
           example: 23
+          readOnly: true
         eventList:
           type: array
           items:
             $ref: "#/components/schemas/Event"
-      description: Model for a paginated list of events
     Metadata:
       type: object
+      description: "Model for a meta data, key-value pair"
       properties:
         key:
           type: string
         value:
           type: string
-      description: "Model for a meta data, key-value pair"
   securitySchemes: { }

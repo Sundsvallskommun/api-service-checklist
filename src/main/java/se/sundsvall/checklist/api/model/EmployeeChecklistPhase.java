@@ -19,19 +19,19 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Model for a employee checklist phase")
 public class EmployeeChecklistPhase {
 
-	@Schema(description = "The id of the phase", example = "5a6c3e4e-c320-4006-b448-1fd4121df828", accessMode = READ_ONLY)
+	@Schema(description = "The id of the phase", examples = "5a6c3e4e-c320-4006-b448-1fd4121df828", accessMode = READ_ONLY)
 	private String id;
 
-	@Schema(description = "The name of the phase", example = "Första veckan", accessMode = READ_ONLY)
+	@Schema(description = "The name of the phase", examples = "Första veckan", accessMode = READ_ONLY)
 	private String name;
 
-	@Schema(description = "The body text of the phase", example = "Detta är en beskrivning av vad som ska göras under första veckan", accessMode = READ_ONLY)
+	@Schema(description = "The body text of the phase", examples = "Detta är en beskrivning av vad som ska göras under första veckan", accessMode = READ_ONLY)
 	private String bodyText;
 
-	@Schema(description = "The time to complete the phase", example = "P1M", accessMode = READ_ONLY)
+	@Schema(description = "The time to complete the phase", examples = "P1M", accessMode = READ_ONLY)
 	private String timeToComplete;
 
-	@Schema(description = "The sort order for the phase", example = "1", accessMode = READ_ONLY)
+	@Schema(description = "The sort order for the phase", examples = "1", accessMode = READ_ONLY)
 	private int sortOrder;
 
 	@ArraySchema(arraySchema = @Schema(implementation = EmployeeChecklistTask.class, description = "Tasks in the phase", accessMode = READ_ONLY))

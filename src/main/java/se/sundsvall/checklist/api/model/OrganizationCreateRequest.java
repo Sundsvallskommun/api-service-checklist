@@ -22,11 +22,11 @@ import se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel;
 @Schema(description = "Model for organizational unit create request")
 public class OrganizationCreateRequest {
 
-	@Schema(description = "The name of the unit", example = "Sundsvall Energi", accessMode = WRITE_ONLY)
+	@Schema(description = "The name of the unit", examples = "Sundsvall Energi", accessMode = WRITE_ONLY)
 	@NotBlank
 	private String organizationName;
 
-	@Schema(description = "The organization number of the unit", example = "5345", accessMode = WRITE_ONLY)
+	@Schema(description = "The organization number of the unit", examples = "5345", accessMode = WRITE_ONLY)
 	@NotNull
 	private Integer organizationNumber;
 

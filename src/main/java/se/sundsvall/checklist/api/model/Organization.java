@@ -23,13 +23,13 @@ import se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel;
 @Schema(description = "Model for an organizational unit")
 public class Organization {
 
-	@Schema(description = "The id of the unit", example = "5a6c3e4e-c320-4006-b448-1fd4121df828", accessMode = READ_ONLY)
+	@Schema(description = "The id of the unit", examples = "5a6c3e4e-c320-4006-b448-1fd4121df828", accessMode = READ_ONLY)
 	private String id;
 
-	@Schema(description = "The name of the unit", example = "Sundsvall Energi", accessMode = READ_ONLY)
+	@Schema(description = "The name of the unit", examples = "Sundsvall Energi", accessMode = READ_ONLY)
 	private String organizationName;
 
-	@Schema(description = "The organization number of the unit", example = "5345", accessMode = READ_ONLY)
+	@Schema(description = "The organization number of the unit", examples = "5345", accessMode = READ_ONLY)
 	private int organizationNumber;
 
 	@ArraySchema(schema = @Schema(description = "All checklists connected to the organization", accessMode = READ_ONLY))
@@ -38,11 +38,11 @@ public class Organization {
 	@ArraySchema(schema = @Schema(description = "Valid channels to use when communicating with the organization", accessMode = READ_ONLY))
 	private Set<CommunicationChannel> communicationChannels;
 
-	@Schema(description = "The date and time the unit was created", example = "2023-11-22T15:30:00+02:00", accessMode = READ_ONLY)
+	@Schema(description = "The date and time the unit was created", examples = "2023-11-22T15:30:00+02:00", accessMode = READ_ONLY)
 	@DateTimeFormat(iso = DATE_TIME)
 	private OffsetDateTime created;
 
-	@Schema(description = "The date and time the unit was updated", example = "2023-11-22T15:30:00+02:00", accessMode = READ_ONLY)
+	@Schema(description = "The date and time the unit was updated", examples = "2023-11-22T15:30:00+02:00", accessMode = READ_ONLY)
 	@DateTimeFormat(iso = DATE_TIME)
 	private OffsetDateTime updated;
 }

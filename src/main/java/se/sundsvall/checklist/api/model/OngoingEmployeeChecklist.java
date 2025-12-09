@@ -13,25 +13,25 @@ import lombok.Data;
 @Schema(description = "Model for summarized information for an ongoing employee checklist", accessMode = READ_ONLY)
 public class OngoingEmployeeChecklist {
 
-	@Schema(description = "The employee first name and last name concatenated", example = "John Doe")
+	@Schema(description = "The employee first name and last name concatenated", examples = "John Doe")
 	private String employeeName;
 
-	@Schema(description = "The employee username", example = "johndoe")
+	@Schema(description = "The employee username", examples = "johndoe")
 	private String employeeUsername;
 
-	@Schema(description = "The employees managers first name and last name concatenated ", example = "John Doe")
+	@Schema(description = "The employees managers first name and last name concatenated ", examples = "John Doe")
 	private String managerName;
 
-	@Schema(description = "The organization name", example = "Organization XYZ")
+	@Schema(description = "The organization name", examples = "Organization XYZ")
 	private String departmentName;
 
-	@Schema(description = "The names of the person(s) which have been delegated the checklist", example = "John Doe")
+	@Schema(description = "The names of the person(s) which have been delegated the checklist", examples = "John Doe")
 	private List<String> delegatedTo;
 
-	@Schema(description = "The employment date of the employee", example = "2021-01-01")
+	@Schema(description = "The employment date of the employee", examples = "2021-01-01")
 	private LocalDate employmentDate;
 
-	@Schema(description = "The purge date for the checklist", example = "2029-01-01")
+	@Schema(description = "The purge date for the checklist", examples = "2029-01-01")
 	private LocalDate purgeDate;
 
 }
