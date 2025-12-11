@@ -6,7 +6,7 @@ _The service provides administration of checklist tasks that new employees and t
 
 ### Prerequisites
 
-- **Java 21 or higher**
+- **Java 25 or higher**
 - **Maven**
 - **MariaDB**
 - **Git**
