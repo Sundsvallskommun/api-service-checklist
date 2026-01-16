@@ -6,7 +6,7 @@
 			}
 		},
 		"method": "GET",
-		"urlPath": "/api-company/2281/1/company"
+		"urlPath": "/api-company/2281/1/orgnodes"
 	},
 	"response": {
 		"headers": {
