@@ -30,7 +30,7 @@ import static se.sundsvall.checklist.service.util.VerificationUtils.verifyMandat
 import static se.sundsvall.checklist.service.util.VerificationUtils.verifyUnlockedEmployeeChecklist;
 import static se.sundsvall.checklist.service.util.VerificationUtils.verifyValidEmployment;
 
-import generated.se.sundsvall.mdviewer.Organization;
+import generated.se.sundsvall.company.Organization;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -62,6 +62,7 @@ import se.sundsvall.checklist.api.model.InitiationInformation;
 import se.sundsvall.checklist.api.model.Mentor;
 import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistParameters;
 import se.sundsvall.checklist.api.model.OngoingEmployeeChecklists;
+import se.sundsvall.checklist.integration.company.CompanyIntegration;
 import se.sundsvall.checklist.integration.db.EmployeeChecklistIntegration;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
@@ -71,7 +72,6 @@ import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
 import se.sundsvall.checklist.integration.db.repository.InitiationRepository;
 import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
-import se.sundsvall.checklist.integration.mdviewer.MDViewerIntegration;
 import se.sundsvall.checklist.service.OrganizationTree.OrganizationLine;
 import se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper;
 import se.sundsvall.checklist.service.model.Employee;
@@ -93,7 +93,7 @@ public class EmployeeChecklistService {
 	private final EmployeeIntegration employeeIntegration;
 	private final EmployeeChecklistIntegration employeeChecklistIntegration;
 	private final SortorderService sortorderService;
-	private final MDViewerIntegration mdViewerIntegration;
+	private final CompanyIntegration companyIntegration;
 	private final Duration employeeInformationUpdateInterval;
 
 	public EmployeeChecklistService(
@@ -102,7 +102,7 @@ public class EmployeeChecklistService {
 		final EmployeeIntegration employeeIntegration,
 		final EmployeeChecklistIntegration employeeChecklistIntegration,
 		final SortorderService sortorderService,
-		final MDViewerIntegration mdViewerIntegration,
+		final CompanyIntegration companyIntegration,
 		@Value("${checklist.employee-update-interval}") final Duration employeeInformationUpdateInterval) {
 
 		this.customTaskRepository = customTaskRepository;
@@ -110,7 +110,7 @@ public class EmployeeChecklistService {
 		this.employeeIntegration = employeeIntegration;
 		this.employeeChecklistIntegration = employeeChecklistIntegration;
 		this.sortorderService = sortorderService;
-		this.mdViewerIntegration = mdViewerIntegration;
+		this.companyIntegration = companyIntegration;
 		this.employeeInformationUpdateInterval = employeeInformationUpdateInterval;
 	}
 
@@ -182,7 +182,7 @@ public class EmployeeChecklistService {
 		employeeChecklistIntegration.deleteMentor(municipalityId, employeeChecklistId);
 	}
 
-	public CustomTask createCustomTask(String municipalityId, String employeeChecklistId, String phaseId, CustomTaskCreateRequest request) {
+	public CustomTask createCustomTask(final String municipalityId, final String employeeChecklistId, final String phaseId, final CustomTaskCreateRequest request) {
 		verifyUnlockedEmployeeChecklist(employeeChecklistIntegration.fetchEmployeeChecklist(municipalityId, employeeChecklistId));
 		return toCustomTask(employeeChecklistIntegration.createCustomTask(municipalityId, employeeChecklistId, phaseId, request));
 	}
@@ -279,7 +279,7 @@ public class EmployeeChecklistService {
 			.findAny();
 	}
 
-	public List<InitiationInformation> getInitiationInformation(final String municipalityId, boolean onlyLatest, boolean onlyErrors) {
+	public List<InitiationInformation> getInitiationInformation(final String municipalityId, final boolean onlyLatest, final boolean onlyErrors) {
 		final var infos = toInitiationInformations(initiationRepository.findAllByMunicipalityId(municipalityId));
 
 		// If request is to only return initiations with error, remove all detail rows that is not interpreted as error
@@ -367,7 +367,7 @@ public class EmployeeChecklistService {
 				final var employeeOrgTree = OrganizationTree.map(portalPersonData.getOrgTree());
 
 				// We need to find the root organization connected to the top level in the employees org tree via mdviewer
-				final var organizations = mdViewerIntegration.getOrganizationsForCompany(portalPersonData.getCompanyId());
+				final var organizations = companyIntegration.getOrganizationsForCompany(municipalityId, portalPersonData.getCompanyId());
 				organizations.stream()
 					.filter(organization -> organization.getOrgId() == Integer.parseInt(employeeOrgTree.getTree().firstEntry().getValue().getOrgId()))
 					.map(Organization::getParentId)
@@ -417,7 +417,7 @@ public class EmployeeChecklistService {
 	 * @param  municipalityId the id of the municipality to filter checklists on
 	 * @return                EmployeeChecklistResponse containing information of the execution
 	 */
-	public EmployeeChecklistResponse updateManagerInformation(String municipalityId, String username) {
+	public EmployeeChecklistResponse updateManagerInformation(final String municipalityId, final String username) {
 		if (LOGGER.isInfoEnabled()) {
 			LOGGER.info("Processing checklists for municipalityId {} and updating those with outdated manager information", sanitizeAndCompress(municipalityId));
 		}
@@ -440,7 +440,7 @@ public class EmployeeChecklistService {
 		return toUpdateManagerResponse(ongoingChecklists.size(), updateResultDetails);
 	}
 
-	private void updateManagerInformation(final List<Detail> updateResultDetails, EmployeeEntity localEmployee, Employee remoteEmployee) {
+	private void updateManagerInformation(final List<Detail> updateResultDetails, final EmployeeEntity localEmployee, final Employee remoteEmployee) {
 		Detail detail = null;
 
 		try {

@@ -33,8 +33,8 @@ spring:
             token-uri: ${config.integration.eventlog.token-url}
           employee:
             token-uri: ${config.integration.employee.token-url}
-          mdviewer:
-            token-uri: ${config.integration.mdviewer.token-url}
+          company:
+            token-uri: ${config.integration.company.token-url}
           messaging:
             token-uri: ${config.integration.messaging.token-url}
           templating:
@@ -50,11 +50,11 @@ spring:
             provider: employee
             client-id: ${config.integration.employee.client-id}
             client-secret: ${config.integration.employee.client-secret}
-          mdviewer:
+          company:
             authorization-grant-type: client_credentials
-            provider: mdviewer
-            client-id: ${config.integration.mdviewer.client-id}
-            client-secret: ${config.integration.mdviewer.client-secret}
+            provider: company
+            client-id: ${config.integration.company.client-id}
+            client-secret: ${config.integration.company.client-secret}
           messaging:
             authorization-grant-type: client_credentials
             provider: messaging
@@ -74,8 +74,8 @@ integration:
     url: ${config.integration.employee.url}
     connect-timeout: 5
     read-timeout: 60
-  mdviewer:
-    url: ${config.integration.mdviewer.url}
+  company:
+    url: ${config.integration.company.url}
     connect-timeout: 5
     read-timeout: 60
   templating:
@@ -96,7 +96,7 @@ cache:
   enabled: true
   employee:
     expire-after-write: PT1H
-  mdviewer:
+  company:
     expire-after-write: PT24H
 logbook:
   body-filters:

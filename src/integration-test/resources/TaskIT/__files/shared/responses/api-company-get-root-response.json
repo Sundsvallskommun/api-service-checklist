@@ -1,0 +1,13 @@
+[
+	{
+		"orgId": 100,
+		"orgName": "Company 1",
+		"parentId": null,
+		"isLeafLevel": false,
+		"treeLevel": 1,
+		"responsibilityCode": null,
+		"responsibilityCodePartList": null,
+		"companyId": 1,
+		"municipalityId": "2281"
+	}
+]

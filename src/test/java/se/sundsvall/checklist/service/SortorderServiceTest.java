@@ -7,7 +7,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.checklist.TestObjectFactory.generateSortorderRequest;
 
-import generated.se.sundsvall.mdviewer.Organization;
+import generated.se.sundsvall.company.Organization;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -26,13 +26,13 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistPhase;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.Phase;
 import se.sundsvall.checklist.api.model.Task;
+import se.sundsvall.checklist.integration.company.CompanyIntegration;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
 import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.integration.db.model.SortorderEntity;
 import se.sundsvall.checklist.integration.db.model.enums.ComponentType;
 import se.sundsvall.checklist.integration.db.repository.SortorderRepository;
-import se.sundsvall.checklist.integration.mdviewer.MDViewerIntegration;
 
 @ExtendWith(MockitoExtension.class)
 class SortorderServiceTest {
@@ -46,7 +46,7 @@ class SortorderServiceTest {
 	private SortorderRepository sortorderRepositoryMock;
 
 	@Mock
-	private MDViewerIntegration mdViewerIntegrationMock;
+	private CompanyIntegration companyIntegrationMock;
 
 	@Mock
 	private Organization companyMock;
@@ -59,6 +59,34 @@ class SortorderServiceTest {
 
 	@Captor
 	private ArgumentCaptor<List<SortorderEntity>> saveAllCaptor;
+
+	private static List<SortorderEntity> createCustomorder() {
+		return List.of(
+			SortorderEntity.builder()
+				.withComponentId(COMPONENT_ID1)
+				.withComponentType(ComponentType.PHASE)
+				.withPosition(10)
+				.build(),
+			SortorderEntity.builder()
+				.withComponentId(COMPONENT_ID2)
+				.withComponentType(ComponentType.TASK)
+				.withPosition(20)
+				.build());
+	}
+
+	private static List<SortorderEntity> createCustomorderForTasks() {
+		return List.of(
+			SortorderEntity.builder()
+				.withComponentId(COMPONENT_ID1)
+				.withComponentType(ComponentType.TASK)
+				.withPosition(20)
+				.build(),
+			SortorderEntity.builder()
+				.withComponentId(COMPONENT_ID2)
+				.withComponentType(ComponentType.TASK)
+				.withPosition(10)
+				.build());
+	}
 
 	@Test
 	void saveSortorder() {
@@ -128,7 +156,7 @@ class SortorderServiceTest {
 				.build())
 			.build();
 
-		when(mdViewerIntegrationMock.getOrganizationsForCompany(1)).thenReturn(List.of(organizationMock));
+		when(companyIntegrationMock.getOrganizationsForCompany(MUNICIPALITY_ID, 1)).thenReturn(List.of(organizationMock));
 		when(organizationMock.getOrgId()).thenReturn(ORGANIZATION_NUMBER);
 		when(sortorderRepositoryMock.findAllByMunicipalityIdAndOrganizationNumber(MUNICIPALITY_ID, ORGANIZATION_NUMBER)).thenReturn(createCustomorder());
 
@@ -166,7 +194,7 @@ class SortorderServiceTest {
 				.build())
 			.build();
 
-		when(mdViewerIntegrationMock.getOrganizationsForCompany(1)).thenReturn(List.of(organizationMock));
+		when(companyIntegrationMock.getOrganizationsForCompany(MUNICIPALITY_ID, 1)).thenReturn(List.of(organizationMock));
 		when(organizationMock.getOrgId()).thenReturn(ORGANIZATION_NUMBER);
 
 		final var result = service.applySorting(Optional.of(employeeChecklistEntity), employeeChecklist);
@@ -230,10 +258,10 @@ class SortorderServiceTest {
 					.build()))
 			.build();
 
-		when(mdViewerIntegrationMock.getCompanies()).thenReturn(List.of(companyMock, companyMock));
+		when(companyIntegrationMock.getCompanies(MUNICIPALITY_ID)).thenReturn(List.of(companyMock, companyMock));
 		when(companyMock.getCompanyId()).thenReturn(1, 2);
-		when(mdViewerIntegrationMock.getOrganizationsForCompany(1)).thenReturn(Collections.emptyList());
-		when(mdViewerIntegrationMock.getOrganizationsForCompany(2)).thenReturn(List.of(organizationMock));
+		when(companyIntegrationMock.getOrganizationsForCompany(MUNICIPALITY_ID, 1)).thenReturn(Collections.emptyList());
+		when(companyIntegrationMock.getOrganizationsForCompany(MUNICIPALITY_ID, 2)).thenReturn(List.of(organizationMock));
 		when(organizationMock.getCompanyId()).thenReturn(2);
 		when(organizationMock.getOrgId()).thenReturn(ORGANIZATION_NUMBER);
 		when(sortorderRepositoryMock.findAllByMunicipalityIdAndOrganizationNumber(MUNICIPALITY_ID, ORGANIZATION_NUMBER)).thenReturn(createCustomorder());
@@ -261,10 +289,10 @@ class SortorderServiceTest {
 					.build()))
 			.build();
 
-		when(mdViewerIntegrationMock.getCompanies()).thenReturn(List.of(companyMock, companyMock));
+		when(companyIntegrationMock.getCompanies(MUNICIPALITY_ID)).thenReturn(List.of(companyMock, companyMock));
 		when(companyMock.getCompanyId()).thenReturn(1, 2);
-		when(mdViewerIntegrationMock.getOrganizationsForCompany(1)).thenReturn(Collections.emptyList());
-		when(mdViewerIntegrationMock.getOrganizationsForCompany(2)).thenReturn(List.of(organizationMock));
+		when(companyIntegrationMock.getOrganizationsForCompany(MUNICIPALITY_ID, 1)).thenReturn(Collections.emptyList());
+		when(companyIntegrationMock.getOrganizationsForCompany(MUNICIPALITY_ID, 2)).thenReturn(List.of(organizationMock));
 		when(organizationMock.getCompanyId()).thenReturn(2);
 		when(organizationMock.getOrgId()).thenReturn(ORGANIZATION_NUMBER);
 
@@ -293,10 +321,10 @@ class SortorderServiceTest {
 					.build()))
 			.build();
 
-		when(mdViewerIntegrationMock.getCompanies()).thenReturn(List.of(companyMock, companyMock));
+		when(companyIntegrationMock.getCompanies(MUNICIPALITY_ID)).thenReturn(List.of(companyMock, companyMock));
 		when(companyMock.getCompanyId()).thenReturn(1, 2);
-		when(mdViewerIntegrationMock.getOrganizationsForCompany(1)).thenReturn(Collections.emptyList());
-		when(mdViewerIntegrationMock.getOrganizationsForCompany(2)).thenReturn(List.of(organizationMock));
+		when(companyIntegrationMock.getOrganizationsForCompany(MUNICIPALITY_ID, 1)).thenReturn(Collections.emptyList());
+		when(companyIntegrationMock.getOrganizationsForCompany(MUNICIPALITY_ID, 2)).thenReturn(List.of(organizationMock));
 
 		final var result = service.applySortingToChecklists(MUNICIPALITY_ID, ORGANIZATION_NUMBER, List.of(checklist));
 
@@ -323,10 +351,10 @@ class SortorderServiceTest {
 					.build()))
 			.build();
 
-		when(mdViewerIntegrationMock.getCompanies()).thenReturn(List.of(companyMock, companyMock));
+		when(companyIntegrationMock.getCompanies(MUNICIPALITY_ID)).thenReturn(List.of(companyMock, companyMock));
 		when(companyMock.getCompanyId()).thenReturn(1, 2);
-		when(mdViewerIntegrationMock.getOrganizationsForCompany(1)).thenReturn(Collections.emptyList());
-		when(mdViewerIntegrationMock.getOrganizationsForCompany(2)).thenReturn(List.of(organizationMock));
+		when(companyIntegrationMock.getOrganizationsForCompany(MUNICIPALITY_ID, 1)).thenReturn(Collections.emptyList());
+		when(companyIntegrationMock.getOrganizationsForCompany(MUNICIPALITY_ID, 2)).thenReturn(List.of(organizationMock));
 		when(organizationMock.getCompanyId()).thenReturn(2);
 		when(organizationMock.getParentId()).thenReturn(1);
 		when(organizationMock.getOrgId()).thenReturn(ORGANIZATION_NUMBER);
@@ -352,10 +380,10 @@ class SortorderServiceTest {
 				.withSortOrder(2)
 				.build());
 
-		when(mdViewerIntegrationMock.getCompanies()).thenReturn(List.of(companyMock, companyMock));
+		when(companyIntegrationMock.getCompanies(MUNICIPALITY_ID)).thenReturn(List.of(companyMock, companyMock));
 		when(companyMock.getCompanyId()).thenReturn(1, 2);
-		when(mdViewerIntegrationMock.getOrganizationsForCompany(1)).thenReturn(Collections.emptyList());
-		when(mdViewerIntegrationMock.getOrganizationsForCompany(2)).thenReturn(List.of(organizationMock));
+		when(companyIntegrationMock.getOrganizationsForCompany(MUNICIPALITY_ID, 1)).thenReturn(Collections.emptyList());
+		when(companyIntegrationMock.getOrganizationsForCompany(MUNICIPALITY_ID, 2)).thenReturn(List.of(organizationMock));
 		when(organizationMock.getCompanyId()).thenReturn(2);
 		when(organizationMock.getOrgId()).thenReturn(ORGANIZATION_NUMBER);
 		when(sortorderRepositoryMock.findAllByMunicipalityIdAndOrganizationNumber(MUNICIPALITY_ID, ORGANIZATION_NUMBER)).thenReturn(createCustomorderForTasks());
@@ -383,10 +411,10 @@ class SortorderServiceTest {
 				.withSortOrder(2)
 				.build());
 
-		when(mdViewerIntegrationMock.getCompanies()).thenReturn(List.of(companyMock, companyMock));
+		when(companyIntegrationMock.getCompanies(MUNICIPALITY_ID)).thenReturn(List.of(companyMock, companyMock));
 		when(companyMock.getCompanyId()).thenReturn(1, 2);
-		when(mdViewerIntegrationMock.getOrganizationsForCompany(1)).thenReturn(Collections.emptyList());
-		when(mdViewerIntegrationMock.getOrganizationsForCompany(2)).thenReturn(List.of(organizationMock));
+		when(companyIntegrationMock.getOrganizationsForCompany(MUNICIPALITY_ID, 1)).thenReturn(Collections.emptyList());
+		when(companyIntegrationMock.getOrganizationsForCompany(MUNICIPALITY_ID, 2)).thenReturn(List.of(organizationMock));
 		when(organizationMock.getCompanyId()).thenReturn(2);
 		when(organizationMock.getOrgId()).thenReturn(ORGANIZATION_NUMBER);
 
@@ -413,10 +441,10 @@ class SortorderServiceTest {
 				.withSortOrder(2)
 				.build());
 
-		when(mdViewerIntegrationMock.getCompanies()).thenReturn(List.of(companyMock, companyMock));
+		when(companyIntegrationMock.getCompanies(MUNICIPALITY_ID)).thenReturn(List.of(companyMock, companyMock));
 		when(companyMock.getCompanyId()).thenReturn(1, 2);
-		when(mdViewerIntegrationMock.getOrganizationsForCompany(1)).thenReturn(Collections.emptyList());
-		when(mdViewerIntegrationMock.getOrganizationsForCompany(2)).thenReturn(List.of(organizationMock));
+		when(companyIntegrationMock.getOrganizationsForCompany(MUNICIPALITY_ID, 1)).thenReturn(Collections.emptyList());
+		when(companyIntegrationMock.getOrganizationsForCompany(MUNICIPALITY_ID, 2)).thenReturn(List.of(organizationMock));
 
 		final var result = service.applySortingToTasks(MUNICIPALITY_ID, ORGANIZATION_NUMBER, tasks);
 
@@ -436,10 +464,10 @@ class SortorderServiceTest {
 			.withSortOrder(1)
 			.build();
 
-		when(mdViewerIntegrationMock.getCompanies()).thenReturn(List.of(companyMock, companyMock));
+		when(companyIntegrationMock.getCompanies(MUNICIPALITY_ID)).thenReturn(List.of(companyMock, companyMock));
 		when(companyMock.getCompanyId()).thenReturn(1, 2);
-		when(mdViewerIntegrationMock.getOrganizationsForCompany(1)).thenReturn(Collections.emptyList());
-		when(mdViewerIntegrationMock.getOrganizationsForCompany(2)).thenReturn(List.of(organizationMock));
+		when(companyIntegrationMock.getOrganizationsForCompany(MUNICIPALITY_ID, 1)).thenReturn(Collections.emptyList());
+		when(companyIntegrationMock.getOrganizationsForCompany(MUNICIPALITY_ID, 2)).thenReturn(List.of(organizationMock));
 		when(organizationMock.getCompanyId()).thenReturn(2);
 		when(organizationMock.getOrgId()).thenReturn(ORGANIZATION_NUMBER);
 		when(sortorderRepositoryMock.findAllByMunicipalityIdAndOrganizationNumber(MUNICIPALITY_ID, ORGANIZATION_NUMBER)).thenReturn(createCustomorderForTasks());
@@ -489,33 +517,5 @@ class SortorderServiceTest {
 				assertThat(entity.getOrganizationNumber()).isEqualTo(ORGANIZATION_NUMBER + 1);
 				assertThat(entity.getPosition()).isEqualTo(212);
 			});
-	}
-
-	private static List<SortorderEntity> createCustomorder() {
-		return List.of(
-			SortorderEntity.builder()
-				.withComponentId(COMPONENT_ID1)
-				.withComponentType(ComponentType.PHASE)
-				.withPosition(10)
-				.build(),
-			SortorderEntity.builder()
-				.withComponentId(COMPONENT_ID2)
-				.withComponentType(ComponentType.TASK)
-				.withPosition(20)
-				.build());
-	}
-
-	private static List<SortorderEntity> createCustomorderForTasks() {
-		return List.of(
-			SortorderEntity.builder()
-				.withComponentId(COMPONENT_ID1)
-				.withComponentType(ComponentType.TASK)
-				.withPosition(20)
-				.build(),
-			SortorderEntity.builder()
-				.withComponentId(COMPONENT_ID2)
-				.withComponentType(ComponentType.TASK)
-				.withPosition(10)
-				.build());
 	}
 }

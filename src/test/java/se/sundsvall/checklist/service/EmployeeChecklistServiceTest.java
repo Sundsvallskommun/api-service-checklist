@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
@@ -15,8 +17,8 @@ import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static org.zalando.problem.Status.OK;
 
+import generated.se.sundsvall.company.Organization;
 import generated.se.sundsvall.employee.PortalPersonData;
-import generated.se.sundsvall.mdviewer.Organization;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -49,6 +51,7 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.Mentor;
 import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistParameters;
+import se.sundsvall.checklist.integration.company.CompanyIntegration;
 import se.sundsvall.checklist.integration.db.EmployeeChecklistIntegration;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
@@ -68,7 +71,6 @@ import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
 import se.sundsvall.checklist.integration.db.repository.InitiationRepository;
 import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
-import se.sundsvall.checklist.integration.mdviewer.MDViewerIntegration;
 import se.sundsvall.checklist.service.OrganizationTree.OrganizationLine;
 import se.sundsvall.checklist.service.model.Employee;
 import se.sundsvall.checklist.service.model.Employment;
@@ -99,7 +101,7 @@ class EmployeeChecklistServiceTest {
 	private InitiationRepository initiationRepositoryMock;
 
 	@Mock
-	private MDViewerIntegration mdViewerIntegrationMock;
+	private CompanyIntegration companyIntegrationMock;
 
 	@InjectMocks
 	private EmployeeChecklistService service;
@@ -110,6 +112,48 @@ class EmployeeChecklistServiceTest {
 	@Captor
 	private ArgumentCaptor<List<InitiationInfoEntity>> initiationEntitiesCaptor;
 
+	private static Employee createEmployee(final String emailAddress, final UUID employeeUuid, final UUID managerUuid, final int companyId, final int orgId, final String loginName) {
+		return Employee.builder()
+			.withEmailAddress(emailAddress)
+			.withPersonId(employeeUuid.toString())
+			.withLoginname(loginName)
+			.withMainEmployment(Employment.builder()
+				.withFormOfEmploymentId("1")
+				.withEventType("Joiner")
+				.withIsMainEmployment(true)
+				.withCompanyId(companyId)
+				.withOrgId(orgId)
+				.withManager(Manager.builder()
+					.withPersonId(managerUuid.toString())
+					.build())
+				.build())
+			.build();
+	}
+
+	private static List<InitiationInfoEntity> createInitiationEntities() {
+		return List.of(
+			InitiationInfoEntity.builder()
+				.withLogId(LOG_ID_1)
+				.withCreated(TIMESTAMP_1)
+				.withStatus(String.valueOf(OK.getStatusCode()))
+				.build(),
+			InitiationInfoEntity.builder()
+				.withLogId(LOG_ID_1)
+				.withCreated(TIMESTAMP_1)
+				.withStatus(String.valueOf(NOT_FOUND.getStatusCode()))
+				.build(),
+			InitiationInfoEntity.builder()
+				.withLogId(LOG_ID_2)
+				.withCreated(TIMESTAMP_2)
+				.withStatus(String.valueOf(OK.getStatusCode()))
+				.build(),
+			InitiationInfoEntity.builder()
+				.withLogId(LOG_ID_2)
+				.withCreated(TIMESTAMP_2)
+				.withStatus(String.valueOf(NOT_FOUND.getStatusCode()))
+				.build());
+	}
+
 	@BeforeEach
 	void initializeFields() {
 		ReflectionTestUtils.setField(service, "employeeInformationUpdateInterval", Duration.ofDays(1));
@@ -117,7 +161,7 @@ class EmployeeChecklistServiceTest {
 
 	@AfterEach
 	void assertNoMoreInteractions() {
-		verifyNoMoreInteractions(employeeChecklistIntegrationMock, customTaskRepositoryMock, employeeIntegrationMock, sortorderServiceMock, initiationRepositoryMock, mdViewerIntegrationMock);
+		verifyNoMoreInteractions(employeeChecklistIntegrationMock, customTaskRepositoryMock, employeeIntegrationMock, sortorderServiceMock, initiationRepositoryMock, companyIntegrationMock);
 	}
 
 	@Test
@@ -894,7 +938,7 @@ class EmployeeChecklistServiceTest {
 		when(employeeIntegrationMock.getNewEmployees(eq(MUNICIPALITY_ID), any())).thenReturn(List.of(employee));
 		when(employeeIntegrationMock.getEmployeeByEmail(MUNICIPALITY_ID, emailAddress)).thenReturn(Optional.of(portalPersonData));
 		when(employeeChecklistIntegrationMock.initiateEmployee(any(), any(), any())).thenReturn(information);
-		when(mdViewerIntegrationMock.getOrganizationsForCompany(companyId)).thenReturn(List.of(
+		when(companyIntegrationMock.getOrganizationsForCompany(MUNICIPALITY_ID, companyId)).thenReturn(List.of(
 			new Organization().orgId(rootOrgId).treeLevel(1).orgName("Sundsvalls kommun"),
 			new Organization().orgId(12).treeLevel(2).orgName("OrgLevel 2").parentId(rootOrgId),
 			new Organization().orgId(122).treeLevel(3).orgName("OrgLevel 3").parentId(12),
@@ -906,7 +950,7 @@ class EmployeeChecklistServiceTest {
 		// Assert and verify
 		verify(employeeIntegrationMock).getNewEmployees(MUNICIPALITY_ID, LocalDate.now().minusDays(30));
 		verify(employeeIntegrationMock).getEmployeeByEmail(MUNICIPALITY_ID, emailAddress);
-		verify(mdViewerIntegrationMock).getOrganizationsForCompany(companyId);
+		verify(companyIntegrationMock).getOrganizationsForCompany(MUNICIPALITY_ID, companyId);
 		verify(employeeChecklistIntegrationMock).initiateEmployee(eq(MUNICIPALITY_ID), eq(employee), organizationTreeCaptor.capture());
 		verify(initiationRepositoryMock).saveAll(initiationEntitiesCaptor.capture());
 
@@ -941,7 +985,7 @@ class EmployeeChecklistServiceTest {
 		verify(employeeIntegrationMock).getNewEmployees(MUNICIPALITY_ID, LocalDate.now().minusDays(30));
 		verify(employeeIntegrationMock).getEmployeeByEmail(MUNICIPALITY_ID, emailAddress);
 		verify(initiationRepositoryMock).saveAll(initiationEntitiesCaptor.capture());
-		verify(mdViewerIntegrationMock, never()).getOrganizationsForCompany(companyId);
+		verify(companyIntegrationMock, never()).getOrganizationsForCompany(anyString(), anyInt());
 		verify(employeeChecklistIntegrationMock, never()).initiateEmployee(eq(MUNICIPALITY_ID), any(), any());
 
 		assertThat(initiationEntitiesCaptor.getValue()).hasSize(1).satisfiesExactly(entity -> {
@@ -972,7 +1016,7 @@ class EmployeeChecklistServiceTest {
 
 		when(employeeIntegrationMock.getNewEmployees(eq(MUNICIPALITY_ID), any())).thenReturn(List.of(employee));
 		when(employeeIntegrationMock.getEmployeeByEmail(MUNICIPALITY_ID, emailAddress)).thenReturn(Optional.of(portalPersonData));
-		when(mdViewerIntegrationMock.getOrganizationsForCompany(companyId)).thenReturn(List.of(
+		when(companyIntegrationMock.getOrganizationsForCompany(MUNICIPALITY_ID, companyId)).thenReturn(List.of(
 			new Organization().orgId(rootOrgId).treeLevel(1).orgName("Sundsvalls kommun"),
 			new Organization().orgId(12).treeLevel(2).orgName("OrgLevel 2").parentId(rootOrgId),
 			new Organization().orgId(122).treeLevel(3).orgName("OrgLevel 3").parentId(12),
@@ -985,7 +1029,7 @@ class EmployeeChecklistServiceTest {
 		// Assert and verify
 		verify(employeeIntegrationMock).getNewEmployees(MUNICIPALITY_ID, LocalDate.now().minusDays(30));
 		verify(employeeIntegrationMock).getEmployeeByEmail(MUNICIPALITY_ID, emailAddress);
-		verify(mdViewerIntegrationMock).getOrganizationsForCompany(companyId);
+		verify(companyIntegrationMock).getOrganizationsForCompany(MUNICIPALITY_ID, companyId);
 		verify(employeeChecklistIntegrationMock).initiateEmployee(eq(MUNICIPALITY_ID), eq(employee), organizationTreeCaptor.capture());
 		verify(initiationRepositoryMock).saveAll(initiationEntitiesCaptor.capture());
 
@@ -1103,7 +1147,7 @@ class EmployeeChecklistServiceTest {
 		when(employeeIntegrationMock.getEmployeeInformation(eq(MUNICIPALITY_ID), any())).thenReturn(List.of(employee));
 		when(employeeIntegrationMock.getEmployeeByEmail(MUNICIPALITY_ID, emailAddress)).thenReturn(Optional.of(portalPersonData));
 		when(employeeChecklistIntegrationMock.initiateEmployee(eq(MUNICIPALITY_ID), any(), any())).thenReturn(information);
-		when(mdViewerIntegrationMock.getOrganizationsForCompany(companyId)).thenReturn(List.of(
+		when(companyIntegrationMock.getOrganizationsForCompany(MUNICIPALITY_ID, companyId)).thenReturn(List.of(
 			new Organization().orgId(rootOrgId).treeLevel(1).orgName("Sundsvalls kommun"),
 			new Organization().orgId(12).treeLevel(2).orgName("OrgLevel 2").parentId(rootOrgId),
 			new Organization().orgId(122).treeLevel(3).orgName("OrgLevel 3").parentId(12),
@@ -1115,7 +1159,7 @@ class EmployeeChecklistServiceTest {
 		// Assert and verify
 		verify(employeeIntegrationMock).getEmployeeInformation(MUNICIPALITY_ID, employeeUuid.toString());
 		verify(employeeIntegrationMock).getEmployeeByEmail(MUNICIPALITY_ID, emailAddress);
-		verify(mdViewerIntegrationMock).getOrganizationsForCompany(companyId);
+		verify(companyIntegrationMock).getOrganizationsForCompany(MUNICIPALITY_ID, companyId);
 		verify(employeeChecklistIntegrationMock).initiateEmployee(eq(MUNICIPALITY_ID), eq(employee), organizationTreeCaptor.capture());
 		verify(initiationRepositoryMock).saveAll(initiationEntitiesCaptor.capture());
 
@@ -1169,7 +1213,7 @@ class EmployeeChecklistServiceTest {
 		when(employeeIntegrationMock.getEmployeeInformation(eq(MUNICIPALITY_ID), any())).thenReturn(List.of(employee));
 		when(employeeIntegrationMock.getEmployeeByEmail(MUNICIPALITY_ID, emailAddress)).thenReturn(Optional.of(portalPersonData));
 		when(employeeChecklistIntegrationMock.initiateEmployee(eq(MUNICIPALITY_ID), any(), any())).thenReturn(information);
-		when(mdViewerIntegrationMock.getOrganizationsForCompany(companyId)).thenReturn(List.of(
+		when(companyIntegrationMock.getOrganizationsForCompany(MUNICIPALITY_ID, companyId)).thenReturn(List.of(
 			new Organization().orgId(rootOrgId).treeLevel(1).orgName("Sundsvalls kommun"),
 			new Organization().orgId(12).treeLevel(2).orgName("OrgLevel 2").parentId(rootOrgId),
 			new Organization().orgId(122).treeLevel(3).orgName("OrgLevel 3").parentId(12),
@@ -1181,7 +1225,7 @@ class EmployeeChecklistServiceTest {
 		// Assert and verify
 		verify(employeeIntegrationMock).getEmployeeInformation(MUNICIPALITY_ID, employeeUuid.toString());
 		verify(employeeIntegrationMock).getEmployeeByEmail(MUNICIPALITY_ID, emailAddress);
-		verify(mdViewerIntegrationMock).getOrganizationsForCompany(companyId);
+		verify(companyIntegrationMock).getOrganizationsForCompany(MUNICIPALITY_ID, companyId);
 		verify(employeeChecklistIntegrationMock).initiateEmployee(eq(MUNICIPALITY_ID), eq(employee), organizationTreeCaptor.capture());
 		verify(initiationRepositoryMock).saveAll(initiationEntitiesCaptor.capture());
 
@@ -1451,7 +1495,7 @@ class EmployeeChecklistServiceTest {
 		verify(employeeChecklistIntegrationMock).updateEmployeeInformation(checklist.getEmployee(), remoteEmployee);
 	}
 
-	private EmployeeChecklistEntity createChecklist(String employeePersonId, String managerPersonId) {
+	private EmployeeChecklistEntity createChecklist(final String employeePersonId, final String managerPersonId) {
 		final var manager = ManagerEntity.builder()
 			.withPersonId(managerPersonId)
 			.build();
@@ -1480,47 +1524,5 @@ class EmployeeChecklistServiceTest {
 				tuple(2, "12", "OrgLevel 2"),
 				tuple(3, "122", "OrgLevel 3"),
 				tuple(4, "1225", "OrgLevel 4"));
-	}
-
-	private static Employee createEmployee(final String emailAddress, final UUID employeeUuid, final UUID managerUuid, final int companyId, final int orgId, final String loginName) {
-		return Employee.builder()
-			.withEmailAddress(emailAddress)
-			.withPersonId(employeeUuid.toString())
-			.withLoginname(loginName)
-			.withMainEmployment(Employment.builder()
-				.withFormOfEmploymentId("1")
-				.withEventType("Joiner")
-				.withIsMainEmployment(true)
-				.withCompanyId(companyId)
-				.withOrgId(orgId)
-				.withManager(Manager.builder()
-					.withPersonId(managerUuid.toString())
-					.build())
-				.build())
-			.build();
-	}
-
-	private static List<InitiationInfoEntity> createInitiationEntities() {
-		return List.of(
-			InitiationInfoEntity.builder()
-				.withLogId(LOG_ID_1)
-				.withCreated(TIMESTAMP_1)
-				.withStatus(String.valueOf(OK.getStatusCode()))
-				.build(),
-			InitiationInfoEntity.builder()
-				.withLogId(LOG_ID_1)
-				.withCreated(TIMESTAMP_1)
-				.withStatus(String.valueOf(NOT_FOUND.getStatusCode()))
-				.build(),
-			InitiationInfoEntity.builder()
-				.withLogId(LOG_ID_2)
-				.withCreated(TIMESTAMP_2)
-				.withStatus(String.valueOf(OK.getStatusCode()))
-				.build(),
-			InitiationInfoEntity.builder()
-				.withLogId(LOG_ID_2)
-				.withCreated(TIMESTAMP_2)
-				.withStatus(String.valueOf(NOT_FOUND.getStatusCode()))
-				.build());
 	}
 }

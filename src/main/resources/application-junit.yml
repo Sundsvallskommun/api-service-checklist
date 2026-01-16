@@ -27,8 +27,8 @@ config:
       token-url: ${config.common.token-url}
       client-id: ${config.common.client-id}
       client-secret: ${config.common.client-secret}
-    mdviewer:
-      url: http://mdviewer_url
+    company:
+      url: http://company_url
       token-url: ${config.common.token-url}
       client-id: ${config.common.client-id}
       client-secret: ${config.common.client-secret}

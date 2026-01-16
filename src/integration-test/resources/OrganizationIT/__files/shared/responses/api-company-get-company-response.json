@@ -1,0 +1,57 @@
+[
+	{
+		"orgId": 1,
+		"orgName": "Root organization A (level 1)",
+		"parentId": null,
+		"isLeafLevel": false,
+		"treeLevel": 1,
+		"responsibilityCode": null,
+		"responsibilityCodePartList": null,
+		"companyId": 1,
+		"municipalityId": "2281"
+	},
+	{
+		"orgId": 11,
+		"orgName": "Middle organization 1 (level 2)",
+		"parentId": 1,
+		"isLeafLevel": false,
+		"treeLevel": 2,
+		"responsibilityCode": "6",
+		"responsibilityCodePartList": null,
+		"companyId": 1,
+		"municipalityId": "2281"
+	},
+	{
+		"orgId": 12,
+		"orgName": "Middle organization 2 (level 2)",
+		"parentId": 1,
+		"isLeafLevel": true,
+		"treeLevel": 2,
+		"responsibilityCode": "6",
+		"responsibilityCodePartList": null,
+		"companyId": 1,
+		"municipalityId": "2281"
+	},
+	{
+		"orgId": 111,
+		"orgName": "Leaf organization 1 (level 3)",
+		"parentId": 11,
+		"isLeafLevel": true,
+		"treeLevel": 3,
+		"responsibilityCode": "15230",
+		"responsibilityCodePartList": null,
+		"companyId": 1,
+		"municipalityId": "2281"
+	},
+	{
+		"orgId": 112,
+		"orgName": "Leaf organization 1 (level 3)",
+		"parentId": 11,
+		"isLeafLevel": true,
+		"treeLevel": 3,
+		"responsibilityCode": "15230",
+		"responsibilityCodePartList": null,
+		"companyId": 1,
+		"municipalityId": "2281"
+	}
+]
