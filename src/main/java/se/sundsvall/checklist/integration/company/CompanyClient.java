@@ -21,7 +21,7 @@ public interface CompanyClient {
 	 * @param  municipalityId municipality id to fetch companies for
 	 * @return                List of root organizations (a.k.a. companies)
 	 */
-	@GetMapping(path = "/{municipalityId}/root", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/{municipalityId}/orgnodesroot", produces = MediaType.APPLICATION_JSON_VALUE)
 	List<Organization> getCompanies(@PathVariable String municipalityId);
 
 	/**
@@ -31,7 +31,7 @@ public interface CompanyClient {
 	 * @param  companyId      containing the id of the root company to fetch organizations for
 	 * @return                List of organizations
 	 */
-	@GetMapping(path = "/{municipalityId}/{companyId}/company", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/{municipalityId}/{companyId}/orgnodes", produces = MediaType.APPLICATION_JSON_VALUE)
 	List<Organization> getOrganizationsForCompany(@PathVariable String municipalityId, @PathVariable int companyId);
 
 }
