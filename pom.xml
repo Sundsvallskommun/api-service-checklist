@@ -222,12 +222,12 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>mdviewer</id>
+						<id>company</id>
 						<goals>
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/contracts/mdviewer/mdviewer.yaml</inputSpec>
+							<inputSpec>${project.basedir}/src/main/resources/contracts/company/company.yaml</inputSpec>
 							<output>${generated-sources-path}</output>
 							<generatorName>spring</generatorName>
 							<generateApis>false</generateApis>
@@ -238,7 +238,7 @@
 								<useSwaggerAnnotations>false</useSwaggerAnnotations>
 								<dateLibrary>java8</dateLibrary>
 								<sourceFolder>models</sourceFolder>
-								<modelPackage>generated.se.sundsvall.mdviewer</modelPackage>
+								<modelPackage>generated.se.sundsvall.company</modelPackage>
 								<openApiNullable>false</openApiNullable>
 								<generatePom>false</generatePom>
 								<interfaceOnly>true</interfaceOnly>

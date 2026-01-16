@@ -11,7 +11,7 @@ import static se.sundsvall.checklist.service.util.SortingUtils.sortEmployeeCheck
 import static se.sundsvall.checklist.service.util.SortingUtils.sortPhases;
 import static se.sundsvall.checklist.service.util.SortingUtils.sortTasks;
 
-import generated.se.sundsvall.mdviewer.Organization;
+import generated.se.sundsvall.company.Organization;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -24,29 +24,29 @@ import se.sundsvall.checklist.api.model.Checklist;
 import se.sundsvall.checklist.api.model.EmployeeChecklist;
 import se.sundsvall.checklist.api.model.SortorderRequest;
 import se.sundsvall.checklist.api.model.Task;
+import se.sundsvall.checklist.integration.company.CompanyIntegration;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
 import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.integration.db.model.SortorderEntity;
 import se.sundsvall.checklist.integration.db.repository.SortorderRepository;
-import se.sundsvall.checklist.integration.mdviewer.MDViewerIntegration;
 
 @Service
 public class SortorderService {
 
 	private final SortorderRepository sortorderRepository;
-	private final MDViewerIntegration mdViewerIntegration;
+	private final CompanyIntegration companyIntegration;
 
-	public SortorderService(final SortorderRepository sortorderRepository, final MDViewerIntegration mdViewerIntegration) {
+	public SortorderService(final SortorderRepository sortorderRepository, final CompanyIntegration companyIntegration) {
 		this.sortorderRepository = sortorderRepository;
-		this.mdViewerIntegration = mdViewerIntegration;
+		this.companyIntegration = companyIntegration;
 	}
 
 	/**
 	 * Method for copying and saving custom sort order for existing checklist items to their respective new version. Method
 	 * is primarily used when creating a new version of an existing checklist.
 	 *
-	 * @param translationMap a map consisting of key value-pair, where key is the id for the new version of the item and
+	 * @param translationMap a map consisting of a key value-pair, where key is the id for the new version of the item and
 	 *                       value is the id for the old version of the item
 	 */
 	public void copySortorderItems(final Map<String, String> translationMap) {
@@ -55,7 +55,7 @@ public class SortorderService {
 			.forEach(sortorderRepository::saveAll);
 	}
 
-	private List<SortorderEntity> copyCurrentSortorder(Entry<String, String> entry) {
+	private List<SortorderEntity> copyCurrentSortorder(final Entry<String, String> entry) {
 		return sortorderRepository.findAllByComponentId(entry.getValue())
 			.stream()
 			.map(currentSort -> toSortorderEntity(currentSort.getMunicipalityId(), currentSort.getOrganizationNumber(), toTaskItem(entry.getKey(), currentSort)))
@@ -65,9 +65,9 @@ public class SortorderService {
 	/**
 	 * Method for saving (replacing previous) custom sortorder
 	 *
-	 * @param municipalityId     id for municipality to which the custom sort belongs
+	 * @param municipalityId     id for the municipality to which the custom sort belongs
 	 * @param organizationNumber number for the organization to which the custom sort belongs
-	 * @param request            the custom sortorder structure to be saved
+	 * @param request            the custom sort order structure to be saved
 	 */
 	@Transactional
 	public void saveSortorder(final String municipalityId, final Integer organizationNumber, final SortorderRequest request) {
@@ -78,7 +78,7 @@ public class SortorderService {
 	/**
 	 * Method for deleting a custom sort order for an organization
 	 *
-	 * @param municipalityId     id for municipality to which the custom sort that shall be removed belongs
+	 * @param municipalityId     id for the municipality to which the custom sort that shall be removed belongs
 	 * @param organizationNumber number for the organization to which the custom sort that shall be removed belongs
 	 */
 	public void deleteSortorder(final String municipalityId, final Integer organizationNumber) {
@@ -103,7 +103,7 @@ public class SortorderService {
 	 * @return                    list of checklists where custom sortorder has been applied
 	 */
 	public List<Checklist> applySortingToChecklists(final String municipalityId, final Integer organizationNumber, final List<Checklist> checklists) {
-		ofNullable(findOrganization(mdViewerIntegration.getCompanies().iterator(), organizationNumber))
+		ofNullable(findOrganization(municipalityId, companyIntegration.getCompanies(municipalityId).iterator(), organizationNumber))
 			.map(org -> aggregateCustomSorts(municipalityId, org))
 			.ifPresent(customSort -> recalculateSortorder(checklists, customSort));
 
@@ -122,7 +122,7 @@ public class SortorderService {
 		return applySortingToChecklists(municipalityId, organizationNumber, List.of(checklist)).getFirst();
 	}
 
-	private void recalculateSortorder(final List<Checklist> checklists, List<SortorderEntity> customSort) {
+	private void recalculateSortorder(final List<Checklist> checklists, final List<SortorderEntity> customSort) {
 		ofNullable(checklists).orElse(emptyList()).forEach(checklist -> {
 			applyCustomSortorder(checklist, customSort);
 			checklist.setPhases(sortPhases(checklist.getPhases()));
@@ -138,7 +138,7 @@ public class SortorderService {
 	 * @return                    list with tasks where custom sortorder has been applied
 	 */
 	public List<Task> applySortingToTasks(final String municipalityId, final Integer organizationNumber, final List<Task> tasks) {
-		return ofNullable(findOrganization(mdViewerIntegration.getCompanies().iterator(), organizationNumber))
+		return ofNullable(findOrganization(municipalityId, companyIntegration.getCompanies(municipalityId).iterator(), organizationNumber))
 			.map(org -> aggregateCustomSorts(municipalityId, org))
 			.map(customSort -> {
 				applyCustomSortorder(tasks, customSort);
@@ -153,23 +153,23 @@ public class SortorderService {
 	 * @param  municipalityId     id for municipality where to find checklist and custom sort
 	 * @param  organizationNumber number for the organization that the custom sort should be based on
 	 * @param  task               the task that is to be updated with custom sort order
-	 * @return                    task where custom sortorder has been applied
+	 * @return                    task where custom sort order has been applied
 	 */
 	public Task applySortingToTask(final String municipalityId, final Integer organizationNumber, final Task task) {
 		return applySortingToTasks(municipalityId, organizationNumber, List.of(task)).getFirst();
 	}
 
-	private Organization findOrganization(final Iterator<Organization> companyIterator, final Integer organizationNumber) {
-		return mdViewerIntegration.getOrganizationsForCompany(companyIterator.next().getCompanyId()).stream()
+	private Organization findOrganization(final String municipalityId, final Iterator<Organization> companyIterator, final Integer organizationNumber) {
+		return companyIntegration.getOrganizationsForCompany(municipalityId, companyIterator.next().getCompanyId()).stream()
 			.filter(org -> org.getOrgId().equals(organizationNumber))
 			.findAny()
-			.orElse(companyIterator.hasNext() ? findOrganization(companyIterator, organizationNumber) : null);
+			.orElse(companyIterator.hasNext() ? findOrganization(municipalityId, companyIterator, organizationNumber) : null);
 	}
 
 	private List<SortorderEntity> aggregateCustomSorts(final String municipalityId, final Organization organization) {
-		final var organizations = ofNullable(findOrganization(mdViewerIntegration.getCompanies().iterator(), organization.getOrgId()))
+		final var organizations = ofNullable(findOrganization(municipalityId, companyIntegration.getCompanies(municipalityId).iterator(), organization.getOrgId()))
 			.map(Organization::getCompanyId)
-			.map(mdViewerIntegration::getOrganizationsForCompany)
+			.map(companyId -> companyIntegration.getOrganizationsForCompany(municipalityId, companyId))
 			.orElse(emptyList());
 
 		return organizations.stream()
@@ -180,12 +180,12 @@ public class SortorderService {
 	}
 
 	/**
-	 * Method for applying custom sorting to a employee checklist
+	 * Method for applying custom sorting to an employee checklist
 	 *
 	 * @param  employeeChecklistEntity the employee checklist entity holding organizational information, needed when finding
-	 *                                 closest custom sortorder
+	 *                                 the closest custom sort order
 	 * @param  employeeChecklist       the employee checklist that will be sorted
-	 * @return                         employee checklist where custom sortorder has been applied
+	 * @return                         employee checklist where custom sort order has been applied
 	 */
 	public EmployeeChecklist applySorting(final Optional<EmployeeChecklistEntity> employeeChecklistEntity, final EmployeeChecklist employeeChecklist) {
 		employeeChecklistEntity
@@ -196,21 +196,22 @@ public class SortorderService {
 		return employeeChecklist;
 	}
 
-	private void recalculateSortorder(final EmployeeChecklist employeeChecklist, List<SortorderEntity> customSort) {
+	private void recalculateSortorder(final EmployeeChecklist employeeChecklist, final List<SortorderEntity> customSort) {
 		applyCustomSortorder(employeeChecklist, customSort);
 		employeeChecklist.setPhases(sortEmployeeChecklistPhases(employeeChecklist.getPhases()));
 	}
 
 	private List<SortorderEntity> aggregateCustomSorts(final EmployeeEntity employee) {
+		final var municipalityId = employee.getDepartment().getMunicipalityId();
 		final var organizations = ofNullable(employee.getCompany())
 			.map(OrganizationEntity::getOrganizationNumber)
-			.map(mdViewerIntegration::getOrganizationsForCompany)
+			.map(companyId -> companyIntegration.getOrganizationsForCompany(municipalityId, companyId))
 			.orElse(emptyList());
 
 		return organizations.stream()
 			.filter(organization -> organization.getOrgId().equals(employee.getDepartment().getOrganizationNumber()))
 			.findAny()
-			.map(employeeHome -> addCustomSort(employee.getDepartment().getMunicipalityId(), employeeHome, organizations, new ArrayList<>()))
+			.map(employeeHome -> addCustomSort(municipalityId, employeeHome, organizations, new ArrayList<>()))
 			.orElse(emptyList());
 	}
 
@@ -218,7 +219,7 @@ public class SortorderService {
 		// Fetch custom sort for the current organization
 		final var customSort = sortorderRepository.findAllByMunicipalityIdAndOrganizationNumber(municipalityId, organization.getOrgId());
 
-		// Only add new custom sorts, do not overwrite already existant custom sorts collected earlier as sorting order from
+		// Only add new custom sorts, do not overwrite already existent custom sorts collected earlier as sorting order from
 		// lower levels in tree takes precedence
 		allCustomSorts.addAll(ofNullable(customSort).orElse(emptyList()).stream()
 			.filter(t -> allCustomSorts.stream().noneMatch(u -> t.getComponentId().equals(u.getComponentId())))

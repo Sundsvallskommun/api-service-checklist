@@ -1,0 +1,19 @@
+{
+	"request": {
+		"headers": {
+			"Authorization": {
+				"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI4"
+			}
+		},
+		"method": "GET",
+		"urlPath": "/api-company/2281/1/company"
+	},
+	"response": {
+		"headers": {
+			"Content-Type": "application/json"
+		},
+		"bodyFileName": "shared/responses/api-company-get-company-response.json",
+		"status": 200
+	},
+	"name": "api-company-get-company"
+}

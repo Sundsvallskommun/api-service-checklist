@@ -1,0 +1,46 @@
+[
+	{
+		"orgId": 13,
+		"orgName": "Sundsvalls kommun",
+		"parentId": null,
+		"isLeafLevel": false,
+		"treeLevel": 1,
+		"responsibilityCode": null,
+		"responsibilityCodePartList": null,
+		"companyId": 1,
+		"municipalityId": "2281"
+	},
+	{
+		"orgId": 1234,
+		"orgName": "Sundsvall API Stuga",
+		"parentId": 13,
+		"isLeafLevel": false,
+		"treeLevel": 2,
+		"responsibilityCode": "2",
+		"responsibilityCodePartList": null,
+		"companyId": 1,
+		"municipalityId": "2281"
+	},
+	{
+		"orgId": 123,
+		"orgName": "Sundsvall API Stuga A",
+		"parentId": 1234,
+		"isLeafLevel": true,
+		"treeLevel": 3,
+		"responsibilityCode": "27",
+		"responsibilityCodePartList": null,
+		"companyId": 1,
+		"municipalityId": "2281"
+	},
+	{
+		"orgId": 321,
+		"orgName": "Sundsvall API Stuga B",
+		"parentId": 1234,
+		"isLeafLevel": true,
+		"treeLevel": 3,
+		"responsibilityCode": "27",
+		"responsibilityCodePartList": null,
+		"companyId": 1,
+		"municipalityId": "2281"
+	}
+]

@@ -1,0 +1,57 @@
+[
+	{
+		"orgId": 100,
+		"orgName": "Company 1",
+		"parentId": null,
+		"isLeafLevel": false,
+		"treeLevel": 1,
+		"responsibilityCode": null,
+		"responsibilityCodePartList": null,
+		"companyId": 1,
+		"municipalityId": "2281"
+	},
+	{
+		"orgId": 1,
+		"orgName": "Test Organization 1",
+		"parentId": 100,
+		"isLeafLevel": true,
+		"treeLevel": 2,
+		"responsibilityCode": "6",
+		"responsibilityCodePartList": null,
+		"companyId": 1,
+		"municipalityId": "2281"
+	},
+	{
+		"orgId": 2,
+		"orgName": "Test Organization 2",
+		"parentId": 100,
+		"isLeafLevel": true,
+		"treeLevel": 2,
+		"responsibilityCode": "6",
+		"responsibilityCodePartList": null,
+		"companyId": 1,
+		"municipalityId": "2281"
+	},
+	{
+		"orgId": 3,
+		"orgName": "Test Organization 3",
+		"parentId": 100,
+		"isLeafLevel": true,
+		"treeLevel": 2,
+		"responsibilityCode": "6",
+		"responsibilityCodePartList": null,
+		"companyId": 1,
+		"municipalityId": "2281"
+	},
+	{
+		"orgId": 4,
+		"orgName": "Test Organization 4",
+		"parentId": 100,
+		"isLeafLevel": true,
+		"treeLevel": 2,
+		"responsibilityCode": "6",
+		"responsibilityCodePartList": null,
+		"companyId": 1,
+		"municipalityId": "2281"
+	}
+]
