@@ -6,5 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public enum FulfilmentStatus {
 	EMPTY,
 	TRUE,
-	FALSE
+	FALSE,
+	NOT_RELEVANT
 }

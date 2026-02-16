@@ -31,7 +31,7 @@
         id varchar(255) not null,
         last_saved_by varchar(255) not null,
         response_text varchar(255),
-        completed enum ('EMPTY','FALSE','TRUE'),
+        completed enum ('EMPTY','FALSE','NOT_RELEVANT','TRUE'),
         primary key (id)
     ) engine=InnoDB;
 
@@ -113,7 +113,7 @@
         last_saved_by varchar(255) not null,
         response_text varchar(255),
         task_id varchar(255),
-        completed enum ('EMPTY','FALSE','TRUE'),
+        completed enum ('EMPTY','FALSE','NOT_RELEVANT','TRUE'),
         primary key (id)
     ) engine=InnoDB;
 
@@ -174,6 +174,7 @@
     ) engine=InnoDB;
 
     create table task (
+        optional bit not null default 0 not null,
         sort_order integer,
         created datetime(6),
         updated datetime(6),

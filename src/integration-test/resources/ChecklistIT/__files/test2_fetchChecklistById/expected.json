@@ -25,7 +25,8 @@
 					"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
 					"created": "2019-01-01T00:00:00+01:00",
 					"updated": "2019-01-01T00:00:00+01:00",
-					"lastSavedBy": "someUser"
+					"lastSavedBy": "someUser",
+					"optional": false
 				},
 				{
 					"id": "aba82aca-f841-4257-baec-d745e3ab78bf",
@@ -36,7 +37,8 @@
 					"questionType": "YES_OR_NO",
 					"created": "2019-01-01T00:00:00+01:00",
 					"updated": "2019-01-01T00:00:00+01:00",
-					"lastSavedBy": "someUser"
+					"lastSavedBy": "someUser",
+					"optional": false
 				},
 				{
 					"id": "bba82aca-f841-4257-baec-d745e3ab78bf",
@@ -47,7 +49,8 @@
 					"questionType": "YES_OR_NO_WITH_TEXT",
 					"created": "2019-01-01T00:00:00+01:00",
 					"updated": "2019-01-01T00:00:00+01:00",
-					"lastSavedBy": "someUser"
+					"lastSavedBy": "someUser",
+					"optional": false
 				}
 			],
 			"created": "2019-01-01T00:00:00+01:00",

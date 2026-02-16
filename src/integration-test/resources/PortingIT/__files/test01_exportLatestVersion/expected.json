@@ -1,32 +1,34 @@
 {
-	"displayName": "Active checklist",
-	"lastSavedBy": "someUser",
 	"name": "TEST01_02_CHECKLIST",
+	"displayName": "Active checklist",
 	"version": 2,
+	"lastSavedBy": "someUser",
 	"tasks": [
 		{
-			"phase": {
-				"sortOrder": 1,
-				"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14"
-			},
 			"heading": "Task name",
-			"sortOrder": 1,
-			"lastSavedBy": "someUser",
 			"text": "Task description of active task for employee",
+			"sortOrder": 1,
 			"roleType": "NEW_EMPLOYEE",
-			"questionType": "YES_OR_NO"
+			"questionType": "YES_OR_NO",
+			"phase": {
+				"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+				"sortOrder": 1
+			},
+			"lastSavedBy": "someUser",
+			"optional": false
 		},
 		{
-			"phase": {
-				"sortOrder": 1,
-				"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14"
-			},
 			"heading": "Task name",
-			"sortOrder": 1,
-			"lastSavedBy": "someUser",
 			"text": "Task description of active task for new manager",
+			"sortOrder": 1,
 			"roleType": "NEW_MANAGER",
-			"questionType": "YES_OR_NO"
+			"questionType": "YES_OR_NO",
+			"phase": {
+				"id": "2455a5d4-1db8-4a25-a49f-92fdd0c60a14",
+				"sortOrder": 1
+			},
+			"lastSavedBy": "someUser",
+			"optional": false
 		}
 	]
 }

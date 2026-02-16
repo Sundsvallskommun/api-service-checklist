@@ -36,8 +36,10 @@ class TaskCreateRequestTest {
 		final var questionType = QuestionType.YES_OR_NO;
 		final var sortOrder = 911;
 		final var permission = SUPERADMIN;
+		final var optional = true;
 
 		final var bean = TaskCreateRequest.builder()
+			.withOptional(optional)
 			.withCreatedBy(createdBy)
 			.withHeading(heading)
 			.withHeadingReference(headingReference)
@@ -49,6 +51,7 @@ class TaskCreateRequestTest {
 			.build();
 
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
+		assertThat(bean.getOptional()).isEqualTo(optional);
 		assertThat(bean.getCreatedBy()).isEqualTo(createdBy);
 		assertThat(bean.getHeading()).isEqualTo(heading);
 		assertThat(bean.getHeadingReference()).isEqualTo(headingReference);

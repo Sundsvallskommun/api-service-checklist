@@ -56,4 +56,7 @@ public class Task {
 
 	@Schema(description = "The id of the user that last modified the task", examples = "joe01doe", accessMode = READ_ONLY)
 	private String lastSavedBy;
+
+	@Schema(description = "Indicates if the task is optional or not", examples = "true", accessMode = READ_ONLY)
+	private Boolean optional;
 }
