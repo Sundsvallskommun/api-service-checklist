@@ -8,6 +8,7 @@ import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATE
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import se.sundsvall.checklist.api.model.Checklist;
 import se.sundsvall.checklist.api.model.ChecklistCreateRequest;
 import se.sundsvall.checklist.api.model.ChecklistUpdateRequest;
@@ -83,6 +84,7 @@ public final class ChecklistMapper {
 				.withSortOrder(request.getSortOrder())
 				.withQuestionType(request.getQuestionType())
 				.withLastSavedBy(taskCreateRequest.getCreatedBy())
+				.withOptional(Optional.ofNullable(request.getOptional()).orElse(false))
 				.build())
 			.orElse(null);
 	}
@@ -95,6 +97,7 @@ public final class ChecklistMapper {
 		ofNullable(request.getPermission()).ifPresent(entity::setPermission);
 		ofNullable(request.getSortOrder()).ifPresent(entity::setSortOrder);
 		ofNullable(request.getQuestionType()).ifPresent(entity::setQuestionType);
+		ofNullable(request.getOptional()).ifPresent(entity::setOptional);
 		entity.setLastSavedBy(request.getUpdatedBy());
 		return entity;
 	}
@@ -162,6 +165,7 @@ public final class ChecklistMapper {
 				.withCreated(entity.getCreated())
 				.withUpdated(entity.getUpdated())
 				.withLastSavedBy(entity.getLastSavedBy())
+				.withOptional(entity.isOptional())
 				.build())
 			.orElse(null);
 	}

@@ -36,8 +36,10 @@ class TaskUpdateRequestTest {
 		final var sortOrder = 112;
 		final var updatedBy = "updatedBy";
 		final var permission = SUPERADMIN;
+		final var optional = true;
 
 		final var bean = TaskUpdateRequest.builder()
+			.withOptional(optional)
 			.withHeading(heading)
 			.withHeadingReference(headingReference)
 			.withPermission(permission)
@@ -49,6 +51,7 @@ class TaskUpdateRequestTest {
 			.build();
 
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
+		assertThat(bean.getOptional()).isEqualTo(optional);
 		assertThat(bean.getHeading()).isEqualTo(heading);
 		assertThat(bean.getHeadingReference()).isEqualTo(headingReference);
 		assertThat(bean.getPermission()).isEqualTo(permission);

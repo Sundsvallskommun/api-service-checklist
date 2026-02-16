@@ -85,7 +85,7 @@ class ChecklistUtilsTest {
 		assertThat(result.getLifeCycle()).isEqualTo(LifeCycle.CREATED);
 		assertThat(result.getTasks()).hasSize(2)
 			.allSatisfy(task -> {
-				assertThat(task).hasAllNullFieldsOrPropertiesExcept("phase", "sortOrder");
+				assertThat(task).hasAllNullFieldsOrPropertiesExcept("phase", "sortOrder", "optional");
 				assertThat(task.getSortOrder()).isZero();
 			})
 			.satisfiesExactlyInAnyOrder(

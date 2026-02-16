@@ -20,6 +20,7 @@ import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 @Builder(setterPrefix = "with")
 @Schema(description = "Model for custom task")
 public class CustomTask {
+
 	@Schema(description = "The id of the task", examples = "5a6c3e4e-c320-4006-b448-1fd4121df828", accessMode = READ_ONLY)
 	private String id;
 

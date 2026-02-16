@@ -3,6 +3,7 @@ package se.sundsvall.checklist.integration.db.model.enums;
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus.EMPTY;
 import static se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus.FALSE;
+import static se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus.NOT_RELEVANT;
 import static se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus.TRUE;
 
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,7 @@ class FulfilmentStatusTest {
 
 	@Test
 	void enums() {
-		assertThat(FulfilmentStatus.values()).containsExactlyInAnyOrder(EMPTY, FALSE, TRUE);
+		assertThat(FulfilmentStatus.values()).containsExactlyInAnyOrder(EMPTY, FALSE, TRUE, NOT_RELEVANT);
 	}
 
 	@Test
@@ -19,5 +20,6 @@ class FulfilmentStatusTest {
 		assertThat(EMPTY).hasToString("EMPTY");
 		assertThat(FALSE).hasToString("FALSE");
 		assertThat(TRUE).hasToString("TRUE");
+		assertThat(NOT_RELEVANT).hasToString("NOT_RELEVANT");
 	}
 }

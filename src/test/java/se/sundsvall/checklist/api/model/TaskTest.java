@@ -48,6 +48,7 @@ class TaskTest {
 		final var created = OffsetDateTime.now();
 		final var updated = OffsetDateTime.now().plusDays(10);
 		final var permission = SUPERADMIN;
+		final var optional = true;
 
 		final var bean = Task.builder()
 			.withId(id)
@@ -61,9 +62,11 @@ class TaskTest {
 			.withUpdated(updated)
 			.withCreated(created)
 			.withLastSavedBy(lastSavedBy)
+			.withOptional(optional)
 			.build();
 
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
+		assertThat(bean.getOptional()).isTrue();
 		assertThat(bean.getCreated()).isEqualTo(created);
 		assertThat(bean.getHeading()).isEqualTo(heading);
 		assertThat(bean.getHeadingReference()).isEqualTo(headingReference);

@@ -44,4 +44,7 @@ public class TaskUpdateRequest {
 	@Schema(description = "The id of the user updating the task", examples = "joe01doe", accessMode = WRITE_ONLY)
 	@NotBlank
 	private String updatedBy;
+
+	@Schema(description = "Indicates if the task is optional or not", examples = "true")
+	private Boolean optional;
 }

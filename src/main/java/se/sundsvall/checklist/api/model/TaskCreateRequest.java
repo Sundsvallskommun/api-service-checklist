@@ -50,4 +50,7 @@ public class TaskCreateRequest {
 	@Schema(description = "The id of the user creating the task", examples = "joe01doe", accessMode = WRITE_ONLY)
 	@NotBlank
 	private String createdBy;
+
+	@Schema(description = "Indicates if the task is optional or not", examples = "true", defaultValue = "false")
+	private Boolean optional;
 }

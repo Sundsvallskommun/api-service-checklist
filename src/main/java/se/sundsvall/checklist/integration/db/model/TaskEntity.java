@@ -82,6 +82,9 @@ public class TaskEntity {
 	@Column(name = "last_saved_by", nullable = false)
 	private String lastSavedBy;
 
+	@Column(name = "optional", nullable = false, columnDefinition = "bit not null default 0")
+	private boolean optional;
+
 	@PrePersist
 	void prePersist() {
 		this.created = OffsetDateTime.now();
