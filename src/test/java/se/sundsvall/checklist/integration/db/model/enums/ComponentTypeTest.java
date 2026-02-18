@@ -1,10 +1,10 @@
 package se.sundsvall.checklist.integration.db.model.enums;
 
+import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.checklist.integration.db.model.enums.ComponentType.PHASE;
 import static se.sundsvall.checklist.integration.db.model.enums.ComponentType.TASK;
-
-import org.junit.jupiter.api.Test;
 
 class ComponentTypeTest {
 

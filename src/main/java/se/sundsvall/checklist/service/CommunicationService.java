@@ -1,12 +1,5 @@
 package se.sundsvall.checklist.service;
 
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.EMAIL;
-import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.ERROR;
-import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.NOT_SENT;
-import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.WILL_NOT_SEND;
-import static se.sundsvall.checklist.service.mapper.CorrespondenceMapper.toCorrespondenceEntity;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +11,13 @@ import se.sundsvall.checklist.api.model.Correspondence;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistRepository;
 import se.sundsvall.checklist.service.mapper.CorrespondenceMapper;
+
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.EMAIL;
+import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.ERROR;
+import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.NOT_SENT;
+import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.WILL_NOT_SEND;
+import static se.sundsvall.checklist.service.mapper.CorrespondenceMapper.toCorrespondenceEntity;
 
 @Service
 public class CommunicationService {

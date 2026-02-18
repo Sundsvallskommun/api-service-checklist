@@ -1,7 +1,5 @@
 package se.sundsvall.checklist.service.scheduler;
 
-import static org.apache.commons.collections4.CollectionUtils.isEmpty;
-
 import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +11,8 @@ import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.service.CommunicationService;
 import se.sundsvall.dept44.scheduling.Dept44Scheduled;
 import se.sundsvall.dept44.scheduling.health.Dept44HealthUtility;
+
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 @Component
 public class ManagerEmailScheduler {

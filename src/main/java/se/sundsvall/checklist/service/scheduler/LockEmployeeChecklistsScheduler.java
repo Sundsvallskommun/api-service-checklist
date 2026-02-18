@@ -1,7 +1,5 @@
 package se.sundsvall.checklist.service.scheduler;
 
-import static org.apache.commons.collections4.CollectionUtils.isEmpty;
-
 import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +10,8 @@ import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
 import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistRepository;
 import se.sundsvall.dept44.scheduling.Dept44Scheduled;
+
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 /**
  * Checks for expired employee checklists and locks them.

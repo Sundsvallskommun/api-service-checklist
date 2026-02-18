@@ -1,35 +1,5 @@
 package se.sundsvall.checklist.service;
 
-import static java.util.Collections.emptyList;
-import static java.util.Objects.isNull;
-import static java.util.Optional.ofNullable;
-import static org.apache.commons.collections4.CollectionUtils.isEmpty;
-import static org.apache.commons.lang3.ObjectUtils.notEqual;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static org.zalando.problem.Status.OK;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_EMPLOYEE;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_MANAGER;
-import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.createUpdateManagerDetailString;
-import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.createUpdateManagerErrorString;
-import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toCustomTask;
-import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toDetail;
-import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toInitiationInfoEntity;
-import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toInitiationInformations;
-import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toUpdateManagerResponse;
-import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.updateCustomTaskEntity;
-import static se.sundsvall.checklist.service.mapper.PagingAndSortingMapper.toPageRequest;
-import static se.sundsvall.checklist.service.mapper.PagingAndSortingMapper.toPagingMetaData;
-import static se.sundsvall.checklist.service.util.ChecklistUtils.removeObsoleteTasks;
-import static se.sundsvall.checklist.service.util.EmployeeChecklistDecorator.decorateWithCustomTasks;
-import static se.sundsvall.checklist.service.util.EmployeeChecklistDecorator.decorateWithFulfilment;
-import static se.sundsvall.checklist.service.util.ServiceUtils.calculateTaskType;
-import static se.sundsvall.checklist.service.util.ServiceUtils.fetchEntity;
-import static se.sundsvall.checklist.service.util.StringUtils.sanitizeAndCompress;
-import static se.sundsvall.checklist.service.util.VerificationUtils.verifyMandatoryInformation;
-import static se.sundsvall.checklist.service.util.VerificationUtils.verifyUnlockedEmployeeChecklist;
-import static se.sundsvall.checklist.service.util.VerificationUtils.verifyValidEmployment;
-
 import generated.se.sundsvall.company.Organization;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -77,6 +47,36 @@ import se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper;
 import se.sundsvall.checklist.service.model.Employee;
 import se.sundsvall.checklist.service.util.ChecklistUtils;
 import se.sundsvall.checklist.service.util.TaskType;
+
+import static java.util.Collections.emptyList;
+import static java.util.Objects.isNull;
+import static java.util.Optional.ofNullable;
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
+import static org.apache.commons.lang3.ObjectUtils.notEqual;
+import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static org.zalando.problem.Status.OK;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_EMPLOYEE;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_MANAGER;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.createUpdateManagerDetailString;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.createUpdateManagerErrorString;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toCustomTask;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toDetail;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toInitiationInfoEntity;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toInitiationInformations;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toUpdateManagerResponse;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.updateCustomTaskEntity;
+import static se.sundsvall.checklist.service.mapper.PagingAndSortingMapper.toPageRequest;
+import static se.sundsvall.checklist.service.mapper.PagingAndSortingMapper.toPagingMetaData;
+import static se.sundsvall.checklist.service.util.ChecklistUtils.removeObsoleteTasks;
+import static se.sundsvall.checklist.service.util.EmployeeChecklistDecorator.decorateWithCustomTasks;
+import static se.sundsvall.checklist.service.util.EmployeeChecklistDecorator.decorateWithFulfilment;
+import static se.sundsvall.checklist.service.util.ServiceUtils.calculateTaskType;
+import static se.sundsvall.checklist.service.util.ServiceUtils.fetchEntity;
+import static se.sundsvall.checklist.service.util.StringUtils.sanitizeAndCompress;
+import static se.sundsvall.checklist.service.util.VerificationUtils.verifyMandatoryInformation;
+import static se.sundsvall.checklist.service.util.VerificationUtils.verifyUnlockedEmployeeChecklist;
+import static se.sundsvall.checklist.service.util.VerificationUtils.verifyValidEmployment;
 
 @Service
 public class EmployeeChecklistService {

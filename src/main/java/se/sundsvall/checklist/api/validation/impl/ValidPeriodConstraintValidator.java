@@ -1,11 +1,11 @@
 package se.sundsvall.checklist.api.validation.impl;
 
-import static java.util.Objects.isNull;
-
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.time.Period;
 import se.sundsvall.checklist.api.validation.ValidPeriod;
+
+import static java.util.Objects.isNull;
 
 /**
  * Validator for {@link ValidPeriod} annotation.

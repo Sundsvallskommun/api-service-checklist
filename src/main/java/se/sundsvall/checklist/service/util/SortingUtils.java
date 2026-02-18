@@ -1,10 +1,5 @@
 package se.sundsvall.checklist.service.util;
 
-import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
-import static se.sundsvall.checklist.integration.db.model.enums.ComponentType.PHASE;
-import static se.sundsvall.checklist.integration.db.model.enums.ComponentType.TASK;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -19,6 +14,11 @@ import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.SortorderEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
+
+import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
+import static se.sundsvall.checklist.integration.db.model.enums.ComponentType.PHASE;
+import static se.sundsvall.checklist.integration.db.model.enums.ComponentType.TASK;
 
 public class SortingUtils {
 	private SortingUtils() {}

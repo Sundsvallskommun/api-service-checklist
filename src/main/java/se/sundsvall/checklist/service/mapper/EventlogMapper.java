@@ -1,8 +1,5 @@
 package se.sundsvall.checklist.service.mapper;
 
-import static java.time.OffsetDateTime.now;
-import static java.time.ZoneId.systemDefault;
-
 import generated.se.sundsvall.eventlog.Event;
 import generated.se.sundsvall.eventlog.EventType;
 import generated.se.sundsvall.eventlog.Metadata;
@@ -11,6 +8,9 @@ import java.util.List;
 import java.util.Optional;
 import se.sundsvall.checklist.api.model.Events;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
+
+import static java.time.OffsetDateTime.now;
+import static java.time.ZoneId.systemDefault;
 
 public final class EventlogMapper {
 

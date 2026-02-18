@@ -1,7 +1,5 @@
 package se.sundsvall.checklist.api.model;
 
-import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.WRITE_ONLY;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
@@ -11,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import se.sundsvall.checklist.api.validation.ValidPeriod;
 import se.sundsvall.checklist.integration.db.model.enums.Permission;
+
+import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.WRITE_ONLY;
 
 @Data
 @NoArgsConstructor

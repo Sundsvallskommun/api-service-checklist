@@ -1,14 +1,5 @@
 package se.sundsvall.checklist.service;
 
-import static java.util.Comparator.comparing;
-import static java.util.Optional.ofNullable;
-import static org.zalando.fauxpas.FauxPas.throwingFunction;
-import static org.zalando.problem.Status.CONFLICT;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.ACTIVE;
-import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATED;
-
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.text.SimpleDateFormat;
@@ -30,6 +21,15 @@ import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
 import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
 import se.sundsvall.checklist.service.mapper.OrganizationMapper;
+
+import static java.util.Comparator.comparing;
+import static java.util.Optional.ofNullable;
+import static org.zalando.fauxpas.FauxPas.throwingFunction;
+import static org.zalando.problem.Status.CONFLICT;
+import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.ACTIVE;
+import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATED;
 
 /**
  * Service for exporting and importing checklists as json strings

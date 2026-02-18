@@ -1,12 +1,5 @@
 package se.sundsvall.checklist.service.mapper;
 
-import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toCollection;
-import static org.apache.commons.lang3.ObjectUtils.anyNull;
-import static se.sundsvall.checklist.integration.db.model.enums.ComponentType.PHASE;
-import static se.sundsvall.checklist.integration.db.model.enums.ComponentType.TASK;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -14,6 +7,13 @@ import se.sundsvall.checklist.api.model.SortorderRequest;
 import se.sundsvall.checklist.api.model.SortorderRequest.PhaseItem;
 import se.sundsvall.checklist.api.model.SortorderRequest.TaskItem;
 import se.sundsvall.checklist.integration.db.model.SortorderEntity;
+
+import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toCollection;
+import static org.apache.commons.lang3.ObjectUtils.anyNull;
+import static se.sundsvall.checklist.integration.db.model.enums.ComponentType.PHASE;
+import static se.sundsvall.checklist.integration.db.model.enums.ComponentType.TASK;
 
 public class SortorderMapper {
 

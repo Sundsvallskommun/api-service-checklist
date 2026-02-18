@@ -1,12 +1,12 @@
 package se.sundsvall.checklist.integration.db.model.enums;
 
+import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.ACTIVE;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATED;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.DEPRECATED;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.RETIRED;
-
-import org.junit.jupiter.api.Test;
 
 class LifeCycleTest {
 

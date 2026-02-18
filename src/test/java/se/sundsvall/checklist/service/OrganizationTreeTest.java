@@ -1,8 +1,5 @@
 package se.sundsvall.checklist.service;
 
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.jupiter.api.Test;
@@ -12,6 +9,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import se.sundsvall.checklist.service.OrganizationTree.OrganizationLine;
 import se.sundsvall.dept44.test.annotation.resource.Load;
 import se.sundsvall.dept44.test.extension.ResourceLoaderExtension;
+
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(ResourceLoaderExtension.class)
 class OrganizationTreeTest {

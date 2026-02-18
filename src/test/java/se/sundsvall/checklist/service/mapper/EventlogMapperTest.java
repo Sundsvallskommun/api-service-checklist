@@ -1,16 +1,16 @@
 package se.sundsvall.checklist.service.mapper;
 
+import generated.se.sundsvall.eventlog.EventType;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.checklist.TestObjectFactory.createEvent;
 import static se.sundsvall.checklist.TestObjectFactory.createMetadata;
 import static se.sundsvall.checklist.service.mapper.EventlogMapper.OWNER;
 import static se.sundsvall.checklist.service.mapper.EventlogMapper.UNKNOWN;
 import static se.sundsvall.checklist.service.mapper.EventlogMapper.USER_ID;
-
-import generated.se.sundsvall.eventlog.EventType;
-import java.util.List;
-import org.junit.jupiter.api.Test;
-import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 
 class EventlogMapperTest {
 

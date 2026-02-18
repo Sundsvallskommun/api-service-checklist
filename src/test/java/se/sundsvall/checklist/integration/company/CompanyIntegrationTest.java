@@ -1,14 +1,5 @@
 package se.sundsvall.checklist.integration.company;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.zalando.problem.Status.I_AM_A_TEAPOT;
-
 import generated.se.sundsvall.company.Organization;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -21,6 +12,15 @@ import org.springframework.cache.annotation.Cacheable;
 import org.zalando.problem.Problem;
 import org.zalando.problem.ThrowableProblem;
 import wiremock.org.apache.commons.lang3.RandomUtils;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static org.zalando.problem.Status.I_AM_A_TEAPOT;
 
 @ExtendWith(MockitoExtension.class)
 class CompanyIntegrationTest {

@@ -1,13 +1,5 @@
 package se.sundsvall.checklist.api;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.zalando.problem.Status.BAD_REQUEST;
-import static se.sundsvall.checklist.TestObjectFactory.createTaskCreateRequest;
-import static se.sundsvall.checklist.TestObjectFactory.createTaskUpdateRequest;
-
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -26,6 +18,14 @@ import se.sundsvall.checklist.Application;
 import se.sundsvall.checklist.api.model.TaskCreateRequest;
 import se.sundsvall.checklist.api.model.TaskUpdateRequest;
 import se.sundsvall.checklist.service.TaskService;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.zalando.problem.Status.BAD_REQUEST;
+import static se.sundsvall.checklist.TestObjectFactory.createTaskCreateRequest;
+import static se.sundsvall.checklist.TestObjectFactory.createTaskUpdateRequest;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")

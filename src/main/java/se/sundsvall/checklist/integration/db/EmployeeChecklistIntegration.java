@@ -1,22 +1,5 @@
 package se.sundsvall.checklist.integration.db;
 
-import static java.util.Objects.isNull;
-import static java.util.Optional.ofNullable;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.ACTIVE;
-import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toCustomFulfilmentEntity;
-import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toCustomTaskEntity;
-import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEmployeeChecklistEntity;
-import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toFulfilmentEntity;
-import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toEmployeeEntity;
-import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toManagerEntity;
-import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toOrganizationEntity;
-import static se.sundsvall.checklist.service.mapper.OrganizationMapper.updateEmployeeEntity;
-import static se.sundsvall.checklist.service.util.ServiceUtils.allTasksAreCompleted;
-import static se.sundsvall.checklist.service.util.ServiceUtils.getMainEmployment;
-import static se.sundsvall.checklist.service.util.StringUtils.toReadableString;
-import static se.sundsvall.checklist.service.util.VerificationUtils.verifyUnlockedEmployeeChecklist;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -60,6 +43,23 @@ import se.sundsvall.checklist.service.OrganizationTree;
 import se.sundsvall.checklist.service.OrganizationTree.OrganizationLine;
 import se.sundsvall.checklist.service.model.Employee;
 import se.sundsvall.checklist.service.model.Manager;
+
+import static java.util.Objects.isNull;
+import static java.util.Optional.ofNullable;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.ACTIVE;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toCustomFulfilmentEntity;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toCustomTaskEntity;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEmployeeChecklistEntity;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toFulfilmentEntity;
+import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toEmployeeEntity;
+import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toManagerEntity;
+import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toOrganizationEntity;
+import static se.sundsvall.checklist.service.mapper.OrganizationMapper.updateEmployeeEntity;
+import static se.sundsvall.checklist.service.util.ServiceUtils.allTasksAreCompleted;
+import static se.sundsvall.checklist.service.util.ServiceUtils.getMainEmployment;
+import static se.sundsvall.checklist.service.util.StringUtils.toReadableString;
+import static se.sundsvall.checklist.service.util.VerificationUtils.verifyUnlockedEmployeeChecklist;
 
 @Component
 public class EmployeeChecklistIntegration {

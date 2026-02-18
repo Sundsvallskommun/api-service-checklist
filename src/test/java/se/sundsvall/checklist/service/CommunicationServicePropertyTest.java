@@ -1,13 +1,13 @@
 package se.sundsvall.checklist.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.aop.framework.AopProxyUtils.getSingletonTarget;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import se.sundsvall.checklist.Application;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.aop.framework.AopProxyUtils.getSingletonTarget;
 
 @SpringBootTest(classes = Application.class)
 @ActiveProfiles("junit")

@@ -1,16 +1,5 @@
 package se.sundsvall.checklist.service.mapper;
 
-import static java.util.Collections.emptyList;
-import static java.util.Comparator.comparing;
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toCollection;
-import static org.apache.commons.lang3.ObjectUtils.anyNull;
-import static org.springframework.util.CollectionUtils.isEmpty;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
-import static org.zalando.problem.Status.UNPROCESSABLE_ENTITY;
-import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toStakeholder;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +33,17 @@ import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.service.model.Employee;
 import se.sundsvall.dept44.requestid.RequestId;
+
+import static java.util.Collections.emptyList;
+import static java.util.Comparator.comparing;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toCollection;
+import static org.apache.commons.lang3.ObjectUtils.anyNull;
+import static org.springframework.util.CollectionUtils.isEmpty;
+import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
+import static org.zalando.problem.Status.UNPROCESSABLE_ENTITY;
+import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toStakeholder;
 
 public final class EmployeeChecklistMapper {
 

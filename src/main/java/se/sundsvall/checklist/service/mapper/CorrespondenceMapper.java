@@ -1,8 +1,5 @@
 package se.sundsvall.checklist.service.mapper;
 
-import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
-
 import generated.se.sundsvall.messaging.DeliveryResult;
 import generated.se.sundsvall.messaging.MessageStatus;
 import java.util.List;
@@ -11,6 +8,9 @@ import se.sundsvall.checklist.api.model.Correspondence;
 import se.sundsvall.checklist.integration.db.model.CorrespondenceEntity;
 import se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel;
 import se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus;
+
+import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
 
 public class CorrespondenceMapper {
 	private CorrespondenceMapper() {}

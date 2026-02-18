@@ -1,15 +1,5 @@
 package se.sundsvall.checklist.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.ACTIVE;
-import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATED;
-import static se.sundsvall.checklist.service.PortingService.SYSTEM;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +19,16 @@ import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
 import se.sundsvall.checklist.service.mapper.OrganizationMapper;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.ACTIVE;
+import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATED;
+import static se.sundsvall.checklist.service.PortingService.SYSTEM;
 
 @ExtendWith(MockitoExtension.class)
 class PortingServiceTest {

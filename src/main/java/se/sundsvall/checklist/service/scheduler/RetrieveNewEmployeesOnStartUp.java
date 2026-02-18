@@ -1,9 +1,5 @@
 package se.sundsvall.checklist.service.scheduler;
 
-import static java.util.Objects.nonNull;
-import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 import java.time.Duration;
 import java.util.concurrent.ScheduledExecutorService;
 import org.slf4j.Logger;
@@ -11,6 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+
+import static java.util.Objects.nonNull;
+import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * We want the service to fetch and persist new employees on startup. This is not possible

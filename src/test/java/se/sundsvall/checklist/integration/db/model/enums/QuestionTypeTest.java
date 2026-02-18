@@ -1,12 +1,12 @@
 package se.sundsvall.checklist.integration.db.model.enums;
 
+import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.checklist.integration.db.model.enums.QuestionType.COMPLETED_OR_NOT_RELEVANT;
 import static se.sundsvall.checklist.integration.db.model.enums.QuestionType.COMPLETED_OR_NOT_RELEVANT_WITH_TEXT;
 import static se.sundsvall.checklist.integration.db.model.enums.QuestionType.YES_OR_NO;
 import static se.sundsvall.checklist.integration.db.model.enums.QuestionType.YES_OR_NO_WITH_TEXT;
-
-import org.junit.jupiter.api.Test;
 
 class QuestionTypeTest {
 

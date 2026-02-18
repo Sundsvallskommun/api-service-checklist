@@ -1,8 +1,5 @@
 package se.sundsvall.checklist.api.model;
 
-import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
-import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.OffsetDateTime;
 import lombok.AccessLevel;
@@ -14,6 +11,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import se.sundsvall.checklist.integration.db.model.enums.Permission;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 import se.sundsvall.checklist.integration.db.model.enums.RoleType;
+
+import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
+import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME;
 
 @Data
 @NoArgsConstructor

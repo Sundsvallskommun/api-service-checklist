@@ -1,7 +1,5 @@
 package se.sundsvall.checklist.integration.employee;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import generated.se.sundsvall.employee.Account;
 import generated.se.sundsvall.employee.Employeev2;
 import generated.se.sundsvall.employee.Employment;
@@ -17,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import se.sundsvall.checklist.service.model.Employee;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class EmployeeMapperTest {
 	private static final int COMPANY_ID = 123;

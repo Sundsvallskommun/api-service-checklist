@@ -1,15 +1,5 @@
 package se.sundsvall.checklist.api;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.http.MediaType.ALL;
-import static se.sundsvall.checklist.TestObjectFactory.createPhase;
-import static se.sundsvall.checklist.TestObjectFactory.createPhaseCreateRequest;
-import static se.sundsvall.checklist.TestObjectFactory.createPhaseUpdateRequest;
-
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -22,6 +12,16 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import se.sundsvall.checklist.Application;
 import se.sundsvall.checklist.api.model.Phase;
 import se.sundsvall.checklist.service.PhaseService;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.http.MediaType.ALL;
+import static se.sundsvall.checklist.TestObjectFactory.createPhase;
+import static se.sundsvall.checklist.TestObjectFactory.createPhaseCreateRequest;
+import static se.sundsvall.checklist.TestObjectFactory.createPhaseUpdateRequest;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")

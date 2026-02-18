@@ -1,23 +1,5 @@
 package se.sundsvall.checklist.service;
 
-import static org.springframework.util.CollectionUtils.isEmpty;
-import static org.zalando.problem.Status.BAD_REQUEST;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.ACTIVE;
-import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATED;
-import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.DEPRECATED;
-import static se.sundsvall.checklist.service.EventService.CHECKLIST_CREATED;
-import static se.sundsvall.checklist.service.EventService.CHECKLIST_DELETED;
-import static se.sundsvall.checklist.service.EventService.CHECKLIST_NEW_VERSION_CREATED;
-import static se.sundsvall.checklist.service.EventService.CHECKLIST_UPDATED;
-import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toChecklist;
-import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toChecklistEntity;
-import static se.sundsvall.checklist.service.mapper.ChecklistMapper.updateChecklistEntity;
-import static se.sundsvall.checklist.service.mapper.EventlogMapper.toEvents;
-import static se.sundsvall.checklist.service.util.ChecklistUtils.findMatchingTaskIds;
-import static se.sundsvall.checklist.service.util.SortingUtils.getChecklistItemIds;
-
 import generated.se.sundsvall.eventlog.EventType;
 import java.util.List;
 import java.util.Objects;
@@ -35,6 +17,24 @@ import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
 import se.sundsvall.checklist.service.util.ChecklistUtils;
+
+import static org.springframework.util.CollectionUtils.isEmpty;
+import static org.zalando.problem.Status.BAD_REQUEST;
+import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.ACTIVE;
+import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATED;
+import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.DEPRECATED;
+import static se.sundsvall.checklist.service.EventService.CHECKLIST_CREATED;
+import static se.sundsvall.checklist.service.EventService.CHECKLIST_DELETED;
+import static se.sundsvall.checklist.service.EventService.CHECKLIST_NEW_VERSION_CREATED;
+import static se.sundsvall.checklist.service.EventService.CHECKLIST_UPDATED;
+import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toChecklist;
+import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toChecklistEntity;
+import static se.sundsvall.checklist.service.mapper.ChecklistMapper.updateChecklistEntity;
+import static se.sundsvall.checklist.service.mapper.EventlogMapper.toEvents;
+import static se.sundsvall.checklist.service.util.ChecklistUtils.findMatchingTaskIds;
+import static se.sundsvall.checklist.service.util.SortingUtils.getChecklistItemIds;
 
 @Service
 public class ChecklistService {

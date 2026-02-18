@@ -1,12 +1,5 @@
 package se.sundsvall.checklist.service.util;
 
-import static java.util.Optional.ofNullable;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.zalando.problem.Status.NOT_ACCEPTABLE;
-import static org.zalando.problem.Status.NOT_FOUND;
-
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
@@ -20,6 +13,13 @@ import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.service.model.Employee;
 import se.sundsvall.checklist.service.model.Employment;
 import se.sundsvall.checklist.service.model.Manager;
+
+import static java.util.Optional.ofNullable;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.zalando.problem.Status.NOT_ACCEPTABLE;
+import static org.zalando.problem.Status.NOT_FOUND;
 
 class VerificationUtilsTest {
 

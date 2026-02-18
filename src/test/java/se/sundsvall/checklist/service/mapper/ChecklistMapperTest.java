@@ -1,15 +1,5 @@
 package se.sundsvall.checklist.service.mapper;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static se.sundsvall.checklist.TestObjectFactory.createPhaseEntity;
-import static se.sundsvall.checklist.TestObjectFactory.createTaskEntity;
-import static se.sundsvall.checklist.integration.db.model.enums.Permission.SUPERADMIN;
-import static se.sundsvall.checklist.integration.db.model.enums.QuestionType.YES_OR_NO_WITH_TEXT;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_EMPLOYEE;
-import static se.sundsvall.checklist.service.mapper.ChecklistMapper.updateChecklistEntity;
-import static se.sundsvall.checklist.service.mapper.ChecklistMapper.updatePhaseEntity;
-import static se.sundsvall.checklist.service.mapper.ChecklistMapper.updateTaskEntity;
-
 import java.time.OffsetDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -26,6 +16,16 @@ import se.sundsvall.checklist.integration.db.model.enums.LifeCycle;
 import se.sundsvall.checklist.integration.db.model.enums.Permission;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 import se.sundsvall.checklist.integration.db.model.enums.RoleType;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static se.sundsvall.checklist.TestObjectFactory.createPhaseEntity;
+import static se.sundsvall.checklist.TestObjectFactory.createTaskEntity;
+import static se.sundsvall.checklist.integration.db.model.enums.Permission.SUPERADMIN;
+import static se.sundsvall.checklist.integration.db.model.enums.QuestionType.YES_OR_NO_WITH_TEXT;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_EMPLOYEE;
+import static se.sundsvall.checklist.service.mapper.ChecklistMapper.updateChecklistEntity;
+import static se.sundsvall.checklist.service.mapper.ChecklistMapper.updatePhaseEntity;
+import static se.sundsvall.checklist.service.mapper.ChecklistMapper.updateTaskEntity;
 
 class ChecklistMapperTest {
 

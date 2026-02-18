@@ -1,12 +1,5 @@
 package se.sundsvall.checklist.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.checklist.TestObjectFactory.generateSortorderRequest;
-
 import generated.se.sundsvall.company.Organization;
 import java.util.Collections;
 import java.util.List;
@@ -33,6 +26,13 @@ import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.integration.db.model.SortorderEntity;
 import se.sundsvall.checklist.integration.db.model.enums.ComponentType;
 import se.sundsvall.checklist.integration.db.repository.SortorderRepository;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.checklist.TestObjectFactory.generateSortorderRequest;
 
 @ExtendWith(MockitoExtension.class)
 class SortorderServiceTest {

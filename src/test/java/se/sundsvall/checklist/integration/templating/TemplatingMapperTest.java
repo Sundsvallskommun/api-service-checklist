@@ -1,13 +1,13 @@
 package se.sundsvall.checklist.integration.templating;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
 import se.sundsvall.checklist.integration.db.model.ManagerEntity;
 import se.sundsvall.checklist.integration.templating.model.EmployeeParameter;
 import se.sundsvall.checklist.integration.templating.model.ManagerParameter;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class TemplatingMapperTest {
 

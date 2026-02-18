@@ -1,13 +1,5 @@
 package se.sundsvall.checklist.integration.employee;
 
-import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
-import static org.zalando.problem.Status.NOT_FOUND;
-
 import generated.se.sundsvall.employee.PortalPersonData;
 import java.time.LocalDate;
 import java.util.List;
@@ -21,6 +13,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.cache.annotation.Cacheable;
 import se.sundsvall.checklist.TestObjectFactory;
 import se.sundsvall.dept44.exception.ClientProblem;
+
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
+import static org.zalando.problem.Status.NOT_FOUND;
 
 @ExtendWith(MockitoExtension.class)
 class EmployeeIntegrationTest {

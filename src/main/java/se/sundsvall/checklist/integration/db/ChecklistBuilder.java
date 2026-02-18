@@ -1,12 +1,5 @@
 package se.sundsvall.checklist.integration.db;
 
-import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
-import static org.flywaydb.core.internal.util.CollectionsUtils.hasItems;
-import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toChecklist;
-import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toPhases;
-import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toTask;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -17,6 +10,13 @@ import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
+
+import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
+import static org.flywaydb.core.internal.util.CollectionsUtils.hasItems;
+import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toChecklist;
+import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toPhases;
+import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toTask;
 
 @Component
 public class ChecklistBuilder {

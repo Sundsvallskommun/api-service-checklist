@@ -1,11 +1,5 @@
 package se.sundsvall.checklist.service;
 
-import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.EMAIL;
-import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.ERROR;
-import static se.sundsvall.checklist.integration.templating.TemplatingMapper.toRenderRequest;
-import static se.sundsvall.checklist.service.mapper.CorrespondenceMapper.toCorrespondenceEntity;
-import static se.sundsvall.checklist.service.mapper.CorrespondenceMapper.toCorrespondenceStatus;
-
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +9,12 @@ import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistRepository;
 import se.sundsvall.checklist.integration.messaging.MessagingIntegration;
 import se.sundsvall.checklist.integration.templating.TemplatingIntegration;
+
+import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.EMAIL;
+import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.ERROR;
+import static se.sundsvall.checklist.integration.templating.TemplatingMapper.toRenderRequest;
+import static se.sundsvall.checklist.service.mapper.CorrespondenceMapper.toCorrespondenceEntity;
+import static se.sundsvall.checklist.service.mapper.CorrespondenceMapper.toCorrespondenceStatus;
 
 @Component
 public class MailHandler {

@@ -1,8 +1,5 @@
 package se.sundsvall.checklist.integration.employee;
 
-import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
-
 import generated.se.sundsvall.employee.Employeev2;
 import generated.se.sundsvall.employee.NewEmployee;
 import generated.se.sundsvall.employee.NewEmployment;
@@ -12,6 +9,9 @@ import java.util.UUID;
 import se.sundsvall.checklist.service.model.Employee;
 import se.sundsvall.checklist.service.model.Employment;
 import se.sundsvall.checklist.service.model.Manager;
+
+import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
 
 public class EmployeeMapper {
 
