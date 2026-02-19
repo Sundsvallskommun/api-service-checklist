@@ -1,7 +1,5 @@
 package se.sundsvall.checklist.integration.db.model;
 
-import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,6 +19,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.TimeZoneStorage;
+
+import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
 
 @Getter
 @Setter

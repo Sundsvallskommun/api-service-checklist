@@ -1,11 +1,5 @@
 package se.sundsvall.checklist.service.mapper;
 
-import static java.util.Collections.emptyList;
-import static java.util.Comparator.comparing;
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toCollection;
-import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATED;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +15,12 @@ import se.sundsvall.checklist.api.model.TaskUpdateRequest;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
+
+import static java.util.Collections.emptyList;
+import static java.util.Comparator.comparing;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toCollection;
+import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATED;
 
 public final class ChecklistMapper {
 	private ChecklistMapper() {}

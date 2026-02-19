@@ -1,8 +1,5 @@
 package se.sundsvall.checklist.service.mapper;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
@@ -12,6 +9,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
 import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistParameters;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 class PagingAndSortingMapperTest {
 

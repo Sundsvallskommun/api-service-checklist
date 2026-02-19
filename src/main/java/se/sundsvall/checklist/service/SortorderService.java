@@ -1,16 +1,5 @@
 package se.sundsvall.checklist.service;
 
-import static java.util.Collections.emptyList;
-import static java.util.Objects.nonNull;
-import static java.util.Optional.ofNullable;
-import static se.sundsvall.checklist.service.mapper.SortorderMapper.toSortorderEntities;
-import static se.sundsvall.checklist.service.mapper.SortorderMapper.toSortorderEntity;
-import static se.sundsvall.checklist.service.mapper.SortorderMapper.toTaskItem;
-import static se.sundsvall.checklist.service.util.SortingUtils.applyCustomSortorder;
-import static se.sundsvall.checklist.service.util.SortingUtils.sortEmployeeChecklistPhases;
-import static se.sundsvall.checklist.service.util.SortingUtils.sortPhases;
-import static se.sundsvall.checklist.service.util.SortingUtils.sortTasks;
-
 import generated.se.sundsvall.company.Organization;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -30,6 +19,17 @@ import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
 import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.integration.db.model.SortorderEntity;
 import se.sundsvall.checklist.integration.db.repository.SortorderRepository;
+
+import static java.util.Collections.emptyList;
+import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
+import static se.sundsvall.checklist.service.mapper.SortorderMapper.toSortorderEntities;
+import static se.sundsvall.checklist.service.mapper.SortorderMapper.toSortorderEntity;
+import static se.sundsvall.checklist.service.mapper.SortorderMapper.toTaskItem;
+import static se.sundsvall.checklist.service.util.SortingUtils.applyCustomSortorder;
+import static se.sundsvall.checklist.service.util.SortingUtils.sortEmployeeChecklistPhases;
+import static se.sundsvall.checklist.service.util.SortingUtils.sortPhases;
+import static se.sundsvall.checklist.service.util.SortingUtils.sortTasks;
 
 @Service
 public class SortorderService {

@@ -1,14 +1,5 @@
 package se.sundsvall.checklist.service;
 
-import static java.util.Optional.ofNullable;
-import static org.zalando.problem.Status.CONFLICT;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.checklist.service.mapper.DelegateMapper.toDelegateEntity;
-import static se.sundsvall.checklist.service.util.ChecklistUtils.removeObsoleteTasks;
-import static se.sundsvall.checklist.service.util.EmployeeChecklistDecorator.decorateWithCustomTasks;
-import static se.sundsvall.checklist.service.util.EmployeeChecklistDecorator.decorateWithFulfilment;
-import static se.sundsvall.checklist.service.util.ServiceUtils.fetchEntity;
-
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -27,6 +18,15 @@ import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistReposit
 import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
 import se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper;
 import se.sundsvall.checklist.service.util.ChecklistUtils;
+
+import static java.util.Optional.ofNullable;
+import static org.zalando.problem.Status.CONFLICT;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.checklist.service.mapper.DelegateMapper.toDelegateEntity;
+import static se.sundsvall.checklist.service.util.ChecklistUtils.removeObsoleteTasks;
+import static se.sundsvall.checklist.service.util.EmployeeChecklistDecorator.decorateWithCustomTasks;
+import static se.sundsvall.checklist.service.util.EmployeeChecklistDecorator.decorateWithFulfilment;
+import static se.sundsvall.checklist.service.util.ServiceUtils.fetchEntity;
 
 @Service
 public class DelegationService {

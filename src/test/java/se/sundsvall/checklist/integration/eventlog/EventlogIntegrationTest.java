@@ -1,10 +1,5 @@
 package se.sundsvall.checklist.integration.eventlog;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import generated.se.sundsvall.eventlog.Event;
 import generated.se.sundsvall.eventlog.PageEvent;
 import org.junit.jupiter.api.Test;
@@ -15,6 +10,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.zalando.problem.Problem;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class EventlogIntegrationTest {

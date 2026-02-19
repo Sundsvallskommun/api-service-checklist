@@ -1,7 +1,5 @@
 package se.sundsvall.checklist.service.mapper;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import generated.se.sundsvall.messaging.DeliveryResult;
 import generated.se.sundsvall.messaging.MessageStatus;
 import java.time.OffsetDateTime;
@@ -10,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import se.sundsvall.checklist.integration.db.model.CorrespondenceEntity;
 import se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel;
 import se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class CorrespondenceMapperTest {
 

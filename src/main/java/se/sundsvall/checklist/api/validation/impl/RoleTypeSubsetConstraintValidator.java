@@ -1,7 +1,5 @@
 package se.sundsvall.checklist.api.validation.impl;
 
-import static java.util.Objects.isNull;
-
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.Collections;
@@ -9,6 +7,8 @@ import java.util.List;
 import java.util.Objects;
 import se.sundsvall.checklist.api.validation.RoleTypeSubset;
 import se.sundsvall.checklist.integration.db.model.enums.RoleType;
+
+import static java.util.Objects.isNull;
 
 public class RoleTypeSubsetConstraintValidator implements ConstraintValidator<RoleTypeSubset, RoleType> {
 

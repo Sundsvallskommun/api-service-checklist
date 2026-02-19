@@ -1,15 +1,5 @@
 package se.sundsvall.checklist.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.checklist.TestObjectFactory.createPhaseCreateRequest;
-import static se.sundsvall.checklist.TestObjectFactory.createPhaseEntity;
-import static se.sundsvall.checklist.TestObjectFactory.createPhaseUpdateRequest;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,6 +18,16 @@ import se.sundsvall.checklist.integration.db.model.SortorderEntity;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
 import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
 import se.sundsvall.checklist.integration.db.repository.TaskRepository;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.checklist.TestObjectFactory.createPhaseCreateRequest;
+import static se.sundsvall.checklist.TestObjectFactory.createPhaseEntity;
+import static se.sundsvall.checklist.TestObjectFactory.createPhaseUpdateRequest;
 
 @ExtendWith(MockitoExtension.class)
 class PhaseServiceTest {

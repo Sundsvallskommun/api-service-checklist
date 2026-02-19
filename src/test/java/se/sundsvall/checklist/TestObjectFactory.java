@@ -1,15 +1,5 @@
 package se.sundsvall.checklist;
 
-import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.EMAIL;
-import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.NO_COMMUNICATION;
-import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.SENT;
-import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATED;
-import static se.sundsvall.checklist.integration.db.model.enums.Permission.ADMIN;
-import static se.sundsvall.checklist.integration.db.model.enums.QuestionType.YES_OR_NO;
-import static se.sundsvall.checklist.integration.db.model.enums.QuestionType.YES_OR_NO_WITH_TEXT;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_EMPLOYEE;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.NEW_EMPLOYEE;
-
 import generated.se.sundsvall.employee.Account;
 import generated.se.sundsvall.employee.Employeev2;
 import generated.se.sundsvall.employee.Employment;
@@ -55,6 +45,16 @@ import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
+
+import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.EMAIL;
+import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.NO_COMMUNICATION;
+import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.SENT;
+import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATED;
+import static se.sundsvall.checklist.integration.db.model.enums.Permission.ADMIN;
+import static se.sundsvall.checklist.integration.db.model.enums.QuestionType.YES_OR_NO;
+import static se.sundsvall.checklist.integration.db.model.enums.QuestionType.YES_OR_NO_WITH_TEXT;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_EMPLOYEE;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.NEW_EMPLOYEE;
 
 public final class TestObjectFactory {
 

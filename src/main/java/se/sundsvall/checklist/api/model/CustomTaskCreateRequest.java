@@ -1,9 +1,5 @@
 package se.sundsvall.checklist.api.model;
 
-import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.WRITE_ONLY;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_EMPLOYEE;
-import static se.sundsvall.checklist.integration.db.model.enums.RoleType.NEW_EMPLOYEE;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -15,6 +11,10 @@ import lombok.NoArgsConstructor;
 import se.sundsvall.checklist.api.validation.RoleTypeSubset;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 import se.sundsvall.checklist.integration.db.model.enums.RoleType;
+
+import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.WRITE_ONLY;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_EMPLOYEE;
+import static se.sundsvall.checklist.integration.db.model.enums.RoleType.NEW_EMPLOYEE;
 
 @Data
 @NoArgsConstructor

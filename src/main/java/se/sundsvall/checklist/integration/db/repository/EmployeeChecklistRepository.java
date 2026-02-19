@@ -1,10 +1,5 @@
 package se.sundsvall.checklist.integration.db.repository;
 
-import static se.sundsvall.checklist.integration.db.specification.EmployeeChecklistSpecification.distinct;
-import static se.sundsvall.checklist.integration.db.specification.EmployeeChecklistSpecification.withEmployeeName;
-import static se.sundsvall.checklist.integration.db.specification.EmployeeChecklistSpecification.withMunicipalityId;
-import static se.sundsvall.checklist.integration.db.specification.EmployeeChecklistSpecification.withNonCompletedChecklists;
-
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import java.time.LocalDate;
 import java.util.List;
@@ -19,6 +14,11 @@ import org.springframework.stereotype.Repository;
 import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistParameters;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus;
+
+import static se.sundsvall.checklist.integration.db.specification.EmployeeChecklistSpecification.distinct;
+import static se.sundsvall.checklist.integration.db.specification.EmployeeChecklistSpecification.withEmployeeName;
+import static se.sundsvall.checklist.integration.db.specification.EmployeeChecklistSpecification.withMunicipalityId;
+import static se.sundsvall.checklist.integration.db.specification.EmployeeChecklistSpecification.withNonCompletedChecklists;
 
 @Repository
 @CircuitBreaker(name = "employeeChecklistRepository")

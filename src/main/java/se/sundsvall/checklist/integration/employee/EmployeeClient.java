@@ -1,8 +1,5 @@
 package se.sundsvall.checklist.integration.employee;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static se.sundsvall.checklist.integration.employee.configuration.EmployeeConfiguration.CLIENT_ID;
-
 import generated.se.sundsvall.employee.Employeev2;
 import generated.se.sundsvall.employee.NewEmployee;
 import generated.se.sundsvall.employee.PortalPersonData;
@@ -14,6 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import se.sundsvall.checklist.integration.employee.configuration.EmployeeConfiguration;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static se.sundsvall.checklist.integration.employee.configuration.EmployeeConfiguration.CLIENT_ID;
 
 @CircuitBreaker(name = CLIENT_ID)
 @FeignClient(name = CLIENT_ID, url = "${integration.employee.url}", configuration = EmployeeConfiguration.class, dismiss404 = true)

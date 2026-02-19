@@ -1,17 +1,5 @@
 package se.sundsvall.checklist.service;
 
-import static generated.se.sundsvall.eventlog.EventType.CREATE;
-import static generated.se.sundsvall.eventlog.EventType.DELETE;
-import static generated.se.sundsvall.eventlog.EventType.UPDATE;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.checklist.service.EventService.TASK_ADDED;
-import static se.sundsvall.checklist.service.EventService.TASK_CHANGED;
-import static se.sundsvall.checklist.service.EventService.TASK_REMOVED;
-import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toTask;
-import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toTaskEntity;
-import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toTasks;
-import static se.sundsvall.checklist.service.mapper.ChecklistMapper.updateTaskEntity;
-
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +14,18 @@ import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
 import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistRepository;
 import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
 import se.sundsvall.checklist.integration.db.repository.TaskRepository;
+
+import static generated.se.sundsvall.eventlog.EventType.CREATE;
+import static generated.se.sundsvall.eventlog.EventType.DELETE;
+import static generated.se.sundsvall.eventlog.EventType.UPDATE;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.checklist.service.EventService.TASK_ADDED;
+import static se.sundsvall.checklist.service.EventService.TASK_CHANGED;
+import static se.sundsvall.checklist.service.EventService.TASK_REMOVED;
+import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toTask;
+import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toTaskEntity;
+import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toTasks;
+import static se.sundsvall.checklist.service.mapper.ChecklistMapper.updateTaskEntity;
 
 @Service
 public class TaskService {

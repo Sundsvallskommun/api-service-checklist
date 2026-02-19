@@ -1,7 +1,5 @@
 package se.sundsvall.checklist.integration.company;
 
-import static se.sundsvall.checklist.integration.company.configuration.CompanyConfiguration.CLIENT_ID;
-
 import generated.se.sundsvall.company.Organization;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import java.util.List;
@@ -10,6 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import se.sundsvall.checklist.integration.company.configuration.CompanyConfiguration;
+
+import static se.sundsvall.checklist.integration.company.configuration.CompanyConfiguration.CLIENT_ID;
 
 @CircuitBreaker(name = CLIENT_ID)
 @FeignClient(name = CLIENT_ID, url = "${integration.company.url}", configuration = CompanyConfiguration.class)

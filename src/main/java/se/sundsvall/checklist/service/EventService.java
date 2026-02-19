@@ -1,13 +1,13 @@
 package se.sundsvall.checklist.service;
 
-import static se.sundsvall.checklist.service.mapper.EventlogMapper.toEvent;
-
 import generated.se.sundsvall.eventlog.EventType;
 import generated.se.sundsvall.eventlog.PageEvent;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.eventlog.EventlogIntegration;
+
+import static se.sundsvall.checklist.service.mapper.EventlogMapper.toEvent;
 
 @Service
 public class EventService {

@@ -1,9 +1,5 @@
 package se.sundsvall.checklist.service.util;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static se.sundsvall.checklist.integration.db.model.enums.ComponentType.PHASE;
-import static se.sundsvall.checklist.integration.db.model.enums.ComponentType.TASK;
-
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -17,6 +13,10 @@ import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.model.SortorderEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static se.sundsvall.checklist.integration.db.model.enums.ComponentType.PHASE;
+import static se.sundsvall.checklist.integration.db.model.enums.ComponentType.TASK;
 
 class SortingUtilsTest {
 

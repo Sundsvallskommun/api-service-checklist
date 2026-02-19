@@ -1,8 +1,5 @@
 package se.sundsvall.checklist.service.scheduler;
 
-import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-import static java.time.temporal.ChronoUnit.DAYS;
-
 import java.time.OffsetDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +8,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import se.sundsvall.checklist.integration.db.repository.InitiationRepository;
 import se.sundsvall.dept44.scheduling.Dept44Scheduled;
+
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 /**
  * Scheduler for job to remove initiation information rows older than X days (configurable by properties) from the

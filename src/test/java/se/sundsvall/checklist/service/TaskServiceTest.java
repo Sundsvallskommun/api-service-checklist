@@ -1,21 +1,5 @@
 package se.sundsvall.checklist.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.checklist.TestObjectFactory.createChecklistEntity;
-import static se.sundsvall.checklist.TestObjectFactory.createTaskCreateRequest;
-import static se.sundsvall.checklist.TestObjectFactory.createTaskUpdateRequest;
-import static se.sundsvall.checklist.service.EventService.TASK_ADDED;
-import static se.sundsvall.checklist.service.EventService.TASK_CHANGED;
-
 import generated.se.sundsvall.eventlog.EventType;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +27,22 @@ import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
 import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistRepository;
 import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
 import se.sundsvall.checklist.integration.db.repository.TaskRepository;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.checklist.TestObjectFactory.createChecklistEntity;
+import static se.sundsvall.checklist.TestObjectFactory.createTaskCreateRequest;
+import static se.sundsvall.checklist.TestObjectFactory.createTaskUpdateRequest;
+import static se.sundsvall.checklist.service.EventService.TASK_ADDED;
+import static se.sundsvall.checklist.service.EventService.TASK_CHANGED;
 
 @ExtendWith(MockitoExtension.class)
 class TaskServiceTest {

@@ -1,16 +1,16 @@
 package se.sundsvall.checklist.service.mapper;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static se.sundsvall.checklist.TestObjectFactory.generateSortorderRequest;
-import static se.sundsvall.checklist.integration.db.model.enums.ComponentType.PHASE;
-import static se.sundsvall.checklist.integration.db.model.enums.ComponentType.TASK;
-
 import java.util.UUID;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.checklist.api.model.SortorderRequest;
 import se.sundsvall.checklist.api.model.SortorderRequest.TaskItem;
 import se.sundsvall.checklist.integration.db.model.SortorderEntity;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static se.sundsvall.checklist.TestObjectFactory.generateSortorderRequest;
+import static se.sundsvall.checklist.integration.db.model.enums.ComponentType.PHASE;
+import static se.sundsvall.checklist.integration.db.model.enums.ComponentType.TASK;
 
 class SortorderMapperTest {
 	private static final String MUNICIPALITY_ID = "municipalityId";

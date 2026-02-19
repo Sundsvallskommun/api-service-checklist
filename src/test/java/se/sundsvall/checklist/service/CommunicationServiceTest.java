@@ -1,18 +1,5 @@
 package se.sundsvall.checklist.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.EMAIL;
-import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.NO_COMMUNICATION;
-import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.ERROR;
-import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.NOT_SENT;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -34,6 +21,19 @@ import se.sundsvall.checklist.integration.db.model.ManagerEntity;
 import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus;
 import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistRepository;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.EMAIL;
+import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.NO_COMMUNICATION;
+import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.ERROR;
+import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.NOT_SENT;
 
 @ExtendWith(MockitoExtension.class)
 class CommunicationServiceTest {

@@ -1,7 +1,5 @@
 package se.sundsvall.checklist.integration.db.model;
 
-import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -22,6 +20,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.TimeZoneStorage;
 import se.sundsvall.checklist.integration.db.model.enums.Permission;
+
+import static org.hibernate.annotations.TimeZoneStorageType.NORMALIZE;
 
 @Getter
 @Setter

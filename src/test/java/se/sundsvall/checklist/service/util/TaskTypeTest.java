@@ -1,10 +1,10 @@
 package se.sundsvall.checklist.service.util;
 
+import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.checklist.service.util.TaskType.COMMON;
 import static se.sundsvall.checklist.service.util.TaskType.CUSTOM;
-
-import org.junit.jupiter.api.Test;
 
 class TaskTypeTest {
 

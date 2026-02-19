@@ -1,13 +1,13 @@
 package se.sundsvall.checklist.api.validation.impl;
 
-import static java.util.Objects.isNull;
-
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.Set;
 import se.sundsvall.checklist.api.validation.ValidChannels;
 import se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel;
+
+import static java.util.Objects.isNull;
 
 public class ValidChannelsConstraintValidator implements ConstraintValidator<ValidChannels, Set<CommunicationChannel>> {
 

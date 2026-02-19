@@ -1,11 +1,5 @@
 package se.sundsvall.checklist.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.checklist.service.mapper.EventlogMapper.toEvent;
-
 import generated.se.sundsvall.eventlog.Event;
 import generated.se.sundsvall.eventlog.EventType;
 import generated.se.sundsvall.eventlog.PageEvent;
@@ -19,6 +13,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.eventlog.EventlogIntegration;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.checklist.service.mapper.EventlogMapper.toEvent;
 
 @ExtendWith(MockitoExtension.class)
 class EventServiceTest {

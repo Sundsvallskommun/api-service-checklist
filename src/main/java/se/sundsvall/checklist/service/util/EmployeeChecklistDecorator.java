@@ -1,10 +1,5 @@
 package se.sundsvall.checklist.service.util;
 
-import static java.util.Collections.emptyList;
-import static java.util.Comparator.comparing;
-import static java.util.Optional.ofNullable;
-import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEmployeeChecklistTask;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -15,6 +10,11 @@ import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.FulfilmentEntity;
+
+import static java.util.Collections.emptyList;
+import static java.util.Comparator.comparing;
+import static java.util.Optional.ofNullable;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEmployeeChecklistTask;
 
 public final class EmployeeChecklistDecorator {
 	private EmployeeChecklistDecorator() {}

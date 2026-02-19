@@ -1,5 +1,29 @@
 package se.sundsvall.checklist.service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.EnumSource.Mode;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.zalando.problem.Problem;
+import se.sundsvall.checklist.api.model.Checklist;
+import se.sundsvall.checklist.integration.db.ChecklistBuilder;
+import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
+import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
+import se.sundsvall.checklist.integration.db.model.enums.LifeCycle;
+import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
+import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
+import se.sundsvall.checklist.service.util.ChecklistUtils;
+
 import static generated.se.sundsvall.eventlog.EventType.CREATE;
 import static generated.se.sundsvall.eventlog.EventType.DELETE;
 import static generated.se.sundsvall.eventlog.EventType.UPDATE;
@@ -27,30 +51,6 @@ import static se.sundsvall.checklist.service.EventService.CHECKLIST_CREATED;
 import static se.sundsvall.checklist.service.EventService.CHECKLIST_DELETED;
 import static se.sundsvall.checklist.service.EventService.CHECKLIST_NEW_VERSION_CREATED;
 import static se.sundsvall.checklist.service.EventService.CHECKLIST_UPDATED;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.EnumSource.Mode;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.zalando.problem.Problem;
-import se.sundsvall.checklist.api.model.Checklist;
-import se.sundsvall.checklist.integration.db.ChecklistBuilder;
-import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
-import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
-import se.sundsvall.checklist.integration.db.model.enums.LifeCycle;
-import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
-import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
-import se.sundsvall.checklist.service.util.ChecklistUtils;
 
 @ExtendWith(MockitoExtension.class)
 class ChecklistServiceTest {

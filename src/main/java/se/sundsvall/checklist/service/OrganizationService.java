@@ -1,12 +1,5 @@
 package se.sundsvall.checklist.service;
 
-import static java.util.Optional.ofNullable;
-import static org.springframework.util.CollectionUtils.isEmpty;
-import static org.zalando.problem.Status.CONFLICT;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toOrganizationEntity;
-import static se.sundsvall.checklist.service.mapper.OrganizationMapper.updateOrganizationEntity;
-
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +12,13 @@ import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.integration.db.model.enums.LifeCycle;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
 import se.sundsvall.checklist.service.mapper.OrganizationMapper;
+
+import static java.util.Optional.ofNullable;
+import static org.springframework.util.CollectionUtils.isEmpty;
+import static org.zalando.problem.Status.CONFLICT;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toOrganizationEntity;
+import static se.sundsvall.checklist.service.mapper.OrganizationMapper.updateOrganizationEntity;
 
 @Service
 public class OrganizationService {

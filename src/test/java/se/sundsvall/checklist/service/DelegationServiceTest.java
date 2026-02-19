@@ -1,18 +1,5 @@
 package se.sundsvall.checklist.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.zalando.problem.Status.CONFLICT;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.checklist.TestObjectFactory.createDelegateEntity;
-import static se.sundsvall.checklist.TestObjectFactory.createEmployeeChecklistEntity;
-import static se.sundsvall.checklist.TestObjectFactory.generatePortalPersonData;
-
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -38,6 +25,19 @@ import se.sundsvall.checklist.integration.db.repository.DelegateRepository;
 import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistRepository;
 import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
 import se.sundsvall.checklist.service.model.Employee;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static org.zalando.problem.Status.CONFLICT;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.checklist.TestObjectFactory.createDelegateEntity;
+import static se.sundsvall.checklist.TestObjectFactory.createEmployeeChecklistEntity;
+import static se.sundsvall.checklist.TestObjectFactory.generatePortalPersonData;
 
 @ExtendWith(MockitoExtension.class)
 class DelegationServiceTest {

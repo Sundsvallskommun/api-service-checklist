@@ -1,11 +1,11 @@
 package se.sundsvall.checklist.integration.company;
 
-import static se.sundsvall.checklist.configuration.CacheConfiguration.COMPANY_CACHE;
-
 import generated.se.sundsvall.company.Organization;
 import java.util.List;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
+
+import static se.sundsvall.checklist.configuration.CacheConfiguration.COMPANY_CACHE;
 
 /**
  * Wrapper class for {@link CompanyClient}.

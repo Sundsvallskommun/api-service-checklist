@@ -1,9 +1,5 @@
 package se.sundsvall.checklist.service.scheduler;
 
-import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
-import static org.apache.commons.collections4.CollectionUtils.isEmpty;
-
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +10,10 @@ import org.zalando.problem.Status;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse;
 import se.sundsvall.checklist.service.EmployeeChecklistService;
 import se.sundsvall.dept44.scheduling.Dept44Scheduled;
+
+import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 /**
  * Scheduler for updating employees with correct manager where this information is out of date.

@@ -1,23 +1,5 @@
 package se.sundsvall.checklist.service.mapper;
 
-import static java.time.temporal.ChronoUnit.SECONDS;
-import static java.util.Collections.emptyList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.within;
-import static org.assertj.core.groups.Tuple.tuple;
-import static org.mockito.Mockito.mockStatic;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static org.zalando.problem.Status.OK;
-import static se.sundsvall.checklist.TestObjectFactory.createCustomTaskEntity;
-import static se.sundsvall.checklist.TestObjectFactory.createEmployeeChecklistEntity;
-import static se.sundsvall.checklist.TestObjectFactory.createPhaseEntity;
-import static se.sundsvall.checklist.TestObjectFactory.createTaskEntity;
-import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.EMPLOYEE;
-import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEmployeeChecklist;
-import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEmployeeChecklistPhase;
-import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEmployeeChecklistTask;
-import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toStakeholder;
-
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -49,6 +31,24 @@ import se.sundsvall.checklist.service.model.Employee;
 import se.sundsvall.checklist.service.model.Employment;
 import se.sundsvall.checklist.service.model.Manager;
 import se.sundsvall.dept44.requestid.RequestId;
+
+import static java.time.temporal.ChronoUnit.SECONDS;
+import static java.util.Collections.emptyList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
+import static org.assertj.core.groups.Tuple.tuple;
+import static org.mockito.Mockito.mockStatic;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static org.zalando.problem.Status.OK;
+import static se.sundsvall.checklist.TestObjectFactory.createCustomTaskEntity;
+import static se.sundsvall.checklist.TestObjectFactory.createEmployeeChecklistEntity;
+import static se.sundsvall.checklist.TestObjectFactory.createPhaseEntity;
+import static se.sundsvall.checklist.TestObjectFactory.createTaskEntity;
+import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.EMPLOYEE;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEmployeeChecklist;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEmployeeChecklistPhase;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEmployeeChecklistTask;
+import static se.sundsvall.checklist.service.mapper.OrganizationMapper.toStakeholder;
 
 class EmployeeChecklistMapperTest {
 

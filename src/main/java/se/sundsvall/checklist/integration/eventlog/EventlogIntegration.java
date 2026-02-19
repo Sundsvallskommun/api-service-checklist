@@ -1,8 +1,5 @@
 package se.sundsvall.checklist.integration.eventlog;
 
-import static org.zalando.problem.Status.BAD_GATEWAY;
-import static se.sundsvall.checklist.service.util.StringUtils.sanitizeAndCompress;
-
 import generated.se.sundsvall.eventlog.Event;
 import generated.se.sundsvall.eventlog.PageEvent;
 import org.slf4j.Logger;
@@ -10,6 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.zalando.problem.Problem;
+
+import static org.zalando.problem.Status.BAD_GATEWAY;
+import static se.sundsvall.checklist.service.util.StringUtils.sanitizeAndCompress;
 
 /**
  * Wrapper class for {@link EventlogClient}.

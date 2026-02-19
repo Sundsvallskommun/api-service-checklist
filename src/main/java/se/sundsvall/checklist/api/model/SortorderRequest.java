@@ -1,7 +1,5 @@
 package se.sundsvall.checklist.api.model;
 
-import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.WRITE_ONLY;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -15,6 +13,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
+
+import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.WRITE_ONLY;
 
 @Data
 @NoArgsConstructor

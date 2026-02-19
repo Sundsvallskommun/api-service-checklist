@@ -1,11 +1,11 @@
 package se.sundsvall.checklist.integration.db.model.enums;
 
+import java.time.Period;
+import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.EMPLOYEE;
 import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.MANAGER;
-
-import java.time.Period;
-import org.junit.jupiter.api.Test;
 
 class EmploymentTypeTest {
 

@@ -1,12 +1,5 @@
 package se.sundsvall.checklist.service;
 
-import static org.zalando.problem.Status.CONFLICT;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toPhase;
-import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toPhaseEntity;
-import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toPhases;
-import static se.sundsvall.checklist.service.mapper.ChecklistMapper.updatePhaseEntity;
-
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +11,13 @@ import se.sundsvall.checklist.integration.db.model.PhaseEntity;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
 import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
 import se.sundsvall.checklist.integration.db.repository.TaskRepository;
+
+import static org.zalando.problem.Status.CONFLICT;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toPhase;
+import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toPhaseEntity;
+import static se.sundsvall.checklist.service.mapper.ChecklistMapper.toPhases;
+import static se.sundsvall.checklist.service.mapper.ChecklistMapper.updatePhaseEntity;
 
 @Service
 public class PhaseService {

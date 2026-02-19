@@ -1,12 +1,5 @@
 package se.sundsvall.checklist.service.util;
 
-import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus.TRUE;
-import static se.sundsvall.checklist.service.util.TaskType.COMMON;
-import static se.sundsvall.checklist.service.util.TaskType.CUSTOM;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -21,6 +14,13 @@ import se.sundsvall.checklist.integration.db.model.FulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.service.model.Employee;
 import se.sundsvall.checklist.service.model.Employment;
+
+import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus.TRUE;
+import static se.sundsvall.checklist.service.util.TaskType.COMMON;
+import static se.sundsvall.checklist.service.util.TaskType.CUSTOM;
 
 public final class ServiceUtils {
 	private static final String NO_MATCHING_EMPLOYEE_CHECKLIST_TASK_FOUND = "Task with id %s was not found in employee checklist with id %s.";

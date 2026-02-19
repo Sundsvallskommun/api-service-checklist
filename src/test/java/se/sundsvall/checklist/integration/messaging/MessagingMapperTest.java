@@ -1,11 +1,11 @@
 package se.sundsvall.checklist.integration.messaging;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Base64;
 import org.junit.jupiter.api.Test;
 import se.sundsvall.checklist.integration.db.model.CorrespondenceEntity;
 import se.sundsvall.checklist.integration.messaging.configuration.MessagingProperties;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class MessagingMapperTest {
 

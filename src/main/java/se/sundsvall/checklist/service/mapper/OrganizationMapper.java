@@ -1,12 +1,5 @@
 package se.sundsvall.checklist.service.mapper;
 
-import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
-import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.NO_COMMUNICATION;
-import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.EMPLOYEE;
-import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.MANAGER;
-import static se.sundsvall.checklist.service.util.ServiceUtils.getMainEmployment;
-
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -24,6 +17,13 @@ import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.service.model.Employee;
 import se.sundsvall.checklist.service.model.Employment;
 import se.sundsvall.checklist.service.model.Manager;
+
+import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
+import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.NO_COMMUNICATION;
+import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.EMPLOYEE;
+import static se.sundsvall.checklist.integration.db.model.enums.EmploymentPosition.MANAGER;
+import static se.sundsvall.checklist.service.util.ServiceUtils.getMainEmployment;
 
 public class OrganizationMapper {
 	private OrganizationMapper() {}

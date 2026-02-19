@@ -1,10 +1,10 @@
 package se.sundsvall.checklist.service.util;
 
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.joining;
-
 import java.util.Collections;
 import java.util.List;
+
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.joining;
 
 public final class StringUtils {
 	private StringUtils() {}

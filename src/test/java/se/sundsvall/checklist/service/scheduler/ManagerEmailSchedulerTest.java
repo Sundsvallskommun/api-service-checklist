@@ -1,16 +1,5 @@
 package se.sundsvall.checklist.service.scheduler;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.ERROR;
-import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.SENT;
-
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +16,17 @@ import se.sundsvall.checklist.integration.db.model.CorrespondenceEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.service.CommunicationService;
 import se.sundsvall.dept44.scheduling.health.Dept44HealthUtility;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.ERROR;
+import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.SENT;
 
 @ExtendWith(MockitoExtension.class)
 class ManagerEmailSchedulerTest {
