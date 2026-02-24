@@ -242,6 +242,7 @@ public final class EmployeeChecklistMapper {
 				.withSortOrder(entity.getSortOrder())
 				.withRoleType(entity.getRoleType())
 				.withQuestionType(entity.getQuestionType())
+				.withOptional(entity.isOptional())
 				.build())
 			.orElse(null);
 	}

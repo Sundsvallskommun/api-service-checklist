@@ -34,6 +34,7 @@
 						"roleType": "NEW_EMPLOYEE",
 						"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
 						"customTask": false,
+						"optional": false,
 						"fulfilmentStatus": "EMPTY"
 					}
 				]
@@ -53,6 +54,7 @@
 						"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
 						"questionType": "COMPLETED_OR_NOT_RELEVANT",
 						"customTask": false,
+						"optional": false,
 						"fulfilmentStatus": "EMPTY"
 					}
 				]
@@ -72,6 +74,7 @@
 						"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
 						"questionType": "YES_OR_NO",
 						"customTask": false,
+						"optional": false,
 						"fulfilmentStatus": "EMPTY"
 					},
 					{
@@ -82,6 +85,7 @@
 						"roleType": "NEW_EMPLOYEE",
 						"questionType": "YES_OR_NO",
 						"customTask": false,
+						"optional": false,
 						"fulfilmentStatus": "EMPTY"
 					},
 					{
@@ -93,6 +97,7 @@
 						"roleType": "NEW_EMPLOYEE",
 						"questionType": "YES_OR_NO_WITH_TEXT",
 						"customTask": false,
+						"optional": false,
 						"responseText": "Response for employee task",
 						"fulfilmentStatus": "TRUE",
 						"updated": "2024-01-02T12:00:00+01:00",
@@ -115,6 +120,7 @@
 						"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
 						"questionType": "YES_OR_NO",
 						"customTask": false,
+						"optional": false,
 						"fulfilmentStatus": "EMPTY"
 					}
 				]
@@ -161,6 +167,7 @@
 						"roleType": "NEW_EMPLOYEE",
 						"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
 						"customTask": false,
+						"optional": false,
 						"fulfilmentStatus": "EMPTY"
 					}
 				]
@@ -180,6 +187,7 @@
 						"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
 						"questionType": "COMPLETED_OR_NOT_RELEVANT",
 						"customTask": false,
+						"optional": false,
 						"fulfilmentStatus": "EMPTY"
 					}
 				]
@@ -211,6 +219,7 @@
 						"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
 						"questionType": "YES_OR_NO",
 						"customTask": false,
+						"optional": false,
 						"fulfilmentStatus": "EMPTY"
 					},
 					{
@@ -221,6 +230,7 @@
 						"roleType": "NEW_EMPLOYEE",
 						"questionType": "YES_OR_NO",
 						"customTask": false,
+						"optional": false,
 						"fulfilmentStatus": "EMPTY"
 					},
 					{
@@ -232,6 +242,7 @@
 						"roleType": "NEW_EMPLOYEE",
 						"questionType": "YES_OR_NO_WITH_TEXT",
 						"customTask": false,
+						"optional": false,
 						"fulfilmentStatus": "EMPTY"
 					}
 				]
@@ -251,6 +262,7 @@
 						"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
 						"questionType": "YES_OR_NO",
 						"customTask": false,
+						"optional": false,
 						"fulfilmentStatus": "EMPTY"
 					}
 				]
@@ -297,6 +309,7 @@
 						"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
 						"questionType": "YES_OR_NO",
 						"customTask": false,
+						"optional": false,
 						"fulfilmentStatus": "EMPTY"
 					}
 				]
@@ -316,6 +329,7 @@
 						"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
 						"questionType": "COMPLETED_OR_NOT_RELEVANT",
 						"customTask": false,
+						"optional": false,
 						"responseText": "Response on employee task performed by manager to new manager",
 						"fulfilmentStatus": "TRUE",
 						"updated": "2024-01-07T12:00:00+01:00",
@@ -329,6 +343,7 @@
 						"roleType": "NEW_MANAGER",
 						"questionType": "YES_OR_NO",
 						"customTask": false,
+						"optional": false,
 						"responseText": "Response on manager task performed by new manager",
 						"fulfilmentStatus": "TRUE",
 						"updated": "2024-01-07T12:00:00+01:00",
@@ -352,6 +367,7 @@
 						"roleType": "MANAGER_FOR_NEW_MANAGER",
 						"questionType": "YES_OR_NO",
 						"customTask": false,
+						"optional": false,
 						"responseText": "Response on manager task performed by manager to new manager",
 						"fulfilmentStatus": "TRUE",
 						"updated": "2024-01-07T12:00:00+01:00",
@@ -365,6 +381,7 @@
 						"roleType": "NEW_EMPLOYEE",
 						"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
 						"customTask": false,
+						"optional": false,
 						"responseText": "Response on employee task performed by new manager",
 						"fulfilmentStatus": "TRUE",
 						"updated": "2024-01-07T12:00:00+01:00",
@@ -388,6 +405,7 @@
 						"roleType": "NEW_EMPLOYEE",
 						"questionType": "YES_OR_NO_WITH_TEXT",
 						"customTask": false,
+						"optional": false,
 						"fulfilmentStatus": "EMPTY"
 					},
 					{
@@ -398,6 +416,7 @@
 						"roleType": "NEW_EMPLOYEE",
 						"questionType": "YES_OR_NO",
 						"customTask": false,
+						"optional": false,
 						"fulfilmentStatus": "EMPTY"
 					},
 					{
@@ -408,6 +427,7 @@
 						"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
 						"questionType": "YES_OR_NO",
 						"customTask": false,
+						"optional": false,
 						"fulfilmentStatus": "EMPTY"
 					}
 				]

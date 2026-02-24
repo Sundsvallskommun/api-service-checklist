@@ -54,3 +54,6 @@ hs_err_pid*
 # Spring
 application-default.*
 
+# Claude
+.claude/
+

@@ -3580,6 +3580,12 @@ components:
           description: Tells if the task is only applies to the current checklist
             or not
           readOnly: true
+        optional:
+          type: boolean
+          description: Indicates if the task is optional or not
+          examples:
+          - "true"
+          readOnly: true
         responseText:
           type: string
           description: The task response text

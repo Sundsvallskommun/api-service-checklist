@@ -36,7 +36,8 @@
 					"text": "Text for task to be performed by new employee",
 					"roleType": "NEW_EMPLOYEE",
 					"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
-					"customTask": false
+					"customTask": false,
+					"optional": false
 				}
 			]
 		},
@@ -55,7 +56,8 @@
 					"text": "Text for second employee task",
 					"roleType": "NEW_EMPLOYEE",
 					"questionType": "YES_OR_NO",
-					"customTask": false
+					"customTask": false,
+					"optional": false
 				},
 				{
 					"fulfilmentStatus": "TRUE",
@@ -69,7 +71,8 @@
 					"roleType": "NEW_EMPLOYEE",
 					"questionType": "YES_OR_NO_WITH_TEXT",
 					"updated": "2024-01-02T12:00:00+01:00",
-					"customTask": false
+					"customTask": false,
+					"optional": false
 				}
 			]
 		}
