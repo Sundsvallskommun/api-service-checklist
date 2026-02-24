@@ -219,6 +219,7 @@ class EmployeeChecklistMapperTest {
 			assertThat(r.getText()).isEqualTo(entity.getText());
 			assertThat(r.getRoleType()).isEqualTo(entity.getRoleType());
 			assertThat(r.getQuestionType()).isEqualTo(entity.getQuestionType());
+			assertThat(r.getOptional()).isEqualTo(entity.isOptional());
 			assertThat(r.isCustomTask()).isFalse();
 		});
 	}

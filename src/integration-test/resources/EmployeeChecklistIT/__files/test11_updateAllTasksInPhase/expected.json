@@ -27,7 +27,8 @@
 			"roleType": "MANAGER_FOR_NEW_EMPLOYEE",
 			"questionType": "YES_OR_NO",
 			"updated": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.?\\d{0,10}(Z|[+-]\\d{2}:\\d{2})?$",
-			"customTask": false
+			"customTask": false,
+			"optional": false
 		}
 	]
 }

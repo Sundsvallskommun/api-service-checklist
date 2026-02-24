@@ -45,6 +45,9 @@ public class EmployeeChecklistTask {
 	@Schema(description = "Tells if the task is only applies to the current checklist or not", accessMode = READ_ONLY)
 	private boolean customTask;
 
+	@Schema(description = "Indicates if the task is optional or not", examples = "true", accessMode = READ_ONLY)
+	private Boolean optional;
+
 	@Schema(description = "The task response text", examples = "Jag har bjudit på fika", accessMode = READ_ONLY)
 	private String responseText;
 

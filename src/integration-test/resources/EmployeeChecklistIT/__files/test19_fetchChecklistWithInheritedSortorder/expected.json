@@ -36,7 +36,8 @@
 					"text": "Text for task to be performed by new employee",
 					"roleType": "NEW_EMPLOYEE",
 					"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
-					"customTask": false
+					"customTask": false,
+					"optional": false
 				},
 				{
 					"fulfilmentStatus": "EMPTY",
@@ -47,7 +48,8 @@
 					"text": "Text for dept 5536 task",
 					"roleType": "NEW_EMPLOYEE",
 					"questionType": "YES_OR_NO",
-					"customTask": false
+					"customTask": false,
+					"optional": false
 				}
 			]
 		}

@@ -47,6 +47,7 @@ class EmployeeChecklistTaskTest {
 		final var heading = "heading";
 		final var headingReference = "headingReference";
 		final var id = "id";
+		final var optional = true;
 		final var updatedBy = "updatedBy";
 		final var questionType = QuestionType.YES_OR_NO_WITH_TEXT;
 		final var responseText = "responseText";
@@ -61,6 +62,7 @@ class EmployeeChecklistTaskTest {
 			.withHeading(heading)
 			.withHeadingReference(headingReference)
 			.withId(id)
+			.withOptional(optional)
 			.withUpdatedBy(updatedBy)
 			.withQuestionType(questionType)
 			.withResponseText(responseText)
@@ -76,6 +78,7 @@ class EmployeeChecklistTaskTest {
 		assertThat(bean.getHeading()).isEqualTo(heading);
 		assertThat(bean.getHeadingReference()).isEqualTo(headingReference);
 		assertThat(bean.getId()).isEqualTo(id);
+		assertThat(bean.getOptional()).isEqualTo(optional);
 		assertThat(bean.getUpdatedBy()).isEqualTo(updatedBy);
 		assertThat(bean.getQuestionType()).isEqualTo(questionType);
 		assertThat(bean.getResponseText()).isEqualTo(responseText);
