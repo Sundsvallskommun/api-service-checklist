@@ -1,18 +1,13 @@
 package se.sundsvall.checklist.service;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.text.SimpleDateFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
-import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zalando.problem.Problem;
-import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.integration.db.model.PhaseEntity;
@@ -21,13 +16,17 @@ import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
 import se.sundsvall.checklist.integration.db.repository.PhaseRepository;
 import se.sundsvall.checklist.service.mapper.OrganizationMapper;
+import se.sundsvall.dept44.problem.Problem;
+import se.sundsvall.dept44.problem.ThrowableProblem;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import static java.util.Comparator.comparing;
 import static java.util.Optional.ofNullable;
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.zalando.fauxpas.FauxPas.throwingFunction;
-import static org.zalando.problem.Status.CONFLICT;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
-import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.ACTIVE;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATED;
 
@@ -56,10 +55,9 @@ public class PortingService {
 		this.organizationRepository = repository;
 		this.checklistRepository = checklistRepository;
 		this.phaseRepository = phaseRepository;
-		this.objectMapper = new ObjectMapper()
-			.findAndRegisterModules()
-			.setDateFormat(new SimpleDateFormat(DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.getPattern()))
-			.setSerializationInclusion(Include.NON_NULL);
+		this.objectMapper = JsonMapper.builder()
+			.changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(JsonInclude.Include.NON_NULL))
+			.build();
 	}
 
 	/**

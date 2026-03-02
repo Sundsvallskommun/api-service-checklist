@@ -5,25 +5,27 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.zalando.problem.violations.ConstraintViolationProblem;
-import org.zalando.problem.violations.Violation;
 import se.sundsvall.checklist.Application;
 import se.sundsvall.checklist.TestObjectFactory;
 import se.sundsvall.checklist.api.model.ChecklistCreateRequest;
 import se.sundsvall.checklist.api.model.ChecklistUpdateRequest;
 import se.sundsvall.checklist.service.ChecklistService;
+import se.sundsvall.dept44.problem.violations.ConstraintViolationProblem;
+import se.sundsvall.dept44.problem.violations.Violation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.zalando.problem.Status.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static se.sundsvall.checklist.TestObjectFactory.createChecklistUpdateRequest;
 
+@AutoConfigureWebTestClient
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
 class ChecklistResourceFailureTest {
@@ -50,7 +52,7 @@ class ChecklistResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+			assertThat(r.getViolations()).extracting(Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("fetchChecklistById.municipalityId", "not a valid municipality ID"),
 					tuple("fetchChecklistById.checklistId", "not a valid UUID"));
@@ -75,7 +77,7 @@ class ChecklistResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+			assertThat(r.getViolations()).extracting(Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(tuple("createChecklist.municipalityId", "not a valid municipality ID"));
 		});
 		verifyNoInteractions(mockChecklistService);
@@ -102,7 +104,7 @@ class ChecklistResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+			assertThat(r.getViolations()).extracting(Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(tuple("name", "must not be blank"));
 		});
 		verifyNoInteractions(mockChecklistService);
@@ -128,7 +130,7 @@ class ChecklistResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+			assertThat(r.getViolations()).extracting(Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(tuple("createdBy", "must not be blank"));
 		});
 		verifyNoInteractions(mockChecklistService);
@@ -152,7 +154,7 @@ class ChecklistResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+			assertThat(r.getViolations()).extracting(Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(tuple("updatedBy", "must not be blank"));
 		});
 
@@ -172,7 +174,7 @@ class ChecklistResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+			assertThat(r.getViolations()).extracting(Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("createNewVersion.municipalityId", "not a valid municipality ID"),
 					tuple("createNewVersion.checklistId", "not a valid UUID"));
@@ -194,7 +196,7 @@ class ChecklistResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+			assertThat(r.getViolations()).extracting(Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("activateChecklist.municipalityId", "not a valid municipality ID"),
 					tuple("activateChecklist.checklistId", "not a valid UUID"));
@@ -218,7 +220,7 @@ class ChecklistResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+			assertThat(r.getViolations()).extracting(Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("updateChecklist.municipalityId", "not a valid municipality ID"),
 					tuple("updateChecklist.checklistId", "not a valid UUID"));
@@ -240,7 +242,7 @@ class ChecklistResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+			assertThat(r.getViolations()).extracting(Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("deleteChecklist.municipalityId", "not a valid municipality ID"),
 					tuple("deleteChecklist.checklistId", "not a valid UUID"));

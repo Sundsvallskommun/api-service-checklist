@@ -1,12 +1,14 @@
 package se.sundsvall.checklist.api.validation.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.sundsvall.checklist.api.validation.ValidJson;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.endsWithAny;
@@ -16,7 +18,9 @@ import static org.apache.commons.lang3.StringUtils.startsWithAny;
 public class ValidJsonConstraintValidator implements ConstraintValidator<ValidJson, String> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ValidJsonConstraintValidator.class);
-	private static final ObjectMapper MAPPER = new ObjectMapper();
+	private static final ObjectMapper MAPPER = JsonMapper.builder()
+		.enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+		.build();
 
 	@Override
 	public boolean isValid(final String request, final ConstraintValidatorContext context) {

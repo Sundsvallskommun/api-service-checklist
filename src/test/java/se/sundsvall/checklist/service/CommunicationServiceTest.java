@@ -12,8 +12,6 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.zalando.problem.Status;
-import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.checklist.integration.db.model.CorrespondenceEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
@@ -21,6 +19,7 @@ import se.sundsvall.checklist.integration.db.model.ManagerEntity;
 import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus;
 import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistRepository;
+import se.sundsvall.dept44.problem.ThrowableProblem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -30,6 +29,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.EMAIL;
 import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.NO_COMMUNICATION;
 import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.ERROR;
@@ -85,7 +85,7 @@ class CommunicationServiceTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> service.fetchCorrespondence(MUNICIPALITY_ID, id));
 
 		// Assert and verify
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s not found within municipality %s.".formatted(id, MUNICIPALITY_ID));
 		verify(employeeChecklistRepositoryMock).findByIdAndChecklistsMunicipalityId(id, MUNICIPALITY_ID);
 	}
@@ -120,7 +120,7 @@ class CommunicationServiceTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> service.sendEmail(MUNICIPALITY_ID, id));
 
 		// Assert and verify
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s not found within municipality %s.".formatted(id, MUNICIPALITY_ID));
 		verify(employeeChecklistRepositoryMock).findByIdAndChecklistsMunicipalityId(id, MUNICIPALITY_ID);
 

@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
-import org.zalando.problem.Status;
-import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
@@ -17,9 +15,11 @@ import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.service.model.Employee;
 import se.sundsvall.checklist.service.model.Employment;
+import se.sundsvall.dept44.problem.ThrowableProblem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 class ServiceUtilsTest {
 
@@ -63,7 +63,7 @@ class ServiceUtilsTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> ServiceUtils.calculateTaskType(employeeChecklist, taskId));
 
 		// Assert
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Task with id %s was not found in employee checklist with id %s.".formatted(taskId, employeeChecklist.getId()));
 	}
 
@@ -87,7 +87,7 @@ class ServiceUtilsTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> ServiceUtils.getMainEmployment(employee));
 
 		// Assert
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: No main employment found for employee with loginname %s.".formatted(username));
 	}
 
@@ -115,7 +115,7 @@ class ServiceUtilsTest {
 
 	@ParameterizedTest
 	@EnumSource(value = FulfilmentStatus.class, mode = Mode.EXCLUDE, names = "TRUE")
-	void allTasksAreNotCompletedWhenFulfilmentsHaveFalseOrEmptyValue(FulfilmentStatus fulfilmentStatus) {
+	void allTasksAreNotCompletedWhenFulfilmentsHaveFalseOrEmptyValue(final FulfilmentStatus fulfilmentStatus) {
 		final var task1 = TaskEntity.builder().withId("task_1").build();
 		final var task2 = TaskEntity.builder().withId("task_2").build();
 		final var customTask1 = CustomTaskEntity.builder().withId("task_3").build();
@@ -136,7 +136,7 @@ class ServiceUtilsTest {
 
 	@ParameterizedTest
 	@EnumSource(value = FulfilmentStatus.class, mode = Mode.EXCLUDE, names = "TRUE")
-	void allTasksAreNotCompletedWhenCustomFulfilmentsHaveFalseOrEmptyValue(FulfilmentStatus fulfilmentStatus) {
+	void allTasksAreNotCompletedWhenCustomFulfilmentsHaveFalseOrEmptyValue(final FulfilmentStatus fulfilmentStatus) {
 		final var task1 = TaskEntity.builder().withId("task_1").build();
 		final var customTask1 = CustomTaskEntity.builder().withId("task_3").build();
 		final var customTask2 = CustomTaskEntity.builder().withId("task_4").build();

@@ -1,7 +1,5 @@
 package se.sundsvall.checklist.service.util;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +14,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.checklist.api.model.EmployeeChecklist;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhase;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
@@ -29,10 +26,14 @@ import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.integration.db.model.enums.LifeCycle;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 import se.sundsvall.checklist.integration.db.model.enums.RoleType;
+import se.sundsvall.dept44.problem.ThrowableProblem;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -261,8 +262,7 @@ class ChecklistUtilsTest {
 	void testCloneThrowsException() throws Exception {
 		final var entity = createChecklistEntity();
 
-		when(objectMapperMock.writeValueAsString(any())).thenThrow(new JsonMappingException(() -> {
-		}, "Some exception"));
+		when(objectMapperMock.writeValueAsString(any())).thenThrow(mock(JacksonException.class));
 
 		final var e = assertThrows(ThrowableProblem.class, () -> checklistUtils.clone(entity));
 

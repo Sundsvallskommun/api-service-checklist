@@ -10,25 +10,27 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.zalando.problem.violations.ConstraintViolationProblem;
-import org.zalando.problem.violations.Violation;
 import se.sundsvall.checklist.Application;
 import se.sundsvall.checklist.api.model.PhaseCreateRequest;
 import se.sundsvall.checklist.api.model.PhaseUpdateRequest;
 import se.sundsvall.checklist.service.PhaseService;
+import se.sundsvall.dept44.problem.violations.ConstraintViolationProblem;
+import se.sundsvall.dept44.problem.violations.Violation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.zalando.problem.Status.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static se.sundsvall.checklist.TestObjectFactory.createPhaseCreateRequest;
 import static se.sundsvall.checklist.TestObjectFactory.createPhaseUpdateRequest;
 
+@AutoConfigureWebTestClient
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
 class PhaseResourceFailureTest {
@@ -73,7 +75,7 @@ class PhaseResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+			assertThat(r.getViolations()).extracting(Violation::field, Violation::message)
 				.containsExactly(
 					tuple("fetchChecklistPhases.municipalityId", "not a valid municipality ID"));
 		});
@@ -96,7 +98,7 @@ class PhaseResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+			assertThat(r.getViolations()).extracting(Violation::field, Violation::message)
 				.containsExactly(
 					tuple("createChecklistPhase.municipalityId", "not a valid municipality ID"));
 		});
@@ -125,7 +127,7 @@ class PhaseResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+			assertThat(r.getViolations()).extracting(Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(tuple("timeToComplete", "text is not in ISO-8601 period format"));
 		});
 	}
@@ -145,7 +147,7 @@ class PhaseResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+			assertThat(r.getViolations()).extracting(Violation::field, Violation::message)
 				.containsExactly(tuple(faultyArgument, expectedMessage));
 		});
 	}
@@ -166,7 +168,7 @@ class PhaseResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+			assertThat(r.getViolations()).extracting(Violation::field, Violation::message)
 				.containsExactly(tuple(faultyArgument, expectedMessage));
 		});
 	}
@@ -189,7 +191,7 @@ class PhaseResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+			assertThat(r.getViolations()).extracting(Violation::field, Violation::message)
 				.containsExactly(tuple(faultyArgument, expectedMessage));
 		});
 	}
@@ -210,7 +212,7 @@ class PhaseResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+			assertThat(r.getViolations()).extracting(Violation::field, Violation::message)
 				.containsExactly(tuple(badArgument, expectedMessage));
 		});
 	}

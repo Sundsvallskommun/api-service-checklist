@@ -1,57 +1,57 @@
 openapi: 3.1.0
 info:
   title: api-checklist
-  contact: { }
+  contact: {}
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
   version: "1.3"
 servers:
-  - url: http://localhost:58144
-    description: Generated server url
+- url: http://localhost:52174
+  description: Generated server url
 tags:
-  - name: Phase resources
-    description: Resources for managing the phases that will be used by all checklists
-  - name: Checklist resources
-    description: Resources for managing checklists
-  - name: Porting resources
-    description: Resources for managing import and export of checklists
-  - name: Communication resources
-    description: Resources for managing communication
-  - name: Task resources
-    description: Resources for managing tasks in a phase
-  - name: Organization resources
-    description: Resources for managing organizational units
-  - name: Custom sort order resources
-    description: Resources for managing custom sort order of checklist phases and tasks
-  - name: Delegation resources
-    description: Resources for managing delegations of employee checklists
-  - name: Employee checklist resources
-    description: Resources for managing employee checklists
+- name: Phase resources
+  description: Resources for managing the phases that will be used by all checklists
+- name: Checklist resources
+  description: Resources for managing checklists
+- name: Porting resources
+  description: Resources for managing import and export of checklists
+- name: Communication resources
+  description: Resources for managing communication
+- name: Task resources
+  description: Resources for managing tasks in a phase
+- name: Organization resources
+  description: Resources for managing organizational units
+- name: Custom sort order resources
+  description: Resources for managing custom sort order of checklist phases and tasks
+- name: Delegation resources
+  description: Resources for managing delegations of employee checklists
+- name: Employee checklist resources
+  description: Resources for managing employee checklists
 paths:
   /{municipalityId}/sortorder/{organizationNumber}:
     put:
       tags:
-        - Custom sort order resources
+      - Custom sort order resources
       summary: Creates or replaces a custom sort order of checklist components for
         the provided organisation number
       operationId: saveSortorder
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: organizationNumber
-          in: path
-          description: Organization number to the organization owning the sort order
-          required: true
-          schema:
-            type: integer
-            format: int32
-          example: 587
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: organizationNumber
+        in: path
+        description: Organization number to the organization owning the sort order
+        required: true
+        schema:
+          type: integer
+          format: int32
+        example: 587
       requestBody:
         content:
           application/json:
@@ -67,8 +67,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
           content:
@@ -78,25 +78,25 @@ paths:
   /{municipalityId}/employee-checklists/{employeeChecklistId}/mentor:
     put:
       tags:
-        - Employee checklist resources
+      - Employee checklist resources
       summary: Set the mentor
       description: Set the mentor on a specific employee checklist
       operationId: setMentor
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: employeeChecklistId
-          in: path
-          description: Employee checklist id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: employeeChecklistId
+        in: path
+        description: Employee checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       requestBody:
         content:
           application/json:
@@ -112,8 +112,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -128,25 +128,25 @@ paths:
                 $ref: "#/components/schemas/Problem"
     delete:
       tags:
-        - Employee checklist resources
+      - Employee checklist resources
       summary: Delete the mentor
       description: Delete the mentor on a specific employee checklist
       operationId: deleteMentor
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: employeeChecklistId
-          in: path
-          description: Employee checklist id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: employeeChecklistId
+        in: path
+        description: Employee checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       responses:
         "204":
           description: No Content
@@ -156,8 +156,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -173,17 +173,17 @@ paths:
   /{municipalityId}/phases:
     get:
       tags:
-        - Phase resources
+      - Phase resources
       summary: Fetch all phases
       operationId: fetchChecklistPhases
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
       responses:
         "200":
           description: Successful Operation
@@ -199,8 +199,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -215,17 +215,17 @@ paths:
                 $ref: "#/components/schemas/Problem"
     post:
       tags:
-        - Phase resources
+      - Phase resources
       summary: Create a new phase
       operationId: createChecklistPhase
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
       requestBody:
         content:
           application/json:
@@ -246,8 +246,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -263,36 +263,36 @@ paths:
   /{municipalityId}/organizations:
     get:
       tags:
-        - Organization resources
+      - Organization resources
       summary: "Fetch all organizations, optionally filtered by organization number(s)"
       description: Fetch all organizations
       operationId: fetchOrganizations
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: organizationFilter
-          in: query
-          description: Filter response to only include organizations matching provided
-            organization numbers
-          required: false
-          schema:
-            type: array
-            items:
-              type: integer
-              format: int32
-        - name: applySortFor
-          in: query
-          description: Optional parameter for using custom sort based on provided organization
-            number for response
-          required: false
-          schema:
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: organizationFilter
+        in: query
+        description: Filter response to only include organizations matching provided
+          organization numbers
+        required: false
+        schema:
+          type: array
+          items:
             type: integer
             format: int32
+      - name: applySortFor
+        in: query
+        description: Optional parameter for using custom sort based on provided organization
+          number for response
+        required: false
+        schema:
+          type: integer
+          format: int32
       responses:
         "200":
           description: Successful Operation
@@ -308,8 +308,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
           content:
@@ -318,18 +318,18 @@ paths:
                 $ref: "#/components/schemas/Problem"
     post:
       tags:
-        - Organization resources
+      - Organization resources
       summary: Create an organization
       description: Create a new organizational unit
       operationId: createOrganization
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
       requestBody:
         content:
           application/json:
@@ -356,8 +356,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
           content:
@@ -367,7 +367,7 @@ paths:
   /{municipalityId}/import/replace/{organizationNumber}/{organizationName}:
     post:
       tags:
-        - Porting resources
+      - Porting resources
       summary: "Import checklist structure for a organization, replacing currently\
         \ CREATED or ACTIVE version"
       description: |
@@ -379,28 +379,28 @@ paths:
         - If an existing version with lifecycle status <b>ACTIVE</b> is present and no version with status <b>CREATED</b> is present, the active version will be replaced with the provided structure. <b>Observe that all employee checklists (ongoing and completed) using the currently active version will be affected (resetted). Use with uttermost care!</b>.
       operationId: importAndOverwriteExistingChecklist
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: organizationNumber
-          in: path
-          description: Organization number
-          required: true
-          schema:
-            type: integer
-            format: int32
-          example: 53
-        - name: organizationName
-          in: path
-          description: Organization name
-          required: true
-          schema:
-            type: string
-          example: Organization ABC
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: organizationNumber
+        in: path
+        description: Organization number
+        required: true
+        schema:
+          type: integer
+          format: int32
+        example: 53
+      - name: organizationName
+        in: path
+        description: Organization name
+        required: true
+        schema:
+          type: string
+        example: Organization ABC
       requestBody:
         content:
           application/json:
@@ -422,8 +422,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -439,7 +439,7 @@ paths:
   /{municipalityId}/import/add/{organizationNumber}/{organizationName}:
     post:
       tags:
-        - Porting resources
+      - Porting resources
       summary: Import checklist structure for a organization as a new version with
         lifecycle status CREATED
       description: |
@@ -451,28 +451,28 @@ paths:
         - If an existing version with lifecycle status <b>ACTIVE</b> is present, a new version based on provided structure will be created with lifecycle status <b>CREATED</b> (to activate, use intended endpoint). The currently active version will remain intact and employees with active or completed checklists will not be affected.
       operationId: importChecklistAsNewVersion
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: organizationNumber
-          in: path
-          description: Organization number
-          required: true
-          schema:
-            type: integer
-            format: int32
-          example: 53
-        - name: organizationName
-          in: path
-          description: Organization name
-          required: true
-          schema:
-            type: string
-          example: Organization ABC
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: organizationNumber
+        in: path
+        description: Organization number
+        required: true
+        schema:
+          type: integer
+          format: int32
+        example: 53
+      - name: organizationName
+        in: path
+        description: Organization name
+        required: true
+        schema:
+          type: string
+        example: Organization ABC
       requestBody:
         content:
           application/json:
@@ -494,8 +494,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -511,32 +511,32 @@ paths:
   /{municipalityId}/employee-checklists/{employeeChecklistId}/phases/{phaseId}/customtasks:
     post:
       tags:
-        - Employee checklist resources
+      - Employee checklist resources
       summary: Create a custom task
       description: Create a custom task connected to a specific employee checklist
       operationId: createCustomTask
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: employeeChecklistId
-          in: path
-          description: Employee checklist id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
-        - name: phaseId
-          in: path
-          description: Phase id
-          required: true
-          schema:
-            type: string
-          example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: employeeChecklistId
+        in: path
+        description: Employee checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: phaseId
+        in: path
+        description: Phase id
+        required: true
+        schema:
+          type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       requestBody:
         content:
           application/json:
@@ -556,8 +556,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -573,26 +573,26 @@ paths:
   /{municipalityId}/employee-checklists/{employeeChecklistId}/email:
     post:
       tags:
-        - Communication resources
+      - Communication resources
       summary: Send email notification
       description: Send an email notification to the manager for the employee checklist
         that matches provided id
       operationId: sendEmail
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: employeeChecklistId
-          in: path
-          description: Employee checklist id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: employeeChecklistId
+        in: path
+        description: Employee checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       responses:
         "201":
           description: Successful Operation
@@ -602,8 +602,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -619,34 +619,34 @@ paths:
   /{municipalityId}/employee-checklists/{employeeChecklistId}/delegate-to/{email}:
     post:
       tags:
-        - Delegation resources
+      - Delegation resources
       summary: Delegate an employee checklist
       description: Delegate an employee checklist to a user by email and checklist
         id
       operationId: delegateEmployeeChecklist
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: employeeChecklistId
-          in: path
-          description: Employee checklist id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
-        - name: email
-          in: path
-          description: Email for person to delegate to
-          required: true
-          schema:
-            type: string
-            format: email
-          example: delegate.person@noreply.com
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: employeeChecklistId
+        in: path
+        description: Employee checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: email
+        in: path
+        description: Email for person to delegate to
+        required: true
+        schema:
+          type: string
+          format: email
+        example: delegate.person@noreply.com
       responses:
         "201":
           description: Successful Operation
@@ -668,8 +668,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
           content:
@@ -679,26 +679,26 @@ paths:
   /{municipalityId}/employee-checklists/update-manager:
     post:
       tags:
-        - Employee checklist resources
+      - Employee checklist resources
       summary: Update manager information
       description: Triggers update of ongoing checklists with outdated manager information
       operationId: updateManagerInformation
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: username
-          in: query
-          description: "Optional username to update. If left out, all active checklists\
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: username
+        in: query
+        description: "Optional username to update. If left out, all active checklists\
           \ will be updated"
-          required: false
-          schema:
-            type: string
-          example: usr123
+        required: false
+        schema:
+          type: string
+        example: usr123
       responses:
         "200":
           description: Successful Operation
@@ -712,8 +712,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -729,18 +729,18 @@ paths:
   /{municipalityId}/employee-checklists/initialize:
     post:
       tags:
-        - Employee checklist resources
+      - Employee checklist resources
       summary: Inititalize checklists for new employees
       description: Trigger creation of checklists for all known new employees
       operationId: initiateEmployeeChecklists
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
       responses:
         "200":
           description: Successful Operation
@@ -754,8 +754,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -771,26 +771,26 @@ paths:
   /{municipalityId}/employee-checklists/initialize/{personId}:
     post:
       tags:
-        - Employee checklist resources
+      - Employee checklist resources
       summary: Inititalize checklists for a specific employee
       description: Trigger creation of checklist for employee matching sent in person
         id
       operationId: initiateSpecificEmployeeChecklist
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: personId
-          in: path
-          description: Person id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: personId
+        in: path
+        description: Person id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       responses:
         "200":
           description: Successful Operation
@@ -804,8 +804,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -821,17 +821,17 @@ paths:
   /{municipalityId}/checklists:
     get:
       tags:
-        - Checklist resources
+      - Checklist resources
       summary: Get all checklists
       operationId: fetchAllChecklists
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
       responses:
         "200":
           description: Successful Operation
@@ -847,8 +847,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
           content:
@@ -857,17 +857,17 @@ paths:
                 $ref: "#/components/schemas/Problem"
     post:
       tags:
-        - Checklist resources
+      - Checklist resources
       summary: Create a new checklist
       operationId: createChecklist
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
       requestBody:
         content:
           application/json:
@@ -888,8 +888,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
           content:
@@ -899,30 +899,30 @@ paths:
   /{municipalityId}/checklists/{checklistId}/version:
     post:
       tags:
-        - Checklist resources
+      - Checklist resources
       summary: Create new version of checklist
       operationId: createNewVersion
       parameters:
-        - name: x-issuer
-          in: header
-          description: User id for the user creating the new version
-          required: false
-          schema:
-            type: string
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: checklistId
-          in: path
-          description: Checklist id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: x-issuer
+        in: header
+        description: User id for the user creating the new version
+        required: false
+        schema:
+          type: string
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: checklistId
+        in: path
+        description: Checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       responses:
         "201":
           description: Successful Operation
@@ -937,8 +937,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
           content:
@@ -948,31 +948,31 @@ paths:
   /{municipalityId}/checklists/{checklistId}/phases/{phaseId}/tasks:
     get:
       tags:
-        - Task resources
+      - Task resources
       summary: Fetch all tasks in a checklist phase
       operationId: fetchChecklistPhaseTasks
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: checklistId
-          in: path
-          description: Checklist id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
-        - name: phaseId
-          in: path
-          description: Phase id
-          required: true
-          schema:
-            type: string
-          example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: checklistId
+        in: path
+        description: Checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: phaseId
+        in: path
+        description: Phase id
+        required: true
+        schema:
+          type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       responses:
         "200":
           description: Successful Operation
@@ -988,8 +988,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -1004,31 +1004,31 @@ paths:
                 $ref: "#/components/schemas/Problem"
     post:
       tags:
-        - Task resources
+      - Task resources
       summary: Create task in checklist phase
       operationId: createChecklistPhaseTask
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: checklistId
-          in: path
-          description: Checklist id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
-        - name: phaseId
-          in: path
-          description: Phase id
-          required: true
-          schema:
-            type: string
-          example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: checklistId
+        in: path
+        description: Checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: phaseId
+        in: path
+        description: Phase id
+        required: true
+        schema:
+          type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       requestBody:
         content:
           application/json:
@@ -1049,8 +1049,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -1066,24 +1066,24 @@ paths:
   /{municipalityId}/phases/{phaseId}:
     get:
       tags:
-        - Phase resources
+      - Phase resources
       summary: Fetch single phase
       operationId: fetchChecklistPhase
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: phaseId
-          in: path
-          description: Phase id
-          required: true
-          schema:
-            type: string
-          example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: phaseId
+        in: path
+        description: Phase id
+        required: true
+        schema:
+          type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       responses:
         "200":
           description: Successful Operation
@@ -1097,8 +1097,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -1113,24 +1113,24 @@ paths:
                 $ref: "#/components/schemas/Problem"
     delete:
       tags:
-        - Phase resources
+      - Phase resources
       summary: Delete an existing phase
       operationId: deleteChecklistPhase
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: phaseId
-          in: path
-          description: Phase id
-          required: true
-          schema:
-            type: string
-          example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: phaseId
+        in: path
+        description: Phase id
+        required: true
+        schema:
+          type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       responses:
         "204":
           description: Successful Operation
@@ -1140,8 +1140,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -1156,24 +1156,24 @@ paths:
                 $ref: "#/components/schemas/Problem"
     patch:
       tags:
-        - Phase resources
+      - Phase resources
       summary: Update an existing phase
       operationId: updateChecklistPhase
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: phaseId
-          in: path
-          description: Phase id
-          required: true
-          schema:
-            type: string
-          example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: phaseId
+        in: path
+        description: Phase id
+        required: true
+        schema:
+          type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       requestBody:
         content:
           application/json:
@@ -1193,8 +1193,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -1210,33 +1210,33 @@ paths:
   /{municipalityId}/organizations/{organizationId}:
     get:
       tags:
-        - Organization resources
+      - Organization resources
       summary: Fetch organization by id
       description: Fetch organization that matches provided id
       operationId: fetchOrganizationById
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: organizationId
-          in: path
-          description: Organization id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
-        - name: applySortFor
-          in: query
-          description: Optional parameter for using custom sort based on provided organization
-            number for response
-          required: false
-          schema:
-            type: integer
-            format: int32
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: organizationId
+        in: path
+        description: Organization id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: applySortFor
+        in: query
+        description: Optional parameter for using custom sort based on provided organization
+          number for response
+        required: false
+        schema:
+          type: integer
+          format: int32
       responses:
         "200":
           description: Successful Operation
@@ -1250,8 +1250,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
           content:
@@ -1260,25 +1260,25 @@ paths:
                 $ref: "#/components/schemas/Problem"
     delete:
       tags:
-        - Organization resources
+      - Organization resources
       summary: Delete organization
       description: Delete an existing organizational unit
       operationId: deleteOrganization
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: organizationId
-          in: path
-          description: Organization id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: organizationId
+        in: path
+        description: Organization id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       responses:
         "204":
           description: Successful Operation
@@ -1300,8 +1300,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
           content:
@@ -1310,25 +1310,25 @@ paths:
                 $ref: "#/components/schemas/Problem"
     patch:
       tags:
-        - Organization resources
+      - Organization resources
       summary: Update an organization
       description: Update an existing organizational unit
       operationId: updateOrganization
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: organizationId
-          in: path
-          description: Organization id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: organizationId
+        in: path
+        description: Organization id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       requestBody:
         content:
           application/json:
@@ -1354,8 +1354,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
           content:
@@ -1365,31 +1365,31 @@ paths:
   /{municipalityId}/employee-checklists/{employeeChecklistId}/tasks/{taskId}:
     patch:
       tags:
-        - Employee checklist resources
+      - Employee checklist resources
       summary: Update fulfilment of a task
       operationId: updateTaskFulfilment
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: employeeChecklistId
-          in: path
-          description: Employee checklist id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
-        - name: taskId
-          in: path
-          description: Task id
-          required: true
-          schema:
-            type: string
-          example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: employeeChecklistId
+        in: path
+        description: Employee checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: taskId
+        in: path
+        description: Task id
+        required: true
+        schema:
+          type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       requestBody:
         content:
           application/json:
@@ -1409,8 +1409,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -1426,32 +1426,32 @@ paths:
   /{municipalityId}/employee-checklists/{employeeChecklistId}/phases/{phaseId}:
     patch:
       tags:
-        - Employee checklist resources
+      - Employee checklist resources
       summary: Update of all tasks in a phase
       description: Bulk update of sent in attributes for all tasks in phase
       operationId: updateAllTasksInPhase
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: employeeChecklistId
-          in: path
-          description: Employee checklist id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
-        - name: phaseId
-          in: path
-          description: Phase id
-          required: true
-          schema:
-            type: string
-          example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: employeeChecklistId
+        in: path
+        description: Employee checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: phaseId
+        in: path
+        description: Phase id
+        required: true
+        schema:
+          type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       requestBody:
         content:
           application/json:
@@ -1471,8 +1471,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -1488,32 +1488,32 @@ paths:
   /{municipalityId}/employee-checklists/{employeeChecklistId}/customtasks/{taskId}:
     get:
       tags:
-        - Employee checklist resources
+      - Employee checklist resources
       summary: Read a custom task
       description: Read a custom task connected to a specific employee checklist
       operationId: readCustomTask
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: employeeChecklistId
-          in: path
-          description: Employee checklist id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
-        - name: taskId
-          in: path
-          description: Task id
-          required: true
-          schema:
-            type: string
-          example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: employeeChecklistId
+        in: path
+        description: Employee checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: taskId
+        in: path
+        description: Task id
+        required: true
+        schema:
+          type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       responses:
         "200":
           description: Successful Operation
@@ -1527,8 +1527,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -1543,32 +1543,32 @@ paths:
                 $ref: "#/components/schemas/Problem"
     delete:
       tags:
-        - Employee checklist resources
+      - Employee checklist resources
       summary: Delete a custom task
       description: Delete a custom task from an employee checklist
       operationId: deleteCustomTask
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: employeeChecklistId
-          in: path
-          description: Employee checklist id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
-        - name: taskId
-          in: path
-          description: Task id
-          required: true
-          schema:
-            type: string
-          example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: employeeChecklistId
+        in: path
+        description: Employee checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: taskId
+        in: path
+        description: Task id
+        required: true
+        schema:
+          type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       responses:
         "204":
           description: Successful Operation
@@ -1578,8 +1578,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -1594,32 +1594,32 @@ paths:
                 $ref: "#/components/schemas/Problem"
     patch:
       tags:
-        - Employee checklist resources
+      - Employee checklist resources
       summary: Update a custom task
       description: Update a custom task connected to a specific employee checklist
       operationId: updateCustomTask
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: employeeChecklistId
-          in: path
-          description: Employee checklist id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
-        - name: taskId
-          in: path
-          description: Task id
-          required: true
-          schema:
-            type: string
-          example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: employeeChecklistId
+        in: path
+        description: Employee checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: taskId
+        in: path
+        description: Task id
+        required: true
+        schema:
+          type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
       requestBody:
         content:
           application/json:
@@ -1639,8 +1639,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -1656,24 +1656,24 @@ paths:
   /{municipalityId}/checklists/{checklistId}:
     get:
       tags:
-        - Checklist resources
+      - Checklist resources
       summary: Fetch checklist by id
       operationId: fetchChecklistById
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: checklistId
-          in: path
-          description: Checklist id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: checklistId
+        in: path
+        description: Checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       responses:
         "200":
           description: Successful Operation
@@ -1693,8 +1693,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
           content:
@@ -1703,30 +1703,30 @@ paths:
                 $ref: "#/components/schemas/Problem"
     delete:
       tags:
-        - Checklist resources
+      - Checklist resources
       summary: Delete a checklist
       operationId: deleteChecklist
       parameters:
-        - name: x-issuer
-          in: header
-          description: User id for the user responsible for the delete request
-          required: false
-          schema:
-            type: string
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: checklistId
-          in: path
-          description: Checklist id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: x-issuer
+        in: header
+        description: User id for the user responsible for the delete request
+        required: false
+        schema:
+          type: string
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: checklistId
+        in: path
+        description: Checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       responses:
         "204":
           description: No Content
@@ -1742,8 +1742,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
           content:
@@ -1752,24 +1752,24 @@ paths:
                 $ref: "#/components/schemas/Problem"
     patch:
       tags:
-        - Checklist resources
+      - Checklist resources
       summary: Update a checklist
       operationId: updateChecklist
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: checklistId
-          in: path
-          description: Checklist id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: checklistId
+        in: path
+        description: Checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       requestBody:
         content:
           application/json:
@@ -1795,8 +1795,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
           content:
@@ -1806,38 +1806,38 @@ paths:
   /{municipalityId}/checklists/{checklistId}/phases/{phaseId}/tasks/{taskId}:
     get:
       tags:
-        - Task resources
+      - Task resources
       summary: Fetch task in a checklist phase
       operationId: fetchChecklistPhaseTask
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: checklistId
-          in: path
-          description: Checklist id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
-        - name: phaseId
-          in: path
-          description: Phase id
-          required: true
-          schema:
-            type: string
-          example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
-        - name: taskId
-          in: path
-          description: Task id
-          required: true
-          schema:
-            type: string
-          example: 55904052-0db0-4622-850c-3273ee60def4
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: checklistId
+        in: path
+        description: Checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: phaseId
+        in: path
+        description: Phase id
+        required: true
+        schema:
+          type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
+      - name: taskId
+        in: path
+        description: Task id
+        required: true
+        schema:
+          type: string
+        example: 55904052-0db0-4622-850c-3273ee60def4
       responses:
         "200":
           description: Successful Operation
@@ -1851,8 +1851,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -1867,44 +1867,44 @@ paths:
                 $ref: "#/components/schemas/Problem"
     delete:
       tags:
-        - Task resources
+      - Task resources
       summary: Delete task in checklist phase
       operationId: deleteChecklistPhaseTask
       parameters:
-        - name: x-issuer
-          in: header
-          description: User id for the user responsible for the delete request
-          required: false
-          schema:
-            type: string
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: checklistId
-          in: path
-          description: Checklist id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
-        - name: phaseId
-          in: path
-          description: Phase id
-          required: true
-          schema:
-            type: string
-          example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
-        - name: taskId
-          in: path
-          description: Task id
-          required: true
-          schema:
-            type: string
-          example: 55904052-0db0-4622-850c-3273ee60def4
+      - name: x-issuer
+        in: header
+        description: User id for the user responsible for the delete request
+        required: false
+        schema:
+          type: string
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: checklistId
+        in: path
+        description: Checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: phaseId
+        in: path
+        description: Phase id
+        required: true
+        schema:
+          type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
+      - name: taskId
+        in: path
+        description: Task id
+        required: true
+        schema:
+          type: string
+        example: 55904052-0db0-4622-850c-3273ee60def4
       responses:
         "204":
           description: No Content
@@ -1914,8 +1914,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -1930,38 +1930,38 @@ paths:
                 $ref: "#/components/schemas/Problem"
     patch:
       tags:
-        - Task resources
+      - Task resources
       summary: Update task in checklist phase
       operationId: updateChecklistPhaseTask
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: checklistId
-          in: path
-          description: Checklist id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
-        - name: phaseId
-          in: path
-          description: Phase id
-          required: true
-          schema:
-            type: string
-          example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
-        - name: taskId
-          in: path
-          description: Task id
-          required: true
-          schema:
-            type: string
-          example: 55904052-0db0-4622-850c-3273ee60def4
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: checklistId
+        in: path
+        description: Checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: phaseId
+        in: path
+        description: Phase id
+        required: true
+        schema:
+          type: string
+        example: 9ee6a504-555f-4db7-bf21-2bb8a96f2b85
+      - name: taskId
+        in: path
+        description: Task id
+        required: true
+        schema:
+          type: string
+        example: 55904052-0db0-4622-850c-3273ee60def4
       requestBody:
         content:
           application/json:
@@ -1981,8 +1981,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -1998,30 +1998,30 @@ paths:
   /{municipalityId}/checklists/{checklistId}/activate:
     patch:
       tags:
-        - Checklist resources
+      - Checklist resources
       summary: Activate checklist
       operationId: activateChecklist
       parameters:
-        - name: x-issuer
-          in: header
-          description: User id for the user responsible for the activate request
-          required: false
-          schema:
-            type: string
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: checklistId
-          in: path
-          description: Checklist id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: x-issuer
+        in: header
+        description: User id for the user responsible for the activate request
+        required: false
+        schema:
+          type: string
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: checklistId
+        in: path
+        description: Checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       responses:
         "200":
           description: Successful Operation
@@ -2041,8 +2041,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
           content:
@@ -2052,36 +2052,36 @@ paths:
   /{municipalityId}/export/{organizationNumber}:
     get:
       tags:
-        - Porting resources
+      - Porting resources
       summary: Export checklist structure
       description: "Returns complete structure for the checklist matching provided\
         \ organizationNumber. If version if prodvided it will be matched, otherwise\
         \ the latest version will be returned"
       operationId: exportChecklist
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: organizationNumber
-          in: path
-          description: Organization number
-          required: true
-          schema:
-            type: integer
-            format: int32
-          example: 53
-        - name: version
-          in: query
-          description: Version
-          required: false
-          schema:
-            type: integer
-            format: int32
-          example: 2
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: organizationNumber
+        in: path
+        description: Organization number
+        required: true
+        schema:
+          type: integer
+          format: int32
+        example: 53
+      - name: version
+        in: query
+        description: Version
+        required: false
+        schema:
+          type: integer
+          format: int32
+        example: 2
       responses:
         "200":
           description: Successful Operation
@@ -2095,8 +2095,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -2112,25 +2112,25 @@ paths:
   /{municipalityId}/employee-checklists/{employeeChecklistId}/correspondence:
     get:
       tags:
-        - Communication resources
+      - Communication resources
       summary: Fetch correspondence
       description: Fetch the correspondence that has occured for an employee checklist
       operationId: fetchCorrespondence
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: employeeChecklistId
-          in: path
-          description: Employee checklist id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: employeeChecklistId
+        in: path
+        description: Employee checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       responses:
         "200":
           description: Successful Operation
@@ -2144,8 +2144,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not found
           content:
@@ -2161,24 +2161,24 @@ paths:
   /{municipalityId}/employee-checklists/ongoing:
     get:
       tags:
-        - Employee checklist resources
+      - Employee checklist resources
       summary: "Fetches a paginated response of ongoing employee checklists, this\
         \ only contains summarized information about each ongoing employee checklist"
       operationId: fetchAllOngoingEmployeeChecklists
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: pagingBase
-          in: query
-          description: Pagination model
-          required: true
-          schema:
-            $ref: "#/components/schemas/OngoingEmployeeChecklistParameters"
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: pagingBase
+        in: query
+        description: Pagination model
+        required: true
+        schema:
+          $ref: "#/components/schemas/OngoingEmployeeChecklistParameters"
       responses:
         "200":
           description: Successful Operation
@@ -2192,8 +2192,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -2209,25 +2209,25 @@ paths:
   /{municipalityId}/employee-checklists/manager/{username}:
     get:
       tags:
-        - Employee checklist resources
+      - Employee checklist resources
       summary: Fetch checklists where user acts as manager
       description: Fetch a users checklists where the user has the role of manager
       operationId: fetchChecklistsForManager
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: username
-          in: path
-          description: Username for user to fetch checklists for
-          required: true
-          schema:
-            type: string
-          example: usr123
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: username
+        in: path
+        description: Username for user to fetch checklists for
+        required: true
+        schema:
+          type: string
+        example: usr123
       responses:
         "200":
           description: Successful Operation
@@ -2243,8 +2243,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -2260,37 +2260,37 @@ paths:
   /{municipalityId}/employee-checklists/initiationinfo:
     get:
       tags:
-        - Employee checklist resources
+      - Employee checklist resources
       summary: Read execution information from last run to initialize checklists for
         new employees
       description: Trigger creation of checklists for all known new employees
       operationId: getInitiationInformation
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: onlyLatest
-          in: query
-          description: Signal if only last execution or full execution history should
-            be returned
-          required: false
-          schema:
-            type: boolean
-            default: true
-          example: true
-        - name: onlyErrors
-          in: query
-          description: Signal if only posts with errors or both post with successful
-            and errors should be returned
-          required: false
-          schema:
-            type: boolean
-            default: false
-          example: false
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: onlyLatest
+        in: query
+        description: Signal if only last execution or full execution history should
+          be returned
+        required: false
+        schema:
+          type: boolean
+          default: true
+        example: true
+      - name: onlyErrors
+        in: query
+        description: Signal if only posts with errors or both post with successful
+          and errors should be returned
+        required: false
+        schema:
+          type: boolean
+          default: false
+        example: false
       responses:
         "200":
           description: Successful Operation
@@ -2306,8 +2306,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -2323,25 +2323,25 @@ paths:
   /{municipalityId}/employee-checklists/employee/{username}:
     get:
       tags:
-        - Employee checklist resources
+      - Employee checklist resources
       summary: Fetch checklist where user acts as employee
       description: Fetch a users checklist where the user has the role of employee
       operationId: fetchChecklistForEmployee
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: username
-          in: path
-          description: Username for user to fetch checklists for
-          required: true
-          schema:
-            type: string
-          example: usr123
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: username
+        in: path
+        description: Username for user to fetch checklists for
+        required: true
+        schema:
+          type: string
+        example: usr123
       responses:
         "200":
           description: Successful Operation
@@ -2361,8 +2361,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -2378,26 +2378,26 @@ paths:
   /{municipalityId}/employee-checklists/delegated-to/{username}:
     get:
       tags:
-        - Delegation resources
+      - Delegation resources
       summary: Fetch all employee checklists delegated to a user
       description: Fetch all delegated employee checklists for the user that matches
         sent in userid
       operationId: fetchDelegatedEmployeeChecklists
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: username
-          in: path
-          description: Username to fetch delegations for
-          required: true
-          schema:
-            type: string
-          example: usr123
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: username
+        in: path
+        description: Username to fetch delegations for
+        required: true
+        schema:
+          type: string
+        example: usr123
       responses:
         "200":
           description: Successful Operation
@@ -2411,8 +2411,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
           content:
@@ -2422,49 +2422,49 @@ paths:
   /{municipalityId}/checklists/{checklistId}/events:
     get:
       tags:
-        - Checklist resources
+      - Checklist resources
       summary: Get checklist events
       operationId: getChecklistEvents
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: checklistId
-          in: path
-          description: Checklist id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
-        - name: page
-          in: query
-          description: Zero-based page index (0..N)
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - name: size
-          in: query
-          description: The size of the page to be returned
-          required: false
-          schema:
-            type: integer
-            default: 20
-            minimum: 1
-        - name: sort
-          in: query
-          description: "Sorting criteria in the format: property,(asc|desc). Default\
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: checklistId
+        in: path
+        description: Checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          type: integer
+          default: 0
+          minimum: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          type: integer
+          default: 20
+          minimum: 1
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
           \ sort order is ascending. Multiple sort criteria are supported."
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
       responses:
         "200":
           description: Successful Operation
@@ -2490,8 +2490,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
           content:
@@ -2501,7 +2501,7 @@ paths:
   /api-docs:
     get:
       tags:
-        - API
+      - API
       summary: OpenAPI
       operationId: getApiDocs
       responses:
@@ -2517,25 +2517,25 @@ paths:
   /{municipalityId}/employee-checklists/{employeeChecklistId}:
     delete:
       tags:
-        - Employee checklist resources
+      - Employee checklist resources
       summary: Delete an employee checklist
       description: Delete an employee checklist completely
       operationId: deleteEmployeeChecklist
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: employeeChecklistId
-          in: path
-          description: Employee checklist id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: employeeChecklistId
+        in: path
+        description: Employee checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
       responses:
         "204":
           description: Successful Operation
@@ -2545,8 +2545,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "404":
           description: Not Found
           content:
@@ -2562,34 +2562,34 @@ paths:
   /{municipalityId}/employee-checklists/{employeeChecklistId}/delegated-to/{email}:
     delete:
       tags:
-        - Delegation resources
+      - Delegation resources
       summary: Remove delegation of employee checklist
       description: Remove the delegation of an employee checklist matching sent in
         email and checklist id
       operationId: deleteEmployeeChecklistDelegation
       parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: employeeChecklistId
-          in: path
-          description: Employee checklist id
-          required: true
-          schema:
-            type: string
-          example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
-        - name: email
-          in: path
-          description: Email for person to remove delegation from
-          required: true
-          schema:
-            type: string
-            format: email
-          example: delegate.person@noreply.com
+      - name: municipalityId
+        in: path
+        description: Municipality id
+        required: true
+        schema:
+          type: string
+        example: 2281
+      - name: employeeChecklistId
+        in: path
+        description: Employee checklist id
+        required: true
+        schema:
+          type: string
+        example: 85fbcecb-62d9-40c4-9b3d-839e9adcfd8c
+      - name: email
+        in: path
+        description: Email for person to remove delegation from
+        required: true
+        schema:
+          type: string
+          format: email
+        example: delegate.person@noreply.com
       responses:
         "204":
           description: Successful Operation
@@ -2605,8 +2605,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+                - $ref: "#/components/schemas/Problem"
+                - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server Error
           content:
@@ -2623,14 +2623,14 @@ components:
           type: string
           description: The id for the item
           examples:
-            - 283cec0f-b6eb-473c-9dbb-d97a959a8144
+          - 283cec0f-b6eb-473c-9dbb-d97a959a8144
           writeOnly: true
         position:
           type: integer
           format: int32
           description: The sort order position for the item
           examples:
-            - "1"
+          - "1"
           writeOnly: true
         taskOrder:
           type: array
@@ -2640,7 +2640,7 @@ components:
             $ref: "#/components/schemas/TaskItem"
           writeOnly: true
       required:
-        - position
+      - position
     SortorderRequest:
       type: object
       description: Model for custom sort order request
@@ -2659,17 +2659,17 @@ components:
           type: string
           description: The id for the item
           examples:
-            - 283cec0f-b6eb-473c-9dbb-d97a959a8144
+          - 283cec0f-b6eb-473c-9dbb-d97a959a8144
           writeOnly: true
         position:
           type: integer
           format: int32
           description: The sort order position for the item
           examples:
-            - "1"
+          - "1"
           writeOnly: true
       required:
-        - position
+      - position
     Problem:
       type: object
       properties:
@@ -2677,182 +2677,54 @@ components:
           type: string
         detail:
           type: string
-        status:
-          $ref: "#/components/schemas/StatusType"
         instance:
           type: string
           format: uri
         type:
           type: string
           format: uri
-        parameters:
-          type: object
-          additionalProperties: { }
-    StatusType:
-      type: object
-      properties:
-        statusCode:
+        status:
           type: integer
           format: int32
-        reasonPhrase:
-          type: string
     ConstraintViolationProblem:
       type: object
       properties:
-        cause:
-          $ref: "#/components/schemas/ThrowableProblem"
-        stackTrace:
-          type: array
-          items:
-            type: object
-            properties:
-              classLoaderName:
-                type: string
-              moduleName:
-                type: string
-              moduleVersion:
-                type: string
-              methodName:
-                type: string
-              fileName:
-                type: string
-              lineNumber:
-                type: integer
-                format: int32
-              className:
-                type: string
-              nativeMethod:
-                type: boolean
         type:
           type: string
           format: uri
         status:
-          $ref: "#/components/schemas/StatusType"
+          type: integer
+          format: int32
         violations:
           type: array
           items:
             $ref: "#/components/schemas/Violation"
         title:
           type: string
-        message:
-          type: string
         detail:
           type: string
+        causeAsProblem:
+          $ref: "#/components/schemas/ThrowableProblem"
         instance:
           type: string
           format: uri
-        parameters:
-          type: object
-          additionalProperties: { }
-        suppressed:
-          type: array
-          items:
-            type: object
-            properties:
-              stackTrace:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    classLoaderName:
-                      type: string
-                    moduleName:
-                      type: string
-                    moduleVersion:
-                      type: string
-                    methodName:
-                      type: string
-                    fileName:
-                      type: string
-                    lineNumber:
-                      type: integer
-                      format: int32
-                    className:
-                      type: string
-                    nativeMethod:
-                      type: boolean
-              message:
-                type: string
-              localizedMessage:
-                type: string
-        localizedMessage:
-          type: string
     ThrowableProblem:
       type: object
       properties:
-        cause: { }
-        stackTrace:
-          type: array
-          items:
-            type: object
-            properties:
-              classLoaderName:
-                type: string
-              moduleName:
-                type: string
-              moduleVersion:
-                type: string
-              methodName:
-                type: string
-              fileName:
-                type: string
-              lineNumber:
-                type: integer
-                format: int32
-              className:
-                type: string
-              nativeMethod:
-                type: boolean
-        message:
-          type: string
-        title:
-          type: string
-        detail:
-          type: string
-        status:
-          $ref: "#/components/schemas/StatusType"
-        instance:
-          type: string
-          format: uri
         type:
           type: string
           format: uri
-        parameters:
-          type: object
-          additionalProperties: { }
-        suppressed:
-          type: array
-          items:
-            type: object
-            properties:
-              stackTrace:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    classLoaderName:
-                      type: string
-                    moduleName:
-                      type: string
-                    moduleVersion:
-                      type: string
-                    methodName:
-                      type: string
-                    fileName:
-                      type: string
-                    lineNumber:
-                      type: integer
-                      format: int32
-                    className:
-                      type: string
-                    nativeMethod:
-                      type: boolean
-              message:
-                type: string
-              localizedMessage:
-                type: string
-        localizedMessage:
+        title:
           type: string
+        status:
+          type: integer
+          format: int32
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri
+        causeAsProblem: {}
     Violation:
       type: object
       properties:
@@ -2873,13 +2745,13 @@ components:
           description: The name of the mentor
           minLength: 1
       required:
-        - name
-        - userId
+      - name
+      - userId
     Permission:
       type: string
       enum:
-        - SUPERADMIN
-        - ADMIN
+      - SUPERADMIN
+      - ADMIN
     PhaseCreateRequest:
       type: object
       description: Model for phase create request
@@ -2888,20 +2760,20 @@ components:
           type: string
           description: The name of the phase
           examples:
-            - Första veckan
+          - Första veckan
           minLength: 1
           writeOnly: true
         bodyText:
           type: string
           description: The body text of the phase
           examples:
-            - Detta är en beskrivning av vad som ska göras under första veckan
+          - Detta är en beskrivning av vad som ska göras under första veckan
           writeOnly: true
         timeToComplete:
           type: string
           description: The time to complete the phase
           examples:
-            - P1M
+          - P1M
           writeOnly: true
         permission:
           $ref: "#/components/schemas/Permission"
@@ -2911,22 +2783,22 @@ components:
           format: int32
           description: The sort order of the phase
           examples:
-            - "1"
+          - "1"
           writeOnly: true
         createdBy:
           type: string
           description: The id of the user creating the phase
           minLength: 1
       required:
-        - createdBy
-        - name
-        - permission
-        - sortOrder
+      - createdBy
+      - name
+      - permission
+      - sortOrder
     CommunicationChannel:
       type: string
       enum:
-        - EMAIL
-        - NO_COMMUNICATION
+      - EMAIL
+      - NO_COMMUNICATION
     OrganizationCreateRequest:
       type: object
       description: Model for organizational unit create request
@@ -2935,7 +2807,7 @@ components:
           type: string
           description: The name of the unit
           examples:
-            - Sundsvall Energi
+          - Sundsvall Energi
           minLength: 1
           writeOnly: true
         organizationNumber:
@@ -2943,7 +2815,7 @@ components:
           format: int32
           description: The organization number of the unit
           examples:
-            - "5345"
+          - "5345"
           writeOnly: true
         communicationChannels:
           type: array
@@ -2953,10 +2825,9 @@ components:
             writeOnly: true
           minContains: 1
           uniqueItems: true
-          writeOnly: true
       required:
-        - organizationName
-        - organizationNumber
+      - organizationName
+      - organizationNumber
     CustomTaskCreateRequest:
       type: object
       description: Model for custom task create request
@@ -2965,7 +2836,7 @@ components:
           type: string
           description: The heading of the task
           examples:
-            - Bjud på fika
+          - Bjud på fika
           minLength: 1
           writeOnly: true
         headingReference:
@@ -2973,13 +2844,13 @@ components:
           description: Optional reference to use as value for the headings anchor
             element
           examples:
-            - http://www.google.com
+          - http://www.google.com
           writeOnly: true
         text:
           type: string
           description: The body text of the task
           examples:
-            - Detta är en beskrivning av ett uppdrag
+          - Detta är en beskrivning av ett uppdrag
           writeOnly: true
         questionType:
           $ref: "#/components/schemas/QuestionType"
@@ -2988,7 +2859,7 @@ components:
           $ref: "#/components/schemas/RoleType"
           description: The role that shall perform the task
           examples:
-            - NEW_EMPLOYEE
+          - NEW_EMPLOYEE
         sortOrder:
           type: integer
           format: int32
@@ -2998,28 +2869,28 @@ components:
           type: string
           description: The id of the user creating the custom task
           examples:
-            - joe01doe
+          - joe01doe
           minLength: 1
           writeOnly: true
       required:
-        - createdBy
-        - heading
-        - questionType
-        - sortOrder
+      - createdBy
+      - heading
+      - questionType
+      - sortOrder
     QuestionType:
       type: string
       enum:
-        - YES_OR_NO
-        - YES_OR_NO_WITH_TEXT
-        - COMPLETED_OR_NOT_RELEVANT
-        - COMPLETED_OR_NOT_RELEVANT_WITH_TEXT
+      - YES_OR_NO
+      - YES_OR_NO_WITH_TEXT
+      - COMPLETED_OR_NOT_RELEVANT
+      - COMPLETED_OR_NOT_RELEVANT_WITH_TEXT
     RoleType:
       type: string
       enum:
-        - NEW_EMPLOYEE
-        - NEW_MANAGER
-        - MANAGER_FOR_NEW_EMPLOYEE
-        - MANAGER_FOR_NEW_MANAGER
+      - NEW_EMPLOYEE
+      - NEW_MANAGER
+      - MANAGER_FOR_NEW_EMPLOYEE
+      - MANAGER_FOR_NEW_MANAGER
     CustomTask:
       type: object
       description: Model for custom task
@@ -3028,26 +2899,26 @@ components:
           type: string
           description: The id of the task
           examples:
-            - 5a6c3e4e-c320-4006-b448-1fd4121df828
+          - 5a6c3e4e-c320-4006-b448-1fd4121df828
           readOnly: true
         heading:
           type: string
           description: The heading of the task
           examples:
-            - Bjud på fika
+          - Bjud på fika
           readOnly: true
         headingReference:
           type: string
           description: Reference to use as value for the headings anchor element (if
             present)
           examples:
-            - http://www.google.com
+          - http://www.google.com
           readOnly: true
         text:
           type: string
           description: The body text of the task
           examples:
-            - Detta är en beskrivning av ett uppdrag
+          - Detta är en beskrivning av ett uppdrag
           readOnly: true
         sortOrder:
           type: integer
@@ -3065,34 +2936,39 @@ components:
           format: date-time
           description: The date and time the task was created
           examples:
-            - 2023-11-22T15:30:00+03:00
+          - 2023-11-22T15:30:00+03:00
           readOnly: true
         updated:
           type: string
           format: date-time
           description: The date and time the task was last updated
           examples:
-            - 2023-11-22T15:30:00+03:00
+          - 2023-11-22T15:30:00+03:00
           readOnly: true
         lastSavedBy:
           type: string
           description: The id of the user that last modified the custom task
           examples:
-            - joe01doe
+          - joe01doe
           readOnly: true
+    DefaultHttpStatusCode:
+      allOf:
+      - $ref: "#/components/schemas/HttpStatusCode"
     Detail:
       type: object
       description: Model for employee checklist triggering detailed status
       properties:
         status:
-          $ref: "#/components/schemas/StatusType"
           description: Status for action of creating the employee checklist
+          oneOf:
+          - $ref: "#/components/schemas/DefaultHttpStatusCode"
+          - $ref: "#/components/schemas/HttpStatus"
           readOnly: true
         information:
           type: string
           description: Descriptive text for of the creation outcome
           examples:
-            - Employee with loginname abc123 processed successfully.
+          - Employee with loginname abc123 processed successfully.
           readOnly: true
     EmployeeChecklistResponse:
       type: object
@@ -3102,13 +2978,97 @@ components:
           type: string
           description: Summary for execution
           examples:
-            - Successful execution
+          - Successful execution
           readOnly: true
         details:
           type: array
           description: Details for each user specific creation
           items:
             $ref: "#/components/schemas/Detail"
+          readOnly: true
+    HttpStatus:
+      allOf:
+      - $ref: "#/components/schemas/HttpStatusCode"
+      enum:
+      - 100 CONTINUE
+      - 101 SWITCHING_PROTOCOLS
+      - 102 PROCESSING
+      - 103 EARLY_HINTS
+      - 200 OK
+      - 201 CREATED
+      - 202 ACCEPTED
+      - 203 NON_AUTHORITATIVE_INFORMATION
+      - 204 NO_CONTENT
+      - 205 RESET_CONTENT
+      - 206 PARTIAL_CONTENT
+      - 207 MULTI_STATUS
+      - 208 ALREADY_REPORTED
+      - 226 IM_USED
+      - 300 MULTIPLE_CHOICES
+      - 301 MOVED_PERMANENTLY
+      - 302 FOUND
+      - 303 SEE_OTHER
+      - 304 NOT_MODIFIED
+      - 307 TEMPORARY_REDIRECT
+      - 308 PERMANENT_REDIRECT
+      - 400 BAD_REQUEST
+      - 401 UNAUTHORIZED
+      - 402 PAYMENT_REQUIRED
+      - 403 FORBIDDEN
+      - 404 NOT_FOUND
+      - 405 METHOD_NOT_ALLOWED
+      - 406 NOT_ACCEPTABLE
+      - 407 PROXY_AUTHENTICATION_REQUIRED
+      - 408 REQUEST_TIMEOUT
+      - 409 CONFLICT
+      - 410 GONE
+      - 411 LENGTH_REQUIRED
+      - 412 PRECONDITION_FAILED
+      - 413 CONTENT_TOO_LARGE
+      - 413 PAYLOAD_TOO_LARGE
+      - 414 URI_TOO_LONG
+      - 415 UNSUPPORTED_MEDIA_TYPE
+      - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+      - 417 EXPECTATION_FAILED
+      - 418 I_AM_A_TEAPOT
+      - 421 MISDIRECTED_REQUEST
+      - 422 UNPROCESSABLE_CONTENT
+      - 422 UNPROCESSABLE_ENTITY
+      - 423 LOCKED
+      - 424 FAILED_DEPENDENCY
+      - 425 TOO_EARLY
+      - 426 UPGRADE_REQUIRED
+      - 428 PRECONDITION_REQUIRED
+      - 429 TOO_MANY_REQUESTS
+      - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+      - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+      - 500 INTERNAL_SERVER_ERROR
+      - 501 NOT_IMPLEMENTED
+      - 502 BAD_GATEWAY
+      - 503 SERVICE_UNAVAILABLE
+      - 504 GATEWAY_TIMEOUT
+      - 505 HTTP_VERSION_NOT_SUPPORTED
+      - 506 VARIANT_ALSO_NEGOTIATES
+      - 507 INSUFFICIENT_STORAGE
+      - 508 LOOP_DETECTED
+      - 509 BANDWIDTH_LIMIT_EXCEEDED
+      - 510 NOT_EXTENDED
+      - 511 NETWORK_AUTHENTICATION_REQUIRED
+    HttpStatusCode:
+      type: object
+      properties:
+        is4xxClientError:
+          type: boolean
+        is5xxServerError:
+          type: boolean
+        is1xxInformational:
+          type: boolean
+        is2xxSuccessful:
+          type: boolean
+        is3xxRedirection:
+          type: boolean
+        error:
+          type: boolean
     ChecklistCreateRequest:
       type: object
       description: Model for checklist create request
@@ -3117,29 +3077,29 @@ components:
           type: string
           description: The name of the checklist
           examples:
-            - Checklist_A
+          - Checklist_A
           minLength: 1
         displayName:
           type: string
           description: The display name of the checklist
           examples:
-            - Display name
+          - Display name
           minLength: 1
         organizationNumber:
           type: integer
           format: int32
           description: The organization that the checklist is created for
           examples:
-            - "11"
+          - "11"
         createdBy:
           type: string
           description: The id of the user creating the checklist
           minLength: 1
       required:
-        - createdBy
-        - displayName
-        - name
-        - organizationNumber
+      - createdBy
+      - displayName
+      - name
+      - organizationNumber
     TaskCreateRequest:
       type: object
       description: Model for task create request
@@ -3148,7 +3108,7 @@ components:
           type: string
           description: The name of the task
           examples:
-            - Name of the task
+          - Name of the task
           minLength: 1
           writeOnly: true
         headingReference:
@@ -3156,26 +3116,26 @@ components:
           description: Optional reference to use as value for the headings anchor
             element
           examples:
-            - http://www.google.com
+          - http://www.google.com
           writeOnly: true
         text:
           type: string
           description: The body text of the task
           examples:
-            - Body text of the task
+          - Body text of the task
           writeOnly: true
         sortOrder:
           type: integer
           format: int32
           description: The sort order of the task
           examples:
-            - "1"
+          - "1"
           writeOnly: true
         roleType:
           $ref: "#/components/schemas/RoleType"
           description: The role type of the task
           examples:
-            - NEW_EMPLOYEE
+          - NEW_EMPLOYEE
         permission:
           $ref: "#/components/schemas/Permission"
           description: The permission needed to administrate the task
@@ -3183,12 +3143,12 @@ components:
           $ref: "#/components/schemas/QuestionType"
           description: The question type of the task
           examples:
-            - YES_OR_NO
+          - YES_OR_NO
         createdBy:
           type: string
           description: The id of the user creating the task
           examples:
-            - joe01doe
+          - joe01doe
           minLength: 1
           writeOnly: true
         optional:
@@ -3196,14 +3156,14 @@ components:
           default: false
           description: Indicates if the task is optional or not
           examples:
-            - "true"
+          - "true"
       required:
-        - createdBy
-        - heading
-        - permission
-        - questionType
-        - roleType
-        - sortOrder
+      - createdBy
+      - heading
+      - permission
+      - questionType
+      - roleType
+      - sortOrder
     PhaseUpdateRequest:
       type: object
       description: Model for phase update request
@@ -3212,19 +3172,19 @@ components:
           type: string
           description: The name of the phase
           examples:
-            - Första veckan
+          - Första veckan
           writeOnly: true
         bodyText:
           type: string
           description: The body text of the phase
           examples:
-            - Detta är en beskrivning av vad som ska göras under första veckan
+          - Detta är en beskrivning av vad som ska göras under första veckan
           writeOnly: true
         timeToComplete:
           type: string
           description: The time to complete the phase
           examples:
-            - P1M
+          - P1M
           writeOnly: true
         permission:
           $ref: "#/components/schemas/Permission"
@@ -3234,14 +3194,14 @@ components:
           format: int32
           description: The sort order of the phase
           examples:
-            - "1"
+          - "1"
           writeOnly: true
         updatedBy:
           type: string
           description: The id of the user updating the phase
           minLength: 1
       required:
-        - updatedBy
+      - updatedBy
     Phase:
       type: object
       description: Model for a phase
@@ -3250,25 +3210,25 @@ components:
           type: string
           description: The id of the phase
           examples:
-            - 5a6c3e4e-c320-4006-b448-1fd4121df828
+          - 5a6c3e4e-c320-4006-b448-1fd4121df828
           readOnly: true
         name:
           type: string
           description: The name of the phase
           examples:
-            - Första veckan
+          - Första veckan
           readOnly: true
         bodyText:
           type: string
           description: The body text of the phase
           examples:
-            - Detta är en beskrivning av vad som ska göras under första veckan
+          - Detta är en beskrivning av vad som ska göras under första veckan
           readOnly: true
         timeToComplete:
           type: string
           description: The time to complete the phase
           examples:
-            - P1M
+          - P1M
           readOnly: true
         permission:
           $ref: "#/components/schemas/Permission"
@@ -3278,26 +3238,27 @@ components:
           format: int32
           description: The sort order of the phase
           examples:
-            - "1"
+          - "1"
           readOnly: true
         tasks:
           type: array
           description: Tasks in the phase
           items:
             $ref: "#/components/schemas/Task"
+          readOnly: true
         created:
           type: string
           format: date-time
           description: The created date and time of the phase
           examples:
-            - 2023-11-22T15:30:00+03:00
+          - 2023-11-22T15:30:00+03:00
           readOnly: true
         updated:
           type: string
           format: date-time
           description: The last update date and time of the phase
           examples:
-            - 2023-11-22T15:30:00+03:00
+          - 2023-11-22T15:30:00+03:00
           readOnly: true
         lastSavedBy:
           type: string
@@ -3310,33 +3271,33 @@ components:
           type: string
           description: The id of the task
           examples:
-            - 5a6c3e4e-c320-4006-b448-1fd4121df828
+          - 5a6c3e4e-c320-4006-b448-1fd4121df828
           readOnly: true
         heading:
           type: string
           description: The heading of the task
           examples:
-            - Bjud på fika
+          - Bjud på fika
           readOnly: true
         headingReference:
           type: string
           description: Reference to use as value for the headings anchor element (if
             present)
           examples:
-            - http://www.google.com
+          - http://www.google.com
           readOnly: true
         text:
           type: string
           description: The body text of the task
           examples:
-            - Detta är en beskrivning av ett uppdrag
+          - Detta är en beskrivning av ett uppdrag
           readOnly: true
         sortOrder:
           type: integer
           format: int32
           description: The sort order of the task
           examples:
-            - "1"
+          - "1"
           readOnly: true
         roleType:
           $ref: "#/components/schemas/RoleType"
@@ -3352,26 +3313,26 @@ components:
           format: date-time
           description: The date and time the task was created
           examples:
-            - 2023-11-22T15:30:00+03:00
+          - 2023-11-22T15:30:00+03:00
           readOnly: true
         updated:
           type: string
           format: date-time
           description: The date and time the task was last updated
           examples:
-            - 2023-11-22T15:30:00+03:00
+          - 2023-11-22T15:30:00+03:00
           readOnly: true
         lastSavedBy:
           type: string
           description: The id of the user that last modified the task
           examples:
-            - joe01doe
+          - joe01doe
           readOnly: true
         optional:
           type: boolean
           description: Indicates if the task is optional or not
           examples:
-            - "true"
+          - "true"
           readOnly: true
     OrganizationUpdateRequest:
       type: object
@@ -3381,7 +3342,7 @@ components:
           type: string
           description: The name of the unit
           examples:
-            - Sundsvall Energi
+          - Sundsvall Energi
           writeOnly: true
         communicationChannels:
           type: array
@@ -3390,7 +3351,6 @@ components:
             description: Valid channels to use when communicating with the organization
             writeOnly: true
           uniqueItems: true
-          writeOnly: true
     Checklist:
       type: object
       description: Model for checklist
@@ -3399,26 +3359,26 @@ components:
           type: string
           description: The id of the checklist
           examples:
-            - 5a6c3e4e-c320-4006-b448-1fd4121df828
+          - 5a6c3e4e-c320-4006-b448-1fd4121df828
           readOnly: true
         name:
           type: string
           description: The name of the checklist
           examples:
-            - Checklist_A
+          - Checklist_A
           readOnly: true
         displayName:
           type: string
           description: The display name of the checklist
           examples:
-            - Display name
+          - Display name
           readOnly: true
         version:
           type: integer
           format: int32
           description: The version of the checklist
           examples:
-            - "1"
+          - "1"
           readOnly: true
         lifeCycle:
           $ref: "#/components/schemas/LifeCycle"
@@ -3429,14 +3389,14 @@ components:
           format: date-time
           description: The created date and time of the checklist
           examples:
-            - 2023-11-22T15:30:00+03:00
+          - 2023-11-22T15:30:00+03:00
           readOnly: true
         updated:
           type: string
           format: date-time
           description: The last update date and time of the checklist
           examples:
-            - 2023-11-22T15:30:00+03:00
+          - 2023-11-22T15:30:00+03:00
           readOnly: true
         lastSavedBy:
           type: string
@@ -3446,13 +3406,14 @@ components:
           description: Phases in the checklist
           items:
             $ref: "#/components/schemas/Phase"
+          readOnly: true
     LifeCycle:
       type: string
       enum:
-        - CREATED
-        - ACTIVE
-        - DEPRECATED
-        - RETIRED
+      - CREATED
+      - ACTIVE
+      - DEPRECATED
+      - RETIRED
     Organization:
       type: object
       description: Model for an organizational unit
@@ -3461,20 +3422,20 @@ components:
           type: string
           description: The id of the unit
           examples:
-            - 5a6c3e4e-c320-4006-b448-1fd4121df828
+          - 5a6c3e4e-c320-4006-b448-1fd4121df828
           readOnly: true
         organizationName:
           type: string
           description: The name of the unit
           examples:
-            - Sundsvall Energi
+          - Sundsvall Energi
           readOnly: true
         organizationNumber:
           type: integer
           format: int32
           description: The organization number of the unit
           examples:
-            - "5345"
+          - "5345"
           readOnly: true
         checklists:
           type: array
@@ -3482,28 +3443,26 @@ components:
             $ref: "#/components/schemas/Checklist"
             description: All checklists connected to the organization
             readOnly: true
-          readOnly: true
         communicationChannels:
           type: array
           items:
             $ref: "#/components/schemas/CommunicationChannel"
             description: Valid channels to use when communicating with the organization
             readOnly: true
-          readOnly: true
           uniqueItems: true
         created:
           type: string
           format: date-time
           description: The date and time the unit was created
           examples:
-            - 2023-11-22T15:30:00+02:00
+          - 2023-11-22T15:30:00+02:00
           readOnly: true
         updated:
           type: string
           format: date-time
           description: The date and time the unit was updated
           examples:
-            - 2023-11-22T15:30:00+02:00
+          - 2023-11-22T15:30:00+02:00
           readOnly: true
     EmployeeChecklistTaskUpdateRequest:
       type: object
@@ -3517,24 +3476,24 @@ components:
           type: string
           description: The response text for the task fulfilment
           examples:
-            - Har bjudit på fika
+          - Har bjudit på fika
           writeOnly: true
         updatedBy:
           type: string
           description: Identifier for the person that is performing the update
           examples:
-            - joe01doe
+          - joe01doe
           minLength: 1
           writeOnly: true
       required:
-        - updatedBy
+      - updatedBy
     FulfilmentStatus:
       type: string
       enum:
-        - EMPTY
-        - "TRUE"
-        - "FALSE"
-        - NOT_RELEVANT
+      - EMPTY
+      - "TRUE"
+      - "FALSE"
+      - NOT_RELEVANT
     EmployeeChecklistTask:
       type: object
       description: Model for a employee checklist task
@@ -3543,26 +3502,26 @@ components:
           type: string
           description: The id of the task
           examples:
-            - 5a6c3e4e-c320-4006-b448-1fd4121df828
+          - 5a6c3e4e-c320-4006-b448-1fd4121df828
           readOnly: true
         heading:
           type: string
           description: The heading of the task
           examples:
-            - Bjud på fika
+          - Bjud på fika
           readOnly: true
         headingReference:
           type: string
           description: Reference to use as value for the headings anchor element (if
             present)
           examples:
-            - http://www.google.com
+          - http://www.google.com
           readOnly: true
         text:
           type: string
           description: The body text of the task
           examples:
-            - Detta är en beskrivning av ett uppdrag
+          - Detta är en beskrivning av ett uppdrag
           readOnly: true
         sortOrder:
           type: integer
@@ -3584,31 +3543,31 @@ components:
           type: boolean
           description: Indicates if the task is optional or not
           examples:
-            - "true"
+          - "true"
           readOnly: true
         responseText:
           type: string
           description: The task response text
           examples:
-            - Jag har bjudit på fika
+          - Jag har bjudit på fika
           readOnly: true
         fulfilmentStatus:
           $ref: "#/components/schemas/FulfilmentStatus"
           description: The status of the task fulfilment
           examples:
-            - "TRUE"
+          - "TRUE"
         updated:
           type: string
           format: date-time
           description: The date and time the task was last updated
           examples:
-            - 2023-11-22T15:30:00+03:00
+          - 2023-11-22T15:30:00+03:00
           readOnly: true
         updatedBy:
           type: string
           description: Identifier for the person that last updated the task
           examples:
-            - joe01doe
+          - joe01doe
           readOnly: true
     EmployeeChecklistPhaseUpdateRequest:
       type: object
@@ -3622,11 +3581,11 @@ components:
           type: string
           description: Identifier for the person that is performing the update
           examples:
-            - joe01doe
+          - joe01doe
           minLength: 1
           writeOnly: true
       required:
-        - updatedBy
+      - updatedBy
     EmployeeChecklistPhase:
       type: object
       description: Model for a employee checklist phase
@@ -3635,38 +3594,39 @@ components:
           type: string
           description: The id of the phase
           examples:
-            - 5a6c3e4e-c320-4006-b448-1fd4121df828
+          - 5a6c3e4e-c320-4006-b448-1fd4121df828
           readOnly: true
         name:
           type: string
           description: The name of the phase
           examples:
-            - Första veckan
+          - Första veckan
           readOnly: true
         bodyText:
           type: string
           description: The body text of the phase
           examples:
-            - Detta är en beskrivning av vad som ska göras under första veckan
+          - Detta är en beskrivning av vad som ska göras under första veckan
           readOnly: true
         timeToComplete:
           type: string
           description: The time to complete the phase
           examples:
-            - P1M
+          - P1M
           readOnly: true
         sortOrder:
           type: integer
           format: int32
           description: The sort order for the phase
           examples:
-            - "1"
+          - "1"
           readOnly: true
         tasks:
           type: array
           description: Tasks in the phase
           items:
             $ref: "#/components/schemas/EmployeeChecklistTask"
+          readOnly: true
     CustomTaskUpdateRequest:
       type: object
       description: Model for custom task update request
@@ -3675,20 +3635,20 @@ components:
           type: string
           description: The heading of the task
           examples:
-            - Bjud på fika
+          - Bjud på fika
           writeOnly: true
         headingReference:
           type: string
           description: Optional reference to use as value for the headings anchor
             element
           examples:
-            - http://www.google.com
+          - http://www.google.com
           writeOnly: true
         text:
           type: string
           description: The body text of the task
           examples:
-            - Detta är en beskrivning av ett uppdrag
+          - Detta är en beskrivning av ett uppdrag
           writeOnly: true
         questionType:
           $ref: "#/components/schemas/QuestionType"
@@ -3697,7 +3657,7 @@ components:
           $ref: "#/components/schemas/RoleType"
           description: The role that shall perform the task
           examples:
-            - NEW_EMPLOYEE
+          - NEW_EMPLOYEE
         sortOrder:
           type: integer
           format: int32
@@ -3707,11 +3667,11 @@ components:
           type: string
           description: The id of the user updating the custom task
           examples:
-            - joe01doe
+          - joe01doe
           minLength: 1
           writeOnly: true
       required:
-        - updatedBy
+      - updatedBy
     ChecklistUpdateRequest:
       type: object
       description: Model for checklist update request
@@ -3720,13 +3680,13 @@ components:
           type: string
           description: The name of the checklist
           examples:
-            - New display name
+          - New display name
         updatedBy:
           type: string
           description: The id of the user updating the checklist
           minLength: 1
       required:
-        - updatedBy
+      - updatedBy
     TaskUpdateRequest:
       type: object
       description: Model for task update request
@@ -3740,7 +3700,7 @@ components:
           description: Optional reference to use as value for the headings anchor
             element
           examples:
-            - http://www.google.com
+          - http://www.google.com
           writeOnly: true
         text:
           type: string
@@ -3751,7 +3711,7 @@ components:
           format: int32
           description: The sort order of the task
           examples:
-            - "1"
+          - "1"
           writeOnly: true
         roleType:
           $ref: "#/components/schemas/RoleType"
@@ -3766,16 +3726,16 @@ components:
           type: string
           description: The id of the user updating the task
           examples:
-            - joe01doe
+          - joe01doe
           minLength: 1
           writeOnly: true
         optional:
           type: boolean
           description: Indicates if the task is optional or not
           examples:
-            - "true"
+          - "true"
       required:
-        - updatedBy
+      - updatedBy
     Correspondence:
       type: object
       description: Model for correspondence
@@ -3784,20 +3744,20 @@ components:
           type: string
           description: Id for message
           examples:
-            - 3fa85f64-5717-4562-b3fc-2c963f66afa6
+          - 3fa85f64-5717-4562-b3fc-2c963f66afa6
           readOnly: true
         recipient:
           type: string
           description: Message recipient
           examples:
-            - email.address@noreply.com
+          - email.address@noreply.com
           readOnly: true
         attempts:
           type: integer
           format: int32
           description: Attempt count
           examples:
-            - "1"
+          - "1"
           readOnly: true
         correspondenceStatus:
           $ref: "#/components/schemas/CorrespondenceStatus"
@@ -3812,15 +3772,15 @@ components:
           format: date-time
           description: Timestamp when message was sent
           examples:
-            - 2023-11-22T15:30:00+02:00
+          - 2023-11-22T15:30:00+02:00
           readOnly: true
     CorrespondenceStatus:
       type: string
       enum:
-        - SENT
-        - NOT_SENT
-        - ERROR
-        - WILL_NOT_SEND
+      - SENT
+      - NOT_SENT
+      - ERROR
+      - WILL_NOT_SEND
     OngoingEmployeeChecklist:
       type: object
       description: Model for summarized information for an ongoing employee checklist
@@ -3829,27 +3789,27 @@ components:
           type: string
           description: The employee first name and last name concatenated
           examples:
-            - John Doe
+          - John Doe
         employeeUsername:
           type: string
           description: The employee username
           examples:
-            - johndoe
+          - johndoe
         managerName:
           type: string
           description: 'The employees managers first name and last name concatenated '
           examples:
-            - John Doe
+          - John Doe
         departmentName:
           type: string
           description: The organization name
           examples:
-            - Organization XYZ
+          - Organization XYZ
         delegatedTo:
           type: array
           description: The names of the person(s) which have been delegated the checklist
           examples:
-            - John Doe
+          - John Doe
           items:
             type: string
         employmentDate:
@@ -3857,13 +3817,13 @@ components:
           format: date
           description: The employment date of the employee
           examples:
-            - 2021-01-01
+          - 2021-01-01
         purgeDate:
           type: string
           format: date
           description: The purge date for the checklist
           examples:
-            - 2029-01-01
+          - 2029-01-01
       readOnly: true
     OngoingEmployeeChecklists:
       type: object
@@ -3875,7 +3835,6 @@ components:
           items:
             $ref: "#/components/schemas/OngoingEmployeeChecklist"
             readOnly: true
-          readOnly: true
         _meta:
           $ref: "#/components/schemas/PagingMetaData"
           readOnly: true
@@ -3889,41 +3848,41 @@ components:
           format: int32
           description: Current page
           examples:
-            - "5"
+          - "5"
           readOnly: true
         limit:
           type: integer
           format: int32
           description: Displayed objects per page
           examples:
-            - "20"
+          - "20"
           readOnly: true
         count:
           type: integer
           format: int32
           description: Displayed objects on current page
           examples:
-            - "13"
+          - "13"
           readOnly: true
         totalRecords:
           type: integer
           format: int64
           description: Total amount of hits based on provided search parameters
           examples:
-            - "98"
+          - "98"
           readOnly: true
         totalPages:
           type: integer
           format: int32
           description: Total amount of pages based on provided search parameters
           examples:
-            - "23"
+          - "23"
           readOnly: true
     Direction:
       type: string
       enum:
-        - ASC
-        - DESC
+      - ASC
+      - DESC
     OngoingEmployeeChecklistParameters:
       type: object
       properties:
@@ -3933,7 +3892,7 @@ components:
           default: 1
           description: Page number
           examples:
-            - "1"
+          - "1"
           minimum: 1
         limit:
           type: integer
@@ -3941,7 +3900,7 @@ components:
           description: Result size per page. Maximum allowed value is dynamically
             configured
           examples:
-            - "15"
+          - "15"
           minimum: 1
         sortBy:
           type: array
@@ -3949,12 +3908,12 @@ components:
             type: string
             description: The properties to sort on
             examples:
-              - propertyName
+            - propertyName
         sortDirection:
           $ref: "#/components/schemas/Direction"
           description: The sort order direction
           examples:
-            - ASC
+          - ASC
         employeeName:
           type: string
     EmployeeChecklist:
@@ -3965,7 +3924,7 @@ components:
           type: string
           description: The id of the employee checklist
           examples:
-            - 5a6c3e4e-c320-4006-b448-1fd4121df828
+          - 5a6c3e4e-c320-4006-b448-1fd4121df828
           readOnly: true
         employee:
           $ref: "#/components/schemas/Stakeholder"
@@ -3999,40 +3958,41 @@ components:
           description: Phases in the checklist
           items:
             $ref: "#/components/schemas/EmployeeChecklistPhase"
+          readOnly: true
         created:
           type: string
           format: date-time
           description: The created date and time of the checklist
           examples:
-            - 2023-11-22T15:30:00+03:00
+          - 2023-11-22T15:30:00+03:00
           readOnly: true
         updated:
           type: string
           format: date-time
           description: The last update date and time of the checklist
           examples:
-            - 2023-11-22T15:30:00+03:00
+          - 2023-11-22T15:30:00+03:00
           readOnly: true
         startDate:
           type: string
           format: date
           description: The date when the fulfilment of the checklist was started
           examples:
-            - 2023-11-22
+          - 2023-11-22
           readOnly: true
         endDate:
           type: string
           format: date
           description: The date when the fulfilment of the checklist was finished
           examples:
-            - 2023-11-22
+          - 2023-11-22
           readOnly: true
         expirationDate:
           type: string
           format: date
           description: The expiration date of the checklist
           examples:
-            - 2023-11-22
+          - 2023-11-22
           readOnly: true
     Stakeholder:
       type: object
@@ -4042,37 +4002,37 @@ components:
           type: string
           description: The person id for the stakeholder
           examples:
-            - 5a6c3e4e-c320-4006-b448-1fd4121df828
+          - 5a6c3e4e-c320-4006-b448-1fd4121df828
           readOnly: true
         firstName:
           type: string
           description: The first name for the stakeholder
           examples:
-            - John
+          - John
           readOnly: true
         lastName:
           type: string
           description: The last name for the stakeholder
           examples:
-            - Doe
+          - Doe
           readOnly: true
         email:
           type: string
           description: The email address for the stakeholder
           examples:
-            - email.address@noreply.com
+          - email.address@noreply.com
           readOnly: true
         username:
           type: string
           description: The username for the stakeholder
           examples:
-            - abc12def
+          - abc12def
           readOnly: true
         title:
           type: string
           description: The job title for the stakeholder (if applicable)
           examples:
-            - Skoladministratör (Sundsvalls kommun)
+          - Skoladministratör (Sundsvalls kommun)
           readOnly: true
     InitiationInformation:
       type: object
@@ -4084,20 +4044,20 @@ components:
           description: The log id for the execution (used for investigation purpose
             when searching logs in ELK)
           examples:
-            - 5a6c3e4e-c320-4006-b448-1fd4121df828
+          - 5a6c3e4e-c320-4006-b448-1fd4121df828
           readOnly: true
         summary:
           type: string
           description: A information summary for the execution
           examples:
-            - 4 potential problems occurred when importing 6 employees
+          - 4 potential problems occurred when importing 6 employees
           readOnly: true
         executed:
           type: string
           format: date-time
           description: The execution date and time for the initiation
           examples:
-            - 2023-11-22T15:30:00+03:00
+          - 2023-11-22T15:30:00+03:00
           readOnly: true
         details:
           type: array
@@ -4115,6 +4075,7 @@ components:
           description: Delegated employee checklists
           items:
             $ref: "#/components/schemas/EmployeeChecklist"
+          readOnly: true
     Event:
       type: object
       description: Model for an event
@@ -4152,35 +4113,35 @@ components:
           format: int32
           description: Current page
           examples:
-            - "5"
+          - "5"
           readOnly: true
         limit:
           type: integer
           format: int32
           description: Displayed objects per page
           examples:
-            - "20"
+          - "20"
           readOnly: true
         count:
           type: integer
           format: int32
           description: Displayed objects on current page
           examples:
-            - "13"
+          - "13"
           readOnly: true
         totalRecords:
           type: integer
           format: int64
           description: Total amount of hits based on provided search parameters
           examples:
-            - "98"
+          - "98"
           readOnly: true
         totalPages:
           type: integer
           format: int32
           description: Total amount of pages based on provided search parameters
           examples:
-            - "23"
+          - "23"
           readOnly: true
         eventList:
           type: array
@@ -4194,4 +4155,4 @@ components:
           type: string
         value:
           type: string
-  securitySchemes: { }
+  securitySchemes: {}

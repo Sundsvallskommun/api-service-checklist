@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zalando.problem.Problem;
 import se.sundsvall.checklist.api.model.DelegatedEmployeeChecklistResponse;
 import se.sundsvall.checklist.api.model.EmployeeChecklist;
 import se.sundsvall.checklist.integration.db.EmployeeChecklistIntegration;
@@ -18,10 +17,11 @@ import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistReposit
 import se.sundsvall.checklist.integration.employee.EmployeeIntegration;
 import se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper;
 import se.sundsvall.checklist.service.util.ChecklistUtils;
+import se.sundsvall.dept44.problem.Problem;
 
 import static java.util.Optional.ofNullable;
-import static org.zalando.problem.Status.CONFLICT;
-import static org.zalando.problem.Status.NOT_FOUND;
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static se.sundsvall.checklist.service.mapper.DelegateMapper.toDelegateEntity;
 import static se.sundsvall.checklist.service.util.ChecklistUtils.removeObsoleteTasks;
 import static se.sundsvall.checklist.service.util.EmployeeChecklistDecorator.decorateWithCustomTasks;

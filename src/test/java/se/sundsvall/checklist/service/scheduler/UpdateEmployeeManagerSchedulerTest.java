@@ -7,12 +7,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.annotation.Transactional;
-import org.zalando.problem.Problem;
-import org.zalando.problem.Status;
-import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse.Detail;
 import se.sundsvall.checklist.service.EmployeeChecklistService;
+import se.sundsvall.dept44.problem.Problem;
+import se.sundsvall.dept44.problem.ThrowableProblem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -20,6 +19,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.OK;
 
 @ExtendWith(MockitoExtension.class)
 class UpdateEmployeeManagerSchedulerTest {
@@ -49,11 +51,11 @@ class UpdateEmployeeManagerSchedulerTest {
 			.withDetails(List.of(
 				Detail.builder()
 					.withInformation("Ok string")
-					.withStatus(Status.OK)
+					.withStatus(OK)
 					.build(),
 				Detail.builder()
 					.withInformation("Error string")
-					.withStatus(Status.NOT_FOUND)
+					.withStatus(NOT_FOUND)
 					.build()))
 			.build());
 
@@ -71,7 +73,7 @@ class UpdateEmployeeManagerSchedulerTest {
 		final var municipalityId2 = "municipalityId2";
 
 		when(checklistPropertiesMock.managedMunicipalityIds()).thenReturn(List.of(municipalityId1, municipalityId2));
-		when(employeeChecklistServiceMock.updateManagerInformation(municipalityId1, null)).thenThrow(Problem.valueOf(Status.I_AM_A_TEAPOT));
+		when(employeeChecklistServiceMock.updateManagerInformation(municipalityId1, null)).thenThrow(Problem.valueOf(INTERNAL_SERVER_ERROR));
 
 		// Act
 		scheduler.execute();
@@ -89,7 +91,7 @@ class UpdateEmployeeManagerSchedulerTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> scheduler.execute());
 
 		// Assert and verify
-		assertThat(e.getStatus()).isEqualTo(Status.INTERNAL_SERVER_ERROR);
+		assertThat(e.getStatus()).isEqualTo(INTERNAL_SERVER_ERROR);
 		assertThat(e.getMessage()).isEqualTo("Internal Server Error: No managed municipalities was found, please verify service properties.");
 		verify(checklistPropertiesMock).managedMunicipalityIds();
 		verifyNoMoreInteractions(employeeChecklistServiceMock, checklistPropertiesMock);
