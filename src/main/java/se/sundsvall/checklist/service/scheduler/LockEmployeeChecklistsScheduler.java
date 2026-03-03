@@ -6,12 +6,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.zalando.problem.Problem;
-import org.zalando.problem.Status;
 import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistRepository;
+import se.sundsvall.dept44.problem.Problem;
 import se.sundsvall.dept44.scheduling.Dept44Scheduled;
 
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 /**
  * Checks for expired employee checklists and locks them.
@@ -49,7 +49,7 @@ public class LockEmployeeChecklistsScheduler {
 		LOGGER.info(LOG_LOCK_EMPLOYEE_CHECKLISTS_STARTED);
 
 		if (isEmpty(properties.managedMunicipalityIds())) {
-			throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "No managed municipalities was found, please verify service properties.");
+			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "No managed municipalities was found, please verify service properties.");
 		}
 
 		properties.managedMunicipalityIds()

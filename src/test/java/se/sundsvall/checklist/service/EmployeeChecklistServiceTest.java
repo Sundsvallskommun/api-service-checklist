@@ -22,8 +22,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.zalando.problem.Status;
-import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.checklist.api.model.CustomTask;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
@@ -58,6 +56,7 @@ import se.sundsvall.checklist.service.OrganizationTree.OrganizationLine;
 import se.sundsvall.checklist.service.model.Employee;
 import se.sundsvall.checklist.service.model.Employment;
 import se.sundsvall.checklist.service.model.Manager;
+import se.sundsvall.dept44.problem.ThrowableProblem;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -72,9 +71,11 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static org.zalando.problem.Status.OK;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_ACCEPTABLE;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.OK;
 
 @ExtendWith(MockitoExtension.class)
 class EmployeeChecklistServiceTest {
@@ -135,22 +136,22 @@ class EmployeeChecklistServiceTest {
 			InitiationInfoEntity.builder()
 				.withLogId(LOG_ID_1)
 				.withCreated(TIMESTAMP_1)
-				.withStatus(String.valueOf(OK.getStatusCode()))
+				.withStatus(String.valueOf(OK.value()))
 				.build(),
 			InitiationInfoEntity.builder()
 				.withLogId(LOG_ID_1)
 				.withCreated(TIMESTAMP_1)
-				.withStatus(String.valueOf(NOT_FOUND.getStatusCode()))
+				.withStatus(String.valueOf(NOT_FOUND.value()))
 				.build(),
 			InitiationInfoEntity.builder()
 				.withLogId(LOG_ID_2)
 				.withCreated(TIMESTAMP_2)
-				.withStatus(String.valueOf(OK.getStatusCode()))
+				.withStatus(String.valueOf(OK.value()))
 				.build(),
 			InitiationInfoEntity.builder()
 				.withLogId(LOG_ID_2)
 				.withCreated(TIMESTAMP_2)
-				.withStatus(String.valueOf(NOT_FOUND.getStatusCode()))
+				.withStatus(String.valueOf(NOT_FOUND.value()))
 				.build());
 	}
 
@@ -204,12 +205,10 @@ class EmployeeChecklistServiceTest {
 
 		// Assert and verify
 		assertThat(employeeChecklist).isPresent();
-		assertThat(employeeChecklist.get().getPhases()).hasSize(1).allSatisfy(ph -> {
-			assertThat(ph.getTasks()).hasSize(2).allSatisfy(t -> {
-				assertThat(t.getRoleType()).isEqualTo(RoleType.NEW_EMPLOYEE);
-				assertThat(t.getFulfilmentStatus()).isEqualTo(FulfilmentStatus.EMPTY);
-			});
-		});
+		assertThat(employeeChecklist.get().getPhases()).hasSize(1).allSatisfy(ph -> assertThat(ph.getTasks()).hasSize(2).allSatisfy(t -> {
+			assertThat(t.getRoleType()).isEqualTo(RoleType.NEW_EMPLOYEE);
+			assertThat(t.getFulfilmentStatus()).isEqualTo(FulfilmentStatus.EMPTY);
+		}));
 		verify(employeeChecklistIntegrationMock).fetchOptionalEmployeeChecklist(MUNICIPALITY_ID, username);
 		verify(customTaskRepositoryMock).findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(employeeChecklistId, MUNICIPALITY_ID);
 		verify(employeeChecklistIntegrationMock).fetchDelegateEmails(employeeChecklistId);
@@ -319,31 +318,27 @@ class EmployeeChecklistServiceTest {
 
 		// Assert and verify
 		assertThat(employeeChecklists).hasSize(1);
-		assertThat(employeeChecklists.getFirst().getPhases()).hasSize(2).satisfiesExactlyInAnyOrder(ph -> {
-			assertThat(ph.getTasks()).hasSize(2).satisfiesExactlyInAnyOrder(t -> {
-				assertThat(t.isCustomTask()).isTrue();
-				assertThat(t.getRoleType()).isEqualTo(RoleType.NEW_EMPLOYEE);
-				assertThat(t.getFulfilmentStatus()).isEqualTo(FulfilmentStatus.EMPTY);
-			}, t -> {
-				assertThat(t.isCustomTask()).isFalse();
-				assertThat(t.getRoleType()).isEqualTo(RoleType.MANAGER_FOR_NEW_EMPLOYEE);
-				assertThat(t.getFulfilmentStatus()).isEqualTo(FulfilmentStatus.EMPTY);
-			});
-		}, ph -> {
-			assertThat(ph.getTasks()).hasSize(3).satisfiesExactlyInAnyOrder(t -> {
-				assertThat(t.isCustomTask()).isTrue();
-				assertThat(t.getRoleType()).isEqualTo(RoleType.MANAGER_FOR_NEW_EMPLOYEE);
-				assertThat(t.getFulfilmentStatus()).isEqualTo(FulfilmentStatus.EMPTY);
-			}, t -> {
-				assertThat(t.isCustomTask()).isFalse();
-				assertThat(t.getRoleType()).isEqualTo(RoleType.NEW_EMPLOYEE);
-				assertThat(t.getFulfilmentStatus()).isEqualTo(FulfilmentStatus.EMPTY);
-			}, t -> {
-				assertThat(t.isCustomTask()).isFalse();
-				assertThat(t.getRoleType()).isEqualTo(RoleType.MANAGER_FOR_NEW_EMPLOYEE);
-				assertThat(t.getFulfilmentStatus()).isEqualTo(FulfilmentStatus.EMPTY);
-			});
-		});
+		assertThat(employeeChecklists.getFirst().getPhases()).hasSize(2).satisfiesExactlyInAnyOrder(ph -> assertThat(ph.getTasks()).hasSize(2).satisfiesExactlyInAnyOrder(t -> {
+			assertThat(t.isCustomTask()).isTrue();
+			assertThat(t.getRoleType()).isEqualTo(RoleType.NEW_EMPLOYEE);
+			assertThat(t.getFulfilmentStatus()).isEqualTo(FulfilmentStatus.EMPTY);
+		}, t -> {
+			assertThat(t.isCustomTask()).isFalse();
+			assertThat(t.getRoleType()).isEqualTo(RoleType.MANAGER_FOR_NEW_EMPLOYEE);
+			assertThat(t.getFulfilmentStatus()).isEqualTo(FulfilmentStatus.EMPTY);
+		}), ph -> assertThat(ph.getTasks()).hasSize(3).satisfiesExactlyInAnyOrder(t -> {
+			assertThat(t.isCustomTask()).isTrue();
+			assertThat(t.getRoleType()).isEqualTo(RoleType.MANAGER_FOR_NEW_EMPLOYEE);
+			assertThat(t.getFulfilmentStatus()).isEqualTo(FulfilmentStatus.EMPTY);
+		}, t -> {
+			assertThat(t.isCustomTask()).isFalse();
+			assertThat(t.getRoleType()).isEqualTo(RoleType.NEW_EMPLOYEE);
+			assertThat(t.getFulfilmentStatus()).isEqualTo(FulfilmentStatus.EMPTY);
+		}, t -> {
+			assertThat(t.isCustomTask()).isFalse();
+			assertThat(t.getRoleType()).isEqualTo(RoleType.MANAGER_FOR_NEW_EMPLOYEE);
+			assertThat(t.getFulfilmentStatus()).isEqualTo(FulfilmentStatus.EMPTY);
+		}));
 
 		verify(employeeChecklistIntegrationMock).fetchEmployeeChecklistsForManager(MUNICIPALITY_ID, username);
 		verify(customTaskRepositoryMock).findAllByEmployeeChecklistIdAndEmployeeChecklistChecklistsMunicipalityId(employeeChecklistId, MUNICIPALITY_ID);
@@ -467,7 +462,7 @@ class EmployeeChecklistServiceTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> service.createCustomTask(MUNICIPALITY_ID, employeeChecklistId, phaseId, request));
 
 		// Assert and verify
-		assertThat(e.getStatus()).isEqualTo(Status.BAD_REQUEST);
+		assertThat(e.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(e.getMessage()).isEqualTo("Bad Request: Employee checklist with id %s is locked and can not be modified.".formatted(employeeChecklistId));
 
 		verify(employeeChecklistIntegrationMock).fetchEmployeeChecklist(MUNICIPALITY_ID, employeeChecklistId);
@@ -632,7 +627,7 @@ class EmployeeChecklistServiceTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> service.updateCustomTask(MUNICIPALITY_ID, employeeChecklistId, customTaskId, request));
 
 		// Assert and verify
-		assertThat(e.getStatus()).isEqualTo(Status.BAD_REQUEST);
+		assertThat(e.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(e.getMessage()).isEqualTo("Bad Request: Employee checklist with id %s is locked and can not be modified.".formatted(employeeChecklistId));
 
 		verify(customTaskRepositoryMock).findById(customTaskId);
@@ -724,7 +719,7 @@ class EmployeeChecklistServiceTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> service.deleteCustomTask(MUNICIPALITY_ID, employeeChecklistId, customTaskId));
 
 		// Assert and verify
-		assertThat(e.getStatus()).isEqualTo(Status.BAD_REQUEST);
+		assertThat(e.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(e.getMessage()).isEqualTo("Bad Request: Employee checklist with id %s is locked and can not be modified.".formatted(employeeChecklistId));
 
 		verify(customTaskRepositoryMock).findById(customTaskId);
@@ -781,7 +776,7 @@ class EmployeeChecklistServiceTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> service.updateAllTasksInPhase(MUNICIPALITY_ID, employeeChecklistId, phaseId, request));
 
 		// Assert and verify
-		assertThat(e.getStatus()).isEqualTo(Status.INTERNAL_SERVER_ERROR);
+		assertThat(e.getStatus()).isEqualTo(INTERNAL_SERVER_ERROR);
 		assertThat(e.getMessage()).isEqualTo("Internal Server Error: Could not read phase with id %s from employee checklist with id %s.".formatted(phaseId, employeeChecklistId));
 
 		verify(employeeChecklistIntegrationMock).updateAllFulfilmentForAllTasksInPhase(MUNICIPALITY_ID, employeeChecklistId, phaseId, request);
@@ -912,7 +907,7 @@ class EmployeeChecklistServiceTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> service.updateTaskFulfilment(MUNICIPALITY_ID, employeeChecklistId, taskId, request));
 
 		// Assert and verify
-		assertThat(e.getStatus()).isEqualTo(Status.BAD_REQUEST);
+		assertThat(e.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(e.getMessage()).isEqualTo("Bad Request: Employee checklist with id %s is locked and can not be modified.".formatted(employeeChecklistId));
 
 		verify(employeeChecklistIntegrationMock).fetchEmployeeChecklist(MUNICIPALITY_ID, employeeChecklistId);
@@ -1042,7 +1037,7 @@ class EmployeeChecklistServiceTest {
 
 		assertThat(response.getSummary()).isEqualTo("1 potential problems occurred when importing 1 employees");
 		assertThat(response.getDetails()).extracting(Detail::getStatus, Detail::getInformation)
-			.containsExactly(tuple(Status.INTERNAL_SERVER_ERROR, "Internal Server Error: There is a null value in the neighborhood"));
+			.containsExactly(tuple(INTERNAL_SERVER_ERROR, "Internal Server Error: There is a null value in the neighborhood"));
 	}
 
 	@Test
@@ -1075,7 +1070,7 @@ class EmployeeChecklistServiceTest {
 		});
 		assertThat(response.getSummary()).isEqualTo("1 potential problems occurred when importing 1 employees");
 		assertThat(response.getDetails()).extracting(Detail::getStatus, Detail::getInformation)
-			.containsExactly(tuple(Status.NOT_ACCEPTABLE,
+			.containsExactly(tuple(NOT_ACCEPTABLE,
 				"Not Acceptable: Creation of checklist not possible for employee with loginname loginName as the employee does not have a main employment with an employment form that validates for creating an employee checklist."));
 	}
 
@@ -1110,7 +1105,7 @@ class EmployeeChecklistServiceTest {
 
 		assertThat(response.getSummary()).isEqualTo("1 potential problems occurred when importing 1 employees");
 		assertThat(response.getDetails()).extracting(Detail::getStatus, Detail::getInformation)
-			.containsExactly(tuple(Status.NOT_ACCEPTABLE,
+			.containsExactly(tuple(NOT_ACCEPTABLE,
 				"Not Acceptable: Creation of checklist not possible for employee with loginname loginName as the employee does not have a main employment with an event type that validates for creating an employee checklist."));
 
 	}
@@ -1190,7 +1185,8 @@ class EmployeeChecklistServiceTest {
 	}
 
 	@Test
-	// Should pass as form of employment and event type should not be verified when initiating a specific employee checklist
+	// Should pass as a form of employment, and an event type should not be verified when initiating a specific employee
+	// checklist
 	void initiateSpecificEmployeeChecklist_invalidFormOfEmploymentAndEventType() {
 		// Arrange
 		final var emailAddress = "emailAddress";

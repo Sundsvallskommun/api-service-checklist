@@ -4,14 +4,15 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.zalando.problem.Problem;
-import org.zalando.problem.Status;
 import se.sundsvall.checklist.service.EmployeeChecklistService;
+import se.sundsvall.dept44.problem.Problem;
 import se.sundsvall.dept44.scheduling.Dept44Scheduled;
 
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.OK;
 
 /**
  * Scheduler for fetching and persisting new employees from the employee service and creating a checklist for each new
@@ -41,7 +42,7 @@ public class RetrieveNewEmployeesScheduler {
 		LOGGER.info(LOG_USER_IMPORT_STARTED);
 
 		if (isEmpty(properties.managedMunicipalityIds())) {
-			throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "No managed municipalities was found, please verify service properties.");
+			throw Problem.valueOf(INTERNAL_SERVER_ERROR, "No managed municipalities was found, please verify service properties.");
 		}
 
 		properties.managedMunicipalityIds()
@@ -57,7 +58,7 @@ public class RetrieveNewEmployeesScheduler {
 
 		LOGGER.info(result.getSummary());
 		ofNullable(result.getDetails()).orElse(emptyList()).stream()
-			.filter(d -> !Objects.equals(d.getStatus(), Status.OK)) // Only log NOK results
+			.filter(d -> !Objects.equals(d.getStatus(), OK)) // Only log NOK results
 			.forEach(d -> LOGGER.info("%s %s".formatted(d.getStatus(), d.getInformation())));
 	}
 }

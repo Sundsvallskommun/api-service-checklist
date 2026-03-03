@@ -6,23 +6,25 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.zalando.problem.Problem;
-import org.zalando.problem.violations.ConstraintViolationProblem;
-import org.zalando.problem.violations.Violation;
 import se.sundsvall.checklist.Application;
 import se.sundsvall.checklist.service.PortingService;
+import se.sundsvall.dept44.problem.Problem;
+import se.sundsvall.dept44.problem.violations.ConstraintViolationProblem;
+import se.sundsvall.dept44.problem.violations.Violation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON;
-import static org.zalando.problem.Status.BAD_REQUEST;
 
+@AutoConfigureWebTestClient
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
 class PortingResourceFailureTest {
@@ -54,7 +56,7 @@ class PortingResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+			assertThat(r.getViolations()).extracting(Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("exportChecklist.municipalityId", "not a valid municipality ID"));
 		});
@@ -84,7 +86,7 @@ class PortingResourceFailureTest {
 
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+			assertThat(r.getViolations()).extracting(Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("importChecklistAsNewVersion.jsonStructure", "not a valid structure"));
 		});
@@ -108,10 +110,7 @@ class PortingResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getTitle()).isEqualTo("Bad Request");
-			assertThat(r.getDetail()).isEqualTo("""
-				Required request body is missing: org.springframework.http.ResponseEntity<java.lang.Void> \
-				se.sundsvall.checklist.api.PortingResource.importChecklistAsNewVersion(java.lang.String,java.lang.Integer,java.lang.String,java.lang.String)\
-				""");
+			assertThat(r.getDetail()).isEqualTo("Failed to read request");
 		});
 
 		verifyNoInteractions(mockPortingService);
@@ -140,7 +139,7 @@ class PortingResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+			assertThat(r.getViolations()).extracting(Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("importChecklistAsNewVersion.municipalityId", "not a valid municipality ID"));
 		});
@@ -169,7 +168,7 @@ class PortingResourceFailureTest {
 
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+			assertThat(r.getViolations()).extracting(Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("importAndOverwriteExistingChecklist.jsonStructure", "not a valid structure"));
 		});
@@ -193,10 +192,7 @@ class PortingResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getTitle()).isEqualTo("Bad Request");
-			assertThat(r.getDetail()).isEqualTo("""
-				Required request body is missing: org.springframework.http.ResponseEntity<java.lang.Void> \
-				se.sundsvall.checklist.api.PortingResource.importAndOverwriteExistingChecklist(java.lang.String,java.lang.Integer,java.lang.String,java.lang.String)\
-				""");
+			assertThat(r.getDetail()).isEqualTo("Failed to read request");
 		});
 
 		verifyNoInteractions(mockPortingService);
@@ -225,7 +221,7 @@ class PortingResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+			assertThat(r.getViolations()).extracting(Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("importAndOverwriteExistingChecklist.municipalityId", "not a valid municipality ID"));
 		});

@@ -22,8 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
-import org.zalando.problem.Problem;
-import org.zalando.problem.violations.ConstraintViolationProblem;
 import se.sundsvall.checklist.api.model.CustomTask;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
@@ -40,6 +38,8 @@ import se.sundsvall.checklist.api.model.OngoingEmployeeChecklists;
 import se.sundsvall.checklist.service.EmployeeChecklistService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
 import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
+import se.sundsvall.dept44.problem.Problem;
+import se.sundsvall.dept44.problem.violations.ConstraintViolationProblem;
 
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.ALL_VALUE;
@@ -74,7 +74,7 @@ class EmployeeChecklistResource {
 			description = "Successful Operation",
 			content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = OngoingEmployeeChecklists.class))),
 	})
-	@GetMapping("/ongoing")
+	@GetMapping(value = "/ongoing", produces = APPLICATION_JSON_VALUE)
 	ResponseEntity<OngoingEmployeeChecklists> fetchAllOngoingEmployeeChecklists(
 		@Parameter(name = "municipalityId", description = "Municipality id", example = "2281") @PathVariable @ValidMunicipalityId final String municipalityId,
 		@Parameter(name = "pagingBase", description = "Pagination model", schema = @Schema(implementation = OngoingEmployeeChecklistParameters.class)) @Valid final OngoingEmployeeChecklistParameters pagingBase) {

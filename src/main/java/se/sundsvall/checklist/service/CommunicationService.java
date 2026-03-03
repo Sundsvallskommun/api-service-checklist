@@ -6,13 +6,13 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zalando.problem.Problem;
 import se.sundsvall.checklist.api.model.Correspondence;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistRepository;
 import se.sundsvall.checklist.service.mapper.CorrespondenceMapper;
+import se.sundsvall.dept44.problem.Problem;
 
-import static org.zalando.problem.Status.NOT_FOUND;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.EMAIL;
 import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.ERROR;
 import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.NOT_SENT;

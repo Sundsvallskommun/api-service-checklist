@@ -9,12 +9,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.zalando.problem.Problem;
-import org.zalando.problem.Status;
-import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.checklist.integration.db.model.CorrespondenceEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.service.CommunicationService;
+import se.sundsvall.dept44.problem.Problem;
+import se.sundsvall.dept44.problem.ThrowableProblem;
 import se.sundsvall.dept44.scheduling.health.Dept44HealthUtility;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,6 +24,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.BAD_GATEWAY;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.ERROR;
 import static se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus.SENT;
 
@@ -93,7 +94,7 @@ class ManagerEmailSchedulerTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> scheduler.execute());
 
 		// Assert and verify
-		assertThat(e.getStatus()).isEqualTo(Status.INTERNAL_SERVER_ERROR);
+		assertThat(e.getStatus()).isEqualTo(INTERNAL_SERVER_ERROR);
 		assertThat(e.getMessage()).isEqualTo("Internal Server Error: No managed municipalities was found, please verify service properties.");
 		verify(checklistPropertiesMock).managedMunicipalityIds();
 	}
@@ -108,7 +109,7 @@ class ManagerEmailSchedulerTest {
 		when(checklistPropertiesMock.managedMunicipalityIds()).thenReturn(List.of(MUNICIPALITY_ID));
 		when(communicationServiceMock.fetchManagersToSendMailTo(MUNICIPALITY_ID)).thenReturn(List.of(entityError, entitySent, entityException));
 		doNothing().when(communicationServiceMock).sendEmail(entityError);
-		doThrow(Problem.valueOf(Status.BAD_GATEWAY, "Bad to the bone")).when(communicationServiceMock).sendEmail(entityException);
+		doThrow(Problem.valueOf(BAD_GATEWAY, "Bad to the bone")).when(communicationServiceMock).sendEmail(entityException);
 		doNothing().when(communicationServiceMock).sendEmail(entitySent);
 		when(communicationServiceMock.countCorrespondenceWithErrors()).thenReturn(2);
 

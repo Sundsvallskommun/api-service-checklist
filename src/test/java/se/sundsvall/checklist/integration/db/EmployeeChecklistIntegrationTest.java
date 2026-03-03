@@ -18,8 +18,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.zalando.problem.Status;
-import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
@@ -51,6 +49,7 @@ import se.sundsvall.checklist.service.mapper.OrganizationMapper;
 import se.sundsvall.checklist.service.model.Employee;
 import se.sundsvall.checklist.service.model.Employment;
 import se.sundsvall.checklist.service.model.Manager;
+import se.sundsvall.dept44.problem.ThrowableProblem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -59,6 +58,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @ExtendWith(MockitoExtension.class)
 class EmployeeChecklistIntegrationTest {
@@ -263,7 +264,7 @@ class EmployeeChecklistIntegrationTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateAllFulfilmentForAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request));
 
 		// Assert and verify
-		assertThat(e.getStatus()).isEqualTo(Status.BAD_REQUEST);
+		assertThat(e.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(e.getMessage()).isEqualTo("Bad Request: Employee checklist with id %s is locked and can not be modified.".formatted(employeeChecklistId));
 
 		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
@@ -500,7 +501,7 @@ class EmployeeChecklistIntegrationTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateAllFulfilmentForAllTasksInPhase(municipalityId, employeeChecklistId, phaseId, request));
 
 		// Verify and assert
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s was not found within municipality %s.".formatted(employeeChecklistId, municipalityId));
 
 		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
@@ -533,7 +534,7 @@ class EmployeeChecklistIntegrationTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> integration.fetchEmployeeChecklist(municipalityId, employeeChecklistId));
 
 		// Verify and assert
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s was not found within municipality %s.".formatted(employeeChecklistId, municipalityId));
 
 		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
@@ -711,7 +712,7 @@ class EmployeeChecklistIntegrationTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateCommonTaskFulfilment(municipalityId, employeeChecklistId, taskId, request));
 
 		// Verify and assert
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: No fulfilment information found for task with id %s in employee checklist with id %s.".formatted(taskId, employeeChecklistId));
 
 		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
@@ -729,7 +730,7 @@ class EmployeeChecklistIntegrationTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateCommonTaskFulfilment(municipalityId, employeeChecklistId, taskId, request));
 
 		// Verify and assert
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s was not found within municipality %s.".formatted(employeeChecklistId, municipalityId));
 
 		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
@@ -891,7 +892,7 @@ class EmployeeChecklistIntegrationTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateCustomTaskFulfilment(municipalityId, employeeChecklistId, taskId, request));
 
 		// Verify and assert
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: No fulfilment information found for task with id %s in employee checklist with id %s.".formatted(taskId, employeeChecklistId));
 
 		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
@@ -909,7 +910,7 @@ class EmployeeChecklistIntegrationTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateCustomTaskFulfilment(municipalityId, employeeChecklistId, taskId, request));
 
 		// Verify and assert
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s was not found within municipality %s.".formatted(employeeChecklistId, municipalityId));
 
 		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
@@ -993,7 +994,7 @@ class EmployeeChecklistIntegrationTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> integration.deleteEmployeeChecklist(municipalityId, employeeChecklistId));
 
 		// Verify and assert
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s was not found within municipality %s.".formatted(employeeChecklistId, municipalityId));
 
 		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
@@ -1037,7 +1038,7 @@ class EmployeeChecklistIntegrationTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> integration.createCustomTask(municipalityId, employeeChecklistId, phaseId, request));
 
 		// Verify and assert
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Employee checklist with id %s was not found within municipality %s.".formatted(employeeChecklistId, municipalityId));
 
 		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
@@ -1060,7 +1061,7 @@ class EmployeeChecklistIntegrationTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> integration.createCustomTask(municipalityId, employeeChecklistId, phaseId, request));
 
 		// Verify and assert
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: Phase with id %s was not found within municipality %s.".formatted(phaseId, municipalityId));
 
 		verify(employeeChecklistsRepositoryMock).findByIdAndChecklistsMunicipalityId(employeeChecklistId, municipalityId);
@@ -1104,7 +1105,7 @@ class EmployeeChecklistIntegrationTest {
 
 		// Verify and assert
 		verify(employeeRepositoryMock).existsById(uuid);
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: No main employment found for employee with loginname username.");
 	}
 
@@ -1146,7 +1147,7 @@ class EmployeeChecklistIntegrationTest {
 		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(212, municipalityId);
 		verify(organizationRepositoryMock, times(2)).findByOrganizationNumberAndMunicipalityId(2124, municipalityId);
 
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: No checklist was found for any id in the organization tree for employee username. Search has been performed for id 2, 21, 212 and 2124.");
 	}
 
@@ -1195,7 +1196,7 @@ class EmployeeChecklistIntegrationTest {
 		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(212, municipalityId);
 		verify(organizationRepositoryMock, times(2)).findByOrganizationNumberAndMunicipalityId(2124, municipalityId);
 
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: No checklist was found for any id in the organization tree for employee username. Search has been performed for id 2, 21, 212 and 2124.");
 	}
 
@@ -1248,7 +1249,7 @@ class EmployeeChecklistIntegrationTest {
 		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(212, municipalityId);
 		verify(organizationRepositoryMock, times(2)).findByOrganizationNumberAndMunicipalityId(2124, municipalityId);
 
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: No checklist was found for any id in the organization tree for employee username. Search has been performed for id 2, 21, 212 and 2124.");
 	}
 

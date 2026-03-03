@@ -4,11 +4,11 @@ import generated.se.sundsvall.employee.PortalPersonData;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zalando.problem.Problem;
 import se.sundsvall.checklist.integration.db.model.DelegateEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
+import se.sundsvall.dept44.problem.Problem;
 
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 public final class DelegateMapper {
 

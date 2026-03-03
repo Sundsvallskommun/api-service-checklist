@@ -1,9 +1,13 @@
 package se.sundsvall.checklist.api.model;
 
+import com.google.code.beanmatchers.BeanMatchers;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.zalando.problem.Status;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
 import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
@@ -15,6 +19,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.allOf;
 
 class EmployeeChecklistResponseTest {
+
+	private static final AtomicInteger COUNTER = new AtomicInteger();
+
+	@BeforeAll
+	static void setup() {
+		BeanMatchers.registerValueGenerator(() -> COUNTER.getAndIncrement() % 2 == 0 ? HttpStatus.OK : HttpStatus.BAD_REQUEST, HttpStatusCode.class);
+	}
 
 	@Test
 	void testBean() {
@@ -38,7 +49,7 @@ class EmployeeChecklistResponseTest {
 		// Implement
 		final var summary = "summary";
 		final var information = "information";
-		final var status = Status.I_AM_A_TEAPOT;
+		final var status = HttpStatus.BAD_REQUEST;
 		final var detailBean = EmployeeChecklistResponse.Detail.builder()
 			.withInformation(information)
 			.withStatus(status)

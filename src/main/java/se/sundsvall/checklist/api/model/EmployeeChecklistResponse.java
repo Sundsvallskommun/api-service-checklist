@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.zalando.problem.StatusType;
+import org.springframework.http.HttpStatusCode;
 
 import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
 
@@ -28,7 +28,7 @@ public class EmployeeChecklistResponse {
 	public static class Detail {
 
 		@Schema(description = "Status for action of creating the employee checklist", accessMode = READ_ONLY)
-		private StatusType status;
+		private HttpStatusCode status;
 
 		@Schema(description = "Descriptive text for of the creation outcome", examples = "Employee with loginname abc123 processed successfully.", accessMode = READ_ONLY)
 		private String information;

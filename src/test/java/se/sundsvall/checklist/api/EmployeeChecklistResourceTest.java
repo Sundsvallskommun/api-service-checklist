@@ -13,11 +13,12 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.zalando.problem.Status;
 import se.sundsvall.checklist.Application;
 import se.sundsvall.checklist.api.model.CustomTask;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
@@ -48,6 +49,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
+@AutoConfigureWebTestClient
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
 @Sql(scripts = {
@@ -389,7 +391,7 @@ class EmployeeChecklistResourceTest {
 		final var path = "/initialize";
 		final var mockedResponse = EmployeeChecklistResponse.builder()
 			.withSummary("summary")
-			.withDetails(List.of(Detail.builder().withInformation("information").withStatus(Status.OK).build()))
+			.withDetails(List.of(Detail.builder().withInformation("information").withStatus(HttpStatus.OK).build()))
 			.build();
 
 		when(serviceMock.initiateEmployeeChecklists(MUNICIPALITY_ID)).thenReturn(mockedResponse);
@@ -415,7 +417,7 @@ class EmployeeChecklistResourceTest {
 		final var path = "/initialize/{personId}";
 		final var mockedResponse = EmployeeChecklistResponse.builder()
 			.withSummary("summary")
-			.withDetails(List.of(Detail.builder().withInformation("information").withStatus(Status.OK).build()))
+			.withDetails(List.of(Detail.builder().withInformation("information").withStatus(HttpStatus.OK).build()))
 			.build();
 
 		when(serviceMock.initiateSpecificEmployeeChecklist(MUNICIPALITY_ID, ID)).thenReturn(mockedResponse);

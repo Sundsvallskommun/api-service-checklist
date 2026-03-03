@@ -12,13 +12,12 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.zalando.problem.Status;
-import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.OrganizationEntity;
 import se.sundsvall.checklist.integration.db.repository.ChecklistRepository;
 import se.sundsvall.checklist.integration.db.repository.OrganizationRepository;
 import se.sundsvall.checklist.service.mapper.OrganizationMapper;
+import se.sundsvall.dept44.problem.ThrowableProblem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -26,6 +25,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.ACTIVE;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.CREATED;
 import static se.sundsvall.checklist.service.PortingService.SYSTEM;
@@ -73,7 +74,7 @@ class PortingServiceTest {
 		final var response = service.exportChecklist(MUNICIPALITY_ID, organizationNumber, null);
 
 		// Assert and verify
-		assertThat(response).isEqualTo("{\"version\":3,\"tasks\":[]}");
+		assertThat(response).isEqualTo("{\"tasks\":[],\"version\":3}");
 
 		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID);
 	}
@@ -101,7 +102,7 @@ class PortingServiceTest {
 		final var response = service.exportChecklist(MUNICIPALITY_ID, organizationNumber, 1);
 
 		// Assert and verify
-		assertThat(response).isEqualTo("{\"version\":1,\"tasks\":[]}");
+		assertThat(response).isEqualTo("{\"tasks\":[],\"version\":1}");
 
 		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID);
 	}
@@ -118,7 +119,7 @@ class PortingServiceTest {
 		final var e = assertThrows(ThrowableProblem.class, () -> service.exportChecklist(MUNICIPALITY_ID, organizationNumber, null));
 
 		// Assert and verify
-		assertThat(e.getStatus()).isEqualTo(Status.NOT_FOUND);
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: No checklist matching sent in parameters exist.");
 
 		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID);
@@ -200,7 +201,7 @@ class PortingServiceTest {
 		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(organizationNumber, MUNICIPALITY_ID);
 
 		assertThat(organizationEntity.getChecklists()).isEqualTo(existingChecklistEntities);
-		assertThat(e.getStatus()).isEqualTo(Status.CONFLICT);
+		assertThat(e.getStatus()).isEqualTo(CONFLICT);
 		assertThat(e.getMessage()).isEqualTo("Conflict: The organization has an existing checklist with lifecycle status CREATED present, operation aborted.");
 	}
 

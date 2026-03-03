@@ -14,12 +14,10 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.zalando.problem.Problem;
-import org.zalando.problem.violations.ConstraintViolationProblem;
-import org.zalando.problem.violations.Violation;
 import se.sundsvall.checklist.Application;
 import se.sundsvall.checklist.api.model.CustomTaskCreateRequest;
 import se.sundsvall.checklist.api.model.CustomTaskUpdateRequest;
@@ -30,14 +28,18 @@ import se.sundsvall.checklist.integration.db.model.enums.FulfilmentStatus;
 import se.sundsvall.checklist.integration.db.model.enums.QuestionType;
 import se.sundsvall.checklist.integration.db.model.enums.RoleType;
 import se.sundsvall.checklist.service.EmployeeChecklistService;
+import se.sundsvall.dept44.problem.Problem;
+import se.sundsvall.dept44.problem.violations.ConstraintViolationProblem;
+import se.sundsvall.dept44.problem.violations.Violation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.zalando.problem.Status.BAD_REQUEST;
 
+@AutoConfigureWebTestClient
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
 class EmployeeChecklistResourceFailureTest {
@@ -78,7 +80,7 @@ class EmployeeChecklistResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+			assertThat(r.getViolations()).extracting(Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("fetchAllOngoingEmployeeChecklists.municipalityId", "not a valid municipality ID"));
 		});
@@ -105,7 +107,7 @@ class EmployeeChecklistResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+			assertThat(r.getViolations()).extracting(Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("page", "must be greater than or equal to 1"),
 					tuple("limit", "must be greater than or equal to 1"));
@@ -130,7 +132,7 @@ class EmployeeChecklistResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getTitle()).isEqualTo("Constraint Violation");
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
-			assertThat(r.getViolations()).extracting(Violation::getField, Violation::getMessage)
+			assertThat(r.getViolations()).extracting(Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("deleteEmployeeChecklist.municipalityId", "not a valid municipality ID"),
 					tuple("deleteEmployeeChecklist.employeeChecklistId", "not a valid UUID"));
@@ -160,7 +162,7 @@ class EmployeeChecklistResourceFailureTest {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations())
 				.extracting(
-					Violation::getField, Violation::getMessage)
+					Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("setMentor.municipalityId", "not a valid municipality ID"),
 					tuple("setMentor.employeeChecklistId", "not a valid UUID"));
@@ -184,10 +186,7 @@ class EmployeeChecklistResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getTitle()).isEqualTo("Bad Request");
-			assertThat(r.getDetail()).isEqualTo("""
-				Required request body is missing: org.springframework.http.ResponseEntity<java.lang.Void> \
-				se.sundsvall.checklist.api.EmployeeChecklistResource.setMentor(java.lang.String,java.lang.String,se.sundsvall.checklist.api.model.Mentor)\
-				""");
+			assertThat(r.getDetail()).isEqualTo("Failed to read request");
 		});
 	}
 
@@ -212,7 +211,7 @@ class EmployeeChecklistResourceFailureTest {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations())
 				.extracting(
-					Violation::getField, Violation::getMessage)
+					Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("userId", "must not be blank"),
 					tuple("name", "must not be blank"));
@@ -237,7 +236,7 @@ class EmployeeChecklistResourceFailureTest {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations())
 				.extracting(
-					Violation::getField, Violation::getMessage)
+					Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("deleteMentor.municipalityId", "not a valid municipality ID"),
 					tuple("deleteMentor.employeeChecklistId", "not a valid UUID"));
@@ -273,7 +272,7 @@ class EmployeeChecklistResourceFailureTest {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations())
 				.extracting(
-					Violation::getField, Violation::getMessage)
+					Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("createCustomTask.municipalityId", "not a valid municipality ID"),
 					tuple("createCustomTask.employeeChecklistId", "not a valid UUID"),
@@ -300,10 +299,7 @@ class EmployeeChecklistResourceFailureTest {
 		assertThat(response).isNotNull().satisfies(r -> {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getTitle()).isEqualTo("Bad Request");
-			assertThat(r.getDetail()).isEqualTo("""
-				Required request body is missing: org.springframework.http.ResponseEntity<se.sundsvall.checklist.api.model.CustomTask> \
-				se.sundsvall.checklist.api.EmployeeChecklistResource.createCustomTask(java.lang.String,java.lang.String,java.lang.String,se.sundsvall.checklist.api.model.CustomTaskCreateRequest)\
-				""");
+			assertThat(r.getDetail()).isEqualTo("Failed to read request");
 		});
 	}
 
@@ -329,7 +325,7 @@ class EmployeeChecklistResourceFailureTest {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations())
 				.extracting(
-					Violation::getField, Violation::getMessage)
+					Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("heading", "must not be blank"),
 					tuple("questionType", "must not be null"),
@@ -371,7 +367,7 @@ class EmployeeChecklistResourceFailureTest {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations())
 				.extracting(
-					Violation::getField, Violation::getMessage)
+					Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("roleType", "must be one of [NEW_EMPLOYEE, MANAGER_FOR_NEW_EMPLOYEE]"));
 		});
@@ -397,7 +393,7 @@ class EmployeeChecklistResourceFailureTest {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations())
 				.extracting(
-					Violation::getField, Violation::getMessage)
+					Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("readCustomTask.municipalityId", "not a valid municipality ID"),
 					tuple("readCustomTask.employeeChecklistId", "not a valid UUID"),
@@ -427,7 +423,7 @@ class EmployeeChecklistResourceFailureTest {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations())
 				.extracting(
-					Violation::getField, Violation::getMessage)
+					Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("updateCustomTask.municipalityId", "not a valid municipality ID"),
 					tuple("updateCustomTask.employeeChecklistId", "not a valid UUID"),
@@ -462,7 +458,7 @@ class EmployeeChecklistResourceFailureTest {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations())
 				.extracting(
-					Violation::getField, Violation::getMessage)
+					Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("roleType", "must be one of [NEW_EMPLOYEE, MANAGER_FOR_NEW_EMPLOYEE]"),
 					tuple("updatedBy", "must not be blank"));
@@ -489,7 +485,7 @@ class EmployeeChecklistResourceFailureTest {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations())
 				.extracting(
-					Violation::getField, Violation::getMessage)
+					Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("deleteCustomTask.municipalityId", "not a valid municipality ID"),
 					tuple("deleteCustomTask.employeeChecklistId", "not a valid UUID"),
@@ -522,7 +518,7 @@ class EmployeeChecklistResourceFailureTest {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations())
 				.extracting(
-					Violation::getField, Violation::getMessage)
+					Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("updateAllTasksInPhase.municipalityId", "not a valid municipality ID"),
 					tuple("updateAllTasksInPhase.employeeChecklistId", "not a valid UUID"),
@@ -559,7 +555,7 @@ class EmployeeChecklistResourceFailureTest {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations())
 				.extracting(
-					Violation::getField, Violation::getMessage)
+					Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("updatedBy", "must not be blank"));
 		});
@@ -589,18 +585,9 @@ class EmployeeChecklistResourceFailureTest {
 	private static Stream<Arguments> updateWithNullParamProvider() {
 
 		return Stream.of(
-			Arguments.of("/{employeeChecklistId}/customtasks/{taskId}", Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID, "taskId", ID), """
-				Required request body is missing: org.springframework.http.ResponseEntity<se.sundsvall.checklist.api.model.CustomTask> \
-				se.sundsvall.checklist.api.EmployeeChecklistResource.updateCustomTask(java.lang.String,java.lang.String,java.lang.String,se.sundsvall.checklist.api.model.CustomTaskUpdateRequest)\
-				"""),
-			Arguments.of("/{employeeChecklistId}/phases/{phaseId}", Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID, "phaseId", ID), """
-				Required request body is missing: org.springframework.http.ResponseEntity<se.sundsvall.checklist.api.model.EmployeeChecklistPhase> \
-				se.sundsvall.checklist.api.EmployeeChecklistResource.updateAllTasksInPhase(java.lang.String,java.lang.String,java.lang.String,se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest)\
-				"""),
-			Arguments.of("/{employeeChecklistId}/tasks/{taskId}", Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID, "taskId", ID), """
-				Required request body is missing: org.springframework.http.ResponseEntity<se.sundsvall.checklist.api.model.EmployeeChecklistTask> \
-				se.sundsvall.checklist.api.EmployeeChecklistResource.updateTaskFulfilment(java.lang.String,java.lang.String,java.lang.String,se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest)\
-				"""));
+			Arguments.of("/{employeeChecklistId}/customtasks/{taskId}", Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID, "taskId", ID), "Failed to read request"),
+			Arguments.of("/{employeeChecklistId}/phases/{phaseId}", Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID, "phaseId", ID), "Failed to read request"),
+			Arguments.of("/{employeeChecklistId}/tasks/{taskId}", Map.of("municipalityId", MUNICIPALITY_ID, "employeeChecklistId", ID, "taskId", ID), "Failed to read request"));
 	}
 
 	@Test
@@ -628,7 +615,7 @@ class EmployeeChecklistResourceFailureTest {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations())
 				.extracting(
-					Violation::getField, Violation::getMessage)
+					Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("updateTaskFulfilment.municipalityId", "not a valid municipality ID"),
 					tuple("updateTaskFulfilment.employeeChecklistId", "not a valid UUID"),
@@ -665,7 +652,7 @@ class EmployeeChecklistResourceFailureTest {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations())
 				.extracting(
-					Violation::getField, Violation::getMessage)
+					Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("updatedBy", "must not be blank"));
 		});
@@ -691,7 +678,7 @@ class EmployeeChecklistResourceFailureTest {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations())
 				.extracting(
-					Violation::getField, Violation::getMessage)
+					Violation::field, Violation::message)
 				.containsExactlyInAnyOrder(
 					tuple("initiateSpecificEmployeeChecklist.municipalityId", "not a valid municipality ID"),
 					tuple("initiateSpecificEmployeeChecklist.personId", "not a valid UUID"));
@@ -718,7 +705,7 @@ class EmployeeChecklistResourceFailureTest {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations())
 				.extracting(
-					Violation::getField, Violation::getMessage)
+					Violation::field, Violation::message)
 				.containsExactly(
 					tuple("getInitiationInformation.municipalityId", "not a valid municipality ID"));
 		});
@@ -744,7 +731,7 @@ class EmployeeChecklistResourceFailureTest {
 			assertThat(r.getStatus()).isEqualTo(BAD_REQUEST);
 			assertThat(r.getViolations())
 				.extracting(
-					Violation::getField, Violation::getMessage)
+					Violation::field, Violation::message)
 				.containsExactly(
 					tuple("updateManagerInformation.municipalityId", "not a valid municipality ID"));
 		});
