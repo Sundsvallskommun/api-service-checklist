@@ -29,6 +29,14 @@
 					"personId": "1273fadb-0455-455e-a5e6-0eebda329867",
 					"lastname": "Anka"
 				},
+				"hiringManager": {
+					"emailAddress": "kalleanka@email.com",
+					"loginname": "kalleanka",
+					"referenceNumber": "KALLE01ANKA",
+					"givenname": "Kalle",
+					"personId": "1273fadb-0455-455e-a5e6-0eebda329867",
+					"lastname": "Anka"
+				},
 				"employmentType": 0,
 				"formOfEmploymentId": "1",
 				"topOrgName": "Top organization name",

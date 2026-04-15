@@ -43,6 +43,7 @@ class EmploymentTest {
 		final var isManager = false;
 		final var isManual = true;
 		final var manager = Manager.builder().build();
+		final var hiringManager = Manager.builder().build();
 		final var managerCode = "managerCode";
 		final var orgId = 321;
 		final var orgName = "orgName";
@@ -62,6 +63,7 @@ class EmploymentTest {
 			.withIsManager(isManager)
 			.withIsManual(isManual)
 			.withManager(manager)
+			.withHiringManager(hiringManager)
 			.withManagerCode(managerCode)
 			.withOrgId(orgId)
 			.withOrgName(orgName)
@@ -82,6 +84,7 @@ class EmploymentTest {
 		assertThat(bean.getIsManager()).isEqualTo(isManager);
 		assertThat(bean.getIsManual()).isEqualTo(isManual);
 		assertThat(bean.getManager()).isEqualTo(manager);
+		assertThat(bean.getHiringManager()).isEqualTo(hiringManager);
 		assertThat(bean.getManagerCode()).isEqualTo(managerCode);
 		assertThat(bean.getOrgId()).isEqualTo(orgId);
 		assertThat(bean.getOrgName()).isEqualTo(orgName);

@@ -37,6 +37,8 @@ public class Employment {
 
 	private Manager manager;
 
+	private Manager hiringManager;
+
 	private String managerCode;
 
 	private Date startDate;
