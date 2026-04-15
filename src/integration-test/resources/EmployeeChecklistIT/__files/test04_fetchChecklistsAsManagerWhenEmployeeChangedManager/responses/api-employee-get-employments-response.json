@@ -29,6 +29,14 @@
 					"personId": "ae93a63e-d975-4cd9-8e28-4cc9ea8b4d96",
 					"lastname": "Ager"
 				},
+				"hiringManager": {
+					"emailAddress": "f.manager@55352.com",
+					"loginname": "fman4agr",
+					"referenceNumber": "FNEW02AGR",
+					"givenname": "F Newman",
+					"personId": "ae93a63e-d975-4cd9-8e28-4cc9ea8b4d96",
+					"lastname": "Ager"
+				},
 				"employmentType": 0,
 				"formOfEmploymentId": "1",
 				"topOrgName": "Top organization name",

@@ -352,7 +352,7 @@ public class EmployeeChecklistService {
 
 		employees.forEach(employee -> {
 			try {
-				// Verify that employee contains all mandatory information needed to create an employee checklist
+				// Verify that the employee contains all mandatory information needed to create an employee checklist
 				verifyMandatoryInformation(employee);
 				if (verifyValidEmployment) {
 					// Verify that the employment is valid for creating an employee checklist (this is only done
@@ -363,7 +363,7 @@ public class EmployeeChecklistService {
 				final var portalPersonData = employeeIntegration.getEmployeeByEmail(municipalityId, employee.getEmailAddress())
 					.orElseThrow(() -> Problem.valueOf(NOT_FOUND, ORGANIZATIONAL_STRUCTURE_DATA_NOT_FOUND.formatted(employee.getLoginname())));
 
-				// Calculate employee orgtree from person data information (which does not include the root organization)
+				// Calculate an employee org tree from person data information (which does not include the root organization)
 				final var employeeOrgTree = OrganizationTree.map(portalPersonData.getOrgTree());
 
 				// We need to find the root organization connected to the top level in the employees org tree via mdviewer
@@ -447,7 +447,7 @@ public class EmployeeChecklistService {
 			if (isNull(remoteEmployee.getMainEmployment())) {
 				throw Problem.valueOf(NOT_FOUND, "No main employement was found");
 			}
-			if (notEqual(remoteEmployee.getMainEmployment().getManager().getPersonId(), localEmployee.getManager().getPersonId())) {
+			if (notEqual(remoteEmployee.getMainEmployment().getHiringManager().getPersonId(), localEmployee.getManager().getPersonId())) {
 				// First calculate information for response as local entity will be modified in next step
 				detail = toDetail(OK, createUpdateManagerDetailString(localEmployee, remoteEmployee));
 				// Update employee entity with new manager

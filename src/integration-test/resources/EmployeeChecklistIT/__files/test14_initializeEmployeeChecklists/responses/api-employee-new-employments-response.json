@@ -38,6 +38,14 @@
 					"personId": "95bd9ecb-4b42-402e-9767-48038f05927a",
 					"lastname": "Nova"
 				},
+				"hiringManager": {
+					"emailAddress": "bossa.nova@noreply.com",
+					"loginname": "bos33nov",
+					"referenceNumber": "B16NOV",
+					"givenname": "Bossa",
+					"personId": "95bd9ecb-4b42-402e-9767-48038f05927a",
+					"lastname": "Nova"
+				},
 				"employmentType": 0,
 				"formOfEmploymentId": "1",
 				"topOrgName": "Top organization name",
@@ -59,6 +67,14 @@
 				"topOrgId": 456,
 				"isManager": false,
 				"manager": {
+					"emailAddress": "manager.for.company.2@noreply.com",
+					"loginname": "company2manager",
+					"referenceNumber": "COMPANY2",
+					"givenname": "Obsolete",
+					"personId": "bdd7064a-d4aa-496c-9bc6-7f2b925f7644",
+					"lastname": "Manager"
+				},
+				"hiringManager": {
 					"emailAddress": "manager.for.company.2@noreply.com",
 					"loginname": "company2manager",
 					"referenceNumber": "COMPANY2",
@@ -109,6 +125,14 @@
 				"topOrgId": 24,
 				"isManager": false,
 				"manager": {
+					"emailAddress": "bossa.nova@noreply.com",
+					"loginname": "bos33nov",
+					"referenceNumber": "B16NOV",
+					"givenname": "Bossa",
+					"personId": "95bd9ecb-4b42-402e-9767-48038f05927a",
+					"lastname": "Nova"
+				},
+				"hiringManager": {
 					"emailAddress": "bossa.nova@noreply.com",
 					"loginname": "bos33nov",
 					"referenceNumber": "B16NOV",
@@ -206,6 +230,14 @@
 					"personId": "02817ff3-632a-4228-9c31-25ad8124568c",
 					"lastname": "Ager"
 				},
+				"hiringManager": {
+					"emailAddress": "a.manager@5535.com",
+					"loginname": "aman0agr",
+					"referenceNumber": "A00AGR",
+					"givenname": "A Man",
+					"personId": "02817ff3-632a-4228-9c31-25ad8124568c",
+					"lastname": "Ager"
+				},
 				"employmentType": 0,
 				"formOfEmploymentId": "1",
 				"topOrgName": "Top organization name",
@@ -255,6 +287,14 @@
 					"personId": "02817ff3-632a-4228-9c31-25ad8124568c",
 					"lastname": "Ager"
 				},
+				"hiringManager": {
+					"emailAddress": "a.manager@5535.com",
+					"loginname": "aman0agr",
+					"referenceNumber": "A00AGR",
+					"givenname": "A Man",
+					"personId": "02817ff3-632a-4228-9c31-25ad8124568c",
+					"lastname": "Ager"
+				},
 				"employmentType": 0,
 				"formOfEmploymentId": "1",
 				"topOrgName": "Top organization name",
@@ -297,6 +337,14 @@
 				"topOrgId": 23,
 				"isManager": false,
 				"manager": {
+					"emailAddress": "a.manager@5535.com",
+					"loginname": "aman0agr",
+					"referenceNumber": "A00AGR",
+					"givenname": "A Man",
+					"personId": "02817ff3-632a-4228-9c31-25ad8124568c",
+					"lastname": "Ager"
+				},
+				"hiringManager": {
 					"emailAddress": "a.manager@5535.com",
 					"loginname": "aman0agr",
 					"referenceNumber": "A00AGR",

@@ -1,11 +1,11 @@
 package se.sundsvall.checklist.integration.db;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -112,7 +112,7 @@ public class EmployeeChecklistIntegration {
 		// Trying to update manager, but if employment has been updated there is a risk that main employment signal is missing.
 		// In that case, log problem and keep existing manager.
 		try {
-			employeeEntity.setManager(retrieveManagerEntity(getMainEmployment(employee).getManager()));
+			employeeEntity.setManager(retrieveManagerEntity(getMainEmployment(employee).getHiringManager()));
 		} catch (final ThrowableProblem e) {
 			LOGGER.warn("Tried to update manager for employee %s but ended up with an exception.".formatted(employee.getLoginname()), e);
 		}
@@ -296,13 +296,13 @@ public class EmployeeChecklistIntegration {
 	}
 
 	/**
-	 * Method for creating an employee checklist based on closest organizational checklist.
+	 * Method for creating an employee checklist based on the closest organizational checklist.
 	 *
 	 * @param  municipalityId   the id of the municipality where the employee belongs
 	 * @param  employee         the employee to onboard
 	 * @param  orgTree          the organization tree for the employee
 	 * @return                  status of the process of creating the employee checklist
-	 * @throws ThrowableProblem if error occurs when processing employee
+	 * @throws ThrowableProblem if an error occurs when processing an employee
 	 */
 	@Transactional
 	public String initiateEmployee(String municipalityId, Employee employee, OrganizationTree orgTree) {
@@ -310,16 +310,16 @@ public class EmployeeChecklistIntegration {
 			return EMPLOYEE_HAS_CHECKLIST.formatted(employee.getLoginname());
 		}
 
-		// Fetch main employment and create employee entity
+		// Fetch main employment and create an employee entity
 		final var employment = getMainEmployment(employee);
 		final var employeeEntity = toEmployeeEntity(employee);
 
-		// Attach existing organizational units to the employee (or create new unit if not present in the persistent layer)
+		// Attach existing organizational units to the employee (or create a new unit if not present in the persistent layer)
 		employeeEntity.setCompany(retrieveOrganizationEntity(municipalityId, employment.getCompanyId(), null));
 		employeeEntity.setDepartment(retrieveOrganizationEntity(municipalityId, employment.getOrgId(), employment.getOrgName()));
 
-		// Attach existing manager to the employee (or create new manager if not present in the persistent layer)
-		employeeEntity.setManager(retrieveManagerEntity(employment.getManager()));
+		// Attach an existing manager to the employee (or create a new manager if not present in the persistent layer)
+		employeeEntity.setManager(retrieveManagerEntity(employment.getHiringManager()));
 
 		// Persist employee and create checklist for him/her
 		final var persistedEmployee = employeeRepository.save(employeeEntity);
@@ -333,7 +333,7 @@ public class EmployeeChecklistIntegration {
 	 *
 	 * @param  parameters filter parameters to apply
 	 * @param  pageable   pagination parameters to apply
-	 * @return            a paged result of ongoing employye checklists matching the provided parameters
+	 * @return            a paged result of ongoing employee checklists matching the provided parameters
 	 */
 	public Page<EmployeeChecklistEntity> fetchAllOngoingEmployeeChecklists(final OngoingEmployeeChecklistParameters parameters, final PageRequest pageable) {
 		return employeeChecklistRepository.findAllByOngoingEmployeeChecklistParameters(parameters, pageable);
@@ -368,9 +368,7 @@ public class EmployeeChecklistIntegration {
 
 	private Optional<ChecklistEntity> retrieveActiveChecklist(String municipalityId, int organizationNumber) {
 		return organizationRepository.findByOrganizationNumberAndMunicipalityId(organizationNumber, municipalityId)
-			.map(OrganizationEntity::getChecklists)
-			.map(List::stream)
-			.orElse(Stream.empty())
+			.map(OrganizationEntity::getChecklists).stream().flatMap(Collection::stream)
 			.filter(checklist -> Objects.equals(checklist.getLifeCycle(), ACTIVE))
 			.findAny();
 	}

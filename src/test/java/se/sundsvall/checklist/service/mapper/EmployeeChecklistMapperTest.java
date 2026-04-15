@@ -672,7 +672,7 @@ class EmployeeChecklistMapperTest {
 			.build();
 		final var remoteEmployee = Employee.builder()
 			.withMainEmployment(Employment.builder()
-				.withManager(Manager.builder()
+				.withHiringManager(Manager.builder()
 					.withGivenname(newManagerFirstName)
 					.withLastname(newManagerLastName)
 					.withLoginname(newManagerUsername)

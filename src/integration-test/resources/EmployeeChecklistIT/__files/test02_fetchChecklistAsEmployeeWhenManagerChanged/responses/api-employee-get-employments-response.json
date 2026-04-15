@@ -28,6 +28,14 @@
 					"personId": "ae93a63e-d975-4cd9-8e28-4cc9ea8b4d96",
 					"lastname": "Ager"
 				},
+				"hiringManager": {
+					"emailAddress": "c.manager@55351.com",
+					"loginname": "cman1agr",
+					"referenceNumber": "CNEW01AGR",
+					"givenname": "C Newman",
+					"personId": "ae93a63e-d975-4cd9-8e28-4cc9ea8b4d96",
+					"lastname": "Ager"
+				},
 				"employmentType": 0,
 				"formOfEmploymentId": "1",
 				"topOrgName": "Top organization name",
