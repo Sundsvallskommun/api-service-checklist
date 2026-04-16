@@ -83,7 +83,6 @@ public class EmployeeChecklistService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeChecklistService.class);
 
-	private static final LocalDate DEFAULT_HIRE_DATE_FROM_PARAMETER_VALUE = LocalDate.now().minusDays(30);
 	private static final String ORGANIZATIONAL_STRUCTURE_DATA_NOT_FOUND = "Employee with loginname %s is missing information regarding organizational structure.";
 	private static final String CUSTOM_TASK_NOT_FOUND = "Employee checklist with id %s does not contain any custom task with id %s.";
 	private static final String ERROR_READING_PHASE_FROM_EMPLOYEE_CHECKLIST = "Could not read phase with id %s from employee checklist with id %s.";
@@ -318,11 +317,12 @@ public class EmployeeChecklistService {
 	 * Fetch new employees from employee integration and initiate checklists for them.
 	 */
 	public EmployeeChecklistResponse initiateEmployeeChecklists(final String municipalityId) {
+		final var defaultHireDate = LocalDate.now().minusDays(30);
 		if (LOGGER.isInfoEnabled()) {
-			LOGGER.info("Fetching new employees by municipalityId: {} and hireDateFrom: {}", sanitizeAndCompress(municipalityId), DEFAULT_HIRE_DATE_FROM_PARAMETER_VALUE);
+			LOGGER.info("Fetching new employees by municipalityId: {} and hireDateFrom: {}", sanitizeAndCompress(municipalityId), defaultHireDate);
 		}
 
-		final var employees = employeeIntegration.getNewEmployees(municipalityId, DEFAULT_HIRE_DATE_FROM_PARAMETER_VALUE);
+		final var employees = employeeIntegration.getNewEmployees(municipalityId, defaultHireDate);
 		if (isEmpty(employees)) {
 			return buildNoMatchResponse();
 		}
