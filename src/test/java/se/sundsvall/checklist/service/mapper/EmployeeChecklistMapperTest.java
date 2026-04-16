@@ -685,4 +685,33 @@ class EmployeeChecklistMapperTest {
 		assertThat(detailInfo)
 			.isEqualTo("Checklist for employee employeeFirstName employeeLastName (employeeUsername) has changed manager from managerFirstName managerLastName (managerUsername) to newManagerFirstName newManagerLastName (newManagerUsername)");
 	}
+
+	@Test
+	void extractDetailInformationFallsBackToManagerWhenHiringManagerIsNull() {
+		// Arrange
+		final var localEmployee = EmployeeEntity.builder()
+			.withFirstName("employeeFirstName")
+			.withLastName("employeeLastName")
+			.withUsername("employeeUsername")
+			.withManager(ManagerEntity.builder()
+				.withFirstName("oldManagerFirstName")
+				.withLastName("oldManagerLastName")
+				.withUsername("oldManagerUsername")
+				.build())
+			.build();
+		final var remoteEmployee = Employee.builder()
+			.withMainEmployment(Employment.builder()
+				.withManager(Manager.builder()
+					.withGivenname("newManagerFirstName")
+					.withLastname("newManagerLastName")
+					.withLoginname("newManagerUsername")
+					.build())
+				.build()) // No hiringManager set, should fall back to manager
+			.build();
+
+		final var detailInfo = EmployeeChecklistMapper.createUpdateManagerDetailString(localEmployee, remoteEmployee);
+
+		assertThat(detailInfo)
+			.isEqualTo("Checklist for employee employeeFirstName employeeLastName (employeeUsername) has changed manager from oldManagerFirstName oldManagerLastName (oldManagerUsername) to newManagerFirstName newManagerLastName (newManagerUsername)");
+	}
 }

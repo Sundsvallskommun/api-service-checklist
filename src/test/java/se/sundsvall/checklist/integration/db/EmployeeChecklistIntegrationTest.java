@@ -212,6 +212,38 @@ class EmployeeChecklistIntegrationTest {
 	}
 
 	@Test
+	void updateEmployeeInformationFallsBackToManagerWhenHiringManagerIsNull() {
+		// Arrange
+		final var managerId = UUID.randomUUID().toString();
+		final var entity = EmployeeEntity.builder()
+			.withManager(ManagerEntity.builder()
+				.withPersonId(UUID.randomUUID().toString())
+				.build())
+			.build();
+
+		final var employment = Employment.builder()
+			.withIsMainEmployment(true)
+			.withManager(Manager.builder()
+				.withPersonId(managerId)
+				.build())
+			.build(); // No hiringManager set
+
+		final var employee = Employee.builder()
+			.withMainEmployment(employment)
+			.build();
+
+		when(managerRepositoryMock.findById(managerId)).thenReturn(Optional.of(ManagerEntity.builder().withPersonId(managerId).build()));
+
+		// Act
+		integration.updateEmployeeInformation(entity, employee);
+
+		// Verify and assert
+		verify(managerRepositoryMock).findById(managerId);
+		verify(employeeRepositoryMock).save(employeeEntityCaptor.capture());
+		assertThat(employeeEntityCaptor.getValue().getManager().getPersonId()).isEqualTo(managerId);
+	}
+
+	@Test
 	void fetchDelegateEmail() {
 		// Arrange
 		final var employeeChecklistId = UUID.randomUUID().toString();

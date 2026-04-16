@@ -112,7 +112,7 @@ public class EmployeeChecklistIntegration {
 		// Trying to update manager, but if employment has been updated there is a risk that main employment signal is missing.
 		// In that case, log problem and keep existing manager.
 		try {
-			employeeEntity.setManager(retrieveManagerEntity(getMainEmployment(employee).getHiringManager()));
+			employeeEntity.setManager(retrieveManagerEntity(getMainEmployment(employee).resolveResponsibleManager()));
 		} catch (final ThrowableProblem e) {
 			LOGGER.warn("Tried to update manager for employee %s but ended up with an exception.".formatted(employee.getLoginname()), e);
 		}
@@ -319,7 +319,7 @@ public class EmployeeChecklistIntegration {
 		employeeEntity.setDepartment(retrieveOrganizationEntity(municipalityId, employment.getOrgId(), employment.getOrgName()));
 
 		// Attach an existing manager to the employee (or create a new manager if not present in the persistent layer)
-		employeeEntity.setManager(retrieveManagerEntity(employment.getHiringManager()));
+		employeeEntity.setManager(retrieveManagerEntity(employment.resolveResponsibleManager()));
 
 		// Persist employee and create checklist for him/her
 		final var persistedEmployee = employeeRepository.save(employeeEntity);

@@ -95,6 +95,37 @@ class EmploymentTest {
 	}
 
 	@Test
+	void resolveResponsibleManagerReturnsHiringManagerWhenPresent() {
+		final var manager = Manager.builder().withPersonId("manager-id").build();
+		final var hiringManager = Manager.builder().withPersonId("hiring-manager-id").build();
+
+		final var employment = Employment.builder()
+			.withManager(manager)
+			.withHiringManager(hiringManager)
+			.build();
+
+		assertThat(employment.resolveResponsibleManager()).isEqualTo(hiringManager);
+	}
+
+	@Test
+	void resolveResponsibleManagerFallsBackToManagerWhenHiringManagerIsNull() {
+		final var manager = Manager.builder().withPersonId("manager-id").build();
+
+		final var employment = Employment.builder()
+			.withManager(manager)
+			.build();
+
+		assertThat(employment.resolveResponsibleManager()).isEqualTo(manager);
+	}
+
+	@Test
+	void resolveResponsibleManagerReturnsNullWhenBothAreNull() {
+		final var employment = Employment.builder().build();
+
+		assertThat(employment.resolveResponsibleManager()).isNull();
+	}
+
+	@Test
 	void testNoDirtOnCreatedBean() {
 		assertThat(Employment.builder().build()).hasAllNullFieldsOrProperties();
 		assertThat(new Employment()).hasAllNullFieldsOrProperties();
