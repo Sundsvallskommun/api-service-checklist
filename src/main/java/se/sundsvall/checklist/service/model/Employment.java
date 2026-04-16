@@ -39,6 +39,10 @@ public class Employment {
 
 	private Manager hiringManager;
 
+	public Manager resolveResponsibleManager() {
+		return hiringManager != null ? hiringManager : manager;
+	}
+
 	private String managerCode;
 
 	private Date startDate;
