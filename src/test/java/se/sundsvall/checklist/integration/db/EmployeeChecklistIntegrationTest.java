@@ -244,6 +244,36 @@ class EmployeeChecklistIntegrationTest {
 	}
 
 	@Test
+	void updateEmployeeInformationKeepsExistingManagerWhenResponsibleManagerIsNull() {
+		// Arrange
+		final var existingManagerId = UUID.randomUUID().toString();
+		final var existingManager = ManagerEntity.builder()
+			.withPersonId(existingManagerId)
+			.build();
+		final var entity = EmployeeEntity.builder()
+			.withManager(existingManager)
+			.build();
+
+		final var employment = Employment.builder()
+			.withIsMainEmployment(true)
+			.build(); // No hiringManager and no manager set
+
+		final var employee = Employee.builder()
+			.withLoginname("loginname")
+			.withPersonId(UUID.randomUUID().toString())
+			.withMainEmployment(employment)
+			.build();
+
+		// Act
+		integration.updateEmployeeInformation(entity, employee);
+
+		// Verify and assert
+		verify(employeeRepositoryMock).save(employeeEntityCaptor.capture());
+		assertThat(employeeEntityCaptor.getValue().getManager()).isSameAs(existingManager);
+		assertThat(employeeEntityCaptor.getValue().getManager().getPersonId()).isEqualTo(existingManagerId);
+	}
+
+	@Test
 	void fetchDelegateEmail() {
 		// Arrange
 		final var employeeChecklistId = UUID.randomUUID().toString();
@@ -1139,6 +1169,71 @@ class EmployeeChecklistIntegrationTest {
 		verify(employeeRepositoryMock).existsById(uuid);
 		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(e.getMessage()).isEqualTo("Not Found: No main employment found for employee with loginname username.");
+	}
+
+	@Test
+	void initiateEmployeeWithoutResponsibleManager() {
+		// Arrange
+		final var municipalityId = "municipalityId";
+		final var username = "username";
+		final var uuid = UUID.randomUUID().toString();
+		final var companyId = 2;
+		final var orgId = 2124;
+		final var orgName = "orgName";
+		final var employee = Employee.builder()
+			.withLoginname(username)
+			.withPersonId(uuid)
+			.withMainEmployment(Employment.builder()
+				.withCompanyId(companyId)
+				.withOrgId(orgId)
+				.withOrgName(orgName)
+				.withIsMainEmployment(true)
+				.build()) // No hiringManager and no manager set
+			.build();
+
+		// Act
+		final var e = assertThrows(ThrowableProblem.class, () -> integration.initiateEmployee(municipalityId, employee, null));
+
+		// Verify and assert
+		verify(employeeRepositoryMock).existsById(uuid);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(companyId, municipalityId);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(orgId, municipalityId);
+		verify(employeeRepositoryMock, times(0)).save(any());
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
+		assertThat(e.getMessage()).isEqualTo("Not Found: Cannot initiate employee username without responsible manager.");
+	}
+
+	@Test
+	void initiateEmployeeWhenManagerHasNoPersonId() {
+		// Arrange
+		final var municipalityId = "municipalityId";
+		final var username = "username";
+		final var uuid = UUID.randomUUID().toString();
+		final var companyId = 2;
+		final var orgId = 2124;
+		final var orgName = "orgName";
+		final var employee = Employee.builder()
+			.withLoginname(username)
+			.withPersonId(uuid)
+			.withMainEmployment(Employment.builder()
+				.withCompanyId(companyId)
+				.withOrgId(orgId)
+				.withOrgName(orgName)
+				.withIsMainEmployment(true)
+				.withHiringManager(Manager.builder().build()) // Manager present but personId missing
+				.build())
+			.build();
+
+		// Act
+		final var e = assertThrows(ThrowableProblem.class, () -> integration.initiateEmployee(municipalityId, employee, null));
+
+		// Verify and assert
+		verify(employeeRepositoryMock).existsById(uuid);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(companyId, municipalityId);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(orgId, municipalityId);
+		verify(employeeRepositoryMock, times(0)).save(any());
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
+		assertThat(e.getMessage()).isEqualTo("Not Found: Cannot initiate employee username without responsible manager.");
 	}
 
 	@Test
