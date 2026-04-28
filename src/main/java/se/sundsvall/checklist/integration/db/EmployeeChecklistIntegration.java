@@ -70,6 +70,7 @@ public class EmployeeChecklistIntegration {
 	private static final String NO_MATCHING_EMPLOYEE_CHECKLIST_FOUND = "Employee checklist with id %s was not found within municipality %s.";
 	private static final String NO_MATCHING_PHASE_FOUND = "Phase with id %s was not found within municipality %s.";
 	private static final String NO_FULFILMENT_INFORMATION_FOUND = "No fulfilment information found for task with id %s in employee checklist with id %s.";
+	private static final String EMPLOYEE_NO_MANAGER = "Cannot initiate employee %s without responsible manager.";
 
 	private final DelegateRepository delegateRepository;
 	private final EmployeeRepository employeeRepository;
@@ -109,12 +110,19 @@ public class EmployeeChecklistIntegration {
 	public void updateEmployeeInformation(EmployeeEntity employeeEntity, Employee employee) {
 		updateEmployeeEntity(employeeEntity, employee);
 
-		// Trying to update manager, but if employment has been updated there is a risk that main employment signal is missing.
-		// In that case, log problem and keep existing manager.
+		// Trying to update manager, but if employment has been updated there is a risk that main employment signal is missing
+		// or that the responsible manager is missing in the remote employee data. In that case, log and keep existing manager.
 		try {
-			employeeEntity.setManager(retrieveManagerEntity(getMainEmployment(employee).resolveResponsibleManager()));
-		} catch (final ThrowableProblem e) {
-			LOGGER.warn("Tried to update manager for employee %s but ended up with an exception.".formatted(employee.getLoginname()), e);
+			final var newManager = retrieveManagerEntity(getMainEmployment(employee).resolveResponsibleManager());
+			if (newManager != null) {
+				employeeEntity.setManager(newManager);
+			} else {
+				LOGGER.warn("No responsible manager found in remote employee data for loginname={}, personId={}. Keeping existing manager.",
+					employee.getLoginname(), employee.getPersonId());
+			}
+		} catch (final Exception e) {
+			LOGGER.warn("Tried to update manager for employee with loginname={}, personId={} but ended up with an exception. Keeping existing manager.",
+				employee.getLoginname(), employee.getPersonId(), e);
 		}
 
 		employeeRepository.save(employeeEntity);
@@ -318,8 +326,12 @@ public class EmployeeChecklistIntegration {
 		employeeEntity.setCompany(retrieveOrganizationEntity(municipalityId, employment.getCompanyId(), null));
 		employeeEntity.setDepartment(retrieveOrganizationEntity(municipalityId, employment.getOrgId(), employment.getOrgName()));
 
+		final var managerEntity = retrieveManagerEntity(employment.resolveResponsibleManager());
+		if (managerEntity == null) {
+			throw Problem.valueOf(NOT_FOUND, EMPLOYEE_NO_MANAGER.formatted(employee.getLoginname()));
+		}
 		// Attach an existing manager to the employee (or create a new manager if not present in the persistent layer)
-		employeeEntity.setManager(retrieveManagerEntity(employment.resolveResponsibleManager()));
+		employeeEntity.setManager(managerEntity);
 
 		// Persist employee and create checklist for him/her
 		final var persistedEmployee = employeeRepository.save(employeeEntity);
@@ -340,6 +352,9 @@ public class EmployeeChecklistIntegration {
 	}
 
 	private ManagerEntity retrieveManagerEntity(Manager manager) {
+		if (manager == null || manager.getPersonId() == null) {
+			return null;
+		}
 		return managerRepository.findById(manager.getPersonId())
 			.orElse(toManagerEntity(manager));
 	}

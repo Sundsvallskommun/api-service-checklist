@@ -459,6 +459,17 @@ class EmployeeChecklistIT extends AbstractAppTest {
 	}
 
 	@Test
+	void test29_fetchChecklistAsEmployeeWithoutManagerInRemote() {
+		setupCall()
+			.withServicePath(PATH_PREFIX + "/employee/lemp9loyee")
+			.withHttpMethod(GET)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(EXPECTED_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
+	@Test
 	@DirtiesContext
 	void test28_updateManagerForSpecificEmployee() {
 		setupCall()
