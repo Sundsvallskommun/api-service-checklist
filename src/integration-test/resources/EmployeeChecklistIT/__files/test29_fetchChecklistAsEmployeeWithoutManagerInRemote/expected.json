@@ -1,0 +1,79 @@
+{
+	"manager": {
+		"firstName": "L Man",
+		"lastName": "Ager",
+		"id": "c9b5a3d2-7e6f-4b1a-8c3d-2f1e5a7b9c0d",
+		"email": "l.manager@55351.com",
+		"username": "lman9agr"
+	},
+	"endDate": "2024-07-01",
+	"created": "2024-01-01T12:00:00+01:00",
+	"id": "e1f2a3b4-5c6d-7e8f-9a0b-1c2d3e4f5a6b",
+	"completed": true,
+	"employee": {
+		"firstName": "L Emp",
+		"lastName": "Loyee",
+		"id": "a8c7b6e5-9d4f-3e2a-1b0c-5d4e3f2a1b0c",
+		"title": "Slugger",
+		"email": "l.employee@55351.com",
+		"username": "lemp9loyee"
+	},
+	"locked": false,
+	"updated": "2024-01-01T12:00:00+01:00",
+	"phases": [
+		{
+			"bodyText": "Description of phase D",
+			"sortOrder": 1,
+			"name": "Phasename D",
+			"id": "d2c92810-3c46-4161-af54-7ae8b3c9d0b3",
+			"timeToComplete": "P1M",
+			"tasks": [
+				{
+					"fulfilmentStatus": "EMPTY",
+					"heading": "Description of new employee task",
+					"sortOrder": 1000,
+					"id": "a76e9920-261f-42fc-9077-14fb1cdb9871",
+					"text": "Text for task to be performed by new employee",
+					"roleType": "NEW_EMPLOYEE",
+					"questionType": "COMPLETED_OR_NOT_RELEVANT_WITH_TEXT",
+					"customTask": false,
+					"optional": false
+				}
+			]
+		},
+		{
+			"bodyText": "Description of phase B",
+			"sortOrder": 3,
+			"name": "Phasename B",
+			"id": "3e9780a7-96f3-4d07-80ee-a9634b786a38",
+			"timeToComplete": "P1M",
+			"tasks": [
+				{
+					"fulfilmentStatus": "EMPTY",
+					"heading": "Description of second employee task",
+					"sortOrder": 2,
+					"id": "0c8b99e9-718b-4c92-9ba3-a49dc29d48b5",
+					"text": "Text for second employee task",
+					"roleType": "NEW_EMPLOYEE",
+					"questionType": "YES_OR_NO",
+					"customTask": false,
+					"optional": false
+				},
+				{
+					"fulfilmentStatus": "EMPTY",
+					"heading": "Description of first employee task",
+					"headingReference": "http://www.address-to-click.web",
+					"sortOrder": 3,
+					"id": "d250a20c-a616-4147-bfe0-19a0d12f3df0",
+					"text": "Text for first employee task",
+					"roleType": "NEW_EMPLOYEE",
+					"questionType": "YES_OR_NO_WITH_TEXT",
+					"customTask": false,
+					"optional": false
+				}
+			]
+		}
+	],
+	"startDate": "2024-01-01",
+	"expirationDate": "2024-10-01"
+}

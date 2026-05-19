@@ -366,9 +366,9 @@ public final class EmployeeChecklistMapper {
 			localEmployee.getManager().getFirstName(),
 			localEmployee.getManager().getLastName(),
 			localEmployee.getManager().getUsername(),
-			remoteEmployee.getMainEmployment().getManager().getGivenname(),
-			remoteEmployee.getMainEmployment().getManager().getLastname(),
-			remoteEmployee.getMainEmployment().getManager().getLoginname());
+			remoteEmployee.getMainEmployment().resolveResponsibleManager().getGivenname(),
+			remoteEmployee.getMainEmployment().resolveResponsibleManager().getLastname(),
+			remoteEmployee.getMainEmployment().resolveResponsibleManager().getLoginname());
 	}
 
 	/**

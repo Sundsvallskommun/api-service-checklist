@@ -38,6 +38,14 @@
 					"personId": "e4218391-49d3-415f-877a-c555105af686",
 					"lastname": "Dog"
 				},
+				"hiringManager": {
+					"emailAddress": "top.dog@noreply.com",
+					"loginname": "top34dog",
+					"referenceNumber": "TOP1DOG",
+					"givenname": "Top",
+					"personId": "e4218391-49d3-415f-877a-c555105af686",
+					"lastname": "Dog"
+				},
 				"employmentType": 0,
 				"formOfEmploymentId": "1",
 				"topOrgName": "Top organization name",
@@ -63,6 +71,14 @@
 					"personId": "e4218391-49d3-415f-877a-c555105af686",
 					"lastname": "Dog"
 				},
+				"hiringManager": {
+					"emailAddress": "top.dog@noreply.com",
+					"loginname": "top34dog",
+					"referenceNumber": "TOP1DOG",
+					"givenname": "Top",
+					"personId": "e4218391-49d3-415f-877a-c555105af686",
+					"lastname": "Dog"
+				},
 				"employmentType": 0,
 				"formOfEmploymentId": "1",
 				"topOrgName": "Top organization name",
@@ -81,6 +97,14 @@
 				"topOrgId": 456,
 				"isManager": false,
 				"manager": {
+					"emailAddress": "top.cat@noreply.com",
+					"loginname": "top12cat",
+					"referenceNumber": "TOP1CAT",
+					"givenname": "Top",
+					"personId": "6e85bf82-f628-4d54-aba1-3254c97d55a0",
+					"lastname": "Cat"
+				},
+				"hiringManager": {
 					"emailAddress": "top.cat@noreply.com",
 					"loginname": "top12cat",
 					"referenceNumber": "TOP1CAT",

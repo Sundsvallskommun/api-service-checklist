@@ -41,7 +41,7 @@ public class EmployeeMapper {
 			.orElse(null);
 	}
 
-	private static Employment toEmployment(generated.se.sundsvall.employee.Employment employment) {
+	private static Employment toEmployment(generated.se.sundsvall.employee.EmploymentV2 employment) {
 		return ofNullable(employment)
 			.map(e -> Employment.builder()
 				.withBenefitGroupId(e.getBenefitGroupId())
@@ -53,6 +53,7 @@ public class EmployeeMapper {
 				.withIsManager(e.getIsManager())
 				.withIsManual(e.getIsManual())
 				.withManager(toManager(e.getManager()))
+				.withHiringManager(toManager(e.getHiringManager()))
 				.withManagerCode(e.getManagerCode())
 				.withOrgId(e.getOrgId())
 				.withOrgName(e.getOrgName())
@@ -65,37 +66,33 @@ public class EmployeeMapper {
 	}
 
 	private static String extractEmailAddressFromMainEmployment(generated.se.sundsvall.employee.Employeev2 employee) {
-		return getMainEmployment(employee)
-			.map(me -> ofNullable(employee.getAccounts()).orElse(emptyList())
-				.stream()
-				.filter(a -> Objects.equals(me.getCompanyId(), a.getCompanyId()))
-				.filter(a -> Objects.nonNull(a.getEmailAddress()))
-				.map(generated.se.sundsvall.employee.Account::getEmailAddress)
-				.findFirst()
-				.orElse(null))
+		return getMainEmployment(employee).flatMap(employmentV2 -> ofNullable(employee.getAccounts()).orElse(emptyList())
+			.stream()
+			.filter(a -> Objects.equals(employmentV2.getCompanyId(), a.getCompanyId()))
+			.map(generated.se.sundsvall.employee.Account::getEmailAddress)
+			.filter(Objects::nonNull)
+			.findFirst())
 			.orElse(null);
 	}
 
 	private static String extractLoginnameFromMainEmployment(generated.se.sundsvall.employee.Employeev2 employee) {
-		return getMainEmployment(employee)
-			.map(me -> ofNullable(employee.getAccounts()).orElse(emptyList())
-				.stream()
-				.filter(a -> Objects.equals(me.getCompanyId(), a.getCompanyId()))
-				.filter(a -> Objects.nonNull(a.getLoginname()))
-				.map(generated.se.sundsvall.employee.Account::getLoginname)
-				.findFirst()
-				.orElse(null))
+		return getMainEmployment(employee).flatMap(employmentV2 -> ofNullable(employee.getAccounts()).orElse(emptyList())
+			.stream()
+			.filter(a -> Objects.equals(employmentV2.getCompanyId(), a.getCompanyId()))
+			.map(generated.se.sundsvall.employee.Account::getLoginname)
+			.filter(Objects::nonNull)
+			.findFirst())
 			.orElse(null);
 	}
 
-	private static Optional<generated.se.sundsvall.employee.Employment> getMainEmployment(generated.se.sundsvall.employee.Employeev2 employee) {
+	private static Optional<generated.se.sundsvall.employee.EmploymentV2> getMainEmployment(generated.se.sundsvall.employee.Employeev2 employee) {
 		return ofNullable(employee.getEmployments()).orElse(emptyList()).stream()
-			.filter(generated.se.sundsvall.employee.Employment::getIsMainEmployment)
+			.filter(generated.se.sundsvall.employee.EmploymentV2::getIsMainEmployment)
 			.findFirst();
 	}
 
 	/**
-	 * Method for mapping NewEmployee objects to an internal Employee model objects
+	 * Method for mapping NewEmployee objects to an internal Employee model object
 	 *
 	 * @param  employee the NewEmployee object to map
 	 * @return          an internal Employee model object representing the provided NewEmployee object
@@ -131,6 +128,7 @@ public class EmployeeMapper {
 				.withIsManager(e.getIsManager())
 				.withIsManual(e.getIsManual())
 				.withManager(toManager(e.getManager()))
+				.withHiringManager(toManager(e.getHiringManager()))
 				.withManagerCode(e.getManagerCode())
 				.withOrgId(e.getOrgId())
 				.withOrgName(e.getOrgName())
@@ -143,26 +141,22 @@ public class EmployeeMapper {
 	}
 
 	private static String extractEmailAddressFromMainEmployment(generated.se.sundsvall.employee.NewEmployee employee) {
-		return getMainEmployment(employee)
-			.map(me -> ofNullable(employee.getAccounts()).orElse(emptyList())
-				.stream()
-				.filter(a -> Objects.equals(me.getCompanyId(), a.getCompanyId()))
-				.filter(a -> Objects.nonNull(a.getEmailAddress()))
-				.map(generated.se.sundsvall.employee.Account::getEmailAddress)
-				.findFirst()
-				.orElse(null))
+		return getMainEmployment(employee).flatMap(me -> ofNullable(employee.getAccounts()).orElse(emptyList())
+			.stream()
+			.filter(a -> Objects.equals(me.getCompanyId(), a.getCompanyId()))
+			.map(generated.se.sundsvall.employee.Account::getEmailAddress)
+			.filter(Objects::nonNull)
+			.findFirst())
 			.orElse(null);
 	}
 
 	private static String extractLoginnameFromMainEmployment(generated.se.sundsvall.employee.NewEmployee employee) {
-		return getMainEmployment(employee)
-			.map(me -> ofNullable(employee.getAccounts()).orElse(emptyList())
-				.stream()
-				.filter(a -> Objects.equals(me.getCompanyId(), a.getCompanyId()))
-				.filter(a -> Objects.nonNull(a.getLoginname()))
-				.map(generated.se.sundsvall.employee.Account::getLoginname)
-				.findFirst()
-				.orElse(null))
+		return getMainEmployment(employee).flatMap(me -> ofNullable(employee.getAccounts()).orElse(emptyList())
+			.stream()
+			.filter(a -> Objects.equals(me.getCompanyId(), a.getCompanyId()))
+			.map(generated.se.sundsvall.employee.Account::getLoginname)
+			.filter(Objects::nonNull)
+			.findFirst())
 			.orElse(null);
 	}
 

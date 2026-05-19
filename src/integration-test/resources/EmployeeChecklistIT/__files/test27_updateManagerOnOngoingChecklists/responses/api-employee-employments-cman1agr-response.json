@@ -36,6 +36,14 @@
 					"emailAddress": "d.manager@55351.com",
 					"referenceNumber": "REF2AGR"
 				},
+				"hiringManager": {
+					"personId": "b1cf6779-f2a2-4236-89c6-0ba9beab70c7",
+					"givenname": "D Man",
+					"lastname": "Ager",
+					"loginname": "dman2agr",
+					"emailAddress": "d.manager@55351.com",
+					"referenceNumber": "REF2AGR"
+				},
 				"aid": "351008",
 				"empRowId": "1000"
 			}

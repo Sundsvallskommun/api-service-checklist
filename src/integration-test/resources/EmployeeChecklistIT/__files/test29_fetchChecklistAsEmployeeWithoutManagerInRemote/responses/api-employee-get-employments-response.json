@@ -1,0 +1,40 @@
+[
+	{
+		"givenname": "L Emp",
+		"isClassified": false,
+		"personId": "a8c7b6e5-9d4f-3e2a-1b0c-5d4e3f2a1b0c",
+		"accounts": [
+			{
+				"loginname": "lemp9loyee",
+				"companyId": 1,
+				"emailAddress": "l.employee@55351.com"
+			}
+		],
+		"referenceNumbers": [
+			{
+				"referenceNumber": "1LEMP9LOYEE",
+				"companyId": 1
+			}
+		],
+		"employments": [
+			{
+				"orgName": "Sub organization 55351",
+				"topOrgId": 28,
+				"employmentType": 0,
+				"formOfEmploymentId": "1",
+				"topOrgName": "Top organization name",
+				"isManual": false,
+				"title": "Slugger",
+				"orgId": 55351,
+				"companyId": 1,
+				"paTeam": "AB01",
+				"isMainEmployment": true,
+				"benefitGroupId": 11,
+				"aid": "123456",
+				"startDate": "2024-01-01T00:00:00"
+			}
+		],
+		"personNumber": "1901011234",
+		"lastname": "Loyee"
+	}
+]

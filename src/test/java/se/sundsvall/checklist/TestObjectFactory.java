@@ -2,7 +2,7 @@ package se.sundsvall.checklist;
 
 import generated.se.sundsvall.employee.Account;
 import generated.se.sundsvall.employee.Employeev2;
-import generated.se.sundsvall.employee.Employment;
+import generated.se.sundsvall.employee.EmploymentV2;
 import generated.se.sundsvall.employee.Manager;
 import generated.se.sundsvall.employee.NewEmployee;
 import generated.se.sundsvall.employee.NewEmployment;
@@ -430,12 +430,12 @@ public final class TestObjectFactory {
 			.employments(generateEmployments());
 	}
 
-	public static List<Employment> generateEmployments() {
+	public static List<EmploymentV2> generateEmployments() {
 		return new ArrayList<>(List.of(generateEmployment()));
 	}
 
-	public static Employment generateEmployment() {
-		return new generated.se.sundsvall.employee.Employment()
+	public static EmploymentV2 generateEmployment() {
+		return new generated.se.sundsvall.employee.EmploymentV2()
 			.companyId(1)
 			.isMainEmployment(true)
 			.isManager(false)

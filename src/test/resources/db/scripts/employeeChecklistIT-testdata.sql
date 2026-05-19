@@ -580,6 +580,35 @@ values ('4b6e83ec-35a7-469e-8137-d1bd044c92ad', 'b3c9f934-a7f3-4bc8-9cc6-f085077
         '04ca9112-001b-4f12-b866-8d59ef1c25c4');
 
 -- ======================================================================================
+-- Employee L and Manager L are used in testcase test29
+-- ======================================================================================
+-- --------------------------------------------------------------------------------------
+-- Checklist for employee L where the remote employee data is missing manager information
+-- so that the existing manager should be kept when fetching the checklist
+-- --------------------------------------------------------------------------------------
+
+-- Manager
+insert into manager (created, updated, email, first_name, id, last_name, username)
+values (now(), now(), 'l.manager@55351.com', 'L Man', 'c9b5a3d2-7e6f-4b1a-8c3d-2f1e5a7b9c0d', 'Ager', 'lman9agr');
+
+-- Employee with outdated information so that the update flow is triggered
+insert into employee (start_date, created, updated, organization_id, department_id, email, first_name, id, last_name,
+                      manager_id, title, username, employment_position)
+values ('2024-01-01', now(), subdate(now(), INTERVAL 1 DAY), 'cfcb03b1-7344-4352-9b72-7aebb1f235e1',
+        'bd49f474-303c-4a4e-aa54-5d4f58d9188b', 'l.employee@55351.com', 'L Emp', 'a8c7b6e5-9d4f-3e2a-1b0c-5d4e3f2a1b0c',
+        'Loyee', 'c9b5a3d2-7e6f-4b1a-8c3d-2f1e5a7b9c0d', 'Slugger', 'lemp9loyee', 'EMPLOYEE');
+
+-- Employee checklist
+insert into employee_checklist (end_date, expiration_date, start_date, completed, locked, created, updated, correspondence_id,
+                                employee_id, id)
+values ('2024-07-01', '2024-10-01', '2024-01-01', true, false, '2024-01-01 12:00:00.000', '2024-01-01 12:00:00.000', NULL,
+        'a8c7b6e5-9d4f-3e2a-1b0c-5d4e3f2a1b0c', 'e1f2a3b4-5c6d-7e8f-9a0b-1c2d3e4f5a6b');
+
+insert into referred_checklist (employee_checklist_id, checklist_id)
+values ('e1f2a3b4-5c6d-7e8f-9a0b-1c2d3e4f5a6b', 'e20598a4-6b32-459e-8c15-febbd4c5868e'),
+       ('e1f2a3b4-5c6d-7e8f-9a0b-1c2d3e4f5a6b', '8c66e24b-3845-47ae-af74-c4611db8be7c');
+
+-- ======================================================================================
 -- Data used in test 25 (reading initiation information)
 -- ======================================================================================
 insert into initiation_info (created, id, information, log_id, status, municipality_id)

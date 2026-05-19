@@ -66,9 +66,9 @@ public final class VerificationUtils {
 	private static List<String> verifyMandatoryEmploymentInformation(Employment employment) {
 		final var missingInformation = new ArrayList<String>();
 
-		if (isNull(employment.getManager())) {
+		if (isNull(employment.resolveResponsibleManager())) {
 			missingInformation.add("the main employment for the employee lacks information about the manager");
-		} else if (isNull(employment.getManager().getPersonId())) {
+		} else if (isNull(employment.resolveResponsibleManager().getPersonId())) {
 			missingInformation.add("the personid is missing for the manager connected to the main employment of the employee");
 		}
 		if (isNull(employment.getOrgId())) {

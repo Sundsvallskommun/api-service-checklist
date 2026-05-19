@@ -2,7 +2,7 @@ package se.sundsvall.checklist.integration.employee;
 
 import generated.se.sundsvall.employee.Account;
 import generated.se.sundsvall.employee.Employeev2;
-import generated.se.sundsvall.employee.Employment;
+import generated.se.sundsvall.employee.EmploymentV2;
 import generated.se.sundsvall.employee.Manager;
 import generated.se.sundsvall.employee.NewEmployee;
 import generated.se.sundsvall.employee.NewEmployment;
@@ -80,7 +80,7 @@ class EmployeeMapperTest {
 				.domain(DOMAIN)
 				.emailAddress(EMAIL_ADDRESS)
 				.loginname(LOGINNAME)))
-			.employments(List.of(new Employment()
+			.employments(List.of(new EmploymentV2()
 				.aid(AID)
 				.benefitGroupId(BENEFIT_GROUP_ID)
 				.companyId(COMPANY_ID)
@@ -208,7 +208,7 @@ class EmployeeMapperTest {
 				.domain(DOMAIN)
 				.emailAddress(EMAIL_ADDRESS)
 				.loginname(LOGINNAME)))
-			.employments(List.of(new Employment()
+			.employments(List.of(new EmploymentV2()
 				.companyId(COMPANY_ID + 1)
 				.isMainEmployment(true)));
 
@@ -243,14 +243,14 @@ class EmployeeMapperTest {
 	}
 
 	@Test
-	void toEmployeeFromEmployeev2WhenNoMainEmployment() {
+	void toEmployeeFromEmployeeV2WhenNoMainEmployment() {
 		final var input = new Employeev2()
 			.accounts(List.of(new Account()
 				.companyId(COMPANY_ID)
 				.domain(DOMAIN)
 				.emailAddress(EMAIL_ADDRESS)
 				.loginname(LOGINNAME)))
-			.employments(List.of(new Employment()
+			.employments(List.of(new EmploymentV2()
 				.companyId(COMPANY_ID)
 				.isMainEmployment(false)));
 

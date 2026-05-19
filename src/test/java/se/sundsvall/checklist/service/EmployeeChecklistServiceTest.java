@@ -1369,10 +1369,35 @@ class EmployeeChecklistServiceTest {
 		final var checklist = createChecklist(personId, UUID.randomUUID().toString());
 		final var remoteEmployee = Employee.builder()
 			.withMainEmployment(Employment.builder()
-				.withManager(Manager.builder()
+				.withHiringManager(Manager.builder()
 					.withPersonId(UUID.randomUUID().toString())
 					.build())
 				.build())
+			.build();
+
+		when(employeeChecklistIntegrationMock.findOngoingChecklists(MUNICIPALITY_ID)).thenReturn(List.of(checklist));
+		when(employeeIntegrationMock.getEmployeeInformation(MUNICIPALITY_ID, personId)).thenReturn(List.of(remoteEmployee));
+
+		final var result = service.updateManagerInformation(MUNICIPALITY_ID, null);
+
+		assertThat(result).isNotNull();
+		assertThat(result.getDetails()).hasSize(1);
+
+		verify(employeeChecklistIntegrationMock).findOngoingChecklists(MUNICIPALITY_ID);
+		verify(employeeIntegrationMock).getEmployeeInformation(MUNICIPALITY_ID, personId);
+		verify(employeeChecklistIntegrationMock).updateEmployeeInformation(checklist.getEmployee(), remoteEmployee);
+	}
+
+	@Test
+	void updateManagerInformationFallsBackToManagerWhenHiringManagerIsNull() {
+		final var personId = UUID.randomUUID().toString();
+		final var checklist = createChecklist(personId, UUID.randomUUID().toString());
+		final var remoteEmployee = Employee.builder()
+			.withMainEmployment(Employment.builder()
+				.withManager(Manager.builder()
+					.withPersonId(UUID.randomUUID().toString())
+					.build())
+				.build()) // No hiringManager set, should fall back to manager
 			.build();
 
 		when(employeeChecklistIntegrationMock.findOngoingChecklists(MUNICIPALITY_ID)).thenReturn(List.of(checklist));
@@ -1395,7 +1420,7 @@ class EmployeeChecklistServiceTest {
 		final var checklist = createChecklist(personId, managerPersonId);
 		final var remoteEmployee = Employee.builder()
 			.withMainEmployment(Employment.builder()
-				.withManager(Manager.builder()
+				.withHiringManager(Manager.builder()
 					.withPersonId(managerPersonId)
 					.build())
 				.build())
@@ -1420,7 +1445,7 @@ class EmployeeChecklistServiceTest {
 		final var checklist = createChecklist(personId, UUID.randomUUID().toString());
 		final var remoteEmployee = Employee.builder()
 			.withMainEmployment(Employment.builder()
-				.withManager(Manager.builder()
+				.withHiringManager(Manager.builder()
 					.withPersonId(UUID.randomUUID().toString())
 					.build())
 				.build())
@@ -1469,7 +1494,7 @@ class EmployeeChecklistServiceTest {
 		final var checklist = createChecklist(personId, UUID.randomUUID().toString());
 		final var remoteEmployee = Employee.builder()
 			.withMainEmployment(Employment.builder()
-				.withManager(Manager.builder()
+				.withHiringManager(Manager.builder()
 					.withPersonId(UUID.randomUUID().toString())
 					.build())
 				.build())

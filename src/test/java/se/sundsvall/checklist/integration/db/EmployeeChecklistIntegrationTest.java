@@ -162,7 +162,7 @@ class EmployeeChecklistIntegrationTest {
 		final var employment = Employment.builder()
 			.withTitle(jobTitle)
 			.withIsMainEmployment(true)
-			.withManager(Manager.builder()
+			.withHiringManager(Manager.builder()
 				.withPersonId(managerId)
 				.build())
 			.build();
@@ -194,7 +194,7 @@ class EmployeeChecklistIntegrationTest {
 			.build();
 		final var employment = Employment.builder()
 			.withIsMainEmployment(true)
-			.withManager(Manager.builder()
+			.withHiringManager(Manager.builder()
 				.withPersonId(newManagerId)
 				.build())
 			.build();
@@ -209,6 +209,68 @@ class EmployeeChecklistIntegrationTest {
 		verify(managerRepositoryMock).findById(newManagerId);
 		verify(employeeRepositoryMock).save(employeeEntityCaptor.capture());
 		assertThat(employeeEntityCaptor.getValue().getManager().getPersonId()).isEqualTo(newManagerId);
+	}
+
+	@Test
+	void updateEmployeeInformationFallsBackToManagerWhenHiringManagerIsNull() {
+		// Arrange
+		final var managerId = UUID.randomUUID().toString();
+		final var entity = EmployeeEntity.builder()
+			.withManager(ManagerEntity.builder()
+				.withPersonId(UUID.randomUUID().toString())
+				.build())
+			.build();
+
+		final var employment = Employment.builder()
+			.withIsMainEmployment(true)
+			.withManager(Manager.builder()
+				.withPersonId(managerId)
+				.build())
+			.build(); // No hiringManager set
+
+		final var employee = Employee.builder()
+			.withMainEmployment(employment)
+			.build();
+
+		when(managerRepositoryMock.findById(managerId)).thenReturn(Optional.of(ManagerEntity.builder().withPersonId(managerId).build()));
+
+		// Act
+		integration.updateEmployeeInformation(entity, employee);
+
+		// Verify and assert
+		verify(managerRepositoryMock).findById(managerId);
+		verify(employeeRepositoryMock).save(employeeEntityCaptor.capture());
+		assertThat(employeeEntityCaptor.getValue().getManager().getPersonId()).isEqualTo(managerId);
+	}
+
+	@Test
+	void updateEmployeeInformationKeepsExistingManagerWhenResponsibleManagerIsNull() {
+		// Arrange
+		final var existingManagerId = UUID.randomUUID().toString();
+		final var existingManager = ManagerEntity.builder()
+			.withPersonId(existingManagerId)
+			.build();
+		final var entity = EmployeeEntity.builder()
+			.withManager(existingManager)
+			.build();
+
+		final var employment = Employment.builder()
+			.withIsMainEmployment(true)
+			.build(); // No hiringManager and no manager set
+
+		final var employee = Employee.builder()
+			.withLoginname("loginname")
+			.withPersonId(UUID.randomUUID().toString())
+			.withMainEmployment(employment)
+			.build();
+
+		// Act
+		integration.updateEmployeeInformation(entity, employee);
+
+		// Verify and assert
+		verify(employeeRepositoryMock).save(employeeEntityCaptor.capture());
+		assertThat(employeeEntityCaptor.getValue().getManager()).isSameAs(existingManager);
+		assertThat(employeeEntityCaptor.getValue().getManager().getPersonId()).isEqualTo(existingManagerId);
 	}
 
 	@Test
@@ -1110,6 +1172,71 @@ class EmployeeChecklistIntegrationTest {
 	}
 
 	@Test
+	void initiateEmployeeWithoutResponsibleManager() {
+		// Arrange
+		final var municipalityId = "municipalityId";
+		final var username = "username";
+		final var uuid = UUID.randomUUID().toString();
+		final var companyId = 2;
+		final var orgId = 2124;
+		final var orgName = "orgName";
+		final var employee = Employee.builder()
+			.withLoginname(username)
+			.withPersonId(uuid)
+			.withMainEmployment(Employment.builder()
+				.withCompanyId(companyId)
+				.withOrgId(orgId)
+				.withOrgName(orgName)
+				.withIsMainEmployment(true)
+				.build()) // No hiringManager and no manager set
+			.build();
+
+		// Act
+		final var e = assertThrows(ThrowableProblem.class, () -> integration.initiateEmployee(municipalityId, employee, null));
+
+		// Verify and assert
+		verify(employeeRepositoryMock).existsById(uuid);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(companyId, municipalityId);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(orgId, municipalityId);
+		verify(employeeRepositoryMock, times(0)).save(any());
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
+		assertThat(e.getMessage()).isEqualTo("Not Found: Cannot initiate employee username without responsible manager.");
+	}
+
+	@Test
+	void initiateEmployeeWhenManagerHasNoPersonId() {
+		// Arrange
+		final var municipalityId = "municipalityId";
+		final var username = "username";
+		final var uuid = UUID.randomUUID().toString();
+		final var companyId = 2;
+		final var orgId = 2124;
+		final var orgName = "orgName";
+		final var employee = Employee.builder()
+			.withLoginname(username)
+			.withPersonId(uuid)
+			.withMainEmployment(Employment.builder()
+				.withCompanyId(companyId)
+				.withOrgId(orgId)
+				.withOrgName(orgName)
+				.withIsMainEmployment(true)
+				.withHiringManager(Manager.builder().build()) // Manager present but personId missing
+				.build())
+			.build();
+
+		// Act
+		final var e = assertThrows(ThrowableProblem.class, () -> integration.initiateEmployee(municipalityId, employee, null));
+
+		// Verify and assert
+		verify(employeeRepositoryMock).existsById(uuid);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(companyId, municipalityId);
+		verify(organizationRepositoryMock).findByOrganizationNumberAndMunicipalityId(orgId, municipalityId);
+		verify(employeeRepositoryMock, times(0)).save(any());
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
+		assertThat(e.getMessage()).isEqualTo("Not Found: Cannot initiate employee username without responsible manager.");
+	}
+
+	@Test
 	void initiateEmployeeWhenOrganizationIsNotPresentInDatabase() {
 		// Arrange
 		final var municipalityId = "municipalityId";
@@ -1128,6 +1255,9 @@ class EmployeeChecklistIntegrationTest {
 				.withCompanyId(companyId)
 				.withIsMainEmployment(true)
 				.withManager(Manager.builder()
+					.withPersonId(managerUuid)
+					.build())
+				.withHiringManager(Manager.builder()
 					.withPersonId(managerUuid)
 					.build())
 				.build())
@@ -1172,6 +1302,9 @@ class EmployeeChecklistIntegrationTest {
 				.withCompanyId(companyId)
 				.withIsMainEmployment(true)
 				.withManager(Manager.builder()
+					.withPersonId(managerUuid)
+					.build())
+				.withHiringManager(Manager.builder()
 					.withPersonId(managerUuid)
 					.build())
 				.build())
@@ -1221,6 +1354,9 @@ class EmployeeChecklistIntegrationTest {
 				.withCompanyId(companyId)
 				.withIsMainEmployment(true)
 				.withManager(Manager.builder()
+					.withPersonId(managerUuid)
+					.build())
+				.withHiringManager(Manager.builder()
 					.withPersonId(managerUuid)
 					.build())
 				.build())
@@ -1275,6 +1411,9 @@ class EmployeeChecklistIntegrationTest {
 				.withCompanyId(companyId)
 				.withIsMainEmployment(true)
 				.withManager(Manager.builder()
+					.withPersonId(managerUuid)
+					.build())
+				.withHiringManager(Manager.builder()
 					.withPersonId(managerUuid)
 					.build())
 				.build())
@@ -1343,6 +1482,9 @@ class EmployeeChecklistIntegrationTest {
 				.withCompanyId(companyId)
 				.withIsMainEmployment(true)
 				.withManager(Manager.builder()
+					.withPersonId(managerUuid)
+					.build())
+				.withHiringManager(Manager.builder()
 					.withPersonId(managerUuid)
 					.build())
 				.build())
