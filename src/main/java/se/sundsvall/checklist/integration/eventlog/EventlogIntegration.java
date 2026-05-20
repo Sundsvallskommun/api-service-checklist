@@ -38,7 +38,6 @@ public class EventlogIntegration {
 	}
 
 	public PageEvent getEvents(final String municipalityId, final String logKey, final Pageable pageable) {
-		final var sanitizedMunicipalityId = sanitizeAndCompress(municipalityId);
 		final var sanitizedLogKey = sanitizeAndCompress(logKey);
 
 		try {
