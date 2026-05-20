@@ -54,15 +54,12 @@ public class OrganizationTree {
 
 		for (final String line : split) {
 			final var split1 = line.split("\\|");
-			final var level = split1[0];
-			final var orgId = split1[1];
-			final var orgName = split1[2];
 
-			if (isCreatable(level)) {
+			if (split1.length >= 3 && isCreatable(split1[0])) {
 				organizationTree.addOrg(OrganizationTree.OrganizationLine.builder()
-					.withLevel(Integer.parseInt(level))
-					.withOrgId(orgId)
-					.withOrgName(orgName)
+					.withLevel(Integer.parseInt(split1[0]))
+					.withOrgId(split1[1])
+					.withOrgName(split1[2])
 					.build());
 			}
 		}

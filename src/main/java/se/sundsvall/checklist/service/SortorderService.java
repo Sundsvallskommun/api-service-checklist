@@ -160,10 +160,13 @@ public class SortorderService {
 	}
 
 	private Organization findOrganization(final String municipalityId, final Iterator<Organization> companyIterator, final Integer organizationNumber) {
+		if (!companyIterator.hasNext()) {
+			return null;
+		}
 		return companyIntegration.getOrganizationsForCompany(municipalityId, companyIterator.next().getCompanyId()).stream()
 			.filter(org -> org.getOrgId().equals(organizationNumber))
 			.findAny()
-			.orElse(companyIterator.hasNext() ? findOrganization(municipalityId, companyIterator, organizationNumber) : null);
+			.orElseGet(() -> findOrganization(municipalityId, companyIterator, organizationNumber));
 	}
 
 	private List<SortorderEntity> aggregateCustomSorts(final String municipalityId, final Organization organization) {
