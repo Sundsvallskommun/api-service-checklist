@@ -22,7 +22,7 @@ public class CacheConfiguration {
 	@Value("${cache.employee.expire-after-write:PT12H}")
 	private Duration employeeExpireAfterWriteDuration;
 
-	@Value("${cache.mdviewer.expire-after-write:PT12H}")
+	@Value("${cache.company.expire-after-write:PT12H}")
 	private Duration companyExpireAfterWriteDuration;
 
 	@Bean

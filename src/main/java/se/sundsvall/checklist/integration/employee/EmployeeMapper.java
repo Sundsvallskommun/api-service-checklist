@@ -174,7 +174,7 @@ public class EmployeeMapper {
 				.withGivenname(m.getGivenname())
 				.withLastname(m.getLastname())
 				.withLoginname(m.getLoginname())
-				.withPersonId(m.getPersonId().toString())
+				.withPersonId(ofNullable(m.getPersonId()).map(UUID::toString).orElse(null))
 				.build())
 			.orElse(null);
 	}

@@ -38,12 +38,11 @@ public class EventlogIntegration {
 	}
 
 	public PageEvent getEvents(final String municipalityId, final String logKey, final Pageable pageable) {
-		final var sanitizedMunicipalityId = sanitizeAndCompress(municipalityId);
 		final var sanitizedLogKey = sanitizeAndCompress(logKey);
 
 		try {
 			LOG.info("Fetching events for checklist: {}", sanitizedLogKey);
-			final var events = eventlogClient.getEvents(sanitizedMunicipalityId, sanitizedLogKey, pageable);
+			final var events = eventlogClient.getEvents(municipalityId, logKey, pageable);
 			LOG.info("Successfully fetched events for checklist: {}", sanitizedLogKey);
 			return events;
 		} catch (final Exception e) {
