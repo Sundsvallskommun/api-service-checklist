@@ -10,7 +10,7 @@ import se.sundsvall.checklist.integration.messaging.configuration.MessagingPrope
 @Component
 public class MessagingIntegration {
 
-	private final Logger log = LoggerFactory.getLogger(MessagingIntegration.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MessagingIntegration.class);
 
 	private final MessagingProperties messagingProperties;
 
@@ -29,7 +29,7 @@ public class MessagingIntegration {
 				message,
 				messagingProperties.managerEmail().sender())));
 		} catch (final Exception e) {
-			log.warn("Error while sending email for municipalityId {}", municipalityId, e);
+			LOGGER.warn("Error while sending email for municipalityId {}", municipalityId, e);
 			return Optional.empty();
 		}
 	}

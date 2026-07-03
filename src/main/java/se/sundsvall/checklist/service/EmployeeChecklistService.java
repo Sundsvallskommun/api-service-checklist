@@ -48,6 +48,7 @@ import se.sundsvall.checklist.service.util.TaskType;
 import se.sundsvall.dept44.problem.Problem;
 import se.sundsvall.dept44.problem.ThrowableProblem;
 
+import static java.time.ZoneId.systemDefault;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
@@ -147,7 +148,7 @@ public class EmployeeChecklistService {
 	}
 
 	private EmployeeChecklistEntity handleUpdatedEmployeeInformation(final String municipalityId, final EmployeeChecklistEntity employeeChecklist) {
-		if (ofNullable(employeeChecklist.getEmployee().getUpdated()).orElse(OffsetDateTime.MIN).isBefore(OffsetDateTime.now().minus(employeeInformationUpdateInterval))) {
+		if (ofNullable(employeeChecklist.getEmployee().getUpdated()).orElse(OffsetDateTime.MIN).isBefore(OffsetDateTime.now(systemDefault()).minus(employeeInformationUpdateInterval))) {
 			employeeIntegration.getEmployeeInformation(municipalityId, employeeChecklist.getEmployee().getId()).stream()
 				.findFirst()
 				.ifPresent(employee -> employeeChecklistIntegration.updateEmployeeInformation(employeeChecklist.getEmployee(), employee));
@@ -317,7 +318,7 @@ public class EmployeeChecklistService {
 	 * Fetch new employees from employee integration and initiate checklists for them.
 	 */
 	public EmployeeChecklistResponse initiateEmployeeChecklists(final String municipalityId) {
-		final var defaultHireDate = LocalDate.now().minusDays(30);
+		final var defaultHireDate = LocalDate.now(systemDefault()).minusDays(30);
 		if (LOGGER.isInfoEnabled()) {
 			LOGGER.info("Fetching new employees by municipalityId: {} and hireDateFrom: {}", sanitizeAndCompress(municipalityId), defaultHireDate);
 		}

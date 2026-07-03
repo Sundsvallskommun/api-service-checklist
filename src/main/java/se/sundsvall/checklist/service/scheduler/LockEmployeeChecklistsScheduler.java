@@ -10,6 +10,7 @@ import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistReposit
 import se.sundsvall.dept44.problem.Problem;
 import se.sundsvall.dept44.scheduling.Dept44Scheduled;
 
+import static java.time.ZoneId.systemDefault;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
@@ -61,7 +62,7 @@ public class LockEmployeeChecklistsScheduler {
 	private void lockChecklists(String municipalityId) {
 		LOGGER.info(LOG_PROCESSING_MUNICIPALITY, municipalityId);
 
-		final var expiredChecklists = employeeChecklistRepository.findAllByChecklistsMunicipalityIdAndExpirationDateIsBeforeAndLockedIsFalse(municipalityId, LocalDate.now());
+		final var expiredChecklists = employeeChecklistRepository.findAllByChecklistsMunicipalityIdAndExpirationDateIsBeforeAndLockedIsFalse(municipalityId, LocalDate.now(systemDefault()));
 		expiredChecklists.forEach(entity -> {
 			LOGGER.debug(LOG_LOCKING_EMPLOYEE_CHECKLIST, entity.getId());
 			entity.setLocked(true);
