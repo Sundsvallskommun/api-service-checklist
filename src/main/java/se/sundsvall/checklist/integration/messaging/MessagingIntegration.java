@@ -29,7 +29,7 @@ public class MessagingIntegration {
 				message,
 				messagingProperties.managerEmail().sender())));
 		} catch (final Exception e) {
-			log.warn("Error while sending email", e);
+			log.warn("Error while sending email for municipalityId {}", municipalityId, e);
 			return Optional.empty();
 		}
 	}

@@ -21,7 +21,7 @@ public class TemplatingIntegration {
 		try {
 			return Optional.of(templatingClient.render(municipalityId, renderRequest));
 		} catch (final Exception e) {
-			LOGGER.warn("Error while rendering template", e);
+			LOGGER.warn("Error while rendering template for municipalityId {}", municipalityId, e);
 			return Optional.empty();
 		}
 	}

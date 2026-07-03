@@ -351,13 +351,18 @@ public class EmployeeChecklistService {
 		final var employeeChecklistResponse = new EmployeeChecklistResponse();
 
 		employees.forEach(employee -> {
+			final var personId = employee.getPersonId();
+			LOGGER.debug("Starting to create checklist for employee: {}", personId);
 			try {
 				// Verify that the employee contains all mandatory information needed to create an employee checklist
 				verifyMandatoryInformation(employee);
 				if (verifyValidEmployment) {
 					// Verify that the employment is valid for creating an employee checklist (this is only done
 					// for automatic import of new employees, not when manually importing a specific employee)
+					LOGGER.debug("Validating employee with personId: {}", personId);
 					verifyValidEmployment(employee);
+				} else {
+					LOGGER.debug("Bypassing validation of employee with personId: {}", personId);
 				}
 
 				final var portalPersonData = employeeIntegration.getEmployeeByEmail(municipalityId, employee.getEmailAddress())
@@ -380,7 +385,9 @@ public class EmployeeChecklistService {
 				// Initiate employee checklist
 				final var result = employeeChecklistIntegration.initiateEmployee(municipalityId, employee, employeeOrgTree);
 				employeeChecklistResponse.getDetails().add(toDetail(OK, result));
+				LOGGER.debug("Finished creating checklist for employee: {}", personId);
 			} catch (final ThrowableProblem e) {
+				LOGGER.warn("Could not create checklist for employee with personId {}: {}", personId, e.getMessage());
 				employeeChecklistResponse.getDetails().add(toDetail(e.getStatus(), e.getMessage()));
 			} catch (final Exception e) {
 				LOGGER.error("Exception occurred when creating employee checklist", e);
@@ -454,7 +461,7 @@ public class EmployeeChecklistService {
 				employeeChecklistIntegration.updateEmployeeInformation(localEmployee, remoteEmployee);
 			}
 		} catch (final Exception e) {
-			LOGGER.error("Error when updating manager information for {} {} ({})", localEmployee.getFirstName(), localEmployee.getLastName(), localEmployee.getUsername(), e);
+			LOGGER.error("Error when updating manager information for employee with id: {}", localEmployee.getId(), e);
 			detail = toDetail(INTERNAL_SERVER_ERROR, createUpdateManagerErrorString(localEmployee, e));
 		} finally {
 			ofNullable(detail).ifPresent(updateResultDetails::add);

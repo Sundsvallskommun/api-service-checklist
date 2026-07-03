@@ -67,11 +67,16 @@ public class ManagerEmailScheduler {
 		// Send email to all new employees that haven't sent any email yet and where the company has opted in to send emails and
 		// to all employees where previous send request didn't succeed
 
-		communicationService.fetchManagersToSendMailTo(municipalityId)
-			.forEach(this::sendEmail);
+		final var recipients = communicationService.fetchManagersToSendMailTo(municipalityId);
+		LOGGER.info("Found {} manager email(s) to send for municipality {}", recipients.size(), municipalityId);
+		recipients.forEach(this::sendEmail);
 
 		// Set health depending on count of correspondences with error status
-		emailHealthConsumer.accept(communicationService.countCorrespondenceWithErrors());
+		final var errorCount = communicationService.countCorrespondenceWithErrors();
+		if (errorCount > 0) {
+			LOGGER.warn("{} correspondence(s) with error status after processing manager emails", errorCount);
+		}
+		emailHealthConsumer.accept(errorCount);
 	}
 
 	private void sendEmail(EmployeeChecklistEntity entity) {

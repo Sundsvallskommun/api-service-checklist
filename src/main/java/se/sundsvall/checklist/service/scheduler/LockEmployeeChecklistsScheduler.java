@@ -61,11 +61,13 @@ public class LockEmployeeChecklistsScheduler {
 	private void lockChecklists(String municipalityId) {
 		LOGGER.info(LOG_PROCESSING_MUNICIPALITY, municipalityId);
 
-		employeeChecklistRepository.findAllByChecklistsMunicipalityIdAndExpirationDateIsBeforeAndLockedIsFalse(municipalityId, LocalDate.now())
-			.forEach(entity -> {
-				LOGGER.info(LOG_LOCKING_EMPLOYEE_CHECKLIST, entity.getId());
-				entity.setLocked(true);
-				employeeChecklistRepository.save(entity);
-			});
+		final var expiredChecklists = employeeChecklistRepository.findAllByChecklistsMunicipalityIdAndExpirationDateIsBeforeAndLockedIsFalse(municipalityId, LocalDate.now());
+		expiredChecklists.forEach(entity -> {
+			LOGGER.debug(LOG_LOCKING_EMPLOYEE_CHECKLIST, entity.getId());
+			entity.setLocked(true);
+			employeeChecklistRepository.save(entity);
+		});
+
+		LOGGER.info("Locked {} expired employee checklist(s) for municipality {}", expiredChecklists.size(), municipalityId);
 	}
 }

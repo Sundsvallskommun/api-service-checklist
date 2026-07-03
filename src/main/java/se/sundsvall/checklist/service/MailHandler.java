@@ -37,7 +37,7 @@ public class MailHandler {
 
 	@Transactional
 	public void sendEmail(EmployeeChecklistEntity entity, String emailTemplate) {
-		LOGGER.info("Sending email to {}, manager for new employee with login name {}", entity.getEmployee().getManager().getEmail(), entity.getEmployee().getUsername());
+		LOGGER.info("Sending manager email for employee checklist with id: {}", entity.getId());
 
 		Optional.ofNullable(entity.getCorrespondence()).ifPresentOrElse(c -> { // Update existing object to reflect that email is the last used channel for communication together with managers email
 			c.setCommunicationChannel(EMAIL);
@@ -46,6 +46,7 @@ public class MailHandler {
 
 		templatingIntegration.renderTemplate(entity.getChecklists().getFirst().getMunicipalityId(), toRenderRequest(entity.getEmployee(), emailTemplate))
 			.ifPresentOrElse(renderedTemplate -> sendManagerEmail(entity, renderedTemplate.getOutput()), () -> {
+				LOGGER.warn("Template rendering failed for employee checklist with id: {}, setting correspondence status to ERROR", entity.getId());
 				entity.getCorrespondence().setCorrespondenceStatus(ERROR);
 				entity.getCorrespondence().setAttempts(entity.getCorrespondence().getAttempts() + 1);
 			});
@@ -58,7 +59,10 @@ public class MailHandler {
 			.ifPresentOrElse(result -> {
 				entity.getCorrespondence().setCorrespondenceStatus(toCorrespondenceStatus(result.getDeliveries()));
 				entity.getCorrespondence().setMessageId(result.getMessageId().toString());
-			}, () -> entity.getCorrespondence().setCorrespondenceStatus(ERROR));
+			}, () -> {
+				LOGGER.warn("Email sending failed for employee checklist with id: {}, setting correspondence status to ERROR", entity.getId());
+				entity.getCorrespondence().setCorrespondenceStatus(ERROR);
+			});
 
 		entity.getCorrespondence().setAttempts(entity.getCorrespondence().getAttempts() + 1);
 	}

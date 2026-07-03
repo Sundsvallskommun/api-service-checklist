@@ -45,7 +45,8 @@ public class PurgeOldInitiationInfoScheduler {
 		final var formattedDateTime = toReadableFormat(oldestCreatedDate);
 		LOGGER.info(LOG_PURGE_STARTED, maxLifetimeInDaysThreshold, formattedDateTime);
 
-		initiationRepository.deleteAllByCreatedBefore(oldestCreatedDate);
+		final var deletedRows = initiationRepository.deleteAllByCreatedBefore(oldestCreatedDate);
+		LOGGER.info("Purged {} rows from initiation_info table", deletedRows);
 	}
 
 	private String toReadableFormat(OffsetDateTime dateTime) {

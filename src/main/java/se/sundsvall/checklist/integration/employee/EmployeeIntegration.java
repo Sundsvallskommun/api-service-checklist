@@ -37,7 +37,7 @@ public class EmployeeIntegration {
 				.toList();
 		} catch (final Exception e) {
 			// We don't really care.
-			LOG.warn("Couldn't fetch employee information from employee integration", e);
+			LOG.warn("Couldn't fetch employee information from employee integration for municipalityId {} and personId {}", municipalityId, personId, e);
 		}
 
 		return emptyList();
@@ -51,7 +51,7 @@ public class EmployeeIntegration {
 				.toList();
 		} catch (final Exception e) {
 			// We don't really care here either...
-			LOG.warn("Couldn't fetch new employees from employee integration", e);
+			LOG.warn("Couldn't fetch new employees from employee integration for municipalityId {} and hireDateFrom {}", municipalityId, hireDateFrom, e);
 		}
 
 		return emptyList();
@@ -63,7 +63,7 @@ public class EmployeeIntegration {
 			return employeeClient.getEmployeeByEmail(municipalityId, email);
 		} catch (final Exception e) {
 			// And not here..
-			LOG.warn("Couldn't fetch employee by email from employee integration", e);
+			LOG.warn("Couldn't fetch employee by email from employee integration for municipalityId {}", municipalityId, e);
 		}
 
 		return Optional.empty();

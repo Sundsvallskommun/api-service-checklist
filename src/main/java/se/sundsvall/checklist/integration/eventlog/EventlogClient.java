@@ -3,6 +3,7 @@ package se.sundsvall.checklist.integration.eventlog;
 import feign.QueryMap;
 import generated.se.sundsvall.eventlog.Event;
 import generated.se.sundsvall.eventlog.PageEvent;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static se.sundsvall.checklist.integration.eventlog.configuration.EventlogConfiguration.CLIENT_ID;
 
+@CircuitBreaker(name = CLIENT_ID)
 @FeignClient(
 	name = CLIENT_ID,
 	url = "${integration.eventlog.url}",
