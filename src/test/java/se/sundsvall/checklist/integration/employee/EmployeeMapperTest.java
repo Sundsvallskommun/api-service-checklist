@@ -7,15 +7,20 @@ import generated.se.sundsvall.employee.Manager;
 import generated.se.sundsvall.employee.NewEmployee;
 import generated.se.sundsvall.employee.NewEmployment;
 import generated.se.sundsvall.employee.ReferenceNumberCompany;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import se.sundsvall.checklist.service.model.Employee;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class EmployeeMapperTest {
@@ -53,6 +58,11 @@ class EmployeeMapperTest {
 	private static final String MANAGER_REFERENCE_NUMBER = "managerReferenceNumber";
 	private static final String MANAGER_CODE = "managerCode";
 	private static final String REFERENCE_NUMBER = "referenceNumber";
+
+	// Deterministic dates for main-employment selection tests (older -> newer)
+	private static final Date EARLIER = new Date(1_000L);
+	private static final Date MIDDLE = new Date(2_000L);
+	private static final Date LATER = new Date(3_000L);
 
 	@Test
 	void toEmployeeFromNull() {
@@ -282,6 +292,115 @@ class EmployeeMapperTest {
 		assertThat(result.getMainEmployment()).isNull();
 		assertThat(result.getEmailAddress()).isNull();
 		assertThat(result.getLoginname()).isNull();
+	}
+
+	/**
+	 * When several employments are flagged as main employment, the one with the most recent startDate wins. A null
+	 * startDate is
+	 * ranked lowest (nullsFirst) so it never wins unless every candidate has a null startDate.
+	 */
+	private static Stream<Arguments> mainEmploymentStartDateProvider() {
+		return Stream.of(
+			// None null - most recent wins regardless of order
+			Arguments.of(List.of(EARLIER, LATER), LATER),
+			Arguments.of(List.of(LATER, EARLIER), LATER),
+			Arguments.of(List.of(EARLIER, LATER, MIDDLE), LATER),
+			// One null - the non-null date wins regardless of order
+			Arguments.of(asList(null, LATER), LATER),
+			Arguments.of(asList(LATER, null), LATER),
+			// All null - no candidate can win on date, resulting startDate is null
+			Arguments.of(asList((Date) null, null), null),
+			// Single candidate
+			Arguments.of(List.of(LATER), LATER),
+			Arguments.of(Collections.singletonList((Date) null), null));
+	}
+
+	@ParameterizedTest
+	@MethodSource("mainEmploymentStartDateProvider")
+	void toEmployeeFromEmployeev2PicksMostRecentMainEmployment(List<Date> startDates, Date expected) {
+		// Arrange
+		final var input = new Employeev2().employments(startDates.stream()
+			.map(startDate -> new EmploymentV2().companyId(COMPANY_ID).isMainEmployment(true).startDate(startDate))
+			.toList());
+
+		// Act
+		final var result = EmployeeMapper.toEmployee(input);
+
+		// Assert
+		assertThat(result.getMainEmployment()).isNotNull();
+		assertThat(result.getMainEmployment().getStartDate()).isEqualTo(expected);
+	}
+
+	@ParameterizedTest
+	@MethodSource("mainEmploymentStartDateProvider")
+	void toEmployeeFromNewEmployeePicksMostRecentMainEmployment(List<Date> startDates, Date expected) {
+		// Arrange
+		final var input = new NewEmployee().employments(startDates.stream()
+			.map(startDate -> new NewEmployment().companyId(COMPANY_ID).isMainEmployment(true).startDate(startDate))
+			.toList());
+
+		// Act
+		final var result = EmployeeMapper.toEmployee(input);
+
+		// Assert
+		assertThat(result.getMainEmployment()).isNotNull();
+		assertThat(result.getMainEmployment().getStartDate()).isEqualTo(expected);
+	}
+
+	@Test
+	void toEmployeeFromEmployeev2IgnoresEmploymentWithNullIsMainEmployment() {
+		// Arrange - a null isMainEmployment must be treated as non-main (no unboxing NPE) and excluded from selection
+		final var input = new Employeev2().employments(List.of(
+			new EmploymentV2().companyId(COMPANY_ID).startDate(LATER), // isMainEmployment null
+			new EmploymentV2().companyId(COMPANY_ID).isMainEmployment(true).startDate(EARLIER)));
+
+		// Act
+		final var result = EmployeeMapper.toEmployee(input);
+
+		// Assert
+		assertThat(result.getMainEmployment().getStartDate()).isEqualTo(EARLIER);
+	}
+
+	@Test
+	void toEmployeeFromNewEmployeeIgnoresEmploymentWithNullIsMainEmployment() {
+		// Arrange - a null isMainEmployment must be treated as non-main (no unboxing NPE) and excluded from selection
+		final var input = new NewEmployee().employments(List.of(
+			new NewEmployment().companyId(COMPANY_ID).startDate(LATER), // isMainEmployment null
+			new NewEmployment().companyId(COMPANY_ID).isMainEmployment(true).startDate(EARLIER)));
+
+		// Act
+		final var result = EmployeeMapper.toEmployee(input);
+
+		// Assert
+		assertThat(result.getMainEmployment().getStartDate()).isEqualTo(EARLIER);
+	}
+
+	@Test
+	void toEmployeeFromEmployeev2IgnoresMoreRecentNonMainEmployment() {
+		// Arrange - non-main employment has the most recent startDate but must be ignored
+		final var input = new Employeev2().employments(List.of(
+			new EmploymentV2().companyId(COMPANY_ID).isMainEmployment(true).startDate(EARLIER),
+			new EmploymentV2().companyId(COMPANY_ID).isMainEmployment(false).startDate(LATER)));
+
+		// Act
+		final var result = EmployeeMapper.toEmployee(input);
+
+		// Assert
+		assertThat(result.getMainEmployment().getStartDate()).isEqualTo(EARLIER);
+	}
+
+	@Test
+	void toEmployeeFromNewEmployeeIgnoresMoreRecentNonMainEmployment() {
+		// Arrange - non-main employment has the most recent startDate but must be ignored
+		final var input = new NewEmployee().employments(List.of(
+			new NewEmployment().companyId(COMPANY_ID).isMainEmployment(true).startDate(EARLIER),
+			new NewEmployment().companyId(COMPANY_ID).isMainEmployment(false).startDate(LATER)));
+
+		// Act
+		final var result = EmployeeMapper.toEmployee(input);
+
+		// Assert
+		assertThat(result.getMainEmployment().getStartDate()).isEqualTo(EARLIER);
 	}
 
 	private static void assertMainEmploymentManager(final se.sundsvall.checklist.service.model.Manager bean) {
