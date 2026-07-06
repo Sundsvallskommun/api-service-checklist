@@ -11,6 +11,9 @@ import se.sundsvall.checklist.service.model.Employment;
 import se.sundsvall.checklist.service.model.Manager;
 
 import static java.util.Collections.emptyList;
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.naturalOrder;
+import static java.util.Comparator.nullsFirst;
 import static java.util.Optional.ofNullable;
 
 public class EmployeeMapper {
@@ -85,10 +88,18 @@ public class EmployeeMapper {
 			.orElse(null);
 	}
 
+	/**
+	 * Get main employment, if multiple (can occur) take the most recent, if a startDate is null it is ranked lowest using
+	 * nullsFirst
+	 * so it will never "win".
+	 * 
+	 * @param  employee to get main employment for
+	 * @return          main employment
+	 */
 	private static Optional<generated.se.sundsvall.employee.EmploymentV2> getMainEmployment(generated.se.sundsvall.employee.Employeev2 employee) {
 		return ofNullable(employee.getEmployments()).orElse(emptyList()).stream()
-			.filter(generated.se.sundsvall.employee.EmploymentV2::getIsMainEmployment)
-			.findFirst();
+			.filter(employment -> Boolean.TRUE.equals(employment.getIsMainEmployment()))
+			.max(comparing(generated.se.sundsvall.employee.EmploymentV2::getStartDate, nullsFirst(naturalOrder())));
 	}
 
 	/**
@@ -160,10 +171,17 @@ public class EmployeeMapper {
 			.orElse(null);
 	}
 
+	/**
+	 * Get main employment, if multiple (can occur) take the most recent, if a startDate is null it is ranked lowest using
+	 * nullsFirst so it will never "win".
+	 * 
+	 * @param  employee to get main employment for
+	 * @return          main employment
+	 */
 	private static Optional<generated.se.sundsvall.employee.NewEmployment> getMainEmployment(generated.se.sundsvall.employee.NewEmployee employee) {
 		return ofNullable(employee.getEmployments()).orElse(emptyList()).stream()
-			.filter(generated.se.sundsvall.employee.NewEmployment::getIsMainEmployment)
-			.findFirst();
+			.filter(employment -> Boolean.TRUE.equals(employment.getIsMainEmployment()))
+			.max(comparing(generated.se.sundsvall.employee.NewEmployment::getStartDate, nullsFirst(naturalOrder())));
 	}
 
 	// Common method used by both Employeev2 and NewEmployee responses

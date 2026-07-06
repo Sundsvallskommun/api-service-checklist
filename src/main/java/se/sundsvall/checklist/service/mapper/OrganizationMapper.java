@@ -1,11 +1,9 @@
 package se.sundsvall.checklist.service.mapper;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import se.sundsvall.checklist.api.model.Organization;
 import se.sundsvall.checklist.api.model.OrganizationCreateRequest;
@@ -18,6 +16,7 @@ import se.sundsvall.checklist.service.model.Employee;
 import se.sundsvall.checklist.service.model.Employment;
 import se.sundsvall.checklist.service.model.Manager;
 
+import static java.time.ZoneId.systemDefault;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static se.sundsvall.checklist.integration.db.model.enums.CommunicationChannel.NO_COMMUNICATION;
@@ -67,18 +66,16 @@ public class OrganizationMapper {
 	private static boolean isManager(final Employment mainEmployment) {
 		return ofNullable(mainEmployment)
 			.map(Employment::getIsManager)
-			.filter(Objects::nonNull)
 			.orElse(false);
 	}
 
 	private static LocalDate getStartDate(final Employee employee) {
 		return ofNullable(employee.getMainEmployment())
 			.map(Employment::getStartDate)
-			.filter(Objects::nonNull)
 			.map(Date::toInstant)
-			.map(instant -> instant.atZone(ZoneId.systemDefault()))
+			.map(instant -> instant.atZone(systemDefault()))
 			.map(ZonedDateTime::toLocalDate)
-			.orElse(LocalDate.now());
+			.orElse(LocalDate.now(systemDefault()));
 	}
 
 	public static OrganizationEntity toOrganizationEntity(int organizationNumber, final String organizationName, final String municipalityId) {

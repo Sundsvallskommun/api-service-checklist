@@ -314,6 +314,8 @@ public class EmployeeChecklistIntegration {
 	 */
 	@Transactional
 	public String initiateEmployee(String municipalityId, Employee employee, OrganizationTree orgTree) {
+		final var personId = employee.getPersonId();
+		LOGGER.info("Initiating employee checklist entry for employee: {}", personId);
 		if (employeeRepository.existsById(employee.getPersonId())) {
 			return EMPLOYEE_HAS_CHECKLIST.formatted(employee.getLoginname());
 		}

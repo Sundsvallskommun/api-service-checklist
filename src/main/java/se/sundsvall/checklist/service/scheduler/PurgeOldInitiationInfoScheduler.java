@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import se.sundsvall.checklist.integration.db.repository.InitiationRepository;
 import se.sundsvall.dept44.scheduling.Dept44Scheduled;
 
+import static java.time.ZoneId.systemDefault;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -41,11 +42,12 @@ public class PurgeOldInitiationInfoScheduler {
 		lockAtMostFor = "${checklist.purge-old-initiation-info.lockAtMostFor}",
 		maximumExecutionTime = "${checklist.purge-old-initiation-info.maximumExecutionTime}")
 	public void execute() {
-		final var oldestCreatedDate = OffsetDateTime.now().truncatedTo(DAYS).minusDays(maxLifetimeInDaysThreshold);
+		final var oldestCreatedDate = OffsetDateTime.now(systemDefault()).truncatedTo(DAYS).minusDays(maxLifetimeInDaysThreshold);
 		final var formattedDateTime = toReadableFormat(oldestCreatedDate);
 		LOGGER.info(LOG_PURGE_STARTED, maxLifetimeInDaysThreshold, formattedDateTime);
 
-		initiationRepository.deleteAllByCreatedBefore(oldestCreatedDate);
+		final var deletedRows = initiationRepository.deleteAllByCreatedBefore(oldestCreatedDate);
+		LOGGER.info("Purged {} rows from initiation_info table", deletedRows);
 	}
 
 	private String toReadableFormat(OffsetDateTime dateTime) {

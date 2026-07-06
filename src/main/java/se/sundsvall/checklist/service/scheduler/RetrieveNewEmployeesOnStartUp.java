@@ -40,8 +40,12 @@ public class RetrieveNewEmployeesOnStartUp {
 		try {
 			executor = newSingleThreadScheduledExecutor();
 			executor.schedule(() -> {
-				LOGGER.info("Fetching new employees on application startup.");
-				retrieveNewEmployeesScheduler.execute();
+				try {
+					LOGGER.info("Fetching new employees on application startup.");
+					retrieveNewEmployeesScheduler.execute();
+				} catch (final Exception e) {
+					LOGGER.error("Failed to fetch new employees on application startup", e);
+				}
 			}, onstartupDelay.getSeconds(), SECONDS);
 		} finally {
 			if (nonNull(executor)) {

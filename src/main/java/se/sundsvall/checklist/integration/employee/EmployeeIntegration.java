@@ -14,6 +14,7 @@ import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static se.sundsvall.checklist.configuration.CacheConfiguration.EMPLOYEE_CACHE;
+import static se.sundsvall.dept44.util.LogUtils.sanitizeForLogging;
 
 /**
  * Wrapper class for {@link EmployeeClient}.
@@ -37,7 +38,7 @@ public class EmployeeIntegration {
 				.toList();
 		} catch (final Exception e) {
 			// We don't really care.
-			LOG.warn("Couldn't fetch employee information from employee integration", e);
+			LOG.warn("Couldn't fetch employee information from employee integration for municipalityId {} and personId {}", sanitizeForLogging(municipalityId), sanitizeForLogging(personId), e);
 		}
 
 		return emptyList();
@@ -51,7 +52,7 @@ public class EmployeeIntegration {
 				.toList();
 		} catch (final Exception e) {
 			// We don't really care here either...
-			LOG.warn("Couldn't fetch new employees from employee integration", e);
+			LOG.warn("Couldn't fetch new employees from employee integration for municipalityId {} and hireDateFrom {}", sanitizeForLogging(municipalityId), hireDateFrom, e);
 		}
 
 		return emptyList();
@@ -63,7 +64,7 @@ public class EmployeeIntegration {
 			return employeeClient.getEmployeeByEmail(municipalityId, email);
 		} catch (final Exception e) {
 			// And not here..
-			LOG.warn("Couldn't fetch employee by email from employee integration", e);
+			LOG.warn("Couldn't fetch employee by email from employee integration for municipalityId {}", sanitizeForLogging(municipalityId), e);
 		}
 
 		return Optional.empty();

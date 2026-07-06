@@ -12,5 +12,5 @@ import se.sundsvall.checklist.integration.db.model.InitiationInfoEntity;
 public interface InitiationRepository extends JpaRepository<InitiationInfoEntity, String> {
 	List<InitiationInfoEntity> findAllByMunicipalityId(String municipalityId);
 
-	void deleteAllByCreatedBefore(OffsetDateTime timestamp);
+	long deleteAllByCreatedBefore(OffsetDateTime timestamp);
 }
