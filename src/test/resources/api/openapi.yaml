@@ -3156,7 +3156,7 @@ components:
           default: false
           description: Indicates if the task is optional or not
           examples:
-          - "true"
+          - true
       required:
       - createdBy
       - heading
@@ -3332,7 +3332,7 @@ components:
           type: boolean
           description: Indicates if the task is optional or not
           examples:
-          - "true"
+          - true
           readOnly: true
     OrganizationUpdateRequest:
       type: object
@@ -3548,7 +3548,7 @@ components:
           type: boolean
           description: Indicates if the task is optional or not
           examples:
-          - "true"
+          - true
           readOnly: true
         responseText:
           type: string
@@ -3739,7 +3739,7 @@ components:
           type: boolean
           description: Indicates if the task is optional or not
           examples:
-          - "true"
+          - true
       required:
       - updatedBy
     Correspondence:
