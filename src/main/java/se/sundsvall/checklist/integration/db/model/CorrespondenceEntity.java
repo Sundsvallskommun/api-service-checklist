@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -58,7 +59,7 @@ public class CorrespondenceEntity {
 
 	@PrePersist
 	void prePersist() {
-		this.sent = OffsetDateTime.now();
+		this.sent = OffsetDateTime.now(ZoneId.systemDefault());
 	}
 
 }

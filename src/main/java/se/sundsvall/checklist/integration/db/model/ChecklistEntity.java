@@ -17,6 +17,7 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -89,11 +90,11 @@ public class ChecklistEntity {
 
 	@PrePersist
 	void prePersist() {
-		this.created = OffsetDateTime.now();
+		this.created = OffsetDateTime.now(ZoneId.systemDefault());
 	}
 
 	@PreUpdate
 	void preUpdate() {
-		this.updated = OffsetDateTime.now();
+		this.updated = OffsetDateTime.now(ZoneId.systemDefault());
 	}
 }

@@ -20,7 +20,7 @@ public final class EmployeeChecklistDecorator {
 	private EmployeeChecklistDecorator() {}
 
 	public static EmployeeChecklist decorateWithCustomTasks(EmployeeChecklist employeeChecklist, List<CustomTaskEntity> customTasks) {
-		ofNullable(customTasks).orElse(emptyList()).stream()
+		ofNullable(customTasks).orElse(emptyList())
 			.forEach(customTaskEntity -> addToPhase(customTaskEntity, employeeChecklist));
 
 		return employeeChecklist;

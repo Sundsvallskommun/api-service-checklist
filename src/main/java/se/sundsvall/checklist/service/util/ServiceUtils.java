@@ -51,8 +51,10 @@ public final class ServiceUtils {
 	}
 
 	public static Employment getMainEmployment(Employee employee) {
-		return ofNullable(employee.getMainEmployment())
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NO_MAIN_EMPLOYMENT_FOUND.formatted(employee.getLoginname())));
+		return ofNullable(employee)
+			.map(Employee::getMainEmployment)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NO_MAIN_EMPLOYMENT_FOUND.formatted(
+				ofNullable(employee).map(Employee::getLoginname).orElse(null))));
 	}
 
 	/**
