@@ -67,8 +67,15 @@ public class OrganizationService {
 	}
 
 	private Organization toOrganization(final OrganizationEntity entity, final Integer applySortFor) {
-		final var organization = OrganizationMapper.toOrganization(entity);
-		organization.setChecklists(ofNullable(entity.getChecklists()).orElse(emptyList()).stream().map(checklistBuilder::buildChecklist).toList());
+		return ofNullable(OrganizationMapper.toOrganization(entity))
+			.map(organization -> decorateWithChecklists(organization, entity, applySortFor))
+			.orElse(null);
+	}
+
+	private Organization decorateWithChecklists(final Organization organization, final OrganizationEntity entity, final Integer applySortFor) {
+		organization.setChecklists(ofNullable(entity.getChecklists()).orElse(emptyList()).stream()
+			.map(checklistBuilder::buildChecklist)
+			.toList());
 
 		// Find and apply requested custom sorting
 		ofNullable(applySortFor).ifPresent(orgNumber -> organization.setChecklists(
