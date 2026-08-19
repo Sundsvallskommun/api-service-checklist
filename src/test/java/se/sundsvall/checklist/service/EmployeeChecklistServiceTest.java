@@ -1075,6 +1075,54 @@ class EmployeeChecklistServiceTest {
 	}
 
 	@Test
+	void initiateEmployeeChecklists_formOfEmploymentSpecialFixedTerm() {
+		// Arrange
+		final var emailAddress = "emailAddress";
+		final var employeeUuid = UUID.randomUUID();
+		final var managerUuid = UUID.randomUUID();
+		final var companyId = 1;
+		final var rootOrgId = 13;
+		final var orgId = 1225;
+		final var loginName = "loginName";
+		final var orgTree = "2|12|OrgLevel 2¤3|122|OrgLevel 3¤4|" + orgId + "|OrgLevel 4";
+		final var information = "All is good in the neighborhood";
+		final var employee = createEmployee(emailAddress, employeeUuid, managerUuid, companyId, orgId, loginName);
+		employee.getMainEmployment().setFormOfEmploymentId("S");
+		final var portalPersonData = new PortalPersonData()
+			.companyId(companyId)
+			.orgTree(orgTree);
+
+		when(employeeIntegrationMock.getNewEmployees(eq(MUNICIPALITY_ID), any())).thenReturn(List.of(employee));
+		when(employeeIntegrationMock.getEmployeeByEmail(MUNICIPALITY_ID, emailAddress)).thenReturn(Optional.of(portalPersonData));
+		when(employeeChecklistIntegrationMock.initiateEmployee(any(), any(), any())).thenReturn(information);
+		when(companyIntegrationMock.getOrganizationsForCompany(MUNICIPALITY_ID, companyId)).thenReturn(List.of(
+			new Organization().orgId(rootOrgId).treeLevel(1).orgName("Sundsvalls kommun"),
+			new Organization().orgId(12).treeLevel(2).orgName("OrgLevel 2").parentId(rootOrgId),
+			new Organization().orgId(122).treeLevel(3).orgName("OrgLevel 3").parentId(12),
+			new Organization().orgId(orgId).treeLevel(4).orgName("OrgLevel 4").parentId(122)));
+
+		// Act
+		final var response = service.initiateEmployeeChecklists(MUNICIPALITY_ID);
+
+		// Assert and verify
+		verify(employeeIntegrationMock).getNewEmployees(MUNICIPALITY_ID, LocalDate.now().minusDays(30));
+		verify(employeeIntegrationMock).getEmployeeByEmail(MUNICIPALITY_ID, emailAddress);
+		verify(companyIntegrationMock).getOrganizationsForCompany(MUNICIPALITY_ID, companyId);
+		verify(employeeChecklistIntegrationMock).initiateEmployee(eq(MUNICIPALITY_ID), eq(employee), organizationTreeCaptor.capture());
+		verify(initiationRepositoryMock).saveAll(initiationEntitiesCaptor.capture());
+
+		assertThat(initiationEntitiesCaptor.getValue()).hasSize(1).satisfiesExactly(entity -> {
+			assertThat(entity.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
+			assertThat(entity.getStatus()).isEqualTo("200");
+			assertThat(entity.getInformation()).isEqualTo(information);
+		});
+		assertOrgTreeParameters();
+		assertThat(response.getSummary()).isEqualTo("Successful import of 1 employees");
+		assertThat(response.getDetails()).extracting(Detail::getStatus, Detail::getInformation)
+			.containsExactly(tuple(OK, information));
+	}
+
+	@Test
 	void initiateEmployeeChecklists_invalidEventType() {
 		// Arrange
 		final var emailAddress = "emailAddress";

@@ -1,0 +1,16 @@
+{
+	"address": "",
+	"city": "",
+	"postalCode": "",
+	"orgTree": "2|24|Top organization¤3|205|Sub organization 205¤4|1240|Sub organization 1240¤5|1241|Sub organization 1241¤6|212|Sub organization 212",
+	"lastname": "Employment",
+	"companyId": 1,
+	"givenname": "Special",
+	"loginName": "PERSONAL\\spe30cia",
+	"isManager": false,
+	"personid": "3f0d1c2a-7b64-4a2e-9c11-2ad6f0c5e881",
+	"company": "Root company",
+	"fullname": "Special Employment",
+	"email": "special.employment@noreply.com",
+	"mailNickname": "special.employment"
+}

@@ -1,0 +1,60 @@
+[
+	{
+		"givenname": "Special",
+		"isClassified": false,
+		"personId": "3f0d1c2a-7b64-4a2e-9c11-2ad6f0c5e881",
+		"accounts": [
+			{
+				"loginname": "spe30cia",
+				"companyId": 1,
+				"emailAddress": "special.employment@noreply.com"
+			}
+		],
+		"referenceNumbers": [
+			{
+				"referenceNumber": "1SPE30CIA",
+				"companyId": 1
+			}
+		],
+		"employments": [
+			{
+				"orgName": "Sub organization 212",
+				"topOrgId": 24,
+				"isManager": false,
+				"manager": {
+					"emailAddress": "bossa.nova@noreply.com",
+					"loginname": "bos33nov",
+					"referenceNumber": "B16NOV",
+					"givenname": "Bossa",
+					"personId": "95bd9ecb-4b42-402e-9767-48038f05927a",
+					"lastname": "Nova"
+				},
+				"hiringManager": {
+					"emailAddress": "bossa.nova@noreply.com",
+					"loginname": "bos33nov",
+					"referenceNumber": "B16NOV",
+					"givenname": "Bossa",
+					"personId": "95bd9ecb-4b42-402e-9767-48038f05927a",
+					"lastname": "Nova"
+				},
+				"employmentType": 0,
+				"formOfEmploymentId": "S",
+				"topOrgName": "Top organization name",
+				"isManual": false,
+				"eventType": "Joiner",
+				"title": "Special Fixed Term Sorcerer",
+				"orgId": 212,
+				"companyId": 1,
+				"eventInfo": "Corporate",
+				"paTeam": "ROBOT",
+				"managerCode": "C_",
+				"isMainEmployment": true,
+				"benefitGroupId": 11,
+				"aid": "123456",
+				"startDate": "2024-01-24T00:00:00"
+			}
+		],
+		"personNumber": "1901021234",
+		"lastname": "Employment"
+	}
+]

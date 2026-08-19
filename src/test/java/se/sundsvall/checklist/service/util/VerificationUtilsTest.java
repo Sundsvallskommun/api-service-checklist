@@ -111,6 +111,23 @@ class VerificationUtilsTest {
 		assertDoesNotThrow(() -> VerificationUtils.verifyValidEmployment(employee));
 	}
 
+	@ParameterizedTest
+	@ValueSource(strings = {
+		"1", "2", "9", "14", "17", "S", "T"
+	})
+	void testValidFormOfEmployment(final String formOfEmploymentId) {
+		final var employee = Employee.builder()
+			.withLoginname("<loginName>")
+			.withMainEmployment(Employment.builder()
+				.withIsMainEmployment(true)
+				.withFormOfEmploymentId(formOfEmploymentId)
+				.withEventType("Joiner")
+				.build())
+			.build();
+
+		assertDoesNotThrow(() -> VerificationUtils.verifyValidEmployment(employee));
+	}
+
 	@Test
 	void testValidEmploymentWhenNoMainEmployment() {
 		final var employee = Employee.builder()
