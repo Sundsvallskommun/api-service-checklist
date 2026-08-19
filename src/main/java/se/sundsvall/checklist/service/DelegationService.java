@@ -2,6 +2,7 @@ package se.sundsvall.checklist.service;
 
 import java.time.Duration;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -100,7 +101,7 @@ public class DelegationService {
 	}
 
 	private EmployeeChecklistEntity handleUpdatedEmployeeInformation(String municipalityId, EmployeeChecklistEntity employeeChecklist) {
-		if (ofNullable(employeeChecklist.getEmployee().getUpdated()).orElse(OffsetDateTime.MIN).isBefore(OffsetDateTime.now().minus(employeeInformationUpdateInterval))) {
+		if (ofNullable(employeeChecklist.getEmployee().getUpdated()).orElse(OffsetDateTime.MIN).isBefore(OffsetDateTime.now(ZoneId.systemDefault()).minus(employeeInformationUpdateInterval))) {
 			employeeIntegration.getEmployeeInformation(municipalityId, employeeChecklist.getEmployee().getId()).stream()
 				.findFirst()
 				.ifPresent(employee -> employeeChecklistIntegration.updateEmployeeInformation(employeeChecklist.getEmployee(), employee));

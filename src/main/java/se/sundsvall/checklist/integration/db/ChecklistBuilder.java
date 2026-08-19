@@ -41,7 +41,6 @@ public class ChecklistBuilder {
 
 	private Checklist populateWithTasks(final Checklist checklist, List<TaskEntity> taskEntities) {
 		ofNullable(taskEntities).orElse(emptyList())
-			.stream()
 			.forEach(taskEntity -> ofNullable(checklist.getPhases()).orElse(emptyList()).stream()
 				.filter(phase -> phase.getId().equals(taskEntity.getPhase().getId()))
 				.findFirst()

@@ -15,6 +15,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -68,6 +69,6 @@ public class FulfilmentEntity {
 	@PrePersist
 	@PreUpdate
 	void preUpdate() {
-		this.updated = OffsetDateTime.now();
+		this.updated = OffsetDateTime.now(ZoneId.systemDefault());
 	}
 }

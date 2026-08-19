@@ -16,6 +16,7 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -95,12 +96,12 @@ public class EmployeeEntity {
 
 	@PrePersist
 	void prePersist() {
-		this.created = OffsetDateTime.now();
+		this.created = OffsetDateTime.now(ZoneId.systemDefault());
 	}
 
 	@PreUpdate
 	void preUpdate() {
-		this.updated = OffsetDateTime.now();
+		this.updated = OffsetDateTime.now(ZoneId.systemDefault());
 	}
 
 }

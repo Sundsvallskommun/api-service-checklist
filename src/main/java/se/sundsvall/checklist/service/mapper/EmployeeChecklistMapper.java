@@ -1,6 +1,7 @@
 package se.sundsvall.checklist.service.mapper;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +98,7 @@ public final class EmployeeChecklistMapper {
 			return null;
 		}
 
-		final var startDate = ofNullable(employeeEntity.getStartDate()).orElse(LocalDate.now());
+		final var startDate = ofNullable(employeeEntity.getStartDate()).orElse(LocalDate.now(ZoneId.systemDefault()));
 
 		return EmployeeChecklistEntity.builder()
 			.withChecklists(checklistEntities)
