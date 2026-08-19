@@ -481,4 +481,15 @@ class EmployeeChecklistIT extends AbstractAppTest {
 			.sendRequestAndVerifyResponse();
 	}
 
+	@Test
+	void test30_initializeChecklistsForSpecialFixedTermEmployment() {
+		setupCall()
+			.withServicePath(PATH_PREFIX + "/initialize")
+			.withHttpMethod(POST)
+			.withExpectedResponseStatus(OK)
+			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
+			.withExpectedResponse(EXPECTED_FILE)
+			.sendRequestAndVerifyResponse();
+	}
+
 }

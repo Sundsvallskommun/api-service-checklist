@@ -21,10 +21,10 @@ public final class VerificationUtils {
 	private static final String EMPLOYEE_CHECKLIST_IS_LOCKED = "Employee checklist with id %s is locked and can not be modified.";
 
 	/**
-	 * Permanent employment ("1"), temporary monthly paid employment ("2"), probationary employment ("9"), unauthorized
-	 * teacher ("T")
+	 * Permanent employment ("1"), temporary monthly paid employment ("2"), probationary employment ("9"),
+	 * special fixed-term employment ("S"), unauthorized teacher ("T")
 	 */
-	private static final List<String> VALID_EMPLOYMENT_FORMS_FOR_CHECKLIST = List.of("1", "2", "9", "14", "17", "T");
+	private static final List<String> VALID_EMPLOYMENT_FORMS_FOR_CHECKLIST = List.of("1", "2", "9", "14", "17", "S", "T");
 	private static final String VALID_EVENT_TYPE = "Joiner";
 
 	private VerificationUtils() {}
