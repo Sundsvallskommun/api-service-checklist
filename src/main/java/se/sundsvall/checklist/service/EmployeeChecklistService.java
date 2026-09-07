@@ -32,10 +32,10 @@ import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistParameters;
 import se.sundsvall.checklist.api.model.OngoingEmployeeChecklists;
 import se.sundsvall.checklist.integration.company.CompanyIntegration;
 import se.sundsvall.checklist.integration.db.EmployeeChecklistIntegration;
+import se.sundsvall.checklist.integration.db.model.ChecklistEmployee;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
-import se.sundsvall.checklist.integration.db.model.EmployeeEntity;
 import se.sundsvall.checklist.integration.db.model.TaskEntity;
 import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
 import se.sundsvall.checklist.integration.db.repository.InitiationRepository;
@@ -59,7 +59,6 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_EMPLOYEE;
 import static se.sundsvall.checklist.integration.db.model.enums.RoleType.MANAGER_FOR_NEW_MANAGER;
-import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.createUpdateManagerDetailString;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.createUpdateManagerErrorString;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toCustomTask;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toDetail;
@@ -430,42 +429,31 @@ public class EmployeeChecklistService {
 			LOGGER.info("Processing checklists for municipalityId {} and updating those with outdated manager information", sanitizeAndCompress(municipalityId));
 		}
 
-		// If username is present, only fetch checklist for that person (disregarding if the checklist is completed or not).
-		// Otherwise fetch all ongoing checklists.
-		final var ongoingChecklists = isNull(username) ? employeeChecklistIntegration.findOngoingChecklists(municipalityId)
-			: employeeChecklistIntegration.fetchOptionalEmployeeChecklist(municipalityId, username)
+		// If username is present, only process the checklist for that person (disregarding if the checklist is completed or
+		// not). Otherwise process all ongoing checklists. Each employee is then processed in a transaction of its own, as
+		// holding all checklists of a municipality in one persistence context is costly in terms of memory.
+		final var employees = isNull(username) ? employeeChecklistIntegration.findOngoingChecklistEmployees(municipalityId)
+			: employeeChecklistIntegration.findChecklistEmployee(municipalityId, username)
 				.map(List::of)
 				.orElse(emptyList());
 
 		final List<Detail> updateResultDetails = new ArrayList<>();
 
-		ongoingChecklists.stream()
-			.map(EmployeeChecklistEntity::getEmployee)
-			.forEach(localEmployee -> employeeIntegration.getEmployeeInformation(municipalityId, localEmployee.getId()).stream()
-				.findAny()
-				.ifPresent(remoteEmployee -> updateManagerInformation(updateResultDetails, localEmployee, remoteEmployee)));
+		employees.forEach(employee -> employeeIntegration.getEmployeeInformation(municipalityId, employee.id()).stream()
+			.findAny()
+			.ifPresent(remoteEmployee -> updateManagerInformation(updateResultDetails, employee, remoteEmployee)));
 
-		return toUpdateManagerResponse(ongoingChecklists.size(), updateResultDetails);
+		return toUpdateManagerResponse(employees.size(), updateResultDetails);
 	}
 
-	private void updateManagerInformation(final List<Detail> updateResultDetails, final EmployeeEntity localEmployee, final Employee remoteEmployee) {
-		Detail detail = null;
-
+	private void updateManagerInformation(final List<Detail> updateResultDetails, final ChecklistEmployee employee, final Employee remoteEmployee) {
 		try {
-			if (isNull(remoteEmployee.getMainEmployment())) {
-				throw Problem.valueOf(NOT_FOUND, "No main employement was found");
-			}
-			if (notEqual(remoteEmployee.getMainEmployment().resolveResponsibleManager().getPersonId(), localEmployee.getManager().getPersonId())) {
-				// First calculate information for response as local entity will be modified in next step
-				detail = toDetail(OK, createUpdateManagerDetailString(localEmployee, remoteEmployee));
-				// Update employee entity with new manager
-				employeeChecklistIntegration.updateEmployeeInformation(localEmployee, remoteEmployee);
-			}
+			employeeChecklistIntegration.updateManagerInformation(employee.id(), remoteEmployee)
+				.map(information -> toDetail(OK, information))
+				.ifPresent(updateResultDetails::add);
 		} catch (final Exception e) {
-			LOGGER.error("Error when updating manager information for employee with id: {}", localEmployee.getId(), e);
-			detail = toDetail(INTERNAL_SERVER_ERROR, createUpdateManagerErrorString(localEmployee, e));
-		} finally {
-			ofNullable(detail).ifPresent(updateResultDetails::add);
+			LOGGER.error("Error when updating manager information for employee with id: {}", employee.id(), e);
+			updateResultDetails.add(toDetail(INTERNAL_SERVER_ERROR, createUpdateManagerErrorString(employee, e)));
 		}
 	}
 }

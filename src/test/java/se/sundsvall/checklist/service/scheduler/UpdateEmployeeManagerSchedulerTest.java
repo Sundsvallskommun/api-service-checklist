@@ -35,9 +35,13 @@ class UpdateEmployeeManagerSchedulerTest {
 	@InjectMocks
 	private UpdateEmployeeManagerScheduler scheduler;
 
+	/**
+	 * The execution must not span a transaction of its own, as that would keep every processed checklist in the same
+	 * persistence context for the duration of the job. Each employee is instead updated in a transaction of its own.
+	 */
 	@Test
-	void verifyTransactionalAnnotation() throws NoSuchMethodException {
-		assertThat(UpdateEmployeeManagerScheduler.class.getMethod("execute").getAnnotation(Transactional.class)).isNotNull();
+	void verifyNoTransactionalAnnotation() throws NoSuchMethodException {
+		assertThat(UpdateEmployeeManagerScheduler.class.getMethod("execute").getAnnotation(Transactional.class)).isNull();
 	}
 
 	@Test

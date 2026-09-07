@@ -21,6 +21,7 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistTask;
 import se.sundsvall.checklist.api.model.InitiationInformation;
 import se.sundsvall.checklist.api.model.Mentor;
 import se.sundsvall.checklist.api.model.OngoingEmployeeChecklist;
+import se.sundsvall.checklist.integration.db.model.ChecklistEmployee;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
@@ -375,17 +376,17 @@ public final class EmployeeChecklistMapper {
 	/**
 	 * Method for creating error string. To be used in conjunction with toUpdateManagerResponse method
 	 *
-	 * @param  localEmployee the local employee entity that is to be updated
+	 * @param  localEmployee the local employee that was to be updated
 	 * @param  e             the exception that has been thrown
 	 * @return               a string describing the problem that occurred when trying to update manager for employee
 	 *                       checklist
 	 */
-	public static String createUpdateManagerErrorString(EmployeeEntity localEmployee, final Exception e) {
+	public static String createUpdateManagerErrorString(ChecklistEmployee localEmployee, final Exception e) {
 		return "%s occurred when updating manager for %s %s (%s)".formatted(
 			e.getClass().getSimpleName(),
-			localEmployee.getFirstName(),
-			localEmployee.getLastName(),
-			localEmployee.getUsername());
+			localEmployee.firstName(),
+			localEmployee.lastName(),
+			localEmployee.username());
 	}
 
 }
