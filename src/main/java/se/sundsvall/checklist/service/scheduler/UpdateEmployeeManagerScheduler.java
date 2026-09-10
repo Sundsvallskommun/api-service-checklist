@@ -4,7 +4,6 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import se.sundsvall.checklist.api.model.EmployeeChecklistResponse;
 import se.sundsvall.checklist.service.EmployeeChecklistService;
 import se.sundsvall.dept44.problem.Problem;
@@ -34,7 +33,6 @@ public class UpdateEmployeeManagerScheduler {
 		this.properties = properties;
 	}
 
-	@Transactional
 	@Dept44Scheduled(
 		name = "${checklist.update-manager.name}",
 		cron = "${checklist.update-manager.cron}",

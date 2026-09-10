@@ -9,9 +9,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistParameters;
+import se.sundsvall.checklist.integration.db.model.ChecklistEmployee;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus;
 
@@ -27,7 +30,27 @@ public interface EmployeeChecklistRepository extends JpaRepository<EmployeeCheck
 
 	List<EmployeeChecklistEntity> findAllByChecklistsMunicipalityIdAndCorrespondenceCorrespondenceStatus(String municipalityId, CorrespondenceStatus status);
 
-	List<EmployeeChecklistEntity> findAllByChecklistsMunicipalityIdAndCompletedFalse(String municipalityId);
+	@Query("""
+		select distinct new se.sundsvall.checklist.integration.db.model.ChecklistEmployee(
+		employee.id, employee.firstName, employee.lastName, employee.username)
+		from EmployeeChecklistEntity employeeChecklist
+		join employeeChecklist.employee employee
+		join employeeChecklist.checklists checklist
+		where checklist.municipalityId = :municipalityId
+		and employeeChecklist.completed = false
+		""")
+	List<ChecklistEmployee> findOngoingChecklistEmployees(@Param("municipalityId") String municipalityId);
+
+	@Query("""
+		select distinct new se.sundsvall.checklist.integration.db.model.ChecklistEmployee(
+		employee.id, employee.firstName, employee.lastName, employee.username)
+		from EmployeeChecklistEntity employeeChecklist
+		join employeeChecklist.employee employee
+		join employeeChecklist.checklists checklist
+		where checklist.municipalityId = :municipalityId
+		and employee.username = :username
+		""")
+	Optional<ChecklistEmployee> findChecklistEmployee(@Param("municipalityId") String municipalityId, @Param("username") String username);
 
 	int countByCorrespondenceCorrespondenceStatus(CorrespondenceStatus status);
 

@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistParameters;
+import se.sundsvall.checklist.integration.db.model.ChecklistEmployee;
 import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.enums.CorrespondenceStatus;
 
@@ -146,11 +147,29 @@ class EmployeeChecklistRepositoryTest {
 	}
 
 	@Test
-	void findAllByChecklistsMunicipalityIdAndCompletedFalse() {
-		final var result = repository.findAllByChecklistsMunicipalityIdAndCompletedFalse("2281");
+	void findOngoingChecklistEmployees() {
+		final var result = repository.findOngoingChecklistEmployees("2281");
 
 		assertThat(result).hasSize(1)
-			.extracting(EmployeeChecklistEntity::getId)
-			.containsExactly("223a076f-441d-4a30-b5d0-f2bfd5ab250b");
+			.extracting(ChecklistEmployee::id, ChecklistEmployee::firstName, ChecklistEmployee::lastName, ChecklistEmployee::username)
+			.containsExactly(tuple("f0fd9029-d484-477a-8634-b5b7e0291d76", "C Emp", "Loyee", "cemp0loyee"));
+	}
+
+	@Test
+	void findOngoingChecklistEmployeesForNonExistingMunicipality() {
+		assertThat(repository.findOngoingChecklistEmployees("1984")).isEmpty();
+	}
+
+	@Test
+	void findChecklistEmployee() {
+		// The checklist of bemp0loyee is completed, but shall still be found when asking for a specific username
+		final var result = repository.findChecklistEmployee("2281", "bemp0loyee");
+
+		assertThat(result).contains(new ChecklistEmployee("8122705b-e0e6-4055-b301-eba21986e219", "B Emp", "Loyee", "bemp0loyee"));
+	}
+
+	@Test
+	void findChecklistEmployeeForNonExistingUsername() {
+		assertThat(repository.findChecklistEmployee("2281", "noone")).isEmpty();
 	}
 }

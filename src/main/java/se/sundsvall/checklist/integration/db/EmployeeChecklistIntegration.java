@@ -18,6 +18,7 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.Mentor;
 import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistParameters;
+import se.sundsvall.checklist.integration.db.model.ChecklistEmployee;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
@@ -48,6 +49,7 @@ import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static se.sundsvall.checklist.integration.db.model.enums.LifeCycle.ACTIVE;
+import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.createUpdateManagerDetailString;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toCustomFulfilmentEntity;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toCustomTaskEntity;
 import static se.sundsvall.checklist.service.mapper.EmployeeChecklistMapper.toEmployeeChecklistEntity;
@@ -68,6 +70,7 @@ public class EmployeeChecklistIntegration {
 	private static final String EMPLOYEE_SUCCESSFULLY_PROCESSED = "Employee with loginname %s processed successfully.";
 	private static final String NO_MATCHING_CHECKLIST_FOUND = "No checklist was found for any id in the organization tree for employee %s. Search has been performed for id %s.";
 	private static final String NO_MATCHING_EMPLOYEE_CHECKLIST_FOUND = "Employee checklist with id %s was not found within municipality %s.";
+	private static final String NO_MATCHING_EMPLOYEE_FOUND = "Employee with id %s was not found.";
 	private static final String NO_MATCHING_PHASE_FOUND = "Phase with id %s was not found within municipality %s.";
 	private static final String NO_FULFILMENT_INFORMATION_FOUND = "No fulfilment information found for task with id %s in employee checklist with id %s.";
 	private static final String EMPLOYEE_NO_MANAGER = "Cannot initiate employee %s without responsible manager.";
@@ -108,6 +111,18 @@ public class EmployeeChecklistIntegration {
 
 	@Transactional
 	public void updateEmployeeInformation(EmployeeEntity employeeEntity, Employee employee) {
+		applyEmployeeInformation(employeeEntity, employee);
+	}
+
+	/**
+	 * Holds the actual update. Kept apart from the transactional entry points so that
+	 * {@link #updateManagerInformation(String, Employee)} can reuse it without calling an annotated method via
+	 * <code>this</code>, which would bypass the transactional proxy.
+	 *
+	 * @param employeeEntity the local employee to update
+	 * @param employee       the remote employee information to update from
+	 */
+	private void applyEmployeeInformation(EmployeeEntity employeeEntity, Employee employee) {
 		updateEmployeeEntity(employeeEntity, employee);
 
 		// Trying to update manager, but if employment has been updated there is a risk that main employment signal is missing
@@ -396,7 +411,58 @@ public class EmployeeChecklistIntegration {
 		}
 	}
 
-	public List<EmployeeChecklistEntity> findOngoingChecklists(String municipalityId) {
-		return employeeChecklistRepository.findAllByChecklistsMunicipalityIdAndCompletedFalse(municipalityId);
+	/**
+	 * Fetch the employees that have an ongoing checklist within the sent in municipality.
+	 *
+	 * Only the identity of each employee is fetched, as loading the full checklist entities for an entire municipality
+	 * keeps a large object graph in memory throughout the processing.
+	 *
+	 * @param  municipalityId the id of the municipality to fetch employees for
+	 * @return                the employees having an ongoing checklist
+	 */
+	public List<ChecklistEmployee> findOngoingChecklistEmployees(String municipalityId) {
+		return employeeChecklistRepository.findOngoingChecklistEmployees(municipalityId);
+	}
+
+	/**
+	 * Fetch the employee matching the sent in username, regardless of whether the checklist is completed or not.
+	 *
+	 * @param  municipalityId the id of the municipality to fetch the employee for
+	 * @param  username       the username of the employee to fetch
+	 * @return                the employee, or empty if no checklist matches the sent in parameters
+	 */
+	public Optional<ChecklistEmployee> findChecklistEmployee(String municipalityId, String username) {
+		return employeeChecklistRepository.findChecklistEmployee(municipalityId, username);
+	}
+
+	/**
+	 * Update the manager of the employee matching the sent in id, if the responsible manager in the remote employee
+	 * information differs from the stored one.
+	 *
+	 * Executes in a transaction of its own, limiting the persistence context to a single employee when all checklists
+	 * within a municipality are processed.
+	 *
+	 * @param  employeeId     the id of the employee to update
+	 * @param  remoteEmployee the remote employee information holding current manager information
+	 * @return                a description of the performed update, or empty if the manager was already up to date
+	 */
+	@Transactional
+	public Optional<String> updateManagerInformation(String employeeId, Employee remoteEmployee) {
+		final var localEmployee = employeeRepository.findById(employeeId)
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, NO_MATCHING_EMPLOYEE_FOUND.formatted(employeeId)));
+
+		if (isNull(remoteEmployee.getMainEmployment())) {
+			throw Problem.valueOf(NOT_FOUND, "No main employement was found");
+		}
+
+		if (Objects.equals(remoteEmployee.getMainEmployment().resolveResponsibleManager().getPersonId(), localEmployee.getManager().getPersonId())) {
+			return Optional.empty();
+		}
+
+		// First calculate information for response as local entity will be modified in next step
+		final var information = createUpdateManagerDetailString(localEmployee, remoteEmployee);
+		applyEmployeeInformation(localEmployee, remoteEmployee);
+
+		return Optional.of(information);
 	}
 }

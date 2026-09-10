@@ -23,6 +23,7 @@ import se.sundsvall.checklist.api.model.EmployeeChecklistPhaseUpdateRequest;
 import se.sundsvall.checklist.api.model.EmployeeChecklistTaskUpdateRequest;
 import se.sundsvall.checklist.api.model.Mentor;
 import se.sundsvall.checklist.api.model.OngoingEmployeeChecklistParameters;
+import se.sundsvall.checklist.integration.db.model.ChecklistEmployee;
 import se.sundsvall.checklist.integration.db.model.ChecklistEntity;
 import se.sundsvall.checklist.integration.db.model.CustomFulfilmentEntity;
 import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
@@ -54,6 +55,7 @@ import se.sundsvall.dept44.problem.ThrowableProblem;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -1566,18 +1568,174 @@ class EmployeeChecklistIntegrationTest {
 	}
 
 	@Test
-	void findOngoingChecklists() {
+	void findOngoingChecklistEmployees() {
 		// Arrange
 		final var municipalityId = "municipalityId";
-		final var result = List.of(EmployeeChecklistEntity.builder().build());
+		final var result = List.of(new ChecklistEmployee(UUID.randomUUID().toString(), "firstName", "lastName", "username"));
 
-		when(employeeChecklistsRepositoryMock.findAllByChecklistsMunicipalityIdAndCompletedFalse(municipalityId)).thenReturn(result);
+		when(employeeChecklistsRepositoryMock.findOngoingChecklistEmployees(municipalityId)).thenReturn(result);
 
 		// Act
-		final var response = integration.findOngoingChecklists(municipalityId);
+		final var response = integration.findOngoingChecklistEmployees(municipalityId);
 
 		// Verify and assert
-		verify(employeeChecklistsRepositoryMock).findAllByChecklistsMunicipalityIdAndCompletedFalse(municipalityId);
+		verify(employeeChecklistsRepositoryMock).findOngoingChecklistEmployees(municipalityId);
 		assertThat(response).isEqualTo(result);
+	}
+
+	@Test
+	void findChecklistEmployee() {
+		// Arrange
+		final var municipalityId = "municipalityId";
+		final var username = "username";
+		final var result = Optional.of(new ChecklistEmployee(UUID.randomUUID().toString(), "firstName", "lastName", username));
+
+		when(employeeChecklistsRepositoryMock.findChecklistEmployee(municipalityId, username)).thenReturn(result);
+
+		// Act
+		final var response = integration.findChecklistEmployee(municipalityId, username);
+
+		// Verify and assert
+		verify(employeeChecklistsRepositoryMock).findChecklistEmployee(municipalityId, username);
+		assertThat(response).isEqualTo(result);
+	}
+
+	@Test
+	void updateManagerInformation() {
+		// Arrange
+		final var employeeId = UUID.randomUUID().toString();
+		final var newManagerId = UUID.randomUUID().toString();
+		final var entity = EmployeeEntity.builder()
+			.withFirstName("firstName")
+			.withLastName("lastName")
+			.withUsername("username")
+			.withManager(ManagerEntity.builder()
+				.withPersonId(UUID.randomUUID().toString())
+				.withFirstName("oldFirstName")
+				.withLastName("oldLastName")
+				.withUsername("oldUsername")
+				.build())
+			.build();
+		final var remoteEmployee = Employee.builder()
+			.withMainEmployment(Employment.builder()
+				.withIsMainEmployment(true)
+				.withHiringManager(Manager.builder()
+					.withPersonId(newManagerId)
+					.withGivenname("newFirstName")
+					.withLastname("newLastName")
+					.withLoginname("newUsername")
+					.build())
+				.build())
+			.build();
+
+		when(employeeRepositoryMock.findById(employeeId)).thenReturn(Optional.of(entity));
+
+		// Act
+		final var response = integration.updateManagerInformation(employeeId, remoteEmployee);
+
+		// Verify and assert
+		assertThat(response).contains("Checklist for employee firstName lastName (username) has changed manager from oldFirstName oldLastName (oldUsername) to newFirstName newLastName (newUsername)");
+		verify(employeeRepositoryMock).findById(employeeId);
+		verify(managerRepositoryMock).findById(newManagerId);
+		verify(employeeRepositoryMock).save(employeeEntityCaptor.capture());
+		assertThat(employeeEntityCaptor.getValue().getManager().getPersonId()).isEqualTo(newManagerId);
+	}
+
+	@Test
+	void updateManagerInformationFallsBackToManagerWhenHiringManagerIsNull() {
+		// Arrange
+		final var employeeId = UUID.randomUUID().toString();
+		final var newManagerId = UUID.randomUUID().toString();
+		final var entity = EmployeeEntity.builder()
+			.withManager(ManagerEntity.builder()
+				.withPersonId(UUID.randomUUID().toString())
+				.build())
+			.build();
+		final var remoteEmployee = Employee.builder()
+			.withMainEmployment(Employment.builder()
+				.withIsMainEmployment(true)
+				.withManager(Manager.builder() // No hiringManager set, should fall back to manager
+					.withPersonId(newManagerId)
+					.build())
+				.build())
+			.build();
+
+		when(employeeRepositoryMock.findById(employeeId)).thenReturn(Optional.of(entity));
+
+		// Act
+		final var response = integration.updateManagerInformation(employeeId, remoteEmployee);
+
+		// Verify and assert
+		assertThat(response).isPresent();
+		verify(employeeRepositoryMock).findById(employeeId);
+		verify(managerRepositoryMock).findById(newManagerId);
+		verify(employeeRepositoryMock).save(employeeEntityCaptor.capture());
+		assertThat(employeeEntityCaptor.getValue().getManager().getPersonId()).isEqualTo(newManagerId);
+	}
+
+	@Test
+	void updateManagerInformationWhenManagerIsUpToDate() {
+		// Arrange
+		final var employeeId = UUID.randomUUID().toString();
+		final var managerId = UUID.randomUUID().toString();
+		final var entity = EmployeeEntity.builder()
+			.withManager(ManagerEntity.builder()
+				.withPersonId(managerId)
+				.build())
+			.build();
+		final var remoteEmployee = Employee.builder()
+			.withMainEmployment(Employment.builder()
+				.withIsMainEmployment(true)
+				.withHiringManager(Manager.builder()
+					.withPersonId(managerId)
+					.build())
+				.build())
+			.build();
+
+		when(employeeRepositoryMock.findById(employeeId)).thenReturn(Optional.of(entity));
+
+		// Act
+		final var response = integration.updateManagerInformation(employeeId, remoteEmployee);
+
+		// Verify and assert
+		assertThat(response).isEmpty();
+		verify(employeeRepositoryMock).findById(employeeId);
+		verify(employeeRepositoryMock, never()).save(any());
+	}
+
+	@Test
+	void updateManagerInformationWhenEmployeeNotFound() {
+		// Arrange
+		final var employeeId = UUID.randomUUID().toString();
+		final var remoteEmployee = Employee.builder().build();
+
+		when(employeeRepositoryMock.findById(employeeId)).thenReturn(Optional.empty());
+
+		// Act
+		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateManagerInformation(employeeId, remoteEmployee));
+
+		// Verify and assert
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
+		assertThat(e.getMessage()).isEqualTo("Not Found: Employee with id %s was not found.".formatted(employeeId));
+
+		verify(employeeRepositoryMock, never()).save(any());
+	}
+
+	@Test
+	void updateManagerInformationWhenMainEmploymentIsMissing() {
+		// Arrange
+		final var employeeId = UUID.randomUUID().toString();
+		final var remoteEmployee = Employee.builder().build();
+
+		when(employeeRepositoryMock.findById(employeeId)).thenReturn(Optional.of(EmployeeEntity.builder().build()));
+
+		// Act
+		final var e = assertThrows(ThrowableProblem.class, () -> integration.updateManagerInformation(employeeId, remoteEmployee));
+
+		// Verify and assert
+		assertThat(e.getStatus()).isEqualTo(NOT_FOUND);
+		assertThat(e.getMessage()).isEqualTo("Not Found: No main employement was found");
+
+		verify(employeeRepositoryMock, never()).save(any());
 	}
 }
