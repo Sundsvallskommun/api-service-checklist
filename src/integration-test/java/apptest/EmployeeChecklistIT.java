@@ -1,5 +1,24 @@
 package apptest;
 
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.jdbc.Sql;
+import se.sundsvall.checklist.Application;
+import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
+import se.sundsvall.checklist.integration.db.model.DelegateEntity;
+import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
+import se.sundsvall.checklist.integration.db.model.ManagerEntity;
+import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
+import se.sundsvall.checklist.integration.db.repository.DelegateRepository;
+import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistRepository;
+import se.sundsvall.checklist.integration.db.repository.EmployeeRepository;
+import se.sundsvall.checklist.integration.db.repository.ManagerRepository;
+import se.sundsvall.dept44.test.AbstractAppTest;
+import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpHeaders.LOCATION;
@@ -14,27 +33,6 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.ALL_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.jdbc.Sql;
-
-import se.sundsvall.checklist.Application;
-import se.sundsvall.checklist.integration.db.model.CustomTaskEntity;
-import se.sundsvall.checklist.integration.db.model.DelegateEntity;
-import se.sundsvall.checklist.integration.db.model.EmployeeChecklistEntity;
-import se.sundsvall.checklist.integration.db.model.ManagerEntity;
-import se.sundsvall.checklist.integration.db.repository.CustomTaskRepository;
-import se.sundsvall.checklist.integration.db.repository.DelegateRepository;
-import se.sundsvall.checklist.integration.db.repository.EmployeeChecklistRepository;
-import se.sundsvall.checklist.integration.db.repository.EmployeeRepository;
-import se.sundsvall.checklist.integration.db.repository.ManagerRepository;
-import se.sundsvall.dept44.test.AbstractAppTest;
-import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
 
 @WireMockAppTestSuite(files = "classpath:/EmployeeChecklistIT/", classes = Application.class)
 @Sql({
