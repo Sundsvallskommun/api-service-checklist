@@ -34,7 +34,7 @@ class ChecklistRepositoryTest {
 		assertThat(result).isNotNull();
 		assertThat(result.getId()).hasSize(36);
 		assertThat(result.getCreated()).isCloseTo(now(), within(2, SECONDS));
-		assertThat(result.getUpdated()).isNull();
+		assertThat(result.getUpdated()).isEqualTo(result.getCreated());
 
 		final var persistedEntity = checklistRepository.findById(result.getId());
 		assertThat(persistedEntity).contains(result);

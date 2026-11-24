@@ -46,7 +46,7 @@ class ManagerRepositoryTest {
 		assertThat(result).isNotNull();
 		assertThat(UUID.fromString(result.getPersonId())).isEqualTo(id);
 		assertThat(result.getCreated()).isCloseTo(now(), within(2, SECONDS));
-		assertThat(result.getUpdated()).isNull();
+		assertThat(result.getUpdated()).isEqualTo(result.getCreated());
 	}
 
 	@Test

@@ -52,7 +52,7 @@ class OrganizationRepositoryTest {
 		assertThat(result.getOrganizationNumber()).isEqualTo(organizationNumber);
 		assertThat(result.getOrganizationName()).isEqualTo(organizationName);
 		assertThat(result.getCreated()).isCloseTo(now(), within(2, SECONDS));
-		assertThat(result.getUpdated()).isNull();
+		assertThat(result.getUpdated()).isEqualTo(result.getCreated());
 	}
 
 	@Test

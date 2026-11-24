@@ -50,7 +50,7 @@ class EmployeeChecklistRepositoryTest {
 		assertThat(result).isNotNull();
 		assertThat(UUID.fromString(result.getId())).isNotNull();
 		assertThat(result.getCreated()).isCloseTo(now(), within(2, SECONDS));
-		assertThat(result.getUpdated()).isNull();
+		assertThat(result.getUpdated()).isEqualTo(result.getCreated());
 		assertThat(result.isCompleted()).isFalse();
 	}
 
