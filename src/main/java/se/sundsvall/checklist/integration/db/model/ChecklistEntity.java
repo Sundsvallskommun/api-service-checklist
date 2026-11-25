@@ -91,6 +91,7 @@ public class ChecklistEntity {
 	@PrePersist
 	void prePersist() {
 		this.created = OffsetDateTime.now(ZoneId.systemDefault());
+		this.updated = this.created;
 	}
 
 	@PreUpdate

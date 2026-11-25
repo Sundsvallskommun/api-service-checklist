@@ -47,6 +47,6 @@ class ManagerEntityTest {
 		manager.prePersist();
 
 		assertThat(manager.getCreated()).isNotNull().isCloseTo(now(systemDefault()), within(2, SECONDS));
-		assertThat(manager.getUpdated()).isNull();
+		assertThat(manager.getUpdated()).isEqualTo(manager.getCreated());
 	}
 }

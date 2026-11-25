@@ -49,6 +49,6 @@ class EmployeeChecklistEntityTest {
 		entity.prePersist();
 
 		assertThat(entity.getCreated()).isNotNull().isCloseTo(now(systemDefault()), within(2, SECONDS));
-		assertThat(entity.getUpdated()).isNull();
+		assertThat(entity.getUpdated()).isEqualTo(entity.getCreated());
 	}
 }

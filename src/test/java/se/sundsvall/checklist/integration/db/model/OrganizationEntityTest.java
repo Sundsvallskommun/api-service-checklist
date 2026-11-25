@@ -47,6 +47,6 @@ class OrganizationEntityTest {
 		organization.prePersist();
 
 		assertThat(organization.getCreated()).isNotNull().isCloseTo(now(systemDefault()), within(2, SECONDS));
-		assertThat(organization.getUpdated()).isNull();
+		assertThat(organization.getUpdated()).isEqualTo(organization.getCreated());
 	}
 }
